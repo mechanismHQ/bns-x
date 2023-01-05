@@ -1,0 +1,12 @@
+
+**/settings/Mainnet.toml
+**/settings/Testnet.toml
+.cache/**
+history.txt
+node_modules
+coverage.lcov
+coverage/
+.env
+tmp
+indexer/mocks/*.txt
+contracts/_deprecated

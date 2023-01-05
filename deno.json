@@ -1,0 +1,20 @@
+{
+  "fmt": {
+    "options": {
+      "singleQuote": true
+    },
+    "files": {
+      "include": ["tests/", "artifacts/", "dscripts", "src", "deps.ts"]
+    }
+  },
+  "lint": {
+    "files": {
+      "include": ["tests/", "artifacts/", "dscripts", "src", "deps.ts"]
+    },
+    "rules": {
+      "tags": ["recommended"],
+      "exclude": ["no-explicit-any", "no-empty", "no-unused-vars"],
+      "include": ["eqeqeq", "no-const-assign", "no-throw-literal"]
+    }
+  }
+}

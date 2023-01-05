@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Name {
+  id           Int        @id @default(autoincrement())
+  nftId        Int        @unique
+  name         String     @db.VarChar(48)
+  namespace    String     @db.VarChar(20)
+  primaryOwner Account?   @relation("PrimaryName")
+  wrapper      Wrapper?
+  owner        NameOwner?
+  mintedAt     DateTime
+  // NameTransfer NameTransfer[]
+
+  @@unique([name, namespace])
+}
+
+model NameOwner {
+  // id             Int      @id @default(autoincrement())
+  name           Name?    @relation(fields: [nftId], references: [nftId])
+  nftId          Int      @unique
+  ownerPrincipal String
+  owner          Account? @relation(fields: [ownerPrincipal], references: [principal])
+
+  @@id(nftId)
+}
+
+// model NameTransfer {
+//   id Int @id @default(autoincrement())
+
+//   name   Name? @relation(fields: [nameId], references: [nftId])
+//   nameId Int
+
+//   sender   Account? @relation("Sender", fields: [senderId], references: [principal])
+//   senderId String
+
+//   recipient   Account? @relation("Recipient", fields: [recipientId], references: [principal])
+//   recipientId String
+
+//   txid String
+// }
+
+model Account {
+  id            Int         @id @default(autoincrement())
+  principal     String      @unique
+  primaryName   Name?       @relation("PrimaryName", fields: [primaryNameId], references: [nftId])
+  primaryNameId Int?        @unique
+  names         NameOwner[]
+  // sendTransfers      NameTransfer[] @relation("Sender")
+  // recipientTransfers NameTransfer[] @relation("Recipient")
+}
+
+model Wrapper {
+  id        Int    @id @default(autoincrement())
+  name      Name?  @relation(fields: [nameId], references: [nftId])
+  nameId    Int    @unique
+  principal String @unique
+}
+
+model PrintEvent {
+  id                  Int     @id @default(autoincrement())
+  stacksApiId         Int     @unique
+  contractId          String
+  value               Json
+  hex                 String
+  topic               String
+  txid                String
+  eventIndex          Int
+  txIndex             Int
+  blockHeight         Int
+  indexBlockHash      String
+  microblockHash      String
+  microblockCanonical Boolean
+  canonical           Boolean
+  microblockSequence  Int
+
+  @@index([blockHeight(sort: Desc), microblockSequence(sort: Desc), txIndex(sort: Desc), eventIndex(sort: Desc)])
+}

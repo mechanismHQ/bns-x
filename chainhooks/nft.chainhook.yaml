@@ -1,0 +1,13 @@
+---
+name: "BNS X NFT"
+version: 1
+chain: stacks
+networks:
+  devnet:
+    predicate:
+      print-event:
+        contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+        contains: topic
+    action:
+      file:
+        path: indexer/mocks/nft.txt

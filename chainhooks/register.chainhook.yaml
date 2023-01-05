@@ -1,0 +1,54 @@
+---
+name: "Stacks hook"
+version: 1
+chain: stacks
+networks:
+  devnet:
+    predicate:
+      print-event:
+        contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+        contains: new-name
+      # Also supports the following predicates:
+      # nft-event:
+      #   asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::names
+      #   actions: [mint, transfer, burn]
+      # ft-event:
+      #     asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.cbtc-token::cbtc
+      #     actions: [mint, transfer, burn]
+      # stx-event:
+      #     asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.cbtc-token::cbtc
+      #     actions: [mint, transfer, lock]
+    #   contract-call:
+    #     contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+    #     method: mint
+    action:
+      # http:
+      #   url: "http://localhost:3002/hooks/new-name"
+      #   method: POST
+      #   authorization-header: Bearer cn389ncoiwuencr
+      file:
+        path: indexer/mocks/new-name.txt
+  simnet:
+    predicate:
+      #   print-event:
+      #     contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+      #     contains: vault
+      # Also supports the following predicates:
+      nft-event:
+        asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::names
+        actions: [mint, transfer, burn]
+      # ft-event:
+      #     asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.cbtc-token::cbtc
+      #     actions: [mint, transfer, burn]
+      # stx-event:
+      #     asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.cbtc-token::cbtc
+      #     actions: [mint, transfer, lock]
+    #   contract-call:
+    #     contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+    #     method: mint
+    action:
+      http:
+        url: "http://localhost:3002/hooks/nft-event"
+        method: GET
+      # file:
+      #   path: dscripts/nft.ts

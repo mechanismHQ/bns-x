@@ -1,0 +1,51 @@
+{
+  "name": "web",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clarigen/core": "1.0.2",
+    "@clarigen/web": "1.0.2",
+    "@micro-stacks/client": "1.1.2",
+    "@micro-stacks/jotai": "^1.0.6",
+    "@micro-stacks/react": "1.0.6",
+    "@nelson-ui/core": "^0.1.5",
+    "@nelson-ui/react": "^0.1.6",
+    "@stacks/stacks-blockchain-api-types": "^6.1.1",
+    "@stitches/core": "^1.2.8",
+    "@stitches/react": "^1.2.8",
+    "@tanstack/query-core": "^4.14.1",
+    "@types/react-datepicker": "^4.8.0",
+    "bignumber.js": "^9.1.0",
+    "iron-session": "6.1.3",
+    "joi": "^17.7.0",
+    "jotai": "^1.9.1",
+    "jotai-form": "^0.0.3",
+    "jotai-location": "^0.3.0",
+    "jotai-query-toolkit": "^0.1.23",
+    "jotai-tanstack-query": "^0.4.0",
+    "micro-stacks": "^1.0.0",
+    "next": "12.2.2",
+    "react": "18.2.0",
+    "react-datepicker": "^4.8.0",
+    "react-dom": "18.2.0",
+    "unique-names-generator": "^4.7.1"
+  },
+  "devDependencies": {
+    "@stacks/prettier-config": "0.0.10",
+    "@types/node": "18.0.6",
+    "@types/react": "18.0.15",
+    "@types/react-dom": "18.0.6",
+    "eslint": "8.20.0",
+    "eslint-config-next": "12.2.2",
+    "prettier": "2.7.1",
+    "typescript": "4.7.4"
+  },
+  "prettier": "@stacks/prettier-config"
+}

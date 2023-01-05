@@ -1,0 +1,100 @@
+---
+id: 0
+name: Devnet deployment
+network: devnet
+stacks-node: "http://localhost:20443"
+bitcoin-node: "http://devnet:devnet@localhost:18443"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: proposal-trait
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 860
+            path: contracts/traits/proposal-trait.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: extension-trait
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 980
+            path: contracts/traits/extension-trait.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: executor-dao
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 36810
+            path: contracts/executor-dao.clar
+            anchor-block-only: true
+            clarity-version: 1
+        # - contract-publish:
+        #     contract-name: demo-controller
+        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     cost: 1420
+        #     path: contracts/demo-controller.clar
+        #     anchor-block-only: true
+        #     clarity-version: 1
+        - contract-publish:
+            contract-name: nft-trait
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 2620
+            path: contracts/traits/nft-trait.clar
+            anchor-block-only: true
+            clarity-version: 1
+        # - contract-publish:
+        #     contract-name: bns-init
+        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     cost: 5570
+        #     path: contracts/testnet/bns-init.clar
+        #     anchor-block-only: true
+        #     clarity-version: 1
+        # - contract-publish:
+        #     contract-name: bns-v1
+        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     cost: 411120
+        #     path: contracts/bns-v1.clar
+        #     anchor-block-only: true
+        #     clarity-version: 1
+      epoch: "2.0"
+    - id: 1
+      transactions:
+        - contract-publish:
+            contract-name: name-registry
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 113110
+            path: contracts/core/name-registry.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: name-wrapper
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            remap-principals:
+              SP000000000000000000002Q6VF78.bns: ST000000000000000000002AMW42H.bns
+            cost: 11730
+            path: contracts/testnet/name-wrapper.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: wrapper-migrator
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 42420
+            path: contracts/testnet/wrapper-migrator.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: proposal-bootstrap
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 72710
+            path: contracts/proposals/proposal-bootstrap.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: test-utils
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 5570
+            path: contracts/test-utils.clar
+            anchor-block-only: true
+            clarity-version: 2
+      epoch: "2.1"

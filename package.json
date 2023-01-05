@@ -1,0 +1,36 @@
+{
+  "name": "bns",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "r": "NODE_ENV=development node -r @swc-node/register",
+    "test:server": "pnpm run --filter indexer test:server",
+    "chainhook-test": "clarinet test --chainhooks chainhooks/tests/testing.chainhook.yaml --chainhooks chainhooks/tests/wrapper.chainhook.yaml --chainhooks chainhooks/tests/nft.chainhook.yaml --mine-block-delay 2 --allow-net tests/chainhooks-test.ts",
+    "integration-test": "start-server-and-test test:server http://localhost:3003 chainhook-test",
+    "web": "pnpm run --filter web dev"
+  },
+  "author": "Hank Stoever",
+  "license": "ISC",
+  "dependencies": {
+    "@clarigen/core": "1.0.2",
+    "@clarigen/node": "1.0.2",
+    "@swc-node/register": "^1.3.7",
+    "@swc/cli": "^0.1.51",
+    "@swc/core": "^1.2.105",
+    "cross-fetch": "^3.1.5",
+    "dotenv": "^16.0.3",
+    "merkletreejs": "^0.3.1",
+    "micro-stacks": "link:../../blockstack/micro-stacks/packages/core/dist",
+    "prettier": "^2.7.1",
+    "start-server-and-test": "^1.15.2",
+    "typescript": "^4.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "punycode": "^2.1.1"
+  }
+}

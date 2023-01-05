@@ -1,0 +1,48 @@
+scripts:
+  clarigen:
+    cmd: ../deno-clarigen/cli.ts
+    allow:
+      - all
+
+  coverage:
+    cmd:
+      - clarinet test --coverage
+      - genhtml -o coverage/html coverage.lcov
+
+  chainhook-test:
+    cmd:
+      - vr integration-setup
+      - pnpm integration-test
+      - docker-compose down
+      # - docker-compose up -d
+      # - sleep 10
+      # - pnpm --filter indexer test:migrate
+      # - pnpm --filter indexer test:server & clarinet test --chainhooks chainhooks/testing.chainhook.yaml tests/chainhooks_test.ts
+
+  integration-setup:
+    cmd:
+      - docker-compose up -d
+      - sleep 3
+      - pnpm --filter indexer test:migrate
+      - echo -n > indexer/tmp/log.txt
+
+  check:
+    pll:
+      - deno check tests/*.ts
+      - deno check dscripts/*.ts
+      - deno check src/*.ts
+      - clarinet check
+      - pnpm run --filter web typecheck
+
+  codegen:
+    pll:
+      - deno run -A dscripts/testnet-contracts.ts
+      - deno run -A dscripts/wrapper-js.ts
+    allow: all
+
+  integrate:
+    cmd:
+      - cp /dev/null indexer/mocks/nft.txt
+      - cp /dev/null indexer/mocks/prints.txt
+      - vr codegen
+      - clarinet integrate -d

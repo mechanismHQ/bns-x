@@ -1,0 +1,13 @@
+{
+  "deno.enable": true,
+  "deno.enablePaths": [
+    "artifacts",
+    "tests",
+    "dscripts",
+    "src",
+    "dep-tests",
+    "deps.ts"
+  ],
+  "files.eol": "\n",
+  "typescript.preferences.importModuleSpecifier": "non-relative"
+}
