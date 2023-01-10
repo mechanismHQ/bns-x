@@ -11,3 +11,4 @@ tmp
 indexer/mocks/*.txt
 contracts/_deprecated
 indexer/prisma/generated
+dep-tests/

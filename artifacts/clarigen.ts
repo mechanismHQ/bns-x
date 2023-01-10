@@ -2489,14 +2489,6 @@ export const contracts = {
         [uri: TypedAbiArg<string, "uri">],
         Response<boolean, bigint>
       >,
-      isDaoOrExtension: {
-        name: "is-dao-or-extension",
-        access: "public",
-        args: [],
-        outputs: {
-          type: { response: { ok: "bool", error: "uint128" } },
-        },
-      } as TypedAbiFunction<[], Response<boolean, bigint>>,
       mngBurn: {
         name: "mng-burn",
         access: "public",
@@ -2934,6 +2926,14 @@ export const contracts = {
           },
         },
       } as TypedAbiFunction<[], Response<string, null>>,
+      isDaoOrExtension: {
+        name: "is-dao-or-extension",
+        access: "read_only",
+        args: [],
+        outputs: {
+          type: { response: { ok: "bool", error: "uint128" } },
+        },
+      } as TypedAbiFunction<[], Response<boolean, bigint>>,
       isNamespaceManager: {
         name: "is-namespace-manager",
         access: "read_only",
@@ -3129,16 +3129,6 @@ export const contracts = {
         },
         access: "constant",
       } as TypedAbiVariable<Response<null, bigint>>,
-      ERR_PANIC: {
-        name: "ERR_PANIC",
-        type: {
-          response: {
-            ok: "none",
-            error: "uint128",
-          },
-        },
-        access: "constant",
-      } as TypedAbiVariable<Response<null, bigint>>,
       ERR_TRANSFER_BLOCKED: {
         name: "ERR_TRANSFER_BLOCKED",
         type: {
@@ -3203,10 +3193,6 @@ export const contracts = {
       ERR_NOT_OWNER: {
         isOk: false,
         value: 4n,
-      },
-      ERR_PANIC: {
-        isOk: false,
-        value: 0n,
       },
       ERR_TRANSFER_BLOCKED: {
         isOk: false,

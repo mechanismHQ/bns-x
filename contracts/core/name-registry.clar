@@ -1,10 +1,30 @@
+;; The name registry contract acts as the central hub for storing
+;; name information. Each 'name' record has two parts - the 'name' (domain)
+;; and the 'namespace' (TLD). Each record has a unique ID, which is an integer.
+;; 
+;; Registering a new name is not publicly exposed through this contract. Instead,
+;; registrations must be initiated via a different contract. The originating contract
+;; must have the "registry" role in the [`.executor-dao`](`../executor-dao.md`) contract.
+;; 
+;; The name registry includes functionality for "managed namespaces". A managed namespace
+;; is controlled by an external set of contracts - such as a separate DAO. The set
+;; namespace/manager relationships is stored in this contract. If a namespace has a 'manager',
+;; that manager is allowed to call privileged functions for names in their namespace.
+;; 
+;; This contract keeps track of an account's "primary name", as well as their other names, in a
+;; linked list data structure. This allows for querying the entire set of an account's names.
+;; If an account has at least one name, they will always have a 'primary' name. If their primary
+;; name is transfered, the next name in the linked list is automatically set as the primary.
+;; 
+;; This contract also exposes an NFT asset, which represents ownership of a given name. The contract
+;; exposes a SIP9-compatible interface for interacting with the NFT.
+
 (impl-trait .nft-trait.nft-trait)
 
 ;; Variables
 
 (define-constant ROLE "registry")
 
-(define-constant ERR_PANIC (err u0))
 (define-constant ERR_UNAUTHORIZED (err u4000))
 (define-constant ERR_ALREADY_REGISTERED (err u4001))
 (define-constant ERR_CANNOT_SET_PRIMARY (err u4002))
@@ -42,7 +62,8 @@
 
 ;; Authorization
 
-(define-public (is-dao-or-extension)
+;; Validate an action that can only be executed by a BNS X extension.
+(define-read-only (is-dao-or-extension)
   ;; (ok (asserts! (or (is-eq tx-sender .executor-dao) (contract-call? .executor-dao has-role-or-extension contract-caller ROLE)) ERR_UNAUTHORIZED))
   (ok (asserts! (contract-call? .executor-dao has-role-or-extension contract-caller ROLE) ERR_UNAUTHORIZED))
 )
@@ -80,6 +101,10 @@
   )
 )
 
+;; Set a name as a user's primary name. Only the owner of the name
+;; can set it as their primary.
+;; 
+;; @param id; the ID of the name
 (define-public (set-primary-name (id uint))
   (let
     (
@@ -134,6 +159,8 @@
   )
 )
 
+;; Private method to handle transfering ownership of a name. This updates internal
+;; data tracking name ownership, and transfers the NFT to the recipient.
 (define-private (transfer-ownership (id uint) (sender principal) (recipient principal))
   ;; #[allow(unchecked_data)]
   (begin
@@ -151,6 +178,12 @@
 
 ;; Getters
 
+;; Get properties of a given name. Returns `optional` with the following properties:
+;; 
+;; - id
+;; - name
+;; - namespace
+;; - owner
 (define-read-only (get-name-properties (name { name: (buff 48), namespace: (buff 20) }))
   (match (map-get? name-id-map name)
     id (merge-name-props name id)
@@ -158,6 +191,7 @@
   )
 )
 
+;; Get name properties of a name, with lookup via ID. See [`get-name-properties`](#get-name-properties)
 (define-read-only (get-name-properties-by-id (id uint))
   (match (map-get? id-name-map id)
     name (merge-name-props name id)
@@ -173,6 +207,8 @@
   }))
 )
 
+;; Return the primary name for a given account. Returns an optional
+;; tuple with `name` and `namespace`
 (define-read-only (get-primary-name (account principal))
   (match (map-get? owner-primary-name-map account)
     id (map-get? id-name-map id)
@@ -180,6 +216,7 @@
   )
 )
 
+;; Return properties of an account's primary name. See [`get-name-properties`](#get-name-properties)
 (define-read-only (get-primary-name-properties (account principal))
   (match (map-get? owner-primary-name-map account)
     id (get-name-properties-by-id id)
@@ -187,20 +224,27 @@
   )
 )
 
+;; Reverse lookup the ID of a name
 (define-read-only (get-id-for-name (name { name: (buff 48), namespace: (buff 20) }))
   (map-get? name-id-map name)
 )
 
+;; Returns the namespace for a given name. Returns a `response`
+;; with the namespace, or `ERR_INVALID_ID` otherwise.
 (define-read-only (get-namespace-for-id (id uint))
   (ok (get namespace (unwrap! (map-get? id-name-map id) ERR_INVALID_ID)))
 )
 
+;; Returns the owner of a name
 (define-read-only (get-name-owner (id uint))
   (map-get? name-owner-map id)
 )
 
 ;; NFT
 
+;; Set the Token URI for NFT metadata.
+;; 
+;; @throws if called by an unauthorized contract
 ;; #[allow(unchecked_data)]
 (define-public (dao-set-token-uri (uri (string-ascii 256)))
   (begin
@@ -225,12 +269,17 @@
   (ok (nft-get-owner? names id))
 )
 
+;; Returns the total number of names owned by an account
 (define-read-only (get-balance (account principal))
   (default-to u0 (map-get? owner-balance-map account))
 )
 (define-read-only (get-balance-of (account principal)) (ok (get-balance account)))
 
-;; TODO: flag for if namespace can be transfered
+;; Transfer a name
+;; 
+;; @throws if transfers are not allowed for a given namespace.
+;; 
+;; @throws if not called by the name owner
 (define-public (transfer (id uint) (sender principal) (recipient principal))
   (let
     (
@@ -247,10 +296,14 @@
 
 ;; DAO / controller methods
 
+;; Returns `bool` specifying whether BNS X contracts can manage a given namespace
 (define-read-only (can-dao-manage-ns (namespace (buff 20)))
   (default-to true (map-get? dao-namespace-manager-map namespace))
 )
 
+;; Removes the ability for BNS X contracts to manage a specific namespace. Once BNS X
+;; is "ejected" from a namespace, only managers of that namespace can perform
+;; name-related actions (like registration) for that namespace.
 (define-public (remove-dao-namespace-manager (namespace (buff 20)))
   (begin
     ;; #[filter(namespace)]
@@ -280,10 +333,13 @@
   (validate-namespace-action (try! (get-namespace-for-id id)))
 )
 
+;; Returns `bool` of whether a principal is a valid manager for a given namespace.
 (define-read-only (is-namespace-manager (namespace (buff 20)) (manager principal))
   (default-to false (map-get? namespace-managers-map { namespace: namespace, manager: manager }))
 )
 
+;; Privileged method for transfering a name. This allows external (authorized)
+;; contracts to allow transfers based on flexible conditions.
 (define-public (mng-transfer (id uint) (recipient principal))
   (begin
     ;; #[filter(id, recipient)]
@@ -302,6 +358,9 @@
   )
 )
 
+;; Add a manager for a specific namespace. Only BNS X contracts can set the first
+;; manager. After that, existing managers can add other managers. See
+;; [`validate-namespace-action`](#validate-namespace-action) for authorization rules.
 (define-public (set-namespace-manager (namespace (buff 20)) (manager principal) (enabled bool))
   (begin
     ;; #[filter(namespace, manager)]
@@ -311,6 +370,8 @@
   )
 )
 
+;; Enable or disable transfers of names for a specific namespace. See
+;; [`validate-namespace-action`](#validate-namespace-action) for authorization rules.
 (define-public (set-namespace-transfers-allowed (namespace (buff 20)) (enabled bool))
   (begin
     ;; #[filter(namespace)]
@@ -320,6 +381,7 @@
   )
 )
 
+;; Returns a `bool` indicating whether transfers are allowed for a given namespace.
 (define-read-only (are-transfers-allowed (namespace (buff 20)))
   (default-to true (map-get? namespace-transfers-allowed namespace))
 )
@@ -339,11 +401,15 @@
 ;; Linked list for keeping track of account
 ;; primary names
 
-;; Helper to traverse names
+;; Helper method to traverse the linked list structure for an account's names.
 (define-read-only (get-next-node-id (id uint))
   (map-get? owner-name-next-map id)
 )
 
+;; Internal method for adding a node to an account's linked list of names.
+;; The name is always added to the 'end' of the list. If this is the account's
+;; first name, that means it will also be the primary name.
+;; 
 ;; #[allow(unchecked_data)]
 (define-private (add-node (account principal) (id uint))
   (let
@@ -366,6 +432,8 @@
   )
 )
 
+;; Internal method to indicate that an account's primary name has been updated.
+;; This only prints out information, which can be indexed off-chain.
 (define-private (print-primary-update (account principal) (id (optional uint)))
   (begin
     (print {
@@ -378,6 +446,7 @@
   )
 )
 
+;; Remove a name from an account's list of names.
 (define-private (remove-node (account principal) (id uint))
   (let
     (
@@ -403,7 +472,6 @@
           (map-delete owner-primary-name-map account)
         )
       )
-      ;; (map-delete owner-primary-name-map account)
     )
     ;; removing the last
     (and (is-eq last id)
@@ -434,6 +502,8 @@
   )
 )
 
+;; Set a name as an account's primary. This internal method is updates the internal data
+;; structure for an account's names.
 (define-private (set-first (account principal) (node uint))
   (let
     (
