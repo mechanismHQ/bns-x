@@ -10,6 +10,8 @@ import {
   assertEquals,
   bob,
   beforeAll,
+  nftAsset,
+  types,
 } from "./helpers.ts";
 import { ContractCallTyped, UnknownArgs, Response, Chain } from "../deps.ts";
 import { testUtils } from "./clarigen.ts";
@@ -139,8 +141,10 @@ describe("managed namespaces", () => {
       );
     });
 
+    let managerNameId: bigint;
+
     it("can register names", () => {
-      chain.txOk(
+      const { value } = chain.txOk(
         registry.register({
           name: {
             name: asciiToBytes("manager"),
@@ -150,6 +154,7 @@ describe("managed namespaces", () => {
         }),
         manager
       );
+      managerNameId = value;
     });
 
     it("can transfer names", () => {
@@ -157,7 +162,18 @@ describe("managed namespaces", () => {
     });
 
     it("can burn names", () => {
-      chain.txOk(registry.mngBurn(aliceId), manager);
+      const receipt = chain.txOk(registry.mngBurn(managerNameId), manager);
+
+      receipt.events.expectNonFungibleTokenBurnEvent(
+        `u${managerNameId}`,
+        alice,
+        registry.identifier,
+        nftAsset
+      );
+      receipt.events.expectPrintEvent(
+        registry.identifier,
+        `{id: u${managerNameId}, topic: "burn"}`
+      );
     });
 
     it("can set new managers", () => {

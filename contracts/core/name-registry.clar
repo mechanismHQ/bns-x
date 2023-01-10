@@ -96,19 +96,40 @@
   )
 )
 
+;; Burn a name. This burns the name NFT and removes all ownership data.
+;; 
+;; If the name being burnt is the account's primary, and the account
+;; owns another name, a different name is automatically set as the account's
+;; new primary.
+;; 
+;; @throws if not called by the owner
 (define-public (burn (id uint))
+  (match (map-get? name-owner-map id)
+    owner (begin
+      (asserts! (is-eq tx-sender owner) ERR_NOT_OWNER)
+      (burn-name id)
+    )
+    ERR_NOT_OWNER
+  )
+)
+
+;; Private method to handle burning a name. See [`burn`](#burn) and
+;; [`mng-burn`](#mng-burn)
+(define-private (burn-name (id uint))
   (let
     (
-      (name (unwrap-panic (map-get? id-name-map id)))
+      (name (unwrap! (map-get? id-name-map id) ERR_INVALID_ID))
+      (owner (unwrap-panic (map-get? name-owner-map id)))
     )
-    (asserts! (is-eq (some tx-sender)
-      (map-get? name-owner-map id))
-      ERR_NOT_OWNER)
-    (remove-node tx-sender id)
-    (try! (nft-burn? names id tx-sender))
+    (remove-node owner id)
+    (try! (nft-burn? names id owner))
     (map-delete name-id-map name)
     (map-delete id-name-map id)
     (map-delete name-owner-map id)
+    (print {
+      topic: "burn",
+      id: id,
+    })
     (ok true)
   )
 )
@@ -272,11 +293,12 @@
   )
 )
 
-;; TODO
+;; Privileged method for burning a name. This allows external contracts to
+;; allow transfers based on flexible conditions.
 (define-public (mng-burn (id uint))
   (begin
     (try! (validate-namespace-action-by-id id))
-    (ok true)
+    (burn-name id)
   )
 )
 

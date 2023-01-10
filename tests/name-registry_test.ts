@@ -227,6 +227,10 @@ describe("name registry", () => {
         registry.identifier,
         nftAsset
       );
+      receipt.events.expectPrintEvent(
+        registry.identifier,
+        `{id: u${id}, topic: "burn"}`
+      );
     });
 
     it("updates state appropriately", () => {
