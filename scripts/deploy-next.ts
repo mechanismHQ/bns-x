@@ -15,7 +15,7 @@ config();
 const privateKey = process.env.DEPLOYER_KEY!;
 
 async function run() {
-  const contractPath = "./contracts/testnet/wrapper-migrator.clar";
+  const contractPath = "./contracts/onchain-resolver.clar";
   const code = await readFile(contractPath, { encoding: "utf-8" });
   const network = new StacksMocknet();
   const contractName = `${basename(

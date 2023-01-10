@@ -5,9 +5,9 @@ chain: stacks
 networks:
   devnet:
     predicate:
-      print-event:
-        contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
-        contains: topic
+      nft-event:
+        asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::names
+        actions: [mint, transfer, burn]
     action:
       file:
         path: indexer/mocks/nft.txt

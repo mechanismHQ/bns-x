@@ -50,8 +50,8 @@ ONLY FOR USE IN TESTS
   <summary>Source code:</summary>
 
 ```clarity
-(define-public (name-register 
-    (name (buff 48)) 
+(define-public (name-register
+    (name (buff 48))
     (namespace (buff 20))
     (owner principal)
   )

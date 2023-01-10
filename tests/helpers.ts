@@ -90,6 +90,14 @@ export function asciiToBytes(str: string) {
   return new Uint8Array(byteArray);
 }
 
+export function utf8ToBytes(str: string) {
+  return new TextEncoder().encode(str);
+}
+
+export function bytesToUtf8(bytes: Uint8Array) {
+  return new TextDecoder().decode(bytes);
+}
+
 export function asciiToHex(str: string) {
   return bytesToHex(asciiToBytes(str));
 }

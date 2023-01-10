@@ -2028,7 +2028,7 @@ export const contracts = {
     clarity_version: "Clarity1",
     contractName: "extension-trait",
   },
-  managesNamespaces: {
+  managedNamespaces: {
     functions: {
       isDaoOrController: {
         name: "is-dao-or-controller",
@@ -2304,7 +2304,7 @@ export const contracts = {
     non_fungible_tokens: [],
     fungible_tokens: [],
     clarity_version: "Clarity2",
-    contractName: "manages-namespaces",
+    contractName: "managed-namespaces",
   },
   nameRegistry: {
     functions: {
@@ -2733,6 +2733,15 @@ export const contracts = {
           type: { response: { ok: "uint128", error: "none" } },
         },
       } as TypedAbiFunction<[], Response<bigint, null>>,
+      getNameOwner: {
+        name: "get-name-owner",
+        access: "read_only",
+        args: [{ name: "id", type: "uint128" }],
+        outputs: { type: { optional: "principal" } },
+      } as TypedAbiFunction<
+        [id: TypedAbiArg<number | bigint, "id">],
+        string | null
+      >,
       getNameProperties: {
         name: "get-name-properties",
         access: "read_only",
@@ -3224,16 +3233,19 @@ export const contracts = {
         name: "name-update",
         access: "public",
         args: [
-          {
-            name: "zonefile-hash",
-            type: { buffer: { length: 20 } },
-          },
+          { name: "namespace", type: { buffer: { length: 20 } } },
+          { name: "name", type: { buffer: { length: 48 } } },
+          { name: "zonefile-hash", type: { buffer: { length: 20 } } },
         ],
         outputs: {
           type: { response: { ok: "bool", error: "uint128" } },
         },
       } as TypedAbiFunction<
-        [zonefileHash: TypedAbiArg<Uint8Array, "zonefileHash">],
+        [
+          namespace: TypedAbiArg<Uint8Array, "namespace">,
+          name: TypedAbiArg<Uint8Array, "name">,
+          zonefileHash: TypedAbiArg<Uint8Array, "zonefileHash">
+        ],
         Response<boolean, bigint>
       >,
       unwrap: {
@@ -3427,6 +3439,102 @@ export const contracts = {
     fungible_tokens: [],
     clarity_version: "Clarity1",
     contractName: "nft-trait",
+  },
+  onchainResolver: {
+    functions: {
+      emitZonefile: {
+        name: "emit-zonefile",
+        access: "public",
+        args: [
+          {
+            name: "zonefile",
+            type: { buffer: { length: 102400 } },
+          },
+        ],
+        outputs: {
+          type: { response: { ok: "bool", error: "none" } },
+        },
+      } as TypedAbiFunction<
+        [zonefile: TypedAbiArg<Uint8Array, "zonefile">],
+        Response<boolean, null>
+      >,
+      setZonefile: {
+        name: "set-zonefile",
+        access: "public",
+        args: [
+          { name: "id", type: "uint128" },
+          {
+            name: "zonefile",
+            type: { buffer: { length: 2048 } },
+          },
+        ],
+        outputs: {
+          type: { response: { ok: "bool", error: "uint128" } },
+        },
+      } as TypedAbiFunction<
+        [
+          id: TypedAbiArg<number | bigint, "id">,
+          zonefile: TypedAbiArg<Uint8Array, "zonefile">
+        ],
+        Response<boolean, bigint>
+      >,
+      resolveZonefile: {
+        name: "resolve-zonefile",
+        access: "read_only",
+        args: [{ name: "id", type: "uint128" }],
+        outputs: { type: { optional: { buffer: { length: 2048 } } } },
+      } as TypedAbiFunction<
+        [id: TypedAbiArg<number | bigint, "id">],
+        Uint8Array | null
+      >,
+      resolveZonefileForName: {
+        name: "resolve-zonefile-for-name",
+        access: "read_only",
+        args: [
+          { name: "name", type: { buffer: { length: 48 } } },
+          {
+            name: "namespace",
+            type: { buffer: { length: 20 } },
+          },
+        ],
+        outputs: { type: { optional: { buffer: { length: 2048 } } } },
+      } as TypedAbiFunction<
+        [
+          name: TypedAbiArg<Uint8Array, "name">,
+          namespace: TypedAbiArg<Uint8Array, "namespace">
+        ],
+        Uint8Array | null
+      >,
+    },
+    maps: {
+      zonefilesMap: {
+        name: "zonefiles-map",
+        key: "uint128",
+        value: { buffer: { length: 2048 } },
+      } as TypedAbiMap<number | bigint, Uint8Array>,
+    },
+    variables: {
+      ERR_UNAUTHORIZED: {
+        name: "ERR_UNAUTHORIZED",
+        type: {
+          response: {
+            ok: "none",
+            error: "uint128",
+          },
+        },
+        access: "constant",
+      } as TypedAbiVariable<Response<null, bigint>>,
+    },
+    constants: {
+      ERR_UNAUTHORIZED: {
+        isOk: false,
+        value: 8000n,
+      },
+    },
+    non_fungible_tokens: [],
+    fungible_tokens: [],
+    clarity_version: "Clarity2",
+    contractName: "onchain-resolver",
   },
   proposalBootstrap: {
     functions: {

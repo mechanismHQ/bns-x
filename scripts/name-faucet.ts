@@ -14,10 +14,11 @@ import { basename } from "path";
 import { NodeProvider } from "@clarigen/node";
 import { contractFactory } from "@clarigen/core";
 import { contracts } from "../web/common/clarigen";
+import { fetchAccountNonces } from "micro-stacks/api";
 
 const testUtils = contractFactory(
   contracts.testUtils,
-  "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.test-utils-1671039364779"
+  "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.test-utils"
 );
 
 config();
@@ -30,6 +31,11 @@ const network = new StacksMocknet();
 const [name, recipient] = process.argv.slice(2);
 
 async function run() {
+  const nonces = await fetchAccountNonces({
+    url: network.getCoreApiUrl(),
+    principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  });
+
   const tx = await makeContractCall({
     ...testUtils.v1RegisterTransfer({
       namespace: asciiToBytes("testable"),
@@ -41,6 +47,8 @@ async function run() {
     anchorMode: AnchorMode.Any,
     postConditionMode: PostConditionMode.Allow,
     senderKey: privateKey,
+    nonce: nonces.last_executed_tx_nonce + 1,
+    fee: 1001000,
   });
 
   const res = await broadcastTransaction(tx, network);

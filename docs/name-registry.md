@@ -291,7 +291,7 @@ primary
 
 ```clarity
 (define-private (merge-name-props (name { name: (buff 48), namespace: (buff 20) }) (id uint))
-  (some (merge name { 
+  (some (merge name {
     id: id,
     owner: (unwrap-panic (map-get? name-owner-map id))
   }))
@@ -996,7 +996,7 @@ Helper to traverse names
     ;; We're removing the first
     (and (is-eq first id)
       (if (is-some next-opt)
-        (and 
+        (and
           (print-primary-update account next-opt)
           (map-set owner-primary-name-map account (unwrap-panic next-opt))
         )

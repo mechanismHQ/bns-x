@@ -37,17 +37,17 @@ async function run() {
     url: network.getCoreApiUrl(),
     principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   });
-  const nonce = nonces.possible_next_nonce;
+  const nonce = nonces.possible_next_nonce - 1;
 
-  const tx = await makeContractCall({
-    ...executorDao.construct(contracts.proposalBootstrap.identifier),
-    network,
-    anchorMode: AnchorMode.Any,
-    postConditionMode: PostConditionMode.Allow,
-    senderKey: privateKey,
-    nonce,
-  });
-  await broadcast(tx);
+  // const tx = await makeContractCall({
+  //   ...executorDao.construct(contracts.proposalBootstrap.identifier),
+  //   network,
+  //   anchorMode: AnchorMode.Any,
+  //   postConditionMode: PostConditionMode.Allow,
+  //   senderKey: privateKey,
+  //   nonce,
+  // });
+  // await broadcast(tx);
 
   await broadcast(
     await makeContractCall({

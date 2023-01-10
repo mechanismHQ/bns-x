@@ -46,11 +46,11 @@ plan:
   batches:
     - id: 0
       transactions:
-        - emulated-contract-publish:
-            contract-name: linked-list
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/linked-list.clar
-            clarity-version: 1
+        # - emulated-contract-publish:
+        #     contract-name: linked-list
+        #     emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     path: contracts/linked-list.clar
+        #     clarity-version: 1
         - emulated-contract-publish:
             contract-name: nft-trait
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM

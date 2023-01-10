@@ -1,7 +1,10 @@
 import { StacksPrisma } from "../src/stacks-api/client";
 import { PrismaClient, Prisma } from "@prisma/client";
-import { cvToValue, deserializeCV } from "micro-stacks/clarity";
+import { deserializeCV, cvToTrueValue } from "micro-stacks/clarity";
 import { bytesToHex } from "micro-stacks/common";
+import { decodeClarityValue } from "stacks-encoding-native-js";
+import { ContractLogs } from "../prisma/generated/stacks-api-schema";
+import { cvToJSON } from "@clarigen/core";
 
 let prisma: PrismaClient;
 let stacksPrisma: StacksPrisma;
@@ -26,29 +29,34 @@ async function getLogs() {
     orderBy: {
       id: "asc",
     },
-    // take: 10,
+    take: 100,
   });
 
-  const mapped = logs.map((log) => {
+  const mappedLogs: (ContractLogs & { json: any })[] = [];
+
+  logs.forEach((log) => {
     const hex = log.value;
-    const cv = deserializeCV(hex);
-    const value = cvToValue(cv, true);
-    return {
+    const dec = decodeClarityValue(hex);
+    const cv = deserializeCV(dec.hex);
+    const value = cvToJSON(cv);
+    console.log("value", value);
+    console.log(log.contract_identifier);
+    mappedLogs.push({
       ...log,
       json: value,
-    };
+    });
   });
 
-  const syncs = mapped.map(async (log) => {
+  const syncs = mappedLogs.map(async (log) => {
     const baseProps: Prisma.PrintEventCreateInput = {
       stacksApiId: log.id,
       microblockCanonical: log.microblock_canonical,
       canonical: log.canonical,
       microblockSequence: log.microblock_sequence,
       contractId: log.contract_identifier,
-      value: log.json,
+      value: log.json as any,
       hex: bytesToHex(log.value),
-      topic: log.topic || "",
+      topic: log?.topic ?? "",
       txIndex: log.tx_index,
       eventIndex: log.event_index,
       blockHeight: log.block_height,
@@ -66,6 +74,8 @@ async function getLogs() {
       },
     });
   });
+
+  // prisma.printEvent.
 
   await Promise.all(syncs);
 }

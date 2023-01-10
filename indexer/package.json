@@ -8,12 +8,14 @@
     "r": "NODE_ENV=development node -r @swc-node/register",
     "test:migrate": "dotenv -e .env.test -- prisma migrate dev --name test-init",
     "test:server": "dotenv -e .env.test -- node -r @swc-node/register scripts/server.ts",
-    "test:run": "pnpm test:migrate && pnpm test:server"
+    "test:run": "pnpm test:migrate && pnpm test:server",
+    "sync": "pnpm r scripts/sync-prints.ts",
+    "db:reset": "pnpm prisma migrate reset"
   },
   "author": "Hank Stoever",
   "license": "ISC",
   "dependencies": {
-    "@clarigen/core": "1.0.2",
+    "@clarigen/core": "1.0.4",
     "@hirosystems/chainhook-types": "^1.1.2",
     "@pothos/core": "^3.23.1",
     "@pothos/plugin-prisma": "^3.37.0",
@@ -29,6 +31,7 @@
     "graphql-yoga": "^3.1.1",
     "micro-stacks": "^1.1.4",
     "p-queue": "^6.6.2",
+    "stacks-encoding-native-js": "^1.0.0",
     "zod": "^3.20.0"
   },
   "devDependencies": {

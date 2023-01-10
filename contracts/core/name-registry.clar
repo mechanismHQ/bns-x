@@ -174,6 +174,10 @@
   (ok (get namespace (unwrap! (map-get? id-name-map id) ERR_INVALID_ID)))
 )
 
+(define-read-only (get-name-owner (id uint))
+  (map-get? name-owner-map id)
+)
+
 ;; NFT
 
 ;; #[allow(unchecked_data)]

@@ -135,7 +135,7 @@
 
 ```clarity
 (define-private (is-digit (char (buff 1)))
-  (or 
+  (or
     (is-eq char 0x30) ;; 0
     (is-eq char 0x31) ;; 1
     (is-eq char 0x32) ;; 2
@@ -167,7 +167,7 @@
 
 ```clarity
 (define-private (is-lowercase-alpha (char (buff 1)))
-  (or 
+  (or
     (is-eq char 0x61) ;; a
     (is-eq char 0x62) ;; b
     (is-eq char 0x63) ;; c
@@ -215,7 +215,7 @@
 
 ```clarity
 (define-private (is-vowel (char (buff 1)))
-  (or 
+  (or
     (is-eq char 0x61) ;; a
     (is-eq char 0x65) ;; e
     (is-eq char 0x69) ;; i
@@ -243,7 +243,7 @@
 
 ```clarity
 (define-private (is-special-char (char (buff 1)))
-  (or 
+  (or
     (is-eq char 0x2d) ;; -
     (is-eq char 0x5f))) ;; _
 ```
@@ -267,7 +267,7 @@
 
 ```clarity
 (define-read-only (is-char-valid (char (buff 1)))
-  (or 
+  (or
     (is-lowercase-alpha char)
     (is-digit char)
     (is-special-char char)))
@@ -292,7 +292,7 @@
 
 ```clarity
 (define-private (is-nonalpha (char (buff 1)))
-  (or 
+  (or
     (is-digit char)
     (is-special-char char)))
 ```
@@ -391,12 +391,12 @@
 ```clarity
 (define-private (update-zonefile-and-props (namespace (buff 20))
                                            (name (buff 48))
-                                           (registered-at (optional uint)) 
-                                           (imported-at (optional uint)) 
-                                           (revoked-at (optional uint)) 
+                                           (registered-at (optional uint))
+                                           (imported-at (optional uint))
+                                           (revoked-at (optional uint))
                                            (zonefile-hash (buff 20))
                                            (op (string-ascii 16)))
-  (let 
+  (let
     ((current-index (var-get attachment-index)))
       ;; Emit event used as a system hinter
       (print {
@@ -450,7 +450,7 @@
   (match (map-get? namespaces namespace) namespace-props
     (begin
       ;; Is the namespace launched?
-      (if (is-some (get launched-at namespace-props)) 
+      (if (is-some (get launched-at namespace-props))
         false
         (> block-height (+ (get revealed-at namespace-props) NAMESPACE_LAUNCHABILITY_TTL)))) ;; Is the namespace expired?
     true))
@@ -475,10 +475,10 @@
 
 ```clarity
 (define-read-only (compute-name-price (name (buff 48))
-                                    (price-function (tuple (buckets (list 16 uint)) 
-                                                           (base uint) 
-                                                           (coeff uint) 
-                                                           (nonalpha-discount uint) 
+                                    (price-function (tuple (buckets (list 16 uint))
+                                                           (base uint)
+                                                           (coeff uint)
+                                                           (nonalpha-discount uint)
                                                            (no-vowel-discount uint))))
   (let (
     (exponent (get-exp-at-index (get buckets price-function) (min u15 (- (len name) u1))))
@@ -520,11 +520,11 @@ pre-order's expiration date (in blocks).
 ```clarity
 (define-public (namespace-preorder (hashed-salted-namespace (buff 20))
                                    (stx-to-burn uint))
-  (let 
-    ((former-preorder 
+  (let
+    ((former-preorder
       (map-get? namespace-preorders { hashed-salted-namespace: hashed-salted-namespace, buyer: tx-sender })))
-    ;; Ensure eventual former pre-order expired 
-    (asserts! 
+    ;; Ensure eventual former pre-order expired
+    (asserts!
       (if (is-none former-preorder)
         true
         (>= block-height (+ NAMESPACE_PREORDER_CLAIMABILITY_TTL
@@ -561,8 +561,7 @@ pre-order's expiration date (in blocks).
 NAMESPACE_REVEAL This second step reveals the salt and the namespace ID (pairing
 it with its NAMESPACE_PREORDER). It reveals how long names last in this
 namespace before they expire or must be renewed, and it sets a price function
-for the namespace that determines how cheap or expensive names its will be.
-#[allow(unchecked_data)]
+for the namespace that determines how cheap or expensive names its will be. #[allow(unchecked_data)]
 
 <details>
   <summary>Source code:</summary>
@@ -596,7 +595,7 @@ for the namespace that determines how cheap or expensive names its will be.
   ;; The sender must match the principal in the preorder entry (implied)
   (let (
     (hashed-salted-namespace (hash160 (concat namespace namespace-salt)))
-    (price-function (tuple 
+    (price-function (tuple
       (buckets (list
         p-func-b1
         p-func-b2
@@ -627,7 +626,7 @@ for the namespace that determines how cheap or expensive names its will be.
       (not (has-invalid-chars namespace))
       (err ERR_NAMESPACE_CHARSET_INVALID))
     ;; The namespace must not exist in the `namespaces` table, or be expired
-    (asserts! 
+    (asserts!
       (is-namespace-available namespace)
       (err ERR_NAMESPACE_ALREADY_EXISTS))
     ;; The amount burnt must be equal to or greater than the cost of the namespace
@@ -729,8 +728,8 @@ import names.
       (try! (mint-or-transfer-name? namespace name beneficiary))
       ;; Update zonefile and props
       (update-zonefile-and-props
-        namespace 
-        name  
+        namespace
+        name
         none
         (some block-height) ;; Set imported-at
         none
@@ -780,7 +779,7 @@ register a name in it if they pay the appropriate amount of cryptocurrency.
     ;; Less than 1 year must have passed since the namespace was "revealed"
     (asserts!
       (< block-height (+ (get revealed-at namespace-props) NAMESPACE_LAUNCHABILITY_TTL))
-      (err ERR_NAMESPACE_PREORDER_LAUNCHABILITY_EXPIRED))        
+      (err ERR_NAMESPACE_PREORDER_LAUNCHABILITY_EXPIRED))
     (let ((namespace-props-updated (merge namespace-props { launched-at: (some block-height) })))
       ;; The namespace will be set to "launched"
       (map-set namespaces namespace namespace-props-updated)
@@ -834,7 +833,7 @@ NAMESPACE_UPDATE_FUNCTION_PRICE
       (namespace-props (unwrap!
         (map-get? namespaces namespace)
         (err ERR_NAMESPACE_NOT_FOUND)))
-      (price-function (tuple 
+      (price-function (tuple
         (buckets (list
           p-func-b1
           p-func-b2
@@ -948,17 +947,17 @@ the salted hash of the BNS name, and it burns the registration fee.
 ```clarity
 (define-public (name-preorder (hashed-salted-fqn (buff 20))
                               (stx-to-burn uint))
-  (let 
-    ((former-preorder 
+  (let
+    ((former-preorder
       (map-get? name-preorders { hashed-salted-fqn: hashed-salted-fqn, buyer: tx-sender })))
-    ;; Ensure eventual former pre-order expired 
-    (asserts! 
+    ;; Ensure eventual former pre-order expired
+    (asserts!
       (if (is-none former-preorder)
         true
         (>= block-height (+ NAME_PREORDER_CLAIMABILITY_TTL
                             (unwrap-panic (get created-at former-preorder)))))
       (err ERR_NAME_PREORDER_ALREADY_EXISTS))
-          (asserts! (> stx-to-burn u0) (err ERR_NAMESPACE_STX_BURNT_INSUFFICIENT))    
+          (asserts! (> stx-to-burn u0) (err ERR_NAMESPACE_STX_BURNT_INSUFFICIENT))
     ;; Ensure that the hashed fqn is 20 bytes long
     (asserts! (is-eq (len hashed-salted-fqn) u20) (err ERR_NAME_HASH_MALFORMED))
     ;; Ensure that user will be burning a positive amount of tokens
@@ -1030,7 +1029,7 @@ and zone file hash
       (try! (mint-or-transfer-name? namespace name tx-sender))
       ;; Update name's metadata / properties
       (update-zonefile-and-props
-        namespace 
+        namespace
         name
         (some block-height)
         none
@@ -1073,8 +1072,8 @@ Gaia hub and want other people to read from it.
     (data (try! (check-name-ops-preconditions namespace name))))
     ;; Update the zonefile
     (update-zonefile-and-props
-      namespace 
-      name  
+      namespace
+      name
       (get registered-at (get name-props data))
       (get imported-at (get name-props data))
       none
@@ -1129,8 +1128,8 @@ You would send one of these transactions if you wanted to:
       (err ERR_NAME_TRANSFER_FAILED))
     ;; Update or clear the zonefile
     (update-zonefile-and-props
-        namespace 
-        name  
+        namespace
+        name
         (get registered-at (get name-props data))
         (get imported-at (get name-props data))
         none
@@ -1174,8 +1173,8 @@ compromised, or if you want to render your name unusable for whatever reason.
     (data (try! (check-name-ops-preconditions namespace name))))
     ;; Clear the zonefile
     (update-zonefile-and-props
-        namespace 
-        name  
+        namespace
+        name
         (get registered-at (get name-props data))
         (get imported-at (get name-props data))
         (some block-height)
@@ -1256,7 +1255,7 @@ names do not expire, then you never need to use this transaction.
       (err ERR_NAME_REVOKED))
     ;; Transfer the name, if any new-owner
     (if (is-none new-owner)
-      true 
+      true
       (try! (can-receive-name (unwrap-panic new-owner))))
     ;; Update the zonefile, if any.
     (if (is-none zonefile-hash)
@@ -1267,13 +1266,13 @@ names do not expire, then you never need to use this transaction.
           revoked-at: none,
           zonefile-hash: (get zonefile-hash name-props) })
       (update-zonefile-and-props
-              namespace 
+              namespace
               name
               (some block-height)
               none
               none
               (unwrap-panic zonefile-hash)
-              "name-renewal"))  
+              "name-renewal"))
     (ok true)))
 ```
 
@@ -1430,11 +1429,11 @@ names do not expire, then you never need to use this transaction.
 ```clarity
 (define-read-only (is-name-lease-expired (namespace (buff 20)) (name (buff 48)))
   (let (
-    (namespace-props (unwrap! 
-      (map-get? namespaces namespace) 
+    (namespace-props (unwrap!
+      (map-get? namespaces namespace)
       (err ERR_NAMESPACE_NOT_FOUND)))
-    (name-props (unwrap! 
-      (map-get? name-properties { name: name, namespace: namespace }) 
+    (name-props (unwrap!
+      (map-get? name-properties { name: name, namespace: namespace })
       (err ERR_NAME_NOT_FOUND)))
     (lease-started-at (try! (name-lease-started-at? (get launched-at namespace-props) (get revealed-at namespace-props) name-props)))
     (lifetime (get lifetime namespace-props)))
@@ -1464,18 +1463,18 @@ names do not expire, then you never need to use this transaction.
 ```clarity
 (define-read-only (is-name-in-grace-period (namespace (buff 20)) (name (buff 48)))
   (let (
-    (namespace-props (unwrap! 
-      (map-get? namespaces namespace) 
+    (namespace-props (unwrap!
+      (map-get? namespaces namespace)
       (err ERR_NAMESPACE_NOT_FOUND)))
-    (name-props (unwrap! 
-      (map-get? name-properties { name: name, namespace: namespace }) 
+    (name-props (unwrap!
+      (map-get? name-properties { name: name, namespace: namespace })
       (err ERR_NAME_NOT_FOUND)))
     (lease-started-at (try! (name-lease-started-at? (get launched-at namespace-props) (get revealed-at namespace-props) name-props)))
     (lifetime (get lifetime namespace-props)))
       (if (is-eq lifetime u0)
         (ok false)
-        (ok (and 
-          (> block-height (+ lifetime lease-started-at)) 
+        (ok (and
+          (> block-height (+ lifetime lease-started-at))
           (<= block-height (+ (+ lifetime lease-started-at) NAME_GRACE_PERIOD_DURATION)))))))
 ```
 
@@ -1535,7 +1534,7 @@ names do not expire, then you never need to use this transaction.
           (ok true)
           (begin
             ;; Early return if lease is expired
-            (asserts! 
+            (asserts!
               (not (try! (is-name-lease-expired namespace name)))
               (ok true))
             (let (
@@ -1571,13 +1570,13 @@ names do not expire, then you never need to use this transaction.
     (asserts!
       (not (has-invalid-chars name))
       (err ERR_NAME_CHARSET_INVALID))
-    ;; Ensure that namespace has been launched 
+    ;; Ensure that namespace has been launched
     (unwrap! (get launched-at namespace-props) (ok false))
     ;; Early return - Name has never be minted
     (asserts! (is-some (nft-get-owner? names { name: name, namespace: namespace })) (ok true))
     (let ((name-props (unwrap-panic wrapped-name-props)))
       ;; Integrity check - Ensure that the name was either "imported" or "registered".
-      (asserts! (is-eq (xor 
+      (asserts! (is-eq (xor
         (match (get registered-at name-props) res 1 0)
         (match (get imported-at name-props)   res 1 0)) 1) (err ERR_PANIC))
       ;; Is lease expired?
@@ -1611,15 +1610,15 @@ names do not expire, then you never need to use this transaction.
     (name-props (unwrap!
       (map-get? name-properties { name: name, namespace: namespace })
       (err ERR_NAME_NOT_FOUND)))
-    (namespace-props (unwrap! 
-      (map-get? namespaces namespace) 
+    (namespace-props (unwrap!
+      (map-get? namespaces namespace)
       (err ERR_NAMESPACE_NOT_FOUND))))
     ;; The name must not be in grace period
     (asserts!
       (not (try! (is-name-in-grace-period namespace name)))
       (err ERR_NAME_GRACE_PERIOD))
     ;; The name must not be expired
-    (asserts! 
+    (asserts!
       (not (try! (is-name-lease-expired namespace name)))
       (err ERR_NAME_EXPIRED))
     ;; The name must not be revoked
@@ -1629,8 +1628,8 @@ names do not expire, then you never need to use this transaction.
     ;; Get the zonefile
     (let (
       (lease-started-at (try! (name-lease-started-at? (get launched-at namespace-props) (get revealed-at namespace-props) name-props))))
-      (ok { 
-        zonefile-hash: (get zonefile-hash name-props), 
+      (ok {
+        zonefile-hash: (get zonefile-hash name-props),
         owner: owner,
         lease-started-at: lease-started-at,
         lease-ending-at: (if (is-eq (get lifetime namespace-props) u0) none (some (+ lease-started-at (get lifetime namespace-props))))

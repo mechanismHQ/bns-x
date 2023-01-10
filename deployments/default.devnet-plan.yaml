@@ -97,4 +97,19 @@ plan:
             path: contracts/test-utils.clar
             anchor-block-only: true
             clarity-version: 2
+        - contract-publish:
+            contract-name: onchain-resolver
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 100000
+            path: contracts/onchain-resolver.clar
+            anchor-block-only: true
+            clarity-version: 2
+        # - contract-call:
+        #     contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.executor-dao
+        #     method: construct
+        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     cost: 1000000
+        #     anchor_block_only: true
+        #     parameters:
+        #       - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap"
       epoch: "2.1"

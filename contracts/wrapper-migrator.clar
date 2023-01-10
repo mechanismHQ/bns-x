@@ -157,7 +157,7 @@
     (
       (name (try! (get-legacy-name tx-sender)))
     )
-    (match (contract-call? 'SP000000000000000000002Q6VF78.bns name-transfer (get namespace name) (get name name) wrapper none)
+    (match (contract-call? 'SP000000000000000000002Q6VF78.bns name-transfer (get namespace name) (get name name) wrapper (some (get zonefile-hash name)))
       success (begin
         (print (merge name {
           topic: "v1-name-transfer",

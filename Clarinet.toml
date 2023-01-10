@@ -25,7 +25,7 @@ path = 'contracts/traits/extension-trait.clar'
 clarity_version = 1
 epoch = 2.0
 
-[contracts.manages-namespaces]
+[contracts.managed-namespaces]
 path = 'contracts/core/managed-namespaces.clar'
 clarity_version = 2
 epoch = 2.1
@@ -62,6 +62,11 @@ epoch = 2.1
 
 [contracts.wrapper-migrator]
 path = 'contracts/wrapper-migrator.clar'
+clarity_version = 2
+epoch = 2.1
+
+[contracts.onchain-resolver]
+path = "contracts/onchain-resolver.clar"
 clarity_version = 2
 epoch = 2.1
 

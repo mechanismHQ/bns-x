@@ -32,26 +32,27 @@ const privateKey = process.env.WALLET_2_KEY!;
 const network = new StacksMocknet();
 const name = "grim-alligator";
 
-const zonefile = `$ORIGIN ${name}.testable.\n$TTL 3600\n_http._tcp\tIN\tURI\t10\t1\t"https://gaia.blockstack.org/hub/13WcjxWGz3JkZYhoPeCHw2ukcK1f1zH6M1/profile.json"\n\n`;
+const contractName = "onchain-resolver-1673288207749";
+
+const resolver = contractFactory(
+  _contracts.onchainResolver,
+  `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.${contractName}`
+);
 
 async function run() {
-  const zonefileBytes = utf8ToBytes(zonefile);
-  const zonefileHash = hashRipemd160(hashSha256(zonefileBytes));
-  const call = bns.nameUpdate({
-    namespace: asciiToBytes("testable"),
-    name: asciiToBytes(name),
-    zonefileHash,
-  });
+  const bytesLength = 102400;
+  const bytes = Array(bytesLength).fill(0);
+  const zonefile = new Uint8Array(bytes);
+
   const tx = await makeContractCall({
-    ...call,
-    network,
-    anchorMode: AnchorMode.Any,
-    postConditionMode: PostConditionMode.Allow,
+    ...resolver.emitZonefile(zonefile),
     senderKey: privateKey,
+    anchorMode: AnchorMode.Any,
+    network,
   });
 
-  const res = await broadcastTransaction(tx, network, zonefileBytes);
-  console.log("res", res);
+  const res = await broadcastTransaction(tx, network);
+  console.log(res);
 }
 
 run()
