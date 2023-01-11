@@ -10,15 +10,15 @@ export const aliasRoutes: FastifyPluginCallback = (fastify, opts, done) => {
       take: 10,
       include: {
         primaryName: true,
-        names: {
-          include: {
-            wrapper: {
-              select: {
-                principal: true,
-              },
-            },
-          },
-        },
+        // names: {
+        //   // include: {
+        //   //   wrapper: {
+        //   //     select: {
+        //   //       principal: true,
+        //   //     },
+        //     // },
+        //   },
+        // },
       },
     });
 

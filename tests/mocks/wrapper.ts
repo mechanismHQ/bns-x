@@ -1,4 +1,5 @@
-export const nameWrapperCode = `(define-constant ERR_NO_NAME (err u10000))
+
+  export const nameWrapperCode = `(define-constant ERR_NO_NAME (err u10000))
 (define-constant ERR_NAME_TRANSFER (err u10001))
 (define-constant ERR_UNAUTHORIZED (err u10002))
 (define-constant ERR_NOT_WRAPPED (err u10003))
@@ -50,3 +51,4 @@ export const nameWrapperCode = `(define-constant ERR_NO_NAME (err u10000))
   )
 )
 `;
+  

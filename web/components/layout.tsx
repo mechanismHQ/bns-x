@@ -23,6 +23,9 @@ export const TokenBalance: React.FC = () => {
         <Text variant="Body01">{token} tTOK</Text>
         <Text variant="Body01">{stx} STX</Text>
       </SpaceBetween> */}
+      <Link href="/faucet" plain>
+        Faucet
+      </Link>
       <Link href="/migrate" plain>
         Migrate
       </Link>

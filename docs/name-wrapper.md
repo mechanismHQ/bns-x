@@ -111,19 +111,21 @@
 
 [View in file](../contracts/name-wrapper.clar#L38)
 
-`(define-public (name-update ((zonefile-hash (buff 20))) (response bool uint))`
+`(define-public (name-update ((namespace (buff 20)) (name (buff 48)) (zonefile-hash (buff 20))) (response bool uint))`
 
 <details>
   <summary>Source code:</summary>
 
 ```clarity
-(define-public (name-update (zonefile-hash (buff 20)))
+(define-public (name-update (namespace (buff 20)) (name (buff 48)) (zonefile-hash (buff 20)))
   (let
     (
       (props (try! (get-name-info)))
     )
     (asserts! (is-eq tx-sender (get owner props)) ERR_UNAUTHORIZED)
-    (match (as-contract (contract-call? 'SP000000000000000000002Q6VF78.bns name-update (get namespace props) (get name props) zonefile-hash))
+    (asserts! (is-eq (get namespace props) namespace) ERR_UNAUTHORIZED)
+    (asserts! (is-eq (get name props) name) ERR_UNAUTHORIZED)
+    (match (as-contract (contract-call? 'SP000000000000000000002Q6VF78.bns name-update namespace name zonefile-hash))
       r (ok true)
       e (err (to-uint e))
     )
@@ -137,4 +139,6 @@
 
 | Name          | Type      | Description |
 | ------------- | --------- | ----------- |
+| namespace     | (buff 20) |             |
+| name          | (buff 48) |             |
 | zonefile-hash | (buff 20) |             |

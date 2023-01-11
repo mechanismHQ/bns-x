@@ -15,7 +15,10 @@ export const prismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
   const prisma = new PrismaClient();
   const stacksPrisma = new StacksPrisma();
 
-  await Promise.all([prisma.$connect(), stacksPrisma.$connect()]);
+  await Promise.all([
+    prisma.$connect(),
+    // stacksPrisma.$connect()
+  ]);
 
   // Make Prisma Client available through the fastify server instance: server.prisma
   server.decorate("prisma", prisma);
@@ -24,7 +27,7 @@ export const prismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
   server.addHook("onClose", async (server) => {
     await Promise.all([
       await server.prisma.$disconnect(),
-      await server.stacksPrisma.$disconnect(),
+      // await server.stacksPrisma.$disconnect(),
     ]);
   });
 });

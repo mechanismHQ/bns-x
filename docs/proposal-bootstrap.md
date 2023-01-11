@@ -70,15 +70,15 @@
   (if (not is-in-mainnet)
     (begin
       ;; workaround for https://github.com/stacks-network/stacks-blockchain/pull/3440
-      ;; (try! (contract-call? .executor-dao set-extensions
+      ;; (try! (contract-call? .executor-dao set-extensions 
       ;;   (list { extension: .test-utils, enabled: true })
       ;; ))
-      ;; (try! (contract-call? .executor-dao set-extensions
+      ;; (try! (contract-call? .executor-dao set-extensions 
       ;;   (list { extension: DEPLOYER, enabled: true })
       ;; ))
 
-      (try! (contract-call? .executor-dao set-extensions
-        (list
+      (try! (contract-call? .executor-dao set-extensions 
+        (list 
           { extension: DEPLOYER, enabled: true }
           { extension: .test-utils, enabled: true }
         )
