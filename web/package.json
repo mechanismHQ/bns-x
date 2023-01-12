@@ -17,6 +17,7 @@
     "@micro-stacks/react": "1.0.6",
     "@nelson-ui/core": "^0.1.5",
     "@nelson-ui/react": "^0.1.6",
+    "@nelson-ui/theme": "^0.1.7",
     "@stacks/stacks-blockchain-api-types": "^6.1.1",
     "@stitches/core": "^1.2.8",
     "@stitches/react": "^1.2.8",
