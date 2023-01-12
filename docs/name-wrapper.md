@@ -2,6 +2,18 @@
 
 [`name-wrapper.clar`](../contracts/name-wrapper.clar)
 
+Source code for the name wrapper contract.
+
+This contract is not meant to be deployed as a standalone contract in the BNSx
+protocol. Instead, it is deployed for each individual name that is upgraded to
+BNSx.
+
+The purpose of this contract is to own a BNS legacy name, and only allow owners
+of the equivalent name on BNSx to control the legacy name.
+
+For example, if a wrapper contract owns `name.btc`, and Alice owns `name.btc` on
+BNSx, then only Alice can interact with this contract.
+
 **Public functions:**
 
 - [`unwrap`](#unwrap)
@@ -19,9 +31,16 @@
 
 ### unwrap
 
-[View in file](../contracts/name-wrapper.clar#L6)
+[View in file](../contracts/name-wrapper.clar#L27)
 
 `(define-public (unwrap ((recipient (optional principal))) (response (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal)) uint))`
+
+Unwrap the legacy BNS name from this contract.
+
+When unwrapping, the BNSx name is burned. This ensures that there is a 1-to-1
+mapping between BNSx and BNS legacy names.
+
+@throws if called by anyone other than the BNSx name owner
 
 <details>
   <summary>Source code:</summary>
@@ -46,15 +65,18 @@
 
 **Parameters:**
 
-| Name      | Type                 | Description |
-| --------- | -------------------- | ----------- |
-| recipient | (optional principal) |             |
+| Name                                                              | Type                 | Description                                                   |
+| ----------------------------------------------------------------- | -------------------- | ------------------------------------------------------------- |
+| recipient                                                         | (optional principal) | the name owner can optionally transfer the BNS legacy name to |
+| a different account. If `none`, recipient defauls to `tx-sender`. |                      |                                                               |
 
 ### get-own-name
 
-[View in file](../contracts/name-wrapper.clar#L20)
+[View in file](../contracts/name-wrapper.clar#L42)
 
 `(define-read-only (get-own-name () (response (tuple (name (buff 48)) (namespace (buff 20))) uint))`
+
+Helper method to fetch the BNS legacy name owned by this contract.
 
 <details>
   <summary>Source code:</summary>
@@ -69,9 +91,13 @@
 
 ### get-name-info
 
-[View in file](../contracts/name-wrapper.clar#L24)
+[View in file](../contracts/name-wrapper.clar#L49)
 
 `(define-read-only (get-name-info () (response (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal)) uint))`
+
+Helper method to fetch information about the BNSx name that is equivalent to the
+legacy name owned by this contract. For example, if this contract owns
+`name.btc`, it returns the properties of `name.btc` on BNSx.
 
 <details>
   <summary>Source code:</summary>
@@ -92,9 +118,12 @@
 
 ### get-owner
 
-[View in file](../contracts/name-wrapper.clar#L34)
+[View in file](../contracts/name-wrapper.clar#L61)
 
 `(define-read-only (get-owner () (response principal uint))`
+
+Helper method to return the owner of the BNSx name that is equivalent to this
+contract's legacy name
 
 <details>
   <summary>Source code:</summary>
@@ -109,9 +138,13 @@
 
 ### name-update
 
-[View in file](../contracts/name-wrapper.clar#L38)
+[View in file](../contracts/name-wrapper.clar#L68)
 
 `(define-public (name-update ((namespace (buff 20)) (name (buff 48)) (zonefile-hash (buff 20))) (response bool uint))`
+
+Helper method to interact with legacy BNS to update the zonefile for this name
+
+@throws if called by anyone other than the BNSx name owner
 
 <details>
   <summary>Source code:</summary>

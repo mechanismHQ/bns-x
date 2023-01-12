@@ -2,6 +2,30 @@
 
 [`wrapper-migrator.clar`](../contracts/wrapper-migrator.clar)
 
+The wrapper migrator contract provides a way for users to upgrade a BNS legacy
+name to BNSx.
+
+The high-level flow for using this migrator is:
+
+- Deploy a wrapper contract (see [`.name-wrapper`](`./name-wrapper.md`))
+- Verify the wrapper contract
+- Finalize the migration
+
+Because Stacks contracts don't have a way to verify the source code of another
+contract, each wrapper contract must be verified by requesting a signature
+off-chain. This prevents malicious users from deploying "fact" wrapper contracts
+without the same guarantees.
+
+For more detail on how each wrapper is verified, see
+[`verify-wrapper`](#verify-wrapper)
+
+Authorization for valid wrapper verifiers is only allowed through extensions
+with the "mig-signer" role. By default, the contract deployer is a valid signer.
+
+During migration, the legacy name is transferred to the wrapper contract. Then,
+this contract interfaces with the [`.name-registry`](`./core/name-registry.md`)
+contract to mint a new BNSx name.
+
 **Public functions:**
 
 - [`is-dao-or-extension`](#is-dao-or-extension)
@@ -29,9 +53,12 @@
 
 ### is-dao-or-extension
 
-[View in file](../contracts/wrapper-migrator.clar#L26)
+[View in file](../contracts/wrapper-migrator.clar#L51)
 
 `(define-public (is-dao-or-extension () (response bool uint))`
+
+Authorization check - only extensions with the role "mig-signer" can add/remove
+wrapper verifiers.
 
 <details>
   <summary>Source code:</summary>
@@ -47,7 +74,7 @@
 
 ### set-signers-iter
 
-[View in file](../contracts/wrapper-migrator.clar#L32)
+[View in file](../contracts/wrapper-migrator.clar#L57)
 
 `(define-private (set-signers-iter ((item (tuple (enabled bool) (signer principal)))) (buff 20))`
 
@@ -79,9 +106,11 @@
 
 ### set-signers
 
-[View in file](../contracts/wrapper-migrator.clar#L43)
+[View in file](../contracts/wrapper-migrator.clar#L72)
 
 `(define-public (set-signers ((signers (list 50 (tuple (enabled bool) (signer principal))))) (response (list 50 (buff 20)) uint))`
+
+Set valid wrapper verifiers
 
 <details>
   <summary>Source code:</summary>
@@ -99,15 +128,26 @@
 
 **Parameters:**
 
-| Name    | Type                                                | Description |
-| ------- | --------------------------------------------------- | ----------- |
-| signers | (list 50 (tuple (enabled bool) (signer principal))) |             |
+| Name                                                             | Type                                                | Description                                            |
+| ---------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------ |
+| signers                                                          | (list 50 (tuple (enabled bool) (signer principal))) | a list of { signer: principal, enabled: bool } tuples. |
+| Existing verifiers can be removed by setting `enabled` to false. |                                                     |                                                        |
 
 ### migrate
 
-[View in file](../contracts/wrapper-migrator.clar#L52)
+[View in file](../contracts/wrapper-migrator.clar#L93)
 
 `(define-public (migrate ((wrapper principal) (signature (buff 65)) (recipient principal)) (response (tuple (id uint) (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
+
+Upgrade a name to BNSx
+
+This function has three main steps:
+
+- Verify the wrapper ([`verify-wrapper`](#verify-wrapper))
+- Transfer the BNS legacy name to the wrapper
+  ([`resolve-and-transfer`](#resolve-and-transfer))
+- Register the name in the BNSx name registry
+  ([`.name-registry#register`](`./core/name-registry#register.md`))
 
 <details>
   <summary>Source code:</summary>
@@ -147,17 +187,30 @@
 
 **Parameters:**
 
-| Name      | Type      | Description |
-| --------- | --------- | ----------- |
-| wrapper   | principal |             |
-| signature | (buff 65) |             |
-| recipient | principal |             |
+| Name                   | Type      | Description                                                           |
+| ---------------------- | --------- | --------------------------------------------------------------------- |
+| wrapper                | principal | the principal of the wrapper contract that will be used               |
+| signature              | (buff 65) | a signature attesting to the validity of the wrapper contract         |
+| recipient              | principal | a principal that will receive the BNSx name. Useful for consolidating |
+| names into one wallet. |           |                                                                       |
 
 ### verify-wrapper
 
-[View in file](../contracts/wrapper-migrator.clar#L85)
+[View in file](../contracts/wrapper-migrator.clar#L138)
 
 `(define-read-only (verify-wrapper ((wrapper principal) (signature (buff 65))) (response bool uint))`
+
+Verify a wrapper principal.
+
+The message being signed is the Clarity-serialized representation of the
+`wrapper` principal.
+
+The pubkey is recovered from the signature. The `hash160` of this pubkey is then
+checked to ensure that pubkey hash is stored as a valid signer.
+
+@throws if the signature is invalid (cannot be recovered)
+
+@throws if the pubkey is not a valid verifier
 
 #[filter(wrapper)]
 
@@ -192,7 +245,7 @@
 
 ### debug-signature
 
-[View in file](../contracts/wrapper-migrator.clar#L100)
+[View in file](../contracts/wrapper-migrator.clar#L153)
 
 `(define-read-only (debug-signature ((wrapper principal) (signature (buff 65))) (response (tuple (pubkey-hash (buff 20)) (signer principal) (valid-signer bool)) uint))`
 
@@ -225,7 +278,7 @@
 
 ### recover-pubkey-hash
 
-[View in file](../contracts/wrapper-migrator.clar#L113)
+[View in file](../contracts/wrapper-migrator.clar#L166)
 
 `(define-read-only (recover-pubkey-hash ((wrapper principal) (signature (buff 65))) (response (buff 20) uint))`
 
@@ -255,9 +308,11 @@
 
 ### is-valid-signer
 
-[View in file](../contracts/wrapper-migrator.clar#L123)
+[View in file](../contracts/wrapper-migrator.clar#L177)
 
 `(define-read-only (is-valid-signer ((signer principal)) bool)`
+
+Helper method to check if a given principal is a valid verifier
 
 <details>
   <summary>Source code:</summary>
@@ -283,7 +338,7 @@
 
 ### hash-principal
 
-[View in file](../contracts/wrapper-migrator.clar#L132)
+[View in file](../contracts/wrapper-migrator.clar#L186)
 
 `(define-read-only (hash-principal ((wrapper principal)) (buff 32))`
 
@@ -306,7 +361,7 @@
 
 ### construct
 
-[View in file](../contracts/wrapper-migrator.clar#L136)
+[View in file](../contracts/wrapper-migrator.clar#L190)
 
 `(define-read-only (construct ((hash-bytes (buff 20))) (response principal (tuple (error_code uint) (value (optional principal)))))`
 
@@ -329,9 +384,15 @@
 
 ### get-legacy-name
 
-[View in file](../contracts/wrapper-migrator.clar#L142)
+[View in file](../contracts/wrapper-migrator.clar#L201)
 
 `(define-read-only (get-legacy-name ((account principal)) (response (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
+
+Fetch the BNS legacy name and name properties owned by a given account.
+
+@throws if the account does not own a valid name
+
+@throws if the name owned by the account is expired
 
 <details>
   <summary>Source code:</summary>
@@ -360,10 +421,11 @@
 
 ### resolve-and-transfer
 
-[View in file](../contracts/wrapper-migrator.clar#L155)
+[View in file](../contracts/wrapper-migrator.clar#L215)
 
 `(define-private (resolve-and-transfer ((wrapper principal)) (response (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
 
+Transfer an account's BNS legacy name to a wrapper contract.
 #[allow(unchecked_data)]
 
 <details>
@@ -407,9 +469,12 @@
 
 ### get-wrapper-name
 
-[View in file](../contracts/wrapper-migrator.clar#L183)
+[View in file](../contracts/wrapper-migrator.clar#L245)
 
 `(define-read-only (get-wrapper-name ((wrapper principal)) (optional uint))`
+
+Helper method to fetch the BNS legacy name that was previously transferred to a
+given wrapper contract.
 
 <details>
   <summary>Source code:</summary>
@@ -428,9 +493,12 @@
 
 ### get-name-wrapper
 
-[View in file](../contracts/wrapper-migrator.clar#L185)
+[View in file](../contracts/wrapper-migrator.clar#L251)
 
 `(define-read-only (get-name-wrapper ((name uint)) (optional principal))`
+
+Helper method to fetch the wrapper contract that was used during migration of a
+given name
 
 <details>
   <summary>Source code:</summary>
@@ -443,6 +511,6 @@
 
 **Parameters:**
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| name | uint |             |
+| Name | Type | Description                |
+| ---- | ---- | -------------------------- |
+| name | uint | the name ID of a BNSx name |
