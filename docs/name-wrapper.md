@@ -27,6 +27,17 @@ BNSx, then only Alice can interact with this contract.
 
 **Private functions:**
 
+**Maps**
+
+**Variables**
+
+**Constants**
+
+- [`ERR_NO_NAME`](#ERR_NO_NAME)
+- [`ERR_NAME_TRANSFER`](#ERR_NAME_TRANSFER)
+- [`ERR_UNAUTHORIZED`](#ERR_UNAUTHORIZED)
+- [`ERR_NOT_WRAPPED`](#ERR_NOT_WRAPPED)
+
 ## Functions
 
 ### unwrap
@@ -65,10 +76,9 @@ mapping between BNSx and BNS legacy names.
 
 **Parameters:**
 
-| Name                                                              | Type                 | Description                                                   |
-| ----------------------------------------------------------------- | -------------------- | ------------------------------------------------------------- |
-| recipient                                                         | (optional principal) | the name owner can optionally transfer the BNS legacy name to |
-| a different account. If `none`, recipient defauls to `tx-sender`. |                      |                                                               |
+| Name      | Type                 | Description                                                                                                                     |
+| --------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| recipient | (optional principal) | the name owner can optionally transfer the BNS legacy name to a different account. If `none`, recipient defauls to `tx-sender`. |
 
 ### get-own-name
 
@@ -175,3 +185,75 @@ Helper method to interact with legacy BNS to update the zonefile for this name
 | namespace     | (buff 20) |             |
 | name          | (buff 48) |             |
 | zonefile-hash | (buff 20) |             |
+
+## Maps
+
+## Variables
+
+### ERR_NO_NAME
+
+Type: `constant`
+
+[View in file](../contracts/name-wrapper.clar#L13)
+
+`(define-constant ERR_NO_NAME (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_NO_NAME (err u10000))
+```
+
+</details>
+
+### ERR_NAME_TRANSFER
+
+Type: `constant`
+
+[View in file](../contracts/name-wrapper.clar#L14)
+
+`(define-constant ERR_NAME_TRANSFER (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_NAME_TRANSFER (err u10001))
+```
+
+</details>
+
+### ERR_UNAUTHORIZED
+
+Type: `constant`
+
+[View in file](../contracts/name-wrapper.clar#L15)
+
+`(define-constant ERR_UNAUTHORIZED (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_UNAUTHORIZED (err u10002))
+```
+
+</details>
+
+### ERR_NOT_WRAPPED
+
+Type: `constant`
+
+[View in file](../contracts/name-wrapper.clar#L16)
+
+`(define-constant ERR_NOT_WRAPPED (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_NOT_WRAPPED (err u10003))
+```
+
+</details>

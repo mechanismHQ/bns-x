@@ -9,13 +9,13 @@ export {
   err,
   factory,
   valueToCV,
-} from "https://deno.land/x/clarigen@v0.4.12/mod.ts";
+} from "https://deno.land/x/clarigen@v0.4.15/mod.ts";
 export type {
   FullContract,
   ContractCallTyped,
   UnknownArgs,
   Response,
-} from "https://deno.land/x/clarigen@v0.4.12/mod.ts";
+} from "https://deno.land/x/clarigen@v0.4.15/mod.ts";
 export {
   afterAll,
   beforeAll,

@@ -1938,6 +1938,12 @@ export const contracts = {
         [account: TypedAbiArg<string, 'account'>, id: TypedAbiArg<number | bigint, 'id'>],
         boolean
       >,
+      burnName: {
+        name: 'burn-name',
+        access: 'private',
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<[id: TypedAbiArg<number | bigint, 'id'>], Response<boolean, bigint>>,
       incrementId: {
         name: 'increment-id',
         access: 'private',

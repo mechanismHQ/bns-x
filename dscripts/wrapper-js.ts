@@ -1,9 +1,9 @@
 const code = await Deno.readTextFile("./contracts/name-wrapper.clar");
 
 function file(code: string) {
-  return `
-  export const nameWrapperCode = \`${code}\`;
-  `;
+  const fixed = code.replaceAll("`", "\\`");
+  return `export const nameWrapperCode = \`${fixed}\`;
+`;
 }
 
 await Deno.writeTextFile("./tests/mocks/wrapper.ts", file(code));

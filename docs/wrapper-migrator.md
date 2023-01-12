@@ -49,6 +49,28 @@ contract to mint a new BNSx name.
 - [`set-signers-iter`](#set-signers-iter)
 - [`resolve-and-transfer`](#resolve-and-transfer)
 
+**Maps**
+
+- [`migrator-signers-map`](#migrator-signers-map)
+- [`name-wrapper-map`](#name-wrapper-map)
+- [`wrapper-name-map`](#wrapper-name-map)
+
+**Variables**
+
+- [`wrapped-id-var`](#wrapped-id-var)
+- [`wrapper-deployer`](#wrapper-deployer)
+
+**Constants**
+
+- [`ROLE`](#ROLE)
+- [`ERR_NO_NAME`](#ERR_NO_NAME)
+- [`ERR_UNAUTHORIZED`](#ERR_UNAUTHORIZED)
+- [`ERR_RECOVER`](#ERR_RECOVER)
+- [`ERR_INVALID_CONTRACT_NAME`](#ERR_INVALID_CONTRACT_NAME)
+- [`ERR_NAME_TRANSFER`](#ERR_NAME_TRANSFER)
+- [`ERR_WRAPPER_USED`](#ERR_WRAPPER_USED)
+- [`network-addr-version`](#network-addr-version)
+
 ## Functions
 
 ### is-dao-or-extension
@@ -128,10 +150,9 @@ Set valid wrapper verifiers
 
 **Parameters:**
 
-| Name                                                             | Type                                                | Description                                            |
-| ---------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------ |
-| signers                                                          | (list 50 (tuple (enabled bool) (signer principal))) | a list of { signer: principal, enabled: bool } tuples. |
-| Existing verifiers can be removed by setting `enabled` to false. |                                                     |                                                        |
+| Name    | Type                                                | Description                                                                                                             |
+| ------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| signers | (list 50 (tuple (enabled bool) (signer principal))) | a list of { signer: principal, enabled: bool } tuples. Existing verifiers can be removed by setting `enabled` to false. |
 
 ### migrate
 
@@ -149,7 +170,7 @@ This function has three main steps:
 - Register the name in the BNSx name registry
   ([`.name-registry#register`](`./core/name-registry#register.md`))
 
-<details>
+  <details>
   <summary>Source code:</summary>
 
 ```clarity
@@ -187,12 +208,11 @@ This function has three main steps:
 
 **Parameters:**
 
-| Name                   | Type      | Description                                                           |
-| ---------------------- | --------- | --------------------------------------------------------------------- |
-| wrapper                | principal | the principal of the wrapper contract that will be used               |
-| signature              | (buff 65) | a signature attesting to the validity of the wrapper contract         |
-| recipient              | principal | a principal that will receive the BNSx name. Useful for consolidating |
-| names into one wallet. |           |                                                                       |
+| Name      | Type      | Description                                                                                  |
+| --------- | --------- | -------------------------------------------------------------------------------------------- |
+| wrapper   | principal | the principal of the wrapper contract that will be used                                      |
+| signature | (buff 65) | a signature attesting to the validity of the wrapper contract                                |
+| recipient | principal | a principal that will receive the BNSx name. Useful for consolidating names into one wallet. |
 
 ### verify-wrapper
 
@@ -425,8 +445,7 @@ Fetch the BNS legacy name and name properties owned by a given account.
 
 `(define-private (resolve-and-transfer ((wrapper principal)) (response (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
 
-Transfer an account's BNS legacy name to a wrapper contract.
-#[allow(unchecked_data)]
+Transfer an account's BNS legacy name to a wrapper contract. #[allow(unchecked_data)]
 
 <details>
   <summary>Source code:</summary>
@@ -514,3 +533,222 @@ given name
 | Name | Type | Description                |
 | ---- | ---- | -------------------------- |
 | name | uint | the name ID of a BNSx name |
+
+## Maps
+
+### migrator-signers-map
+
+[View in file](../contracts/wrapper-migrator.clar#L33)
+
+`(define-map migrator-signers-map (buff 20) bool)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map migrator-signers-map (buff 20) bool)
+```
+
+</details>
+
+### name-wrapper-map
+
+[View in file](../contracts/wrapper-migrator.clar#L35)
+
+`(define-map name-wrapper-map uint principal)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map name-wrapper-map uint principal)
+```
+
+</details>
+
+### wrapper-name-map
+
+[View in file](../contracts/wrapper-migrator.clar#L36)
+
+`(define-map wrapper-name-map principal uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map wrapper-name-map principal uint)
+```
+
+</details>
+
+## Variables
+
+### ROLE
+
+Type: `constant`
+
+[View in file](../contracts/wrapper-migrator.clar#L24)
+
+`(define-constant ROLE (string-ascii 10))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ROLE "mig-signer")
+```
+
+</details>
+
+### ERR_NO_NAME
+
+Type: `constant`
+
+[View in file](../contracts/wrapper-migrator.clar#L26)
+
+`(define-constant ERR_NO_NAME (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_NO_NAME (err u6000))
+```
+
+</details>
+
+### ERR_UNAUTHORIZED
+
+Type: `constant`
+
+[View in file](../contracts/wrapper-migrator.clar#L27)
+
+`(define-constant ERR_UNAUTHORIZED (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_UNAUTHORIZED (err u6001))
+```
+
+</details>
+
+### ERR_RECOVER
+
+Type: `constant`
+
+[View in file](../contracts/wrapper-migrator.clar#L28)
+
+`(define-constant ERR_RECOVER (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_RECOVER (err u6002))
+```
+
+</details>
+
+### ERR_INVALID_CONTRACT_NAME
+
+Type: `constant`
+
+[View in file](../contracts/wrapper-migrator.clar#L29)
+
+`(define-constant ERR_INVALID_CONTRACT_NAME (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_INVALID_CONTRACT_NAME (err u6003))
+```
+
+</details>
+
+### ERR_NAME_TRANSFER
+
+Type: `constant`
+
+[View in file](../contracts/wrapper-migrator.clar#L30)
+
+`(define-constant ERR_NAME_TRANSFER (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_NAME_TRANSFER (err u6004))
+```
+
+</details>
+
+### ERR_WRAPPER_USED
+
+Type: `constant`
+
+[View in file](../contracts/wrapper-migrator.clar#L31)
+
+`(define-constant ERR_WRAPPER_USED (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_WRAPPER_USED (err u6005))
+```
+
+</details>
+
+### wrapped-id-var
+
+Type: `variable`
+
+[View in file](../contracts/wrapper-migrator.clar#L38)
+
+`(define-data-var wrapped-id-var uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-data-var wrapped-id-var uint u0)
+```
+
+</details>
+
+### wrapper-deployer
+
+Type: `variable`
+
+[View in file](../contracts/wrapper-migrator.clar#L39)
+
+`(define-data-var wrapper-deployer (buff 20))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-data-var wrapper-deployer (buff 20) (get hash-bytes (unwrap-panic (principal-destruct? tx-sender))))
+```
+
+</details>
+
+### network-addr-version
+
+Type: `constant`
+
+[View in file](../contracts/wrapper-migrator.clar#L41)
+
+`(define-constant network-addr-version (buff 1))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant network-addr-version (if is-in-mainnet 0x16 0x1a))
+```
+
+</details>

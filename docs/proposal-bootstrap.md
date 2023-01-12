@@ -12,6 +12,14 @@
 
 - [`add-test-utils`](#add-test-utils)
 
+**Maps**
+
+**Variables**
+
+**Constants**
+
+- [`DEPLOYER`](#DEPLOYER)
+
 ## Functions
 
 ### execute
@@ -70,15 +78,15 @@
   (if (not is-in-mainnet)
     (begin
       ;; workaround for https://github.com/stacks-network/stacks-blockchain/pull/3440
-      ;; (try! (contract-call? .executor-dao set-extensions 
+      ;; (try! (contract-call? .executor-dao set-extensions
       ;;   (list { extension: .test-utils, enabled: true })
       ;; ))
-      ;; (try! (contract-call? .executor-dao set-extensions 
+      ;; (try! (contract-call? .executor-dao set-extensions
       ;;   (list { extension: DEPLOYER, enabled: true })
       ;; ))
 
-      (try! (contract-call? .executor-dao set-extensions 
-        (list 
+      (try! (contract-call? .executor-dao set-extensions
+        (list
           { extension: DEPLOYER, enabled: true }
           { extension: .test-utils, enabled: true }
         )
@@ -88,6 +96,27 @@
     (ok true)
   )
 )
+```
+
+</details>
+
+## Maps
+
+## Variables
+
+### DEPLOYER
+
+Type: `constant`
+
+[View in file](../contracts/proposals/proposal-bootstrap.clar#L3)
+
+`(define-constant DEPLOYER principal)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant DEPLOYER tx-sender)
 ```
 
 </details>

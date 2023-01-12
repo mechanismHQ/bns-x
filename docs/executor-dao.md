@@ -26,6 +26,22 @@ ExecutorDAO is the one DAO to rule them all. By Marvin Janssen
 - [`set-extensions-iter`](#set-extensions-iter)
 - [`set-roles-iter`](#set-roles-iter)
 
+**Maps**
+
+- [`executed-proposals`](#executed-proposals)
+- [`extensions`](#extensions)
+- [`extension-roles`](#extension-roles)
+
+**Variables**
+
+- [`executive`](#executive)
+
+**Constants**
+
+- [`err-unauthorised`](#err-unauthorised)
+- [`err-already-executed`](#err-already-executed)
+- [`err-invalid-extension`](#err-invalid-extension)
+
 ## Functions
 
 ### is-self-or-extension
@@ -361,3 +377,120 @@ ExecutorDAO is the one DAO to rule them all. By Marvin Janssen
 | --------- | --------------- | ----------- |
 | extension | trait_reference |             |
 | memo      | (buff 34)       |             |
+
+## Maps
+
+### executed-proposals
+
+[View in file](../contracts/executor-dao.clar#L12)
+
+`(define-map executed-proposals principal uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map executed-proposals principal uint)
+```
+
+</details>
+
+### extensions
+
+[View in file](../contracts/executor-dao.clar#L13)
+
+`(define-map extensions principal bool)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map extensions principal bool)
+```
+
+</details>
+
+### extension-roles
+
+[View in file](../contracts/executor-dao.clar#L14)
+
+`(define-map extension-roles (tuple (extension principal) (role (string-ascii 10))) bool)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map extension-roles { extension: principal, role: (string-ascii 10) } bool)
+```
+
+</details>
+
+## Variables
+
+### err-unauthorised
+
+Type: `constant`
+
+[View in file](../contracts/executor-dao.clar#L7)
+
+`(define-constant err-unauthorised (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant err-unauthorised (err u1000))
+```
+
+</details>
+
+### err-already-executed
+
+Type: `constant`
+
+[View in file](../contracts/executor-dao.clar#L8)
+
+`(define-constant err-already-executed (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant err-already-executed (err u1001))
+```
+
+</details>
+
+### err-invalid-extension
+
+Type: `constant`
+
+[View in file](../contracts/executor-dao.clar#L9)
+
+`(define-constant err-invalid-extension (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant err-invalid-extension (err u1002))
+```
+
+</details>
+
+### executive
+
+Type: `variable`
+
+[View in file](../contracts/executor-dao.clar#L11)
+
+`(define-data-var executive principal)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-data-var executive principal tx-sender)
+```
+
+</details>

@@ -35,10 +35,9 @@ scripts:
       - pnpm run --filter web typecheck
 
   codegen:
-    pll:
+    cmd:
       - deno run -A dscripts/testnet-contracts.ts
       - deno run -A dscripts/wrapper-js.ts
-    allow: all
 
   integrate:
     cmd:

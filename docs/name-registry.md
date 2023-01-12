@@ -73,6 +73,37 @@ NFT.
 - [`remove-node`](#remove-node)
 - [`set-first`](#set-first)
 
+**Maps**
+
+- [`namespace-managers-map`](#namespace-managers-map)
+- [`dao-namespace-manager-map`](#dao-namespace-manager-map)
+- [`namespace-transfers-allowed`](#namespace-transfers-allowed)
+- [`owner-primary-name-map`](#owner-primary-name-map)
+- [`owner-last-name-map`](#owner-last-name-map)
+- [`owner-name-next-map`](#owner-name-next-map)
+- [`owner-name-prev-map`](#owner-name-prev-map)
+- [`name-owner-map`](#name-owner-map)
+- [`name-id-map`](#name-id-map)
+- [`id-name-map`](#id-name-map)
+- [`name-encoding-map`](#name-encoding-map)
+- [`owner-balance-map`](#owner-balance-map)
+
+**Variables**
+
+- [`last-id-var`](#last-id-var)
+- [`token-uri-var`](#token-uri-var)
+
+**Constants**
+
+- [`ROLE`](#ROLE)
+- [`ERR_UNAUTHORIZED`](#ERR_UNAUTHORIZED)
+- [`ERR_ALREADY_REGISTERED`](#ERR_ALREADY_REGISTERED)
+- [`ERR_CANNOT_SET_PRIMARY`](#ERR_CANNOT_SET_PRIMARY)
+- [`ERR_INVALID_ID`](#ERR_INVALID_ID)
+- [`ERR_EXPIRED`](#ERR_EXPIRED)
+- [`ERR_TRANSFER_BLOCKED`](#ERR_TRANSFER_BLOCKED)
+- [`ERR_NOT_OWNER`](#ERR_NOT_OWNER)
+
 ## Functions
 
 ### is-dao-or-extension
@@ -316,7 +347,7 @@ properties:
 - namespace
 - owner
 
-<details>
+  <details>
   <summary>Source code:</summary>
 
 ```clarity
@@ -378,7 +409,7 @@ Get name properties of a name, with lookup via ID. See
 
 ```clarity
 (define-private (merge-name-props (name { name: (buff 48), namespace: (buff 20) }) (id uint))
-  (some (merge name { 
+  (some (merge name {
     id: id,
     owner: (unwrap-panic (map-get? name-owner-map id))
   }))
@@ -774,7 +805,7 @@ If `contract-caller` is a manager: OK Otherwise:
 - Ensure that DAO is allowed to manage namespace
 - Check that caller is an authorized extension
 
-<details>
+  <details>
   <summary>Source code:</summary>
 
 ```clarity
@@ -1159,7 +1190,7 @@ Remove a name from an account's list of names.
     ;; We're removing the first
     (and (is-eq first id)
       (if (is-some next-opt)
-        (and 
+        (and
           (print-primary-update account next-opt)
           (map-set owner-primary-name-map account (unwrap-panic next-opt))
         )
@@ -1246,3 +1277,359 @@ data structure for an account's names.
 | ------- | --------- | ----------- |
 | account | principal |             |
 | node    | uint      |             |
+
+## Maps
+
+### namespace-managers-map
+
+[View in file](../contracts/core/name-registry.clar#L40)
+
+`(define-map namespace-managers-map (tuple (manager principal) (namespace (buff 20))) bool)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map namespace-managers-map { manager: principal, namespace: (buff 20) } bool)
+```
+
+</details>
+
+### dao-namespace-manager-map
+
+[View in file](../contracts/core/name-registry.clar#L41)
+
+`(define-map dao-namespace-manager-map (buff 20) bool)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map dao-namespace-manager-map (buff 20) bool)
+```
+
+</details>
+
+### namespace-transfers-allowed
+
+[View in file](../contracts/core/name-registry.clar#L42)
+
+`(define-map namespace-transfers-allowed (buff 20) bool)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map namespace-transfers-allowed (buff 20) bool)
+```
+
+</details>
+
+### owner-primary-name-map
+
+[View in file](../contracts/core/name-registry.clar#L49)
+
+`(define-map owner-primary-name-map principal uint)`
+
+linked list for account->names
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map owner-primary-name-map principal uint)
+```
+
+</details>
+
+### owner-last-name-map
+
+[View in file](../contracts/core/name-registry.clar#L50)
+
+`(define-map owner-last-name-map principal uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map owner-last-name-map principal uint)
+```
+
+</details>
+
+### owner-name-next-map
+
+[View in file](../contracts/core/name-registry.clar#L51)
+
+`(define-map owner-name-next-map uint uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map owner-name-next-map uint uint)
+```
+
+</details>
+
+### owner-name-prev-map
+
+[View in file](../contracts/core/name-registry.clar#L52)
+
+`(define-map owner-name-prev-map uint uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map owner-name-prev-map uint uint)
+```
+
+</details>
+
+### name-owner-map
+
+[View in file](../contracts/core/name-registry.clar#L54)
+
+`(define-map name-owner-map uint principal)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map name-owner-map uint principal)
+```
+
+</details>
+
+### name-id-map
+
+[View in file](../contracts/core/name-registry.clar#L56)
+
+`(define-map name-id-map (tuple (name (buff 48)) (namespace (buff 20))) uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map name-id-map { name: (buff 48), namespace: (buff 20) } uint)
+```
+
+</details>
+
+### id-name-map
+
+[View in file](../contracts/core/name-registry.clar#L57)
+
+`(define-map id-name-map uint (tuple (name (buff 48)) (namespace (buff 20))))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map id-name-map uint { name: (buff 48), namespace: (buff 20) })
+```
+
+</details>
+
+### name-encoding-map
+
+[View in file](../contracts/core/name-registry.clar#L59)
+
+`(define-map name-encoding-map uint (buff 1))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map name-encoding-map uint (buff 1))
+```
+
+</details>
+
+### owner-balance-map
+
+[View in file](../contracts/core/name-registry.clar#L61)
+
+`(define-map owner-balance-map principal uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map owner-balance-map principal uint)
+```
+
+</details>
+
+## Variables
+
+### ROLE
+
+Type: `constant`
+
+[View in file](../contracts/core/name-registry.clar#L26)
+
+`(define-constant ROLE (string-ascii 8))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ROLE "registry")
+```
+
+</details>
+
+### ERR_UNAUTHORIZED
+
+Type: `constant`
+
+[View in file](../contracts/core/name-registry.clar#L28)
+
+`(define-constant ERR_UNAUTHORIZED (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_UNAUTHORIZED (err u4000))
+```
+
+</details>
+
+### ERR_ALREADY_REGISTERED
+
+Type: `constant`
+
+[View in file](../contracts/core/name-registry.clar#L29)
+
+`(define-constant ERR_ALREADY_REGISTERED (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_ALREADY_REGISTERED (err u4001))
+```
+
+</details>
+
+### ERR_CANNOT_SET_PRIMARY
+
+Type: `constant`
+
+[View in file](../contracts/core/name-registry.clar#L30)
+
+`(define-constant ERR_CANNOT_SET_PRIMARY (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_CANNOT_SET_PRIMARY (err u4002))
+```
+
+</details>
+
+### ERR_INVALID_ID
+
+Type: `constant`
+
+[View in file](../contracts/core/name-registry.clar#L31)
+
+`(define-constant ERR_INVALID_ID (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_INVALID_ID (err u4003))
+```
+
+</details>
+
+### ERR_EXPIRED
+
+Type: `constant`
+
+[View in file](../contracts/core/name-registry.clar#L32)
+
+`(define-constant ERR_EXPIRED (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_EXPIRED (err u4004))
+```
+
+</details>
+
+### ERR_TRANSFER_BLOCKED
+
+Type: `constant`
+
+[View in file](../contracts/core/name-registry.clar#L33)
+
+`(define-constant ERR_TRANSFER_BLOCKED (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_TRANSFER_BLOCKED (err u4005))
+```
+
+</details>
+
+### ERR_NOT_OWNER
+
+Type: `constant`
+
+[View in file](../contracts/core/name-registry.clar#L35)
+
+`(define-constant ERR_NOT_OWNER (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_NOT_OWNER (err u4))
+```
+
+</details>
+
+### last-id-var
+
+Type: `variable`
+
+[View in file](../contracts/core/name-registry.clar#L37)
+
+`(define-data-var last-id-var uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-data-var last-id-var uint u0)
+```
+
+</details>
+
+### token-uri-var
+
+Type: `variable`
+
+[View in file](../contracts/core/name-registry.clar#L38)
+
+`(define-data-var token-uri-var (string-ascii 256))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-data-var token-uri-var (string-ascii 256) "")
+```
+
+</details>

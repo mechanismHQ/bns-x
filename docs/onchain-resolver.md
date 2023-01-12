@@ -14,6 +14,16 @@
 
 **Private functions:**
 
+**Maps**
+
+- [`zonefiles-map`](#zonefiles-map)
+
+**Variables**
+
+**Constants**
+
+- [`ERR_UNAUTHORIZED`](#ERR_UNAUTHORIZED)
+
 ## Functions
 
 ### emit-zonefile
@@ -30,7 +40,7 @@
   (begin
     (print zonefile)
     (ok true)
-  ) 
+  )
 )
 ```
 
@@ -128,3 +138,39 @@
 | --------- | --------- | ----------- |
 | name      | (buff 48) |             |
 | namespace | (buff 20) |             |
+
+## Maps
+
+### zonefiles-map
+
+[View in file](../contracts/onchain-resolver.clar#L3)
+
+`(define-map zonefiles-map uint (buff 2048))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-map zonefiles-map uint (buff 2048))
+```
+
+</details>
+
+## Variables
+
+### ERR_UNAUTHORIZED
+
+Type: `constant`
+
+[View in file](../contracts/onchain-resolver.clar#L1)
+
+`(define-constant ERR_UNAUTHORIZED (response none uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-constant ERR_UNAUTHORIZED (err u8000))
+```
+
+</details>
