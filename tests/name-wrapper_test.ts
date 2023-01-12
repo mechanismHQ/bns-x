@@ -111,7 +111,10 @@ describe("name-wrapper", () => {
 
     it("only owner can make name-update", () => {
       const res = chain.txErr(
-        contract.nameUpdate(new Uint8Array([0, 1, 2])),
+        contract.nameUpdate({
+          zonefileHash: new Uint8Array([0, 1, 2]),
+          ...nameObj,
+        }),
         alice
       );
       assertEquals(res.value, unauthorizedErr);
@@ -119,7 +122,10 @@ describe("name-wrapper", () => {
 
     it("owner can name-update", () => {
       const res = chain.txOk(
-        contract.nameUpdate(new Uint8Array([0, 1, 2])),
+        contract.nameUpdate({
+          zonefileHash: new Uint8Array([0, 1, 2]),
+          ...nameObj,
+        }),
         bob
       );
 
