@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Flex, Text, Stack } from '@nelson-ui/react';
+import { Box, Flex, Stack } from '@nelson-ui/react';
+import { Text } from '../text';
 import { useAtomValue } from 'jotai';
 import {
   migrateTxidAtom,

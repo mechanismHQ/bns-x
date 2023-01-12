@@ -29,13 +29,6 @@ plan:
             path: contracts/executor-dao.clar
             anchor-block-only: true
             clarity-version: 1
-        # - contract-publish:
-        #     contract-name: demo-controller
-        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-        #     cost: 1420
-        #     path: contracts/demo-controller.clar
-        #     anchor-block-only: true
-        #     clarity-version: 1
         - contract-publish:
             contract-name: nft-trait
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
@@ -43,21 +36,8 @@ plan:
             path: contracts/traits/nft-trait.clar
             anchor-block-only: true
             clarity-version: 1
-        # - contract-publish:
-        #     contract-name: bns-init
-        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-        #     cost: 5570
-        #     path: contracts/testnet/bns-init.clar
-        #     anchor-block-only: true
-        #     clarity-version: 1
-        # - contract-publish:
-        #     contract-name: bns-v1
-        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-        #     cost: 411120
-        #     path: contracts/bns-v1.clar
-        #     anchor-block-only: true
-        #     clarity-version: 1
       epoch: "2.0"
+    # Automatic 2.1 deploys are buggy
     # - id: 1
     #   transactions:
     #     - contract-publish:

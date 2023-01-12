@@ -11,14 +11,14 @@ export const Input = styled('input', {
   justifyContent: 'left',
   textAlign: 'left',
   borderRadius: '$medium',
-  border: '1px solid $border-subdued',
+  border: '1px solid $onSurface-border-subdued',
   padding: '0 18px',
   height: '64px',
   fontSize: '16px',
   lineHeight: 1,
   color: '$text',
   boxSizing: 'border-box',
-  backgroundColor: '$color-slate-050',
+  backgroundColor: '$dark-surface-very-subdued',
 });
 
 export const magicBg = keyframes({

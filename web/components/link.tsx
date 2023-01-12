@@ -61,7 +61,7 @@ export const LinkText: React.FC<BoxProps & { children: React.ReactNode }> = Reac
       <Text
         textDecoration="underline"
         cursor="pointer"
-        color="$action-primary"
+        color="$text-subdued"
         ref={ref as any}
         {...props}
       >

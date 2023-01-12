@@ -18,7 +18,7 @@ const { executorDao } = contracts;
 
 const wrapper = contractFactory(
   _contracts.nameWrapper,
-  "ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG.name-wrapper-449"
+  "ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG.name-wrapper-1380"
 );
 
 const bns = contractFactory(
@@ -30,7 +30,7 @@ config();
 
 const privateKey = process.env.WALLET_2_KEY!;
 const network = new StacksMocknet();
-const name = "mobile-goose";
+const name = "blind-worm";
 // const name = "drunk-swallow";
 const zonefile = `$ORIGIN ${name}.testable.\n$TTL 3600\n_http._tcp\tIN\tURI\t10\t1\t"hi"\n\n`;
 
@@ -67,8 +67,8 @@ async function run() {
     console.log(text);
   }
 
-  await fetchZonefile();
-  // await saveZonefile();
+  // await fetchZonefile();
+  await saveZonefile();
 }
 
 run()

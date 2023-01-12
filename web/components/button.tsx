@@ -7,9 +7,9 @@ export const Button = styled(Box, {
   textAlign: 'center',
   cursor: 'pointer',
   maxWidth: '200px',
-  backgroundColor: '$color-slate-300',
-  // color: 'white',
+  backgroundColor: '$grey-100',
+  color: '$surface-surface',
   '&:hover': {
-    backgroundColor: '$color-slate-400',
+    backgroundColor: '$grey-300',
   },
 });

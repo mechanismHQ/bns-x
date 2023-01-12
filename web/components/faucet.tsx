@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
-import { Stack, Box, Text, Flex } from '@nelson-ui/react';
+import { Stack, Box, Flex } from '@nelson-ui/react';
+import { Text } from './text';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import { stxAddressAtom } from '@micro-stacks/jotai';
 import { useInput } from '../common/hooks/use-input';

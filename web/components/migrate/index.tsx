@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
-import { Box, Flex, SpaceBetween, Stack, Text } from '@nelson-ui/react';
+import { Box, Flex, SpaceBetween, Stack } from '@nelson-ui/react';
+import { Text } from '../text';
+
 import { currentUserV1NameState } from '../../common/store/names';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { Link } from '../link';
@@ -38,7 +40,7 @@ export const Migrate: React.FC = () => {
     return (
       <Stack>
         <Text variant="Heading03">You don&apos;t have a name!</Text>
-        <Text variant="Body01" color="">
+        <Text variant="Body01">
           Head over to the <Link href="/faucet">faucet</Link> to get one.
         </Text>
       </Stack>

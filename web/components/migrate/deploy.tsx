@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Box, Text, Stack } from '@nelson-ui/react';
+import { Box, Stack } from '@nelson-ui/react';
+import { Text } from '../text';
 import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
 import { TransactionLink } from '@components/link';
 import { Button } from '@components/button';

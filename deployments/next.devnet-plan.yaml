@@ -8,6 +8,13 @@ plan:
   batches:
     - id: 0
       transactions:
+        # - contract-publish:
+        #     contract-name: executor-dao
+        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     cost: 36810
+        #     path: contracts/executor-dao.clar
+        #     anchor-block-only: true
+        #     clarity-version: 2
         - contract-publish:
             contract-name: name-registry
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM

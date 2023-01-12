@@ -30,7 +30,7 @@ config();
 
 const privateKey = process.env.WALLET_2_KEY!;
 const network = new StacksMocknet();
-const name = "grim-alligator";
+const name = "blind-worm";
 
 const zonefile = `$ORIGIN ${name}.testable.\n$TTL 3600\n_http._tcp\tIN\tURI\t10\t1\t"https://gaia.blockstack.org/hub/13WcjxWGz3JkZYhoPeCHw2ukcK1f1zH6M1/profile.json"\n\n`;
 

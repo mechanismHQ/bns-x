@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Text, Stack, SpaceBetween, Flex, BoxProps } from '@nelson-ui/react';
+import { Box, Stack, SpaceBetween, Flex, BoxProps } from '@nelson-ui/react';
+import { Text } from '../text';
 import { ExternalTx } from '@components/icons/external-tx';
 import { CheckIcon } from '@components/icons/check';
 import { Atom, useAtomValue } from 'jotai';
