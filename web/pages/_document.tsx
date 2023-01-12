@@ -1,8 +1,7 @@
 import React from 'react';
 import type { DocumentContext } from 'next/document';
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
-// import { darkMode, allCss } from '../common/theme';
-import { getCssText } from '@nelson-ui/core';
+import { darkMode, allCss } from '../common/theme';
 
 export default class Document extends NextDocument {
   static async getInitialProps(ctx: DocumentContext) {
@@ -13,16 +12,16 @@ export default class Document extends NextDocument {
       styles: (
         <>
           {initialProps.styles}
-          <style id="stitches" dangerouslySetInnerHTML={{ __html: getCssText() }} />
+          <style id="stitches" dangerouslySetInnerHTML={{ __html: allCss() }} />
         </>
       ),
     };
   }
   render() {
     return (
-      <Html lang="en" className="dark-mode">
+      <Html lang="en" className={darkMode}>
         <Head>
-          <style id="stitches" dangerouslySetInnerHTML={{ __html: getCssText() }} />
+          <style id="stitches" dangerouslySetInnerHTML={{ __html: allCss() }} />
           <style
             dangerouslySetInnerHTML={{
               __html: `

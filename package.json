@@ -32,5 +32,11 @@
   "devDependencies": {
     "@types/node": "^18.11.9",
     "punycode": "^2.1.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "json5@<1.0.2": ">=1.0.2",
+      "json5@>=2.0.0 <2.2.2": ">=2.2.2"
+    }
   }
 }
