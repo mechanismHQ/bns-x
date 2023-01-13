@@ -26,7 +26,7 @@ export default class Document extends NextDocument {
             dangerouslySetInnerHTML={{
               __html: `
             html.dark-mode {
-              background-color: var(--colors-background);
+              background-color: var(--colors-surface-surface);
             }
           `,
             }}

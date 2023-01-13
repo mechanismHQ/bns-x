@@ -79,7 +79,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
       spacing="20px"
     >
       {/* <Box width="100%" height="50px"> */}
-      <SpaceBetween spacing="30px" width="100%" height="50px" maxWidth="900px">
+      <SpaceBetween spacing="30px" width="100%" height="50px" maxWidth="1120px">
         <Text variant="Display01" fontSize="24px !important">
           dots.
         </Text>
@@ -96,7 +96,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
       ) : (
         <Box
           width="100%"
-          maxWidth="900px"
+          maxWidth="1120px"
           // borderRadius="$medium"
           // border="1px solid $border"
           // px="$4"

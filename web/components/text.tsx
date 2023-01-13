@@ -24,6 +24,7 @@ const getDefaultColor = (type?: keyof typeof textStyles): string => {
     case 'Heading03':
     case 'Heading04':
     case 'Heading05':
+    case 'Heading06':
       return '$text';
     case 'Label01':
     case 'Label02':

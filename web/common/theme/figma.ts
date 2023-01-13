@@ -440,6 +440,19 @@ const figma = {
         },
         type: 'typography',
       },
+      Heading06: {
+        value: {
+          fontFamily: '$fontFamilies.open-sauce-one',
+          fontWeight: '$fontWeights.open-sauce-one-3',
+          lineHeight: '28px',
+          fontSize: '18px',
+          letterSpacing: '$letterSpacing.1',
+          paragraphSpacing: '$paragraphSpacing.0',
+          textCase: '$textCase.none',
+          textDecoration: '$textDecoration.none',
+        },
+        type: 'typography',
+      },
     },
     textCase: {
       none: {

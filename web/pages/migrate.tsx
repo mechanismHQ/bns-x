@@ -5,7 +5,7 @@ import { Layout } from '../components/layout';
 import { Stack, Text } from '@nelson-ui/react';
 import { Link } from '../components/link';
 import { useAccount } from '@micro-stacks/react';
-import { Migrate } from '../components/migrate';
+import { Migrate } from '../components/migrate2';
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
