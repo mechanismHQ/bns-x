@@ -22,13 +22,13 @@ plan:
             path: contracts/traits/extension-trait.clar
             anchor-block-only: true
             clarity-version: 1
-        - contract-publish:
-            contract-name: executor-dao
-            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            cost: 36810
-            path: contracts/executor-dao.clar
-            anchor-block-only: true
-            clarity-version: 1
+        # - contract-publish:
+        #     contract-name: executor-dao
+        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     cost: 36810
+        #     path: contracts/executor-dao.clar
+        #     anchor-block-only: true
+        #     clarity-version: 1
         - contract-publish:
             contract-name: nft-trait
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM

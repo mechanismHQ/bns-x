@@ -63,7 +63,7 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
   }, [bnsName?.combined]);
 
   return (
-    <Stack>
+    <Stack p="30px">
       <Box>
         <Text variant="Heading03">BNS Faucet</Text>
       </Box>

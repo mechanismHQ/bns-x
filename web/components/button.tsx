@@ -1,7 +1,8 @@
-import { Box } from '@nelson-ui/react';
-import { styled } from '@stitches/react';
+import { Text } from '@components/text';
+import { Box, BoxProps } from '@nelson-ui/react';
+import { styled, VariantProps } from '@stitches/react';
 
-export const Button = styled(Box, {
+export const ButtonComp = styled(Box, {
   padding: '14px 24px',
   borderRadius: '50px',
   textAlign: 'center',
@@ -15,4 +16,32 @@ export const Button = styled(Box, {
   '&:hover': {
     backgroundColor: '$grey-100',
   },
+  variants: {
+    disabled: {
+      true: {
+        backgroundColor: '$primary-action-subdued',
+        color: '$onSurface-text-subdued',
+        '&:hover': {
+          backgroundColor: '$primary-action-subdued',
+          color: '$onSurface-text-subdued',
+        },
+        pointerEvents: 'none',
+      },
+    },
+  },
 });
+
+export const Button: React.FC<
+  BoxProps &
+    VariantProps<typeof ButtonComp> & {
+      magic?: boolean;
+    }
+> = ({ children, ...props }) => {
+  return (
+    <ButtonComp {...props}>
+      <Text variant="Label01" color="inherit">
+        {children}
+      </Text>
+    </ButtonComp>
+  );
+};

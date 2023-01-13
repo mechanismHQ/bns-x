@@ -7,6 +7,7 @@ import {
   migrateTxidAtom,
   wrapperContractIdAtom,
   wrapperSignatureAtom,
+  recipientAddrAtom,
 } from '../store/migration';
 import { hexToBytes } from 'micro-stacks/common';
 import { stxAddressAtom } from '@micro-stacks/jotai';
@@ -28,11 +29,16 @@ export function useWrapperMigrate() {
         const migrator = contracts.wrapperMigrator;
         const contractId = get(wrapperContractIdAtom);
         const signature = get(wrapperSignatureAtom);
+        const recipient = get(recipientAddrAtom);
         const address = get(stxAddressAtom)!;
         const bnsAsset = get(bnsAssetInfoState);
         const bnsTupleId = get(migrateNameAssetIdState);
         if (!contractId || !signature) {
           console.error('No signature');
+          return;
+        }
+        if (!recipient) {
+          console.error('Cannot migrate - no validated recipient');
           return;
         }
 
@@ -55,7 +61,7 @@ export function useWrapperMigrate() {
           ...migrator.migrate({
             wrapper: contractId,
             signature: hexToBytes(signature),
-            recipient: address,
+            recipient: recipient,
           }),
           postConditionMode: PostConditionMode.Deny,
           postConditions: [postCondition, wrapperPC],

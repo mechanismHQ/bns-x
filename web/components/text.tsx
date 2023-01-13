@@ -41,9 +41,9 @@ function getVariantStyles(variant?: TextVariant): CSSTypes {
   const lower = variant.slice(0, 1).toLowerCase() + variant.slice(1);
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   const styles = textStyles[lower] || textStyles[variant];
-  if (!textStyles.hasOwnProperty(lower)) {
-    console.warn('Only found old theme styles for text variant:', variant);
-  }
+  // if (!textStyles.hasOwnProperty(lower)) {
+  //   console.warn('Only found old theme styles for text variant:', variant);
+  // }
   return styles;
 }
 

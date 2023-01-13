@@ -10,10 +10,10 @@ export const UpgradeSteps: React.FC = () => {
     <Box flexGrow={1}>
       <Flex justifyContent={'center'} height="100%" flexDirection="column" alignItems={'center'}>
         <Box flexGrow={1} />
-        <CenterBox flexGrow={'initial'}>
+        <Flex width="100%" alignItems={'center'} flexDirection="column">
           <DeployPending />
           <FinalizeUpgrade />
-        </CenterBox>
+        </Flex>
         <Box flexGrow={1} />
       </Flex>
     </Box>
