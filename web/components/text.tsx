@@ -50,7 +50,6 @@ function getVariantStyles(variant?: TextVariant): CSSTypes {
 export const Text = React.forwardRef<HTMLElement, TextProps>(
   ({ variant, className, css = {}, ...props }, ref) => {
     const color = getDefaultColor(variant);
-    console.log(`Variant: ${variant}, color: ${color}`);
     const styles = getVariantStyles(variant);
     if (typeof variant === 'undefined') {
       console.warn('No text style found for variant:', variant);

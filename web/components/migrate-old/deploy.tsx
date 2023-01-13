@@ -10,7 +10,7 @@ import { useFetchWrapperSig } from '@common/hooks/use-fetch-wrapper-sig';
 import { useEffect } from 'react';
 import { useQueryAtom } from 'jotai-query-toolkit';
 import { txReceiptState } from '@store/index';
-import { PendingRow } from '@components/migrate/rows';
+import { PendingRow } from '@components/migrate-old/rows';
 
 export const DeployStep: React.FC<{ children?: React.ReactNode }> = () => {
   const deployTxid = useAtomValue(wrapperDeployTxidAtom);

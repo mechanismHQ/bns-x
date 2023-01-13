@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Flex, Box, SpaceBetween, Text, Stack } from '@nelson-ui/react';
+import { Flex, Box, SpaceBetween, Text, Stack, BoxProps } from '@nelson-ui/react';
 import { useAtom, useAtomValue } from 'jotai';
 import { userFormattedBalancesState } from '../common/store';
 import { useIsSSR } from '../common/hooks/use-is-ssr';
@@ -44,16 +44,18 @@ export const TokenBalance: React.FC = () => {
   );
 };
 
-export const CenterBox: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const CenterBox: React.FC<{ children: React.ReactNode } & BoxProps> = ({
+  children,
+  ...rest
+}) => {
   return (
     <Box
-      maxWidth="600px"
+      maxWidth="460px"
       width="100%"
       borderRadius="$medium"
       border="1px solid $border"
-      px="$4"
-      py="$4"
       flexGrow="1"
+      {...rest}
     >
       <SafeSuspense>{children}</SafeSuspense>
     </Box>
@@ -94,7 +96,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
       {centerBox ? (
         <CenterBox>{children}</CenterBox>
       ) : (
-        <Box
+        <Flex
           width="100%"
           maxWidth="1120px"
           // borderRadius="$medium"
@@ -104,7 +106,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
           flexGrow="1"
         >
           <SafeSuspense>{children}</SafeSuspense>
-        </Box>
+        </Flex>
       )}
 
       {/* </Flex> */}

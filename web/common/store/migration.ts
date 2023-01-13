@@ -19,6 +19,8 @@ export const migrateTxidAtom = hashAtom('migrateTxid');
 
 export const migrateNameAtom = hashAtom('name');
 
+export const upgradeRecipientAtom = atom('');
+
 export const migrateNameAssetIdState = atom(get => {
   const nameStr = get(migrateNameAtom);
   if (!nameStr) throw new Error('Cannot get BNS name asset - empty');

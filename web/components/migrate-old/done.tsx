@@ -6,7 +6,7 @@ import { migrateTxidAtom, wrapperDeployTxidAtom } from '@store/migration';
 import { txReceiptState } from '@store/index';
 import { CheckIcon } from '@components/icons/check';
 import { ExternalTx } from '@components/icons/external-tx';
-import { DoneRow } from '@components/migrate/rows';
+import { DoneRow } from '@components/migrate-old/rows';
 
 export const MigrateDone: React.FC<{ children?: React.ReactNode }> = () => {
   const migrateTxid = useAtomValue(migrateTxidAtom);

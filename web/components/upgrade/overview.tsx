@@ -7,7 +7,7 @@ import { currentUserV1NameState } from '../../common/store/names';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { Link } from '../link';
 // import { MigrateFinalizeStep } from './finalize';
-import { DeployStep } from '@components/migrate/deploy';
+import { DeployStep } from '@components/migrate-old/deploy';
 import { contractsState, txReceiptState, useReadOnly } from '@store/index';
 import {
   migrateNameAtom,
@@ -15,11 +15,16 @@ import {
   wrapperContractIdAtom,
   wrapperSignatureAtom,
 } from '@store/migration';
-import { MigrateDone } from '@components/migrate/done';
+import { MigrateDone } from '@components/migrate-old/done';
 import { NameCard } from '@components/name-card';
 import { useEffect } from 'react';
+import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
 
-export const Migrate: React.FC = () => {
+export const UpgradeOverview: React.FC = () => {
+  const { deploy, isRequestPending: deployPending } = useDeployWrapper();
+  const v1Name = useAtomValue(currentUserV1NameState);
+  if (v1Name === null) throw new Error('Invalid state');
+
   return (
     <Grid gridTemplateColumns="1fr 1fr" gridColumnGap="60px">
       <Box width="100%">
@@ -32,7 +37,7 @@ export const Migrate: React.FC = () => {
         >
           <SpaceBetween height="90px" alignItems="center" px="32px" isInline>
             <Text variant="Body01" color="$color-alert-red">
-              panic.disco.btc
+              {v1Name.combined}
             </Text>
             <Box padding="3px 10px" borderRadius="5px" backgroundColor="#301211">
               <Text variant="Label01" color="$color-alert-red">
@@ -69,9 +74,9 @@ export const Migrate: React.FC = () => {
       <Stack spacing="25px">
         <Box width="100%" borderRadius="18px" border="1px solid $onSurface-border-subdued">
           <SpaceBetween height="90px" alignItems="center" px="32px" isInline>
-            <Text variant="Body01">panic.disco.btc</Text>
+            <Text variant="Body01">{v1Name.combined}</Text>
             <Box padding="3px 10px" borderRadius="5px" backgroundColor="$grey-800">
-              <Text variant="Label01">BNS</Text>
+              <Text variant="Label01">BNSx</Text>
             </Box>
           </SpaceBetween>
           <Stack px="32px" spacing="10px" py="26px" borderTop="1px solid $onSurface-border-subdued">
@@ -83,7 +88,9 @@ export const Migrate: React.FC = () => {
               <Text variant="Body01">• New features every week</Text>
             </Stack>
             <Box>
-              <Button>Upgrade to BNSx</Button>
+              <Button onClick={deploy}>
+                {deployPending ? 'Waiting for tx..' : 'Upgrade to BNSx'}
+              </Button>
             </Box>
           </Stack>
         </Box>

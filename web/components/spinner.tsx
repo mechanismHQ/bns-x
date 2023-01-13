@@ -14,7 +14,7 @@ export const Spinner: React.FC<BoxProps> = props => {
   return (
     <Box
       size={size}
-      backgroundImage="conic-gradient(from 134.29deg at 51.84% 49.4%, #F8A4E5 0deg, #5E7FFF 114.38deg, #38FBFC 219.37deg, #FFEFC5 236.25deg, #F8A4E5 360deg)"
+      backgroundImage="conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, 0) 0deg, #FFFFFF 360deg)"
       p="2px"
       borderRadius={radius}
       animation={`${spin()} 1s linear infinite`}
