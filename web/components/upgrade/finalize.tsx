@@ -10,6 +10,9 @@ import {
   upgradeRecipientAtom,
   migrateTxState,
   recipientAddrAtom,
+  sendElsewhereAtom,
+  validRecipientState,
+  recipientIsBnsState,
 } from '@store/migration';
 import { Divider, DoneRow, NameHeading, PendingRow } from '@components/upgrade/rows';
 import { useWrapperMigrate } from '@common/hooks/use-wrapper-migrate';
@@ -18,7 +21,7 @@ import { Input } from '@components/form';
 import { useInput } from '@common/hooks/use-input';
 import { CenterBox } from '@components/layout';
 import { Button } from '@components/button';
-import { useAtomCallback } from 'jotai/utils';
+import { loadable, useAtomCallback } from 'jotai/utils';
 import { networkAtom, stxAddressAtom } from '@micro-stacks/jotai';
 import { validateStacksAddress } from 'micro-stacks/crypto';
 import { asciiToBytes } from 'micro-stacks/common';
@@ -26,84 +29,37 @@ import { useEffect } from 'react';
 import { CheckIcon } from '@components/icons/check';
 import { useMemo } from 'react';
 
-const sendElsewhereAtom = atom(false);
-
 const validatedRecipientInputAtom = atom('');
 
 export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
   const contractId = useAtomValue(wrapperContractIdAtom);
   const { migrate, isRequestPending } = useWrapperMigrate();
   const migrateTxid = useAtomValue(migrateTxidAtom);
-  // const migrateTx = useAtomValue(txReceiptState(migrateTxid));
-  const migrateTx = useAtomValue(migrateTxState);
   const doSendElsewhere = useAtomValue(sendElsewhereAtom);
   const recipientInput = useInput(useAtom(upgradeRecipientAtom));
   const recipient = useAtomValue(upgradeRecipientAtom);
-  const recipientAddress = useAtomValue(recipientAddrAtom);
+  const recipientAddress = useAtomValue(loadable(validRecipientState));
+  // const recipientAddress = useAtomValue(recipientAddrAtom);
   const validatedInput = useAtomValue(validatedRecipientInputAtom);
-  const isBNS = useMemo(() => {
-    return recipientInput.value.split('.').length === 2;
-  }, [recipientInput.value]);
-  // const isBNS = recipientInput.value.split('.').length === 2;
+  const isBNS = useAtomValue(recipientIsBnsState);
+
   const bnsInputValid = useMemo(() => {
     if (!isBNS) return false;
-    if (doSendElsewhere && recipientAddress && validatedInput === recipientInput.value) return true;
+    if (recipientAddress.state === 'hasData') {
+      return !!recipientAddress.data;
+    }
     return false;
-  }, [isBNS, doSendElsewhere, recipientAddress, recipientInput.value]);
+  }, [isBNS, recipientAddress]);
 
-  const fetchRecipientAddress = useAtomCallback(
-    useCallback(async (get, set) => {
-      const recipient = get(upgradeRecipientAtom).trim();
-      set(validatedRecipientInputAtom, recipient);
-      console.log('recipient', recipient);
-      if (!recipient || !get(sendElsewhereAtom)) {
-        const me = get(stxAddressAtom);
-        set(recipientAddrAtom, me || null);
-        return;
-      }
-      if ((recipient.startsWith('SP') || recipient.startsWith('ST')) && !recipient.includes('.')) {
-        set(recipientAddrAtom, validateStacksAddress(recipient) ? recipient : null);
-        return;
-      }
-      const network = get(networkAtom);
-      const clarigen = get(clarigenAtom);
-      const registry = get(nameRegistryState);
-      const bns = get(bnsContractState);
-      const [nameStr, namespaceStr] = recipient.split('.');
-      console.log(`Fetching addr for BNS name ${nameStr}.${namespaceStr}`);
-      const name = asciiToBytes(nameStr);
-      const namespace = asciiToBytes(namespaceStr);
-
-      const [xName, v1Name] = await Promise.all([
-        clarigen.ro(registry.getNameProperties({ name, namespace })),
-        clarigen.ro(bns.nameResolve({ name, namespace })),
-      ]);
-      if (xName !== null) {
-        set(recipientAddrAtom, xName.owner);
-        return;
-      }
-      console.log('v1Name', v1Name);
-      if (v1Name.isOk) {
-        console.log(`Setting name from v1 to addr`, v1Name.value.owner);
-        set(recipientAddrAtom, v1Name.value.owner);
-        return;
-      }
-      set(recipientAddrAtom, null);
-      return;
-    }, [])
-  );
+  const bnsInputInvalid = useMemo(() => {
+    if (!isBNS) return false;
+    if (recipientAddress.state !== 'hasData') return false;
+    return !recipientAddress.data;
+  }, [isBNS, recipientAddress]);
 
   const canMigrate = useMemo(() => {
-    if (!recipientAddress) return false;
-    if (doSendElsewhere) {
-      console.log('validating');
-      console.log('input matches validated', recipient === validatedInput);
-      console.log('validatedInput', validatedInput);
-      if (!recipient.trim()) return false;
-      // console.log(recipient &&);
-      return recipient === validatedInput;
-    }
-    return true;
+    if (recipientAddress.state !== 'hasData') return false;
+    return !!recipientAddress.data;
   }, [recipientAddress, doSendElsewhere, recipient]);
 
   useEffect(() => {
@@ -111,14 +67,10 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
     console.log('Validated input is', validatedInput);
   }, [recipientAddress, validatedInput]);
 
-  useEffect(() => {
-    void fetchRecipientAddress();
-  }, []);
-
   if (!contractId) return null;
   const contractName = contractId.split('.')[1];
 
-  if (migrateTx?.tx_status === 'success') return null;
+  if (migrateTxid) return null;
 
   return (
     <Stack width="100%" alignItems={'center'} spacing="0">
@@ -141,13 +93,21 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
                   placeholder="Enter a BNS name or Stacks address"
                   {...recipientInput.props}
                   autoFocus={true}
-                  onBlur={fetchRecipientAddress}
+                  // onBlur={fetchRecipientAddress}
                 />
                 {bnsInputValid ? (
                   <Stack isInline spacing="$3" alignItems="center">
                     <CheckIcon />
                     <Text variant="Label02" color="$onSurface-text-subdued">
                       BNS Name looks good
+                    </Text>
+                  </Stack>
+                ) : null}
+                {bnsInputInvalid ? (
+                  <Stack isInline spacing="$3" alignItems="center">
+                    <CheckIcon />
+                    <Text variant="Label02" color="$onSurface-text-subdued">
+                      Invalid BNS name
                     </Text>
                   </Stack>
                 ) : null}
@@ -164,7 +124,7 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
             if (canMigrate) void migrate();
           }}
         >
-          Finalize
+          {isRequestPending ? 'Waiting' : 'Finalize'}
         </Button>
       </Flex>
     </Stack>

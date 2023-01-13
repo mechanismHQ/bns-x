@@ -8,6 +8,7 @@ import {
   wrapperContractIdAtom,
   wrapperSignatureAtom,
   recipientAddrAtom,
+  validRecipientState,
 } from '../store/migration';
 import { hexToBytes } from 'micro-stacks/common';
 import { stxAddressAtom } from '@micro-stacks/jotai';
@@ -29,7 +30,7 @@ export function useWrapperMigrate() {
         const migrator = contracts.wrapperMigrator;
         const contractId = get(wrapperContractIdAtom);
         const signature = get(wrapperSignatureAtom);
-        const recipient = get(recipientAddrAtom);
+        const recipient = get(validRecipientState);
         const address = get(stxAddressAtom)!;
         const bnsAsset = get(bnsAssetInfoState);
         const bnsTupleId = get(migrateNameAssetIdState);

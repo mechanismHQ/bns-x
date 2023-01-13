@@ -8,6 +8,7 @@ import { networkAtom, stxAddressAtom } from '@micro-stacks/jotai';
 import { fetchTransaction } from '@common/stacks-api';
 import { validateStacksAddress } from 'micro-stacks/crypto';
 import { bnsContractState, clarigenAtom, nameRegistryState } from '@store/index';
+import { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
 
 function hashAtom(name: string) {
   return typeof window === 'undefined'
@@ -40,8 +41,14 @@ export const migrateNameAssetIdState = atom(get => {
 });
 
 export function txidQueryAtom(txidAtom: Atom<string | undefined>) {
-  return atomsWithQuery(get => ({
+  return atomsWithQuery<MempoolTransaction | Transaction | null>(get => ({
     queryKey: ['txid-query', get(txidAtom) || ''],
+    refetchInterval: data => {
+      if (data) {
+        return data.tx_status === 'pending' ? 5000 : false;
+      }
+      return 5000;
+    },
     queryFn: async () => {
       const txid = get(txidAtom);
       const network = get(networkAtom);
@@ -58,15 +65,19 @@ export function txidQueryAtom(txidAtom: Atom<string | undefined>) {
 
 export const [migrateTxState] = txidQueryAtom(migrateTxidAtom);
 
+export const sendElsewhereAtom = atom(false);
+
 export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
   queryKey: ['valid-recipient', get(upgradeRecipientAtom)],
   queryFn: async () => {
     const recipient = get(upgradeRecipientAtom).trim();
-    if (!recipient) {
-      const self = get(stxAddressAtom);
-      return self || null;
+    console.log('recipient', recipient, !!recipient);
+    if (!get(sendElsewhereAtom)) {
+      const me = get(stxAddressAtom);
+      return me || null;
     }
-    if ((recipient.startsWith('SP') || recipient.startsWith('ST')) && !recipient.includes('.')) {
+    if (!recipient) return null;
+    if (!recipient.includes('.')) {
       return validateStacksAddress(recipient) ? recipient : null;
     }
     const network = get(networkAtom);
@@ -74,6 +85,7 @@ export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
     const registry = get(nameRegistryState);
     const bns = get(bnsContractState);
     const [nameStr, namespaceStr] = recipient.split('.');
+    console.log(`Fetching addr for BNS name ${nameStr}.${namespaceStr}`);
     const name = asciiToBytes(nameStr);
     const namespace = asciiToBytes(namespaceStr);
 
@@ -84,9 +96,21 @@ export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
     if (xName !== null) {
       return xName.owner;
     }
+    console.log('v1Name', v1Name);
     if (v1Name.isOk) {
+      console.log(`Setting name from v1 to addr`, v1Name.value.owner);
       return v1Name.value.owner;
     }
     return null;
   },
 }));
+
+export const recipientIsBnsState = atom(get => {
+  const sendElsewhere = get(sendElsewhereAtom);
+  const inputBNS = get(upgradeRecipientAtom).split('.').length === 2;
+  return sendElsewhere && inputBNS;
+});
+
+// export const bnsInputValidState = atom<boolean | null>(get => {
+
+// })
