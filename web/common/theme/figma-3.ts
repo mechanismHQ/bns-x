@@ -4,6 +4,14 @@ const theme = {
       value: '#ed5653',
       type: 'color',
     },
+    'text-error-subdued': {
+      value: '#A9413F',
+      type: 'color',
+    },
+    'text-error': {
+      value: '#ED5653',
+      type: 'color',
+    },
     'Color–Surface–Error': {
       value: '#140b0a',
       type: 'color',

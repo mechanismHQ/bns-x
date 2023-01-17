@@ -51,8 +51,16 @@ const figma = {
         value: '#240b13',
         type: 'color',
       },
+      'color-surface-error': {
+        value: '#140b0a',
+        type: 'color',
+      },
       'Surface-Error-Border-Subdued': {
         value: '#711d1c',
+        type: 'color',
+      },
+      'border-error': {
+        value: '#451312',
         type: 'color',
       },
     },
@@ -408,6 +416,19 @@ const figma = {
           lineHeight: '$lineHeights.8',
           fontSize: '$fontSize.6',
           letterSpacing: '$letterSpacing.2',
+          paragraphSpacing: '$paragraphSpacing.0',
+          textCase: '$textCase.none',
+          textDecoration: '$textDecoration.none',
+        },
+        type: 'typography',
+      },
+      Heading035: {
+        value: {
+          fontFamily: '$fontFamilies.open-sauce-one',
+          fontWeight: '$fontWeights.open-sauce-one-3',
+          lineHeight: '44px',
+          fontSize: '28px',
+          letterSpacing: '$letterSpacing.1',
           paragraphSpacing: '$paragraphSpacing.0',
           textCase: '$textCase.none',
           textDecoration: '$textDecoration.none',

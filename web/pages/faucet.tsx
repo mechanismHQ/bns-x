@@ -18,9 +18,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 const FaucetPage: NextPage = () => {
   return (
     <Layout centerBox={true}>
-      <Stack>
-        <Faucet />
-      </Stack>
+      {/* <Stack> */}
+      <Faucet />
+      {/* </Stack> */}
     </Layout>
   );
 };

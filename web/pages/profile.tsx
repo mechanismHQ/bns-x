@@ -18,9 +18,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 const ProfilePage: NextPage = () => {
   return (
     <Layout centerBox={false}>
-      <Stack>
-        <Profile />
-      </Stack>
+      <Profile />
     </Layout>
   );
 };

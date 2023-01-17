@@ -87,6 +87,7 @@ export const nameByIdState = atomFamily((id: number | bigint) => {
 
 export const currentUserNameIdsState = atomsWithQuery<number[]>(get => ({
   queryKey: ['cur-user-names', get(stxAddressAtom)],
+  refetchInterval: 10000,
   queryFn: async ctx => {
     const network = get(networkAtom);
     const urlBase = network.getCoreApiUrl();
@@ -101,9 +102,11 @@ export const currentUserNameIdsState = atomsWithQuery<number[]>(get => ({
     const url = `${urlBase}/extended/v1/tokens/nft/holdings?${params}`;
     const res = await fetch(url);
     const data = (await res.json()) as NonFungibleTokenHoldingsList;
-    return data.results.map(d => {
-      const bign = cvToValue<bigint>(deserializeCV(d.value.hex));
-      return Number(bign);
-    });
+    return data.results
+      .map(d => {
+        const bign = cvToValue<bigint>(deserializeCV(d.value.hex));
+        return Number(bign);
+      })
+      .filter(n => !Number.isNaN(n));
   },
 }));

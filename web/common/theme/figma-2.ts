@@ -551,6 +551,28 @@ export const tokens = {
           },
         },
       },
+      heading035: {
+        type: 'custom-fontStyle',
+        value: {
+          fontSize: 28,
+          textDecoration: 'none',
+          fontFamily: 'Open Sauce One',
+          fontWeight: 500,
+          fontStyle: 'normal',
+          fontStretch: 'normal',
+          letterSpacing: -0.64,
+          lineHeight: 44,
+          paragraphIndent: 0,
+          paragraphSpacing: 0,
+          textCase: 'none',
+        },
+        extensions: {
+          'org.lukasoppermann.figmaDesignTokens': {
+            styleId: 'S:16fba49c424b063bc13a3bafcf259ebfecde52db,',
+            exportKey: 'font',
+          },
+        },
+      },
       heading04: {
         type: 'custom-fontStyle',
         value: {

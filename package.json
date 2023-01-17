@@ -30,7 +30,9 @@
     "typescript": "^4.8.4"
   },
   "devDependencies": {
+    "@types/localtunnel": "^2.0.1",
     "@types/node": "^18.11.9",
+    "localtunnel": "^2.0.2",
     "punycode": "^2.1.1"
   },
   "pnpm": {

@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
-import { Box, Flex } from '@nelson-ui/react';
+import { Box, Flex, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { useAtomValue } from 'jotai';
 import { txReceiptState } from '@store/index';
 import { wrapperDeployTxidAtom } from '@store/migration';
-import { PendingRow } from '@components/upgrade/rows';
+import { NameHeading, PendingRow } from '@components/upgrade/rows';
 import { useFetchWrapperSig } from '@common/hooks/use-fetch-wrapper-sig';
 import { CenterBox } from '@components/layout';
 
@@ -27,11 +27,11 @@ export const DeployPending: React.FC<{ children?: React.ReactNode }> = () => {
   if (signature) return null;
 
   return (
-    <Box>
-      <Text variant="Heading06">name.btc</Text>
-      <CenterBox>
-        <PendingRow txidAtom={wrapperDeployTxidAtom}>Waiting for your transaction</PendingRow>;
+    <Stack width="100%" alignItems={'center'} spacing="0">
+      <NameHeading />
+      <CenterBox mt="20px">
+        <PendingRow txidAtom={wrapperDeployTxidAtom}>Waiting for your transaction</PendingRow>
       </CenterBox>
-    </Box>
+    </Stack>
   );
 };

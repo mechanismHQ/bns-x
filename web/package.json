@@ -34,6 +34,7 @@
     "jotai-tanstack-query": "^0.4.0",
     "micro-stacks": "^1.0.0",
     "next": "12.2.2",
+    "random-gradient": "^0.0.2",
     "react": "18.2.0",
     "react-datepicker": "^4.8.0",
     "react-dom": "18.2.0",
