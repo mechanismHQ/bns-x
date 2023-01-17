@@ -39,7 +39,12 @@ export const Button: React.FC<
 > = ({ children, ...props }) => {
   return (
     <ButtonComp {...props}>
-      <Text variant="Label01" color="inherit">
+      <Text
+        // variant="Label01"
+        color="inherit"
+        fontSize="14px !important"
+        lineHeight="20px !important"
+      >
         {children}
       </Text>
     </ButtonComp>

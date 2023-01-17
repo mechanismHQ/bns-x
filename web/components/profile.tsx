@@ -29,11 +29,18 @@ export const ProfileRow: React.FC<{
       }
     : {};
 
-  const upgrade = useCallback(() => {
-    void router.push({
-      pathname: '/migrate',
-    });
-  }, [router]);
+  const manage = useCallback(async () => {
+    if (v1) {
+      await router.push({
+        pathname: '/migrate',
+      });
+    } else {
+      await router.push({
+        pathname: '/names/[name]',
+        query: { name },
+      });
+    }
+  }, [router, v1, name]);
 
   return (
     <SpaceBetween
@@ -60,7 +67,10 @@ export const ProfileRow: React.FC<{
           </Text>
         </Stack>
       </Stack>
-      <Box>{v1 ? <Button onClick={upgrade}>Upgrade</Button> : <Button disabled>Edit</Button>}</Box>
+      <Box>
+        <Button onClick={manage}>{v1 ? 'Upgrade' : 'Edit'}</Button>
+        {/* {v1 ? <Button onClick={upgrade}>Upgrade</Button> : <Button disabled>Edit</Button>} */}
+      </Box>
     </SpaceBetween>
   );
 };
@@ -74,6 +84,7 @@ export const LoadableProfileRow: React.FC<{ children?: React.ReactNode; id: numb
 };
 
 export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
+  const router = useRouter();
   const primary = useAtomValue(userPrimaryNameState);
   const v1Name = useAtomValue(currentUserV1NameState);
 
@@ -95,18 +106,36 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
       );
     });
   }, [holdings]);
+
+  const mintName = useCallback(() => {
+    window.open('https://btc.us', '_blank');
+  }, []);
+
   return (
     <>
       <Box flexGrow={1} />
       <Stack width="100%" spacing="0px">
         {v1Name === null && holdings.length === 0 ? (
-          <Text variant="Heading02">You don't have any names!</Text>
-        ) : null}
-        {v1Name !== null ? <ProfileRow v1 name={v1Name.combined} /> : null}
-        {rows}
-        <Flex py="25px" justifyContent="center">
-          <Text variant="Caption01">You can send many BNSx names to this address</Text>
-        </Flex>
+          <Stack spacing="0" alignContent="center" width="100%" textAlign="center">
+            <Text width="100%" variant="Display02">
+              No names here
+            </Text>
+            <Text width="100%" mt="15px" variant="Body02">
+              Looks like this address doesn't own any BNS or BNSx names. Mint a name then come back.
+            </Text>
+            <Button width="260px" onClick={mintName} mx="auto" mt="49px">
+              Mint name
+            </Button>
+          </Stack>
+        ) : (
+          <>
+            {v1Name !== null ? <ProfileRow v1 name={v1Name.combined} /> : null}
+            {rows}
+            <Flex py="25px" justifyContent="center">
+              <Text variant="Caption01">You can send many BNSx names to this address</Text>
+            </Flex>
+          </>
+        )}
       </Stack>
       <Box flexGrow={1} />
     </>

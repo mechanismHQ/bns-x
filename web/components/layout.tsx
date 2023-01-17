@@ -11,12 +11,13 @@ import { userNameState, userPrimaryNameState } from '../common/store/names';
 import { Link, LinkProps } from '@components/link';
 import { truncateMiddle } from '@common/utils';
 import { useGradient } from '@common/hooks/use-gradient';
+import { useAuth } from '@micro-stacks/react';
 
 export const TokenBalance: React.FC = () => {
   const stxAddress = useAtomValue(stxAddressAtom);
   const name = useAtomValue(userNameState);
 
-  const gradient = useGradient(name || stxAddress || '');
+  const gradient = useGradient(name || stxAddress || 'NONE');
 
   if (!stxAddress) {
     return <WalletConnectButton />;
@@ -81,6 +82,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
   centerBox = true,
 }) => {
   const isSSR = useIsSSR();
+  const { signOut } = useAuth();
 
   const year = useMemo(() => {
     return new Date().getFullYear();
@@ -107,9 +109,19 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
         maxWidth="1120px"
         alignItems={'center'}
       >
-        <Text variant="Display01" fontSize="24px !important" lineHeight="24px !important">
+        <Link
+          href="/"
+          variant="Display01"
+          fontSize="24px !important"
+          lineHeight="24px !important"
+          textDecoration="none"
+          color="$icon"
+        >
           dots.
-        </Text>
+        </Link>
+        {/* <Text variant="Display01" fontSize="24px !important" lineHeight="24px !important">
+          dots.
+        </Text> */}
         <Stack isInline spacing="8px">
           {/* <HeaderLink href="">Mint</HeaderLink>
           <HeaderLink href="">Tools</HeaderLink> */}
@@ -170,7 +182,13 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
           <HeaderLink href="/faucet" color="$onSurface-text-subdued">
             Testnet faucet
           </HeaderLink>
-          <HeaderLink href="javascript:void(0)" color="$onSurface-text-subdued">
+          <HeaderLink
+            href="javascript:void(0)"
+            color="$onSurface-text-subdued"
+            onClick={async () => {
+              await signOut();
+            }}
+          >
             Sign out
           </HeaderLink>
         </Stack>

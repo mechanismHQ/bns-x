@@ -1,17 +1,17 @@
 import { useAuth } from '@micro-stacks/react';
 import { Link, LinkText } from './link';
+import { Button } from '@components/button';
 
 export const WalletConnectButton = () => {
   const { openAuthRequest, isRequestPending, signOut, isSignedIn } = useAuth();
-  const label = isRequestPending ? 'Loading...' : isSignedIn ? 'Sign out' : 'Connect Stacks wallet';
+  const label = isRequestPending ? 'Loading...' : 'Connect wallet';
   return (
-    <LinkText
+    <Button
       onClick={async () => {
-        if (isSignedIn) await signOut();
-        else await openAuthRequest();
+        await openAuthRequest();
       }}
     >
       {label}
-    </LinkText>
+    </Button>
   );
 };

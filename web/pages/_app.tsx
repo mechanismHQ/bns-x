@@ -8,8 +8,10 @@ import { JotaiClientProvider } from '@micro-stacks/jotai';
 
 import type { AppProps } from 'next/app';
 import type { ClientConfig } from '@micro-stacks/client';
+import { useRouter } from 'next/router';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const onPersistState: ClientConfig['onPersistState'] = useCallback(
     async (dehydratedState: string) => {
       await saveSession(dehydratedState);
@@ -19,6 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const onSignOut: ClientConfig['onSignOut'] = useCallback(async () => {
     await destroySession();
+    await router.push({ pathname: '/' });
   }, []);
 
   return (
