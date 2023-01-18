@@ -3,12 +3,12 @@ import { ClientProvider } from '@micro-stacks/react';
 import { useCallback } from 'react';
 import { destroySession, saveSession } from '../common/fetchers';
 import '../public/fonts.css';
-import { StacksMocknet } from 'micro-stacks/network';
 import { JotaiClientProvider } from '@micro-stacks/jotai';
 
 import type { AppProps } from 'next/app';
 import type { ClientConfig } from '@micro-stacks/client';
 import { useRouter } from 'next/router';
+import { getNetwork } from '@common/constants';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       dehydratedState={pageProps?.dehydratedState}
       onPersistState={onPersistState}
       onSignOut={onSignOut}
-      network={new StacksMocknet()}
+      network={getNetwork()}
     >
       <JotaiClientProvider>
         <Component {...pageProps} />

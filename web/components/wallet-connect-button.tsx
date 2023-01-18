@@ -8,6 +8,7 @@ export const WalletConnectButton = () => {
   return (
     <Button
       onClick={async () => {
+        console.log('signing in');
         await openAuthRequest();
       }}
     >

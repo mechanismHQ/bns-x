@@ -1,4 +1,5 @@
-import localtunnel from "localtunnel";
+import "cross-fetch/polyfill";
+import localtunnel, { Tunnel } from "localtunnel";
 import { networkInterfaces } from "os";
 
 interface TunnelReq {
@@ -6,31 +7,55 @@ interface TunnelReq {
   path: string;
 }
 
-function getIp() {
-  const nets = networkInterfaces();
-  return nets["en0"]?.[1].address;
-}
+let webT: Tunnel;
+let nodeT: Tunnel;
 
 async function tunnel(port: number, name: string) {
   const tunnel = await localtunnel({ port, subdomain: name });
 
   tunnel.on("request", (req: TunnelReq) => {
-    console.log(`${req.method} ${tunnel.url}/${req.path}`);
+    const now = new Date();
+    const d = `${now.getHours()}:${now.getMinutes()}`;
+    console.log(`${d} ${req.method} ${tunnel.url}${req.path}`);
   });
 
   tunnel.on("close", () => {
     console.log(`Tunnel ${tunnel.url} to port ${port} closed.`);
+    // exit("Tunnel crashed");
   });
 
   console.log(`Tunnel ${tunnel.url} to port ${port} opened.`);
+  return tunnel;
+}
+
+async function exit(reason: string) {
+  console.error(`Exiting: ${reason}`);
+  try {
+    webT.close();
+  } catch (error) {}
+  try {
+    nodeT.close();
+  } catch (error) {}
+  process.exit(1);
+}
+
+async function monitor() {
+  try {
+    const res = await fetch("http://localhost:3999/v2/info");
+    if (res.ok === false) {
+      return exit("Node crashed");
+    }
+    setTimeout(monitor, 10000);
+  } catch (error) {
+    console.error(error);
+    return exit("Node crashed");
+  }
 }
 
 async function run() {
-  await tunnel(3000, "swapy");
-  await tunnel(3999, "swapynode");
-  // await tunnel(51002, 'swapybtc');
-  const ip = getIp();
-  if (ip) console.log(`Connect to electrum at ${ip}:51002`);
+  webT = await tunnel(3000, "dots");
+  nodeT = await tunnel(3999, "dotsnode");
+  await monitor();
 }
 
 run()

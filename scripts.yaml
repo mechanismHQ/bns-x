@@ -45,3 +45,8 @@ scripts:
       - cp /dev/null indexer/mocks/prints.txt
       - vr codegen
       - clarinet integrate -d
+
+  lt:
+    pll:
+      - NEXT_PUBLIC_APP_URL="https://dots.loca.lt" NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev
+      - pnpm r scripts/lt.ts

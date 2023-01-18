@@ -167,23 +167,24 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
         alignItems="center"
       >
         <Stack isInline spacing="8px">
-          <HeaderLink href="javascript:void(0)" color="$onSurface-text-subdued">
+          <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
             Discord
           </HeaderLink>
-          <HeaderLink href="javascript:void(0)" color="$onSurface-text-subdued">
+          <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
             Twitter
           </HeaderLink>
-          <HeaderLink href="javascript:void(0)" color="$onSurface-text-subdued">
+          <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
             Docs
           </HeaderLink>
-          {/* <HeaderLink href="javascript:void(0)" color="$onSurface-text-subdued">
+          {/* <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
             Mint BNS names
           </HeaderLink> */}
           <HeaderLink href="/faucet" color="$onSurface-text-subdued">
             Testnet faucet
           </HeaderLink>
           <HeaderLink
-            href="javascript:void(0)"
+            // onClick={() => {}}
+            href="#"
             color="$onSurface-text-subdued"
             onClick={async () => {
               await signOut();

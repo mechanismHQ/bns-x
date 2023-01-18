@@ -1,4 +1,4 @@
-import { APP_URL } from './constants';
+import { getAppUrl } from './constants';
 
 /**
  * saveSession
@@ -8,7 +8,7 @@ import { APP_URL } from './constants';
  */
 export const saveSession = async (dehydratedState: string) => {
   try {
-    await fetch(APP_URL + '/api/session/save', {
+    await fetch(getAppUrl() + '/api/session/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dehydratedState }),
@@ -25,7 +25,7 @@ export const saveSession = async (dehydratedState: string) => {
  */
 export const destroySession = async () => {
   try {
-    await fetch(APP_URL + '/api/session/destroy', {
+    await fetch(getAppUrl() + '/api/session/destroy', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: null,

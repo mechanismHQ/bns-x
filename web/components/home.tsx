@@ -51,7 +51,8 @@ export const Home: React.FC<{ children?: React.ReactNode }> = () => {
             BNSx
           </Link>
           <Link
-            href="javascript:void(0);"
+            onClick={() => {}}
+            href="#"
             // target="_blank"
             textDecoration="none"
             variant="Heading03"
