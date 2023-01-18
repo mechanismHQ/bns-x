@@ -12,6 +12,8 @@ import { Link, LinkProps } from '@components/link';
 import { truncateMiddle } from '@common/utils';
 import { useGradient } from '@common/hooks/use-gradient';
 import { useAuth } from '@micro-stacks/react';
+import { LogoIcon } from '@components/icons/logo';
+import { useRouter } from 'next/router';
 
 export const TokenBalance: React.FC = () => {
   const stxAddress = useAtomValue(stxAddressAtom);
@@ -83,6 +85,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
 }) => {
   const isSSR = useIsSSR();
   const { signOut } = useAuth();
+  const router = useRouter();
 
   const year = useMemo(() => {
     return new Date().getFullYear();
@@ -109,7 +112,13 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
         maxWidth="1120px"
         alignItems={'center'}
       >
-        <Link
+        <LogoIcon
+          cursor="pointer"
+          onClick={async () => {
+            await router.push({ pathname: '/' });
+          }}
+        />
+        {/* <Link
           href="/"
           variant="Display01"
           fontSize="24px !important"
@@ -118,7 +127,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
           color="$icon"
         >
           dots.
-        </Link>
+        </Link> */}
         {/* <Text variant="Display01" fontSize="24px !important" lineHeight="24px !important">
           dots.
         </Text> */}
