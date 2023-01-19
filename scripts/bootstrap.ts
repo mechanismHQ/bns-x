@@ -9,7 +9,7 @@ import {
   StacksTransaction,
 } from "micro-stacks/transactions";
 import { contracts, bns } from "./script-utils";
-import { hashRipemd160 } from "micro-stacks/crypto";
+import { c32addressDecode, hashRipemd160 } from "micro-stacks/crypto";
 import { hashSha256 } from "micro-stacks/crypto-sha";
 import { asciiToBytes, bytesToHex, hexToBytes } from "micro-stacks/common";
 import { fetchAccountNonces } from "micro-stacks/api";
@@ -37,17 +37,17 @@ async function run() {
     url: network.getCoreApiUrl(),
     principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   });
-  const nonce = nonces.possible_next_nonce;
+  const nonce = nonces.possible_next_nonce - 1;
 
-  const tx = await makeContractCall({
-    ...executorDao.construct(contracts.proposalBootstrap.identifier),
-    network,
-    anchorMode: AnchorMode.Any,
-    postConditionMode: PostConditionMode.Allow,
-    senderKey: privateKey,
-    nonce,
-  });
-  await broadcast(tx);
+  // const tx = await makeContractCall({
+  //   ...executorDao.construct(contracts.proposalBootstrap.identifier),
+  //   network,
+  //   anchorMode: AnchorMode.Any,
+  //   postConditionMode: PostConditionMode.Allow,
+  //   senderKey: privateKey,
+  //   nonce,
+  // });
+  // await broadcast(tx);
 
   await broadcast(
     await makeContractCall({
@@ -104,6 +104,25 @@ async function run() {
       postConditionMode: PostConditionMode.Allow,
       senderKey: privateKey,
       nonce: nonce + 3,
+    })
+  );
+
+  const deployer = contracts.executorDao.identifier.split(".")[0];
+  const [_, pubHash] = c32addressDecode(deployer);
+
+  await broadcast(
+    await makeContractCall({
+      ...contracts.wrapperMigrator.setSigners([
+        {
+          signer: pubHash,
+          enabled: true,
+        },
+      ]),
+      network,
+      anchorMode: AnchorMode.Any,
+      postConditionMode: PostConditionMode.Allow,
+      senderKey: privateKey,
+      nonce: nonce + 4,
     })
   );
 

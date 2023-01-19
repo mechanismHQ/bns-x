@@ -1,3 +1,6 @@
+import { projectFactory } from '@clarigen/core';
+import { ClarigenNodeClient } from '@clarigen/node';
+import { project } from '@common/clarigen';
 import { StacksMocknet } from 'micro-stacks/network';
 
 export function getAppUrl() {
@@ -16,4 +19,13 @@ export function getNetwork() {
   // }
 
   return network;
+}
+
+export function getClarigenNodeClient() {
+  const network = getNetwork();
+  return ClarigenNodeClient({ network });
+}
+
+export function getContracts() {
+  return projectFactory(project, 'devnet');
 }

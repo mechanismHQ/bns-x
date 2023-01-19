@@ -16,5 +16,5 @@ export const {
   proposalBootstrap,
   proposalTrait,
   testUtils,
-  wrapperMigratorV1,
+  wrapperMigrator,
 } = contracts;

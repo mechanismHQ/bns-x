@@ -9,6 +9,13 @@ plan:
     - id: 0
       transactions:
         - contract-publish:
+            contract-name: extension-trait
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 980
+            path: contracts/traits/extension-trait.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
             contract-name: proposal-trait
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 860
@@ -16,19 +23,12 @@ plan:
             anchor-block-only: true
             clarity-version: 1
         - contract-publish:
-            contract-name: extension-trait
+            contract-name: executor-dao
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            cost: 980
-            path: contracts/traits/extension-trait.clar
+            cost: 37230
+            path: contracts/executor-dao.clar
             anchor-block-only: true
             clarity-version: 1
-        # - contract-publish:
-        #     contract-name: executor-dao
-        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-        #     cost: 36810
-        #     path: contracts/executor-dao.clar
-        #     anchor-block-only: true
-        #     clarity-version: 1
         - contract-publish:
             contract-name: nft-trait
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
@@ -36,60 +36,43 @@ plan:
             path: contracts/traits/nft-trait.clar
             anchor-block-only: true
             clarity-version: 1
+        - contract-publish:
+            contract-name: name-registry
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 163600
+            path: contracts/core/name-registry.clar
+            anchor-block-only: true
+            clarity-version: 1
+        #     clarity-version: 1
+        - contract-publish:
+            contract-name: proposal-bootstrap
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 13970
+            path: contracts/proposals/proposal-bootstrap.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: test-utils
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 14140
+            path: contracts/test-utils.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: wrapper-migrator
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 83190
+            path: contracts/testnet/wrapper-migrator-v1.clar
+            anchor-block-only: true
+            clarity-version: 1
       epoch: "2.0"
-    # Automatic 2.1 deploys are buggy
-    # - id: 1
-    #   transactions:
-    #     - contract-publish:
-    #         contract-name: name-registry
-    #         expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-    #         cost: 113110
-    #         path: contracts/core/name-registry.clar
-    #         anchor-block-only: true
-    #         clarity-version: 2
-    #     - contract-publish:
-    #         contract-name: name-wrapper
-    #         expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-    #         remap-principals:
-    #           SP000000000000000000002Q6VF78.bns: ST000000000000000000002AMW42H.bns
-    #         cost: 11730
-    #         path: contracts/testnet/name-wrapper.clar
-    #         anchor-block-only: true
-    #         clarity-version: 2
-    #     - contract-publish:
-    #         contract-name: wrapper-migrator
-    #         expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-    #         cost: 42420
-    #         path: contracts/testnet/wrapper-migrator.clar
-    #         anchor-block-only: true
-    #         clarity-version: 2
-    #     - contract-publish:
-    #         contract-name: proposal-bootstrap
-    #         expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-    #         cost: 72710
-    #         path: contracts/proposals/proposal-bootstrap.clar
-    #         anchor-block-only: true
-    #         clarity-version: 2
-    #     - contract-publish:
-    #         contract-name: test-utils
-    #         expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-    #         cost: 5570
-    #         path: contracts/test-utils.clar
-    #         anchor-block-only: true
-    #         clarity-version: 2
-    #     - contract-publish:
-    #         contract-name: onchain-resolver
-    #         expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-    #         cost: 100000
-    #         path: contracts/onchain-resolver.clar
-    #         anchor-block-only: true
-    #         clarity-version: 2
-    #     # - contract-call:
-    #     #     contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.executor-dao
-    #     #     method: construct
-    #     #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-    #     #     cost: 1000000
-    #     #     anchor_block_only: true
-    #     #     parameters:
-    #     #       - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap"
-    #   epoch: "2.1"
+    - id: 1
+      transactions:
+        - contract-call:
+            contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.executor-dao
+            method: construct
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 100000
+            anchor_block_only: false
+            parameters:
+              - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap"

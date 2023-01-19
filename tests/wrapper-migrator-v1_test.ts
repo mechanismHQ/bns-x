@@ -23,7 +23,7 @@ import { btcBytes, signedWrapperIds, alicePubkeyHash } from "./mocks.ts";
 import { nameWrapperCode } from "./mocks/wrapper.ts";
 import { registerNameV1, wrapperFactory } from "./bns-helpers.ts";
 
-const migrator = contracts.wrapperMigratorV1;
+const migrator = contracts.wrapperMigrator;
 
 function getWrapper(id: number) {
   const addr = `${deployer}.wrapper-${id}`;

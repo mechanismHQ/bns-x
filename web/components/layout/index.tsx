@@ -1,19 +1,20 @@
 import React, { Suspense, useMemo } from 'react';
 import { Flex, Box, SpaceBetween, Stack, BoxProps } from '@nelson-ui/react';
-import { Text } from './text';
+import { Text } from '../text';
 import { useAtom, useAtomValue } from 'jotai';
-import { userFormattedBalancesState } from '../common/store';
-import { useIsSSR } from '../common/hooks/use-is-ssr';
-import { SafeSuspense } from './safe-suspense';
+import { userFormattedBalancesState } from '../../common/store';
+import { useIsSSR } from '../../common/hooks/use-is-ssr';
+import { SafeSuspense } from '../safe-suspense';
 import { stxAddressAtom } from '@micro-stacks/jotai';
-import { WalletConnectButton } from './wallet-connect-button';
-import { userNameState, userPrimaryNameState } from '../common/store/names';
+import { WalletConnectButton } from '../wallet-connect-button';
+import { userNameState, userPrimaryNameState } from '../../common/store/names';
 import { Link, LinkProps } from '@components/link';
 import { truncateMiddle } from '@common/utils';
 import { useGradient } from '@common/hooks/use-gradient';
 import { useAuth } from '@micro-stacks/react';
 import { LogoIcon } from '@components/icons/logo';
 import { useRouter } from 'next/router';
+import { Header } from '@components/layout/header';
 
 export const TokenBalance: React.FC = () => {
   const stxAddress = useAtomValue(stxAddressAtom);
@@ -92,9 +93,6 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
   }, []);
   return (
     <SpaceBetween
-      // pt="20px"
-      // px="$10"
-      // pb="40px"
       justifyContent="center"
       flexDirection="column"
       alignItems="center"
@@ -103,45 +101,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
       width="100%"
       spacing="20px"
     >
-      {/* <Box width="100%" height="50px"> */}
-      <SpaceBetween
-        spacing="30px"
-        width="100%"
-        py="25px"
-        // height="50px"
-        maxWidth="1120px"
-        alignItems={'center'}
-      >
-        <LogoIcon
-          cursor="pointer"
-          onClick={async () => {
-            await router.push({ pathname: '/' });
-          }}
-        />
-        {/* <Link
-          href="/"
-          variant="Display01"
-          fontSize="24px !important"
-          lineHeight="24px !important"
-          textDecoration="none"
-          color="$icon"
-        >
-          dots.
-        </Link> */}
-        {/* <Text variant="Display01" fontSize="24px !important" lineHeight="24px !important">
-          dots.
-        </Text> */}
-        <Stack isInline spacing="8px">
-          {/* <HeaderLink href="">Mint</HeaderLink>
-          <HeaderLink href="">Tools</HeaderLink> */}
-
-          {isSSR ? null : (
-            <Suspense fallback={<></>}>
-              <TokenBalance />
-            </Suspense>
-          )}
-        </Stack>
-      </SpaceBetween>
+      <Header />
       {/* </Box> */}
       {/* <Flex flexGrow={2} justifyContent="center"> */}
       {centerBox ? (

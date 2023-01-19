@@ -29,7 +29,7 @@ export const Home: React.FC<{ children?: React.ReactNode }> = () => {
   return (
     <>
       <Box flexGrow={1} />
-      <Stack spacing="93px">
+      <Stack spacing="93px" pl="29px" pr="17px">
         <Stack spacing="34px">
           <Stack spacing="10px">
             <Text variant="Display02">Upgrade to BNSx</Text>

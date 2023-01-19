@@ -201,10 +201,10 @@
 ;; 
 ;; @throws if the name owned by the account is expired
 (define-read-only (get-legacy-name (account principal))
-  (match (contract-call? 'SP000000000000000000002Q6VF78.bns resolve-principal account)
+  (match (contract-call? 'ST000000000000000000002AMW42H.bns resolve-principal account)
     name (let
       (
-        (properties (unwrap-panic (contract-call? 'SP000000000000000000002Q6VF78.bns name-resolve (get namespace name) (get name name))))
+        (properties (unwrap-panic (contract-call? 'ST000000000000000000002AMW42H.bns name-resolve (get namespace name) (get name name))))
       )
       (ok (merge name properties))
     )
@@ -219,7 +219,7 @@
     (
       (name (try! (get-legacy-name tx-sender)))
     )
-    (match (contract-call? 'SP000000000000000000002Q6VF78.bns name-transfer (get namespace name) (get name name) wrapper (some (get zonefile-hash name)))
+    (match (contract-call? 'ST000000000000000000002AMW42H.bns name-transfer (get namespace name) (get name name) wrapper (some (get zonefile-hash name)))
       success (begin
         (print (merge name {
           topic: "v1-name-transfer",

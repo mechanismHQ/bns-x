@@ -68,3 +68,7 @@ console.log(
 );
 
 console.log("Alice pubkey hash", c32addressDecode(accounts.wallet_1.address));
+console.log(
+  "Deployer pubkey hash",
+  bytesToHex(c32addressDecode(accounts.deployer.address)[1])
+);

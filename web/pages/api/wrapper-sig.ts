@@ -5,7 +5,7 @@ import { bytesToHex } from 'micro-stacks/common';
 import { makeClarityHash } from 'micro-stacks/connect';
 import { signatureVrsToRsv } from '../../common/utils';
 import { fetchTransaction, txEndpoint } from 'micro-stacks/api';
-import { getNetwork } from '../../common/constants';
+import { getNetwork, getClarigenNodeClient, getContracts } from '../../common/constants';
 import {
   Transaction,
   MempoolTransaction,
@@ -29,6 +29,9 @@ export async function wrapperSignatureApi(req: NextApiRequest, res: NextApiRespo
     return res.status(500).send({ error: 'Invalid wrapper param' });
   }
 
+  const contracts = getContracts();
+  const clarigen = getClarigenNodeClient();
+
   const signerKey = createStacksPrivateKey(process.env.WRAPPER_SIGNER_KEY!);
 
   const tx = await fetchDeploy(txid);
@@ -38,10 +41,18 @@ export async function wrapperSignatureApi(req: NextApiRequest, res: NextApiRespo
   // todo: verify source code
   const contractId = tx.smart_contract.contract_id;
   const [deployer, contractName] = contractId.split('.');
+  const wrapperId = await clarigen.ro(contracts.wrapperMigrator.getIdFromWrapper(contractId));
+  if (wrapperId === null) {
+    return res.status(400).send({ error: 'Wrapper not registered' });
+  }
 
-  const cv = contractPrincipalCV(deployer, contractName);
+  const buf = Buffer.alloc(16);
+  buf.writeUintLE(Number(wrapperId), 0, 6);
+  const hash = bytesToHex(hashSha256(Uint8Array.from(buf)));
 
-  const hash = bytesToHex(makeClarityHash(cv));
+  // const cv = contractPrincipalCV(deployer, contractName);
+  // const hash = bytesToHex(makeClarityHash(cv));
+
   const sig = await signWithKey(signerKey, hash);
 
   const signature = signatureVrsToRsv(sig.data);
@@ -53,3 +64,6 @@ export async function wrapperSignatureApi(req: NextApiRequest, res: NextApiRespo
 }
 
 export default wrapperSignatureApi;
+function hashSha256(encoded: any): Uint8Array {
+  throw new Error('Function not implemented.');
+}

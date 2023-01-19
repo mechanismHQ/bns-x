@@ -1,4 +1,4 @@
-const needsConverted = ["wrapper-migrator.clar", "name-wrapper.clar"];
+const needsConverted = ["wrapper-migrator-v1.clar", "name-wrapper.clar"];
 
 await Promise.all(
   needsConverted.map(async (file) => {

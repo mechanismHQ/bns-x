@@ -2727,7 +2727,7 @@ export const contracts = {
     clarity_version: 'Clarity1',
     contractName: 'test-utils',
   },
-  wrapperMigratorV1: {
+  wrapperMigrator: {
     functions: {
       getNextWrapperId: {
         name: 'get-next-wrapper-id',
@@ -2923,6 +2923,12 @@ export const contracts = {
           bigint
         >
       >,
+      getIdFromWrapper: {
+        name: 'get-id-from-wrapper',
+        access: 'read_only',
+        args: [{ name: 'wrapper', type: 'principal' }],
+        outputs: { type: { optional: 'uint128' } },
+      } as TypedAbiFunction<[wrapper: TypedAbiArg<string, 'wrapper'>], bigint | null>,
       getLegacyName: {
         name: 'get-legacy-name',
         access: 'read_only',
@@ -2964,6 +2970,12 @@ export const contracts = {
         args: [{ name: 'name', type: 'uint128' }],
         outputs: { type: { optional: 'principal' } },
       } as TypedAbiFunction<[name: TypedAbiArg<number | bigint, 'name'>], string | null>,
+      getWrapperFromId: {
+        name: 'get-wrapper-from-id',
+        access: 'read_only',
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: { type: { optional: 'principal' } },
+      } as TypedAbiFunction<[id: TypedAbiArg<number | bigint, 'id'>], string | null>,
       getWrapperName: {
         name: 'get-wrapper-name',
         access: 'read_only',
@@ -2976,12 +2988,6 @@ export const contracts = {
         args: [{ name: 'id', type: 'uint128' }],
         outputs: { type: { buffer: { length: 32 } } },
       } as TypedAbiFunction<[id: TypedAbiArg<number | bigint, 'id'>], Uint8Array>,
-      isSelfExtension: {
-        name: 'is-self-extension',
-        access: 'read_only',
-        args: [],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<[], Response<boolean, bigint>>,
       isValidSigner: {
         name: 'is-valid-signer',
         access: 'read_only',
@@ -3173,7 +3179,7 @@ export const contracts = {
     non_fungible_tokens: [],
     fungible_tokens: [],
     clarity_version: 'Clarity1',
-    contractName: 'wrapper-migrator-v1',
+    contractName: 'wrapper-migrator',
   },
 } as const;
 
@@ -3232,9 +3238,9 @@ export const deployments = {
     testnet: null,
     mainnet: null,
   },
-  wrapperMigratorV1: {
-    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator-v1',
-    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator-v1',
+  wrapperMigrator: {
+    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
+    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
     testnet: null,
     mainnet: null,
   },
