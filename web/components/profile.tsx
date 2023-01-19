@@ -84,28 +84,25 @@ export const LoadableProfileRow: React.FC<{ children?: React.ReactNode; id: numb
 };
 
 export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
-  const router = useRouter();
-  const primary = useAtomValue(userPrimaryNameState);
   const v1Name = useAtomValue(currentUserV1NameState);
 
   const holdings = useAtomValue(currentUserNameIdsState[0]);
-
-  useEffect(() => {
-    console.log(holdings);
-  }, [holdings]);
 
   const rows = useMemo(() => {
     return holdings.map((id, index) => {
       return (
         <Box key={`name-${id}`}>
-          <LoadableProfileRow id={id} />
-          {index !== holdings.length - 1 ? (
+          {index === 0 && v1Name !== null ? null : (
             <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
-          ) : null}
+          )}
+          <LoadableProfileRow id={id} />
+          {/* {index !== holdings.length - 1 ? ( */}
+          <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
+          {/* ) : null} */}
         </Box>
       );
     });
-  }, [holdings]);
+  }, [holdings, v1Name]);
 
   const mintName = useCallback(() => {
     window.open('https://btc.us', '_blank');
@@ -123,7 +120,7 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
             <Text width="100%" mt="15px" variant="Body02">
               Looks like this address doesn't own any BNS or BNSx names. Mint a name then come back.
             </Text>
-            <Button width="260px" onClick={mintName} mx="auto" mt="49px">
+            <Button type="big" onClick={mintName} mx="auto" mt="49px">
               Mint name
             </Button>
           </Stack>

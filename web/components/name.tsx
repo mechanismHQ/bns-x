@@ -26,7 +26,7 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
           We will be adding about one zillion name management features soon!
         </Text>
         <Button
-          width="260px"
+          type="big"
           mx="auto"
           mt="49px"
           onClick={async () => {

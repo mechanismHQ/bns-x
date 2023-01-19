@@ -7,14 +7,11 @@ export const ButtonComp = styled(Box, {
   borderRadius: '50px',
   textAlign: 'center',
   cursor: 'pointer',
-  // maxWidth: '200px',
   display: 'inline-block',
   backgroundColor: '$text',
   color: '$surface-surface',
-  fontFamily: 'Inter',
-  fontSize: '14px',
   '&:hover': {
-    backgroundColor: '$grey-100',
+    backgroundColor: '$slate-300',
   },
   variants: {
     disabled: {
@@ -28,6 +25,23 @@ export const ButtonComp = styled(Box, {
         pointerEvents: 'none',
       },
     },
+    type: {
+      big: {
+        padding: '20px 24px',
+        width: '260px',
+        borderRadius: '50px',
+      },
+    },
+    secondary: {
+      true: {
+        border: '1px solid $onSurface-border',
+        background: 'none',
+        color: '$text',
+        '&:hover': {
+          background: 'none',
+        },
+      },
+    },
   },
 });
 
@@ -36,14 +50,13 @@ export const Button: React.FC<
     VariantProps<typeof ButtonComp> & {
       magic?: boolean;
     }
-> = ({ children, ...props }) => {
+> = ({ children, type, ...props }) => {
   return (
-    <ButtonComp {...props}>
+    <ButtonComp {...props} type={type}>
       <Text
-        // variant="Label01"
+        className="button-text"
+        variant={type === 'big' ? 'Label01' : 'Label02'}
         color="inherit"
-        fontSize="14px !important"
-        lineHeight="20px !important"
       >
         {children}
       </Text>

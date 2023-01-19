@@ -28,6 +28,8 @@ import { asciiToBytes } from 'micro-stacks/common';
 import { useEffect } from 'react';
 import { CheckIcon } from '@components/icons/check';
 import { useMemo } from 'react';
+import { Spinner } from '@components/spinner';
+import { ErrorIcon } from '@components/icons/error';
 
 const validatedRecipientInputAtom = atom('');
 
@@ -57,10 +59,24 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
     return !recipientAddress.data;
   }, [isBNS, recipientAddress]);
 
-  const canMigrate = useMemo(() => {
+  const stxAddrInvalid = useMemo(() => {
+    if (isBNS || !doSendElsewhere) return false;
+    if (recipientAddress.state !== 'hasData') return false;
+    return !recipientAddress.data;
+  }, [isBNS, doSendElsewhere, recipientAddress]);
+
+  const stxAddrValid = useMemo(() => {
+    if (isBNS || !doSendElsewhere) return false;
     if (recipientAddress.state !== 'hasData') return false;
     return !!recipientAddress.data;
-  }, [recipientAddress, doSendElsewhere, recipient]);
+  }, [isBNS, doSendElsewhere, recipientAddress]);
+
+  const canMigrate = useMemo(() => {
+    console.log(`can-migrate: state=${recipientAddress.state}`);
+    if (recipientAddress.state !== 'hasData') return false;
+    console.log(`can-migrate: data=${recipientAddress.data}`);
+    return !!recipientAddress.data;
+  }, [recipientAddress]);
 
   useEffect(() => {
     console.log('Recipient is', recipientAddress);
@@ -93,24 +109,50 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
                   placeholder="Enter a BNS name or Stacks address"
                   {...recipientInput.props}
                   autoFocus={true}
-                  // onBlur={fetchRecipientAddress}
                 />
-                {bnsInputValid ? (
+                {recipientAddress.state === 'loading' ? (
                   <Stack isInline spacing="$3" alignItems="center">
-                    <CheckIcon />
+                    <Spinner size={16} />
                     <Text variant="Label02" color="$onSurface-text-subdued">
-                      BNS Name looks good
+                      Fetching BNS name
                     </Text>
                   </Stack>
-                ) : null}
-                {bnsInputInvalid ? (
-                  <Stack isInline spacing="$3" alignItems="center">
-                    <CheckIcon />
-                    <Text variant="Label02" color="$onSurface-text-subdued">
-                      Invalid BNS name
-                    </Text>
-                  </Stack>
-                ) : null}
+                ) : (
+                  <>
+                    {bnsInputValid && (
+                      <Stack isInline spacing="$3" alignItems="center">
+                        <CheckIcon />
+                        <Text variant="Label02" color="$onSurface-text-subdued">
+                          BNS Name looks good
+                        </Text>
+                      </Stack>
+                    )}
+                    {bnsInputInvalid && (
+                      <Stack isInline spacing="$3" alignItems="center">
+                        <ErrorIcon />
+                        <Text variant="Label02" color="$text-error">
+                          Invalid BNS name
+                        </Text>
+                      </Stack>
+                    )}
+                    {stxAddrInvalid && (
+                      <Stack isInline spacing="$3" alignItems="center">
+                        <ErrorIcon />
+                        <Text variant="Label02" color="$text-error">
+                          Invalid Stacks address
+                        </Text>
+                      </Stack>
+                    )}
+                    {stxAddrValid && (
+                      <Stack isInline spacing="$3" alignItems="center">
+                        <CheckIcon />
+                        <Text variant="Label02" color="$onSurface-text-subdued">
+                          Stacks address looks good
+                        </Text>
+                      </Stack>
+                    )}
+                  </>
+                )}
               </>
             ) : null}
           </Stack>
@@ -118,7 +160,7 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
       </CenterBox>
       <Flex width="100%" justifyContent="center">
         <Button
-          width="260px"
+          type="big"
           disabled={!canMigrate}
           onClick={() => {
             if (canMigrate) void migrate();

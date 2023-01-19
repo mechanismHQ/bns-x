@@ -68,11 +68,12 @@ export const [migrateTxState] = txidQueryAtom(migrateTxidAtom);
 export const sendElsewhereAtom = atom(false);
 
 export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
-  queryKey: ['valid-recipient', get(upgradeRecipientAtom)],
+  queryKey: ['valid-recipient', get(upgradeRecipientAtom), get(sendElsewhereAtom)],
   queryFn: async () => {
     const recipient = get(upgradeRecipientAtom).trim();
+    const sendElsewhere = get(sendElsewhereAtom);
     console.log('recipient', recipient, !!recipient);
-    if (!get(sendElsewhereAtom)) {
+    if (!sendElsewhere) {
       const me = get(stxAddressAtom);
       return me || null;
     }
@@ -80,7 +81,6 @@ export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
     if (!recipient.includes('.')) {
       return validateStacksAddress(recipient) ? recipient : null;
     }
-    const network = get(networkAtom);
     const clarigen = get(clarigenAtom);
     const registry = get(nameRegistryState);
     const bns = get(bnsContractState);
@@ -94,6 +94,7 @@ export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
       clarigen.ro(bns.nameResolve({ name, namespace })),
     ]);
     if (xName !== null) {
+      console.log(`Setting recipient from BNSx: ${xName.owner}`);
       return xName.owner;
     }
     console.log('v1Name', v1Name);

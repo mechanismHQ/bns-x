@@ -7,17 +7,29 @@ import { migrateTxidAtom, migrateTxState, wrapperDeployTxidAtom } from '@store/m
 import { useAtomValue } from 'jotai/utils';
 import { Button } from '@components/button';
 import { useRouter } from 'next/router';
+import { useAuth } from '@micro-stacks/react';
 
 export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
   const migrateTxid = useAtomValue(migrateTxidAtom);
   const migrateTx = useAtomValue(migrateTxState);
   const router = useRouter();
+  const { openAuthRequest } = useAuth();
 
   const done = useCallback(() => {
     void router.push({
       pathname: '/profile',
     });
   }, [router]);
+
+  const switchAccounts = useCallback(async () => {
+    await openAuthRequest({
+      async onFinish() {
+        await router.push({
+          pathname: '/profile',
+        });
+      },
+    });
+  }, [openAuthRequest, router]);
 
   if (!migrateTxid) return null;
 
@@ -36,11 +48,18 @@ export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
         </Stack>
       </CenterBox>
       {migrateTx?.tx_status === 'success' ? (
-        <Flex width="100%" justifyContent="center">
-          <Button width="260px" onClick={done}>
-            Yay! Done
-          </Button>
-        </Flex>
+        <Stack spacing="25px">
+          <Flex width="100%" justifyContent="center">
+            <Button type="big" onClick={done}>
+              Done
+            </Button>
+          </Flex>
+          <Flex width="100%" justifyContent="center">
+            <Button type="big" secondary onClick={switchAccounts}>
+              Switch accounts
+            </Button>
+          </Flex>
+        </Stack>
       ) : null}
     </Stack>
   );

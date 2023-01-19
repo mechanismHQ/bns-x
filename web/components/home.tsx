@@ -35,9 +35,11 @@ export const Home: React.FC<{ children?: React.ReactNode }> = () => {
             <Text variant="Display02">Upgrade to BNSx</Text>
             <Text variant="Display02">Manage all your names</Text>
           </Stack>
-          <Button width="260px" onClick={getStarted}>
-            Get started
-          </Button>
+          <Box>
+            <Button type="big" onClick={getStarted}>
+              Get started
+            </Button>
+          </Box>
         </Stack>
         <Stack spacing="9px">
           <Link

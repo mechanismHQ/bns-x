@@ -50,3 +50,8 @@ scripts:
     pll:
       - NEXT_PUBLIC_APP_URL="https://dots.loca.lt" NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev
       - pnpm r scripts/lt.ts
+
+  lt-app:
+    cmd: NEXT_PUBLIC_APP_URL="https://dots.loca.lt" NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev
+
+  tunnel: pnpm r scripts/lt.ts
