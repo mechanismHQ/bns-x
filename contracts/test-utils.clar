@@ -7,7 +7,7 @@
 (define-private (is-deployer)
   (begin
     (asserts! (is-eq tx-sender deployer) ERR_UNAUTHORIZED)
-    (asserts! (not is-in-mainnet) ERR_UNAUTHORIZED)
+    ;; (asserts! (not is-in-mainnet) ERR_UNAUTHORIZED)
     (ok true)
   )
 

@@ -7,6 +7,9 @@ import {
   signWithKey,
   createStacksPrivateKey,
 } from "npm:micro-stacks/transactions";
+import { hashSha256 } from "npm:micro-stacks/crypto-sha";
+import { c32addressDecode, c32checkDecode } from "npm:micro-stacks/crypto";
+import { Buffer } from "npm:buffer";
 
 const deployer = accounts.deployer.address;
 
@@ -15,9 +18,11 @@ const alicePK = createStacksPrivateKey(
 );
 
 const names: string[] = [];
+const ids: number[] = [];
 
 for (let i = 0; i < 10; i++) {
   names.push(`wrapper-${i}`);
+  ids.push(i);
 }
 
 const contracts = await Promise.all(
@@ -33,9 +38,33 @@ const contracts = await Promise.all(
   })
 );
 
+const idSigs = await Promise.all(
+  ids.map(async (id) => {
+    const buf = Buffer.alloc(16);
+    buf.writeUIntLE(id, 0, 6);
+    const encoded = Uint8Array.from(buf);
+    const hash = bytesToHex(hashSha256(encoded));
+    const sig = await signWithKey(alicePK, hash);
+    return {
+      hash,
+      id,
+      signature: sig.data,
+    };
+  })
+);
+
 console.log(
   Deno.inspect(contracts, {
     compact: false,
     strAbbreviateSize: 1000,
   })
 );
+
+console.log(
+  Deno.inspect(idSigs, {
+    compact: false,
+    strAbbreviateSize: 1000,
+  })
+);
+
+console.log("Alice pubkey hash", c32addressDecode(accounts.wallet_1.address));

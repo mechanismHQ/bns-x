@@ -1701,229 +1701,6 @@ export const contracts = {
     clarity_version: 'Clarity1',
     contractName: 'extension-trait',
   },
-  managedNamespaces: {
-    functions: {
-      isDaoOrController: {
-        name: 'is-dao-or-controller',
-        access: 'private',
-        args: [{ name: 'namespace', type: { buffer: { length: 20 } } }],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [namespace: TypedAbiArg<Uint8Array, 'namespace'>],
-        Response<boolean, bigint>
-      >,
-      setControllersIter: {
-        name: 'set-controllers-iter',
-        access: 'private',
-        args: [
-          {
-            name: 'item',
-            type: {
-              tuple: [
-                { name: 'controller', type: 'principal' },
-                { name: 'enabled', type: 'bool' },
-                { name: 'namespace', type: { buffer: { length: 20 } } },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [
-          item: TypedAbiArg<
-            {
-              controller: string;
-              enabled: boolean;
-              namespace: Uint8Array;
-            },
-            'item'
-          >
-        ],
-        Response<boolean, bigint>
-      >,
-      validateNamespaceUpdate: {
-        name: 'validate-namespace-update',
-        access: 'private',
-        args: [{ name: 'namespace', type: { buffer: { length: 20 } } }],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [namespace: TypedAbiArg<Uint8Array, 'namespace'>],
-        Response<boolean, bigint>
-      >,
-      setNamespaceControllers: {
-        name: 'set-namespace-controllers',
-        access: 'public',
-        args: [
-          {
-            name: 'extension-list',
-            type: {
-              list: {
-                type: {
-                  tuple: [
-                    { name: 'controller', type: 'principal' },
-                    { name: 'enabled', type: 'bool' },
-                    { name: 'namespace', type: { buffer: { length: 20 } } },
-                  ],
-                },
-                length: 200,
-              },
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: { list: { type: { response: { ok: 'bool', error: 'uint128' } }, length: 200 } },
-              error: 'none',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          extensionList: TypedAbiArg<
-            {
-              controller: string;
-              enabled: boolean;
-              namespace: Uint8Array;
-            }[],
-            'extensionList'
-          >
-        ],
-        Response<Response<boolean, bigint>[], null>
-      >,
-      setNamespaceOwner: {
-        name: 'set-namespace-owner',
-        access: 'public',
-        args: [
-          { name: 'namespace', type: { buffer: { length: 20 } } },
-          { name: 'owner', type: 'principal' },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [namespace: TypedAbiArg<Uint8Array, 'namespace'>, owner: TypedAbiArg<string, 'owner'>],
-        Response<boolean, bigint>
-      >,
-      getNamespaceOwner: {
-        name: 'get-namespace-owner',
-        access: 'read_only',
-        args: [{ name: 'namespace', type: { buffer: { length: 20 } } }],
-        outputs: { type: { optional: 'principal' } },
-      } as TypedAbiFunction<[namespace: TypedAbiArg<Uint8Array, 'namespace'>], string | null>,
-      isController: {
-        name: 'is-controller',
-        access: 'read_only',
-        args: [
-          { name: 'namespace', type: { buffer: { length: 20 } } },
-          { name: 'controller', type: 'principal' },
-        ],
-        outputs: { type: 'bool' },
-      } as TypedAbiFunction<
-        [
-          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
-          controller: TypedAbiArg<string, 'controller'>
-        ],
-        boolean
-      >,
-      isNamespaceController: {
-        name: 'is-namespace-controller',
-        access: 'read_only',
-        args: [
-          { name: 'namespace', type: { buffer: { length: 20 } } },
-          { name: 'controller', type: 'principal' },
-        ],
-        outputs: { type: 'bool' },
-      } as TypedAbiFunction<
-        [
-          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
-          controller: TypedAbiArg<string, 'controller'>
-        ],
-        boolean
-      >,
-    },
-    maps: {
-      namespaceControllersMap: {
-        name: 'namespace-controllers-map',
-        key: {
-          tuple: [
-            { name: 'controller', type: 'principal' },
-            { name: 'namespace', type: { buffer: { length: 20 } } },
-          ],
-        },
-        value: 'bool',
-      } as TypedAbiMap<
-        {
-          controller: string;
-          namespace: Uint8Array;
-        },
-        boolean
-      >,
-      namespaceOwnersMap: {
-        name: 'namespace-owners-map',
-        key: { buffer: { length: 20 } },
-        value: 'principal',
-      } as TypedAbiMap<Uint8Array, string>,
-    },
-    variables: {
-      ERR_NAMESPACE_OWNER_EXISTS: {
-        name: 'ERR_NAMESPACE_OWNER_EXISTS',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      ERR_NAMESPACE_UPDATE_UNAUTHORIZED: {
-        name: 'ERR_NAMESPACE_UPDATE_UNAUTHORIZED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      ERR_UNAUTHORIZED: {
-        name: 'ERR_UNAUTHORIZED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      NAMESPACE_MANAGER_ROLE: {
-        name: 'NAMESPACE_MANAGER_ROLE',
-        type: {
-          'string-ascii': {
-            length: 10,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<string>,
-    },
-    constants: {
-      ERR_NAMESPACE_OWNER_EXISTS: {
-        isOk: false,
-        value: 7005n,
-      },
-      ERR_NAMESPACE_UPDATE_UNAUTHORIZED: {
-        isOk: false,
-        value: 7006n,
-      },
-      ERR_UNAUTHORIZED: {
-        isOk: false,
-        value: 7000n,
-      },
-      NAMESPACE_MANAGER_ROLE: 'namespaces',
-    },
-    non_fungible_tokens: [],
-    fungible_tokens: [],
-    clarity_version: 'Clarity2',
-    contractName: 'managed-namespaces',
-  },
   nameRegistry: {
     functions: {
       addNode: {
@@ -2630,7 +2407,7 @@ export const contracts = {
     },
     non_fungible_tokens: [{ name: 'names', type: 'uint128' } as ClarityAbiTypeNonFungibleToken],
     fungible_tokens: [],
-    clarity_version: 'Clarity2',
+    clarity_version: 'Clarity1',
     contractName: 'name-registry',
   },
   nameWrapper: {
@@ -2811,7 +2588,7 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
-    clarity_version: 'Clarity2',
+    clarity_version: 'Clarity1',
     contractName: 'name-wrapper',
   },
   nftTrait: {
@@ -2823,78 +2600,6 @@ export const contracts = {
     fungible_tokens: [],
     clarity_version: 'Clarity1',
     contractName: 'nft-trait',
-  },
-  onchainResolver: {
-    functions: {
-      emitZonefile: {
-        name: 'emit-zonefile',
-        access: 'public',
-        args: [{ name: 'zonefile', type: { buffer: { length: 102400 } } }],
-        outputs: { type: { response: { ok: 'bool', error: 'none' } } },
-      } as TypedAbiFunction<
-        [zonefile: TypedAbiArg<Uint8Array, 'zonefile'>],
-        Response<boolean, null>
-      >,
-      setZonefile: {
-        name: 'set-zonefile',
-        access: 'public',
-        args: [
-          { name: 'id', type: 'uint128' },
-          { name: 'zonefile', type: { buffer: { length: 2048 } } },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [id: TypedAbiArg<number | bigint, 'id'>, zonefile: TypedAbiArg<Uint8Array, 'zonefile'>],
-        Response<boolean, bigint>
-      >,
-      resolveZonefile: {
-        name: 'resolve-zonefile',
-        access: 'read_only',
-        args: [{ name: 'id', type: 'uint128' }],
-        outputs: { type: { optional: { buffer: { length: 2048 } } } },
-      } as TypedAbiFunction<[id: TypedAbiArg<number | bigint, 'id'>], Uint8Array | null>,
-      resolveZonefileForName: {
-        name: 'resolve-zonefile-for-name',
-        access: 'read_only',
-        args: [
-          { name: 'name', type: { buffer: { length: 48 } } },
-          { name: 'namespace', type: { buffer: { length: 20 } } },
-        ],
-        outputs: { type: { optional: { buffer: { length: 2048 } } } },
-      } as TypedAbiFunction<
-        [name: TypedAbiArg<Uint8Array, 'name'>, namespace: TypedAbiArg<Uint8Array, 'namespace'>],
-        Uint8Array | null
-      >,
-    },
-    maps: {
-      zonefilesMap: {
-        name: 'zonefiles-map',
-        key: 'uint128',
-        value: { buffer: { length: 2048 } },
-      } as TypedAbiMap<number | bigint, Uint8Array>,
-    },
-    variables: {
-      ERR_UNAUTHORIZED: {
-        name: 'ERR_UNAUTHORIZED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-    },
-    constants: {
-      ERR_UNAUTHORIZED: {
-        isOk: false,
-        value: 8000n,
-      },
-    },
-    non_fungible_tokens: [],
-    fungible_tokens: [],
-    clarity_version: 'Clarity2',
-    contractName: 'onchain-resolver',
   },
   proposalBootstrap: {
     functions: {
@@ -2924,7 +2629,7 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
-    clarity_version: 'Clarity2',
+    clarity_version: 'Clarity1',
     contractName: 'proposal-bootstrap',
   },
   proposalTrait: {
@@ -3019,11 +2724,17 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
-    clarity_version: 'Clarity2',
+    clarity_version: 'Clarity1',
     contractName: 'test-utils',
   },
-  wrapperMigrator: {
+  wrapperMigratorV1: {
     functions: {
+      getNextWrapperId: {
+        name: 'get-next-wrapper-id',
+        access: 'private',
+        args: [],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[], bigint>,
       resolveAndTransfer: {
         name: 'resolve-and-transfer',
         access: 'private',
@@ -3068,7 +2779,7 @@ export const contracts = {
             type: {
               tuple: [
                 { name: 'enabled', type: 'bool' },
-                { name: 'signer', type: 'principal' },
+                { name: 'signer', type: { buffer: { length: 20 } } },
               ],
             },
           },
@@ -3079,7 +2790,7 @@ export const contracts = {
           item: TypedAbiArg<
             {
               enabled: boolean;
-              signer: string;
+              signer: Uint8Array;
             },
             'item'
           >
@@ -3137,6 +2848,12 @@ export const contracts = {
           bigint
         >
       >,
+      registerWrapper: {
+        name: 'register-wrapper',
+        access: 'public',
+        args: [{ name: 'wrapper', type: 'principal' }],
+        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
+      } as TypedAbiFunction<[wrapper: TypedAbiArg<string, 'wrapper'>], Response<bigint, bigint>>,
       setSigners: {
         name: 'set-signers',
         access: 'public',
@@ -3148,7 +2865,7 @@ export const contracts = {
                 type: {
                   tuple: [
                     { name: 'enabled', type: 'bool' },
-                    { name: 'signer', type: 'principal' },
+                    { name: 'signer', type: { buffer: { length: 20 } } },
                   ],
                 },
                 length: 50,
@@ -3169,39 +2886,12 @@ export const contracts = {
           signers: TypedAbiArg<
             {
               enabled: boolean;
-              signer: string;
+              signer: Uint8Array;
             }[],
             'signers'
           >
         ],
         Response<Uint8Array[], bigint>
-      >,
-      construct: {
-        name: 'construct',
-        access: 'read_only',
-        args: [{ name: 'hash-bytes', type: { buffer: { length: 20 } } }],
-        outputs: {
-          type: {
-            response: {
-              ok: 'principal',
-              error: {
-                tuple: [
-                  { name: 'error_code', type: 'uint128' },
-                  { name: 'value', type: { optional: 'principal' } },
-                ],
-              },
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [hashBytes: TypedAbiArg<Uint8Array, 'hashBytes'>],
-        Response<
-          string,
-          {
-            error_code: bigint;
-            value: string | null;
-          }
-        >
       >,
       debugSignature: {
         name: 'debug-signature',
@@ -3216,7 +2906,6 @@ export const contracts = {
               ok: {
                 tuple: [
                   { name: 'pubkey-hash', type: { buffer: { length: 20 } } },
-                  { name: 'signer', type: 'principal' },
                   { name: 'valid-signer', type: 'bool' },
                 ],
               },
@@ -3229,7 +2918,6 @@ export const contracts = {
         Response<
           {
             pubkeyHash: Uint8Array;
-            signer: string;
             validSigner: boolean;
           },
           bigint
@@ -3282,18 +2970,24 @@ export const contracts = {
         args: [{ name: 'wrapper', type: 'principal' }],
         outputs: { type: { optional: 'uint128' } },
       } as TypedAbiFunction<[wrapper: TypedAbiArg<string, 'wrapper'>], bigint | null>,
-      hashPrincipal: {
-        name: 'hash-principal',
+      hashId: {
+        name: 'hash-id',
         access: 'read_only',
-        args: [{ name: 'wrapper', type: 'principal' }],
+        args: [{ name: 'id', type: 'uint128' }],
         outputs: { type: { buffer: { length: 32 } } },
-      } as TypedAbiFunction<[wrapper: TypedAbiArg<string, 'wrapper'>], Uint8Array>,
+      } as TypedAbiFunction<[id: TypedAbiArg<number | bigint, 'id'>], Uint8Array>,
+      isSelfExtension: {
+        name: 'is-self-extension',
+        access: 'read_only',
+        args: [],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<[], Response<boolean, bigint>>,
       isValidSigner: {
         name: 'is-valid-signer',
         access: 'read_only',
-        args: [{ name: 'signer', type: 'principal' }],
+        args: [{ name: 'pubkey', type: { buffer: { length: 20 } } }],
         outputs: { type: 'bool' },
-      } as TypedAbiFunction<[signer: TypedAbiArg<string, 'signer'>], boolean>,
+      } as TypedAbiFunction<[pubkey: TypedAbiArg<Uint8Array, 'pubkey'>], boolean>,
       recoverPubkeyHash: {
         name: 'recover-pubkey-hash',
         access: 'read_only',
@@ -3320,6 +3014,10 @@ export const contracts = {
       >,
     },
     maps: {
+      idWrapperMap: { name: 'id-wrapper-map', key: 'uint128', value: 'principal' } as TypedAbiMap<
+        number | bigint,
+        string
+      >,
       migratorSignersMap: {
         name: 'migrator-signers-map',
         key: { buffer: { length: 20 } },
@@ -3330,6 +3028,10 @@ export const contracts = {
         key: 'uint128',
         value: 'principal',
       } as TypedAbiMap<number | bigint, string>,
+      wrapperIdMap: { name: 'wrapper-id-map', key: 'principal', value: 'uint128' } as TypedAbiMap<
+        string,
+        bigint
+      >,
       wrapperNameMap: {
         name: 'wrapper-name-map',
         key: 'principal',
@@ -3387,6 +3089,26 @@ export const contracts = {
         },
         access: 'constant',
       } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_WRAPPER_ALREADY_REGISTERED: {
+        name: 'ERR_WRAPPER_ALREADY_REGISTERED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_WRAPPER_NOT_REGISTERED: {
+        name: 'ERR_WRAPPER_NOT_REGISTERED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
       ERR_WRAPPER_USED: {
         name: 'ERR_WRAPPER_USED',
         type: {
@@ -3406,29 +3128,11 @@ export const contracts = {
         },
         access: 'constant',
       } as TypedAbiVariable<string>,
-      networkAddrVersion: {
-        name: 'network-addr-version',
-        type: {
-          buffer: {
-            length: 1,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Uint8Array>,
-      wrappedIdVar: {
-        name: 'wrapped-id-var',
+      nextWrapperIdVar: {
+        name: 'next-wrapper-id-var',
         type: 'uint128',
         access: 'variable',
       } as TypedAbiVariable<bigint>,
-      wrapperDeployer: {
-        name: 'wrapper-deployer',
-        type: {
-          buffer: {
-            length: 20,
-          },
-        },
-        access: 'variable',
-      } as TypedAbiVariable<Uint8Array>,
     },
     constants: {
       ERR_INVALID_CONTRACT_NAME: {
@@ -3451,21 +3155,25 @@ export const contracts = {
         isOk: false,
         value: 6001n,
       },
+      ERR_WRAPPER_ALREADY_REGISTERED: {
+        isOk: false,
+        value: 6007n,
+      },
+      ERR_WRAPPER_NOT_REGISTERED: {
+        isOk: false,
+        value: 6006n,
+      },
       ERR_WRAPPER_USED: {
         isOk: false,
         value: 6005n,
       },
       ROLE: 'mig-signer',
-      networkAddrVersion: Uint8Array.from([26]),
-      wrappedIdVar: 0n,
-      wrapperDeployer: Uint8Array.from([
-        109, 120, 222, 123, 6, 37, 223, 191, 193, 108, 58, 138, 87, 53, 246, 220, 61, 195, 242, 206,
-      ]),
+      nextWrapperIdVar: 0n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
-    clarity_version: 'Clarity2',
-    contractName: 'wrapper-migrator',
+    clarity_version: 'Clarity1',
+    contractName: 'wrapper-migrator-v1',
   },
 } as const;
 
@@ -3488,12 +3196,6 @@ export const deployments = {
     testnet: null,
     mainnet: null,
   },
-  managedNamespaces: {
-    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.managed-namespaces',
-    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.managed-namespaces',
-    testnet: null,
-    mainnet: null,
-  },
   nameRegistry: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry',
@@ -3509,12 +3211,6 @@ export const deployments = {
   nftTrait: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.nft-trait',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.nft-trait',
-    testnet: null,
-    mainnet: null,
-  },
-  onchainResolver: {
-    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.onchain-resolver',
-    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.onchain-resolver',
     testnet: null,
     mainnet: null,
   },
@@ -3536,9 +3232,9 @@ export const deployments = {
     testnet: null,
     mainnet: null,
   },
-  wrapperMigrator: {
-    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
-    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
+  wrapperMigratorV1: {
+    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator-v1',
+    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator-v1',
     testnet: null,
     mainnet: null,
   },

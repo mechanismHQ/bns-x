@@ -120,11 +120,11 @@ export function deployWithNamespace() {
   const deployer = accounts.addr("deployer");
 
   beforeAll(() => {
-    registerAllNamespaces(chain);
     chain.txOk(
       contracts.executorDao.construct(contracts.proposalBootstrap.identifier),
       deployer
     );
+    registerAllNamespaces(chain);
   });
 
   return deployment;

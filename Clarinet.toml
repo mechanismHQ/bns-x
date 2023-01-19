@@ -25,20 +25,20 @@ path = 'contracts/traits/extension-trait.clar'
 clarity_version = 1
 epoch = 2.0
 
-[contracts.managed-namespaces]
-path = 'contracts/core/managed-namespaces.clar'
-clarity_version = 2
-epoch = 2.1
+# [contracts.managed-namespaces]
+# path = 'contracts/core/managed-namespaces.clar'
+# clarity_version = 2
+# epoch = 2.1
 
 [contracts.name-registry]
 path = 'contracts/core/name-registry.clar'
-clarity_version = 2
-epoch = 2.1
+clarity_version = 1
+epoch = 2.0
 
 [contracts.name-wrapper]
 path = 'contracts/name-wrapper.clar'
-clarity_version = 2
-epoch = 2.1
+clarity_version = 1
+epoch = 2.0
 
 [contracts.nft-trait]
 path = 'contracts/traits/nft-trait.clar'
@@ -47,8 +47,8 @@ epoch = 2.0
 
 [contracts.proposal-bootstrap]
 path = 'contracts/proposals/proposal-bootstrap.clar'
-clarity_version = 2
-epoch = 2.1
+clarity_version = 1
+epoch = 2.0
 
 [contracts.proposal-trait]
 path = 'contracts/traits/proposal-trait.clar'
@@ -57,18 +57,28 @@ epoch = 2.0
 
 [contracts.test-utils]
 path = 'contracts/test-utils.clar'
-clarity_version = 2
-epoch = 2.1
+clarity_version = 1
+epoch = 2.0
 
-[contracts.wrapper-migrator]
-path = 'contracts/wrapper-migrator.clar'
-clarity_version = 2
-epoch = 2.1
+# [contracts.test-utils-2-1]
+# path = 'contracts/test-utils-2-1.clar'
+# clarity_version = 2
+# epoch = 2.1
 
-[contracts.onchain-resolver]
-path = "contracts/onchain-resolver.clar"
-clarity_version = 2
-epoch = 2.1
+# [contracts.wrapper-migrator]
+# path = 'contracts/wrapper-migrator.clar'
+# clarity_version = 2
+# epoch = 2.1
+
+[contracts.wrapper-migrator-v1]
+path = 'contracts/wrapper-migrator-v1.clar'
+clarity_version = 1
+epoch = 2.0
+
+# [contracts.onchain-resolver]
+# path = "contracts/onchain-resolver.clar"
+# clarity_version = 2
+# epoch = 2.1
 
 # [contracts.bns-init]
 # path = 'contracts/testnet/bns-init.clar'
@@ -83,8 +93,3 @@ strict = false
 trusted_sender = true
 trusted_caller = true
 callee_filter = true
-
-[devnet]
-enable_next_features = true
-epoch_2_05 = 101
-epoch_2_1 = 102
