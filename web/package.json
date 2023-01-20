@@ -18,6 +18,7 @@
     "@nelson-ui/core": "^0.1.5",
     "@nelson-ui/react": "^0.1.6",
     "@nelson-ui/theme": "^0.1.7",
+    "@sindresorhus/string-hash": "^2.0.0",
     "@stacks/stacks-blockchain-api-types": "^6.1.1",
     "@stitches/core": "^1.2.8",
     "@stitches/react": "^1.2.8",
@@ -39,6 +40,7 @@
     "react": "18.2.0",
     "react-datepicker": "^4.8.0",
     "react-dom": "18.2.0",
+    "tinycolor2": "^1.5.2",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
@@ -46,6 +48,7 @@
     "@types/node": "18.0.6",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
+    "@types/tinycolor2": "^1.4.3",
     "eslint": "8.20.0",
     "eslint-config-next": "12.2.2",
     "prettier": "2.7.1",
