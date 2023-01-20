@@ -3,7 +3,9 @@ import { ClientProvider } from '@micro-stacks/react';
 import { useCallback } from 'react';
 import { destroySession, saveSession } from '../common/fetchers';
 import '../public/fonts.css';
-import { JotaiClientProvider } from '@micro-stacks/jotai';
+import { JotaiClientProvider } from '@store/micro-stacks';
+import { queryClientAtom } from 'jotai-tanstack-query';
+import { queryClient } from '@store/query-client';
 
 import type { AppProps } from 'next/app';
 import type { ClientConfig } from '@micro-stacks/client';
@@ -33,7 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       onSignOut={onSignOut}
       network={getNetwork()}
     >
-      <JotaiClientProvider>
+      <JotaiClientProvider initialValues={[[queryClientAtom, queryClient]]}>
         <Component {...pageProps} />
       </JotaiClientProvider>
     </ClientProvider>

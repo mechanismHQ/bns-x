@@ -5,7 +5,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { userFormattedBalancesState } from '../../common/store';
 import { useIsSSR } from '../../common/hooks/use-is-ssr';
 import { SafeSuspense } from '../safe-suspense';
-import { stxAddressAtom } from '@micro-stacks/jotai';
+import { stxAddressAtom } from '@store/micro-stacks';
 import { WalletConnectButton } from '../wallet-connect-button';
 import { userNameState, userPrimaryNameState } from '../../common/store/names';
 import { Link, LinkProps } from '@components/link';

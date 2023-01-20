@@ -22,7 +22,7 @@ import { useInput } from '@common/hooks/use-input';
 import { CenterBox } from '@components/layout';
 import { Button } from '@components/button';
 import { loadable, useAtomCallback } from 'jotai/utils';
-import { networkAtom, stxAddressAtom } from '@micro-stacks/jotai';
+import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { validateStacksAddress } from 'micro-stacks/crypto';
 import { asciiToBytes } from 'micro-stacks/common';
 import { useEffect } from 'react';

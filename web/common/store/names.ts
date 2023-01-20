@@ -8,7 +8,7 @@ import {
 import { atom, Getter } from 'jotai';
 
 import { atomFamilyWithQuery, atomWithQuery, useQueryAtom } from 'jotai-query-toolkit';
-import { networkAtom, stxAddressAtom } from '@micro-stacks/jotai';
+import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { convertNameBuff } from '../utils';
 import { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
 import { NameExt, NameProperties, WithCombined } from '../types';
@@ -33,10 +33,28 @@ export const v1NameAddressQueryState = atomFamilyWithQuery<string, NameExt | nul
   }
 );
 
+export const v1NameAddressQueryState2 = atomFamily((address: string) => {
+  return atomsWithQuery(get => ({
+    queryKey: ['v1NameState', address],
+    queryFn: async () => {
+      const bns = get(bnsContractState);
+      const clarigen = get(clarigenAtom);
+      bns.resolvePrincipal(address);
+      const res = await clarigen.ro(bns.resolvePrincipal(address), {
+        latest: true,
+      });
+      if (res.isOk) {
+        return convertNameBuff(res.value);
+      }
+      return null;
+    },
+  }))[0];
+}, Object.is);
+
 export const currentUserV1NameState = atom(get => {
   const address = get(stxAddressAtom);
   if (!address) return null;
-  return get(v1NameAddressQueryState(address));
+  return get(v1NameAddressQueryState2(address));
 });
 
 export const addressPrimaryNameState = atomFamilyWithQuery<

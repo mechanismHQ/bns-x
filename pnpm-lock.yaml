@@ -124,6 +124,7 @@ importers:
       '@stitches/core': ^1.2.8
       '@stitches/react': ^1.2.8
       '@tanstack/query-core': ^4.14.1
+      '@tanstack/react-query': ^4.22.0
       '@types/node': 18.0.6
       '@types/react': 18.0.15
       '@types/react-datepicker': ^4.8.0
@@ -161,6 +162,7 @@ importers:
       '@stitches/core': 1.2.8
       '@stitches/react': 1.2.8_react@18.2.0
       '@tanstack/query-core': 4.19.1
+      '@tanstack/react-query': 4.22.0_biqbaboplfbrettd7655fr4n2y
       '@types/react-datepicker': 4.8.0_biqbaboplfbrettd7655fr4n2y
       bignumber.js: 9.1.0
       clsx: 1.2.1
@@ -1963,6 +1965,28 @@ packages:
 
   /@tanstack/query-core/4.19.1:
     resolution: {integrity: sha512-Zp0aIose5C8skBzqbVFGk9HJsPtUhRVDVNWIqVzFbGQQgYSeLZMd3Sdb4+EnA5wl1J7X+bre2PJGnQg9x/zHOA==}
+    dev: false
+
+  /@tanstack/query-core/4.22.0:
+    resolution: {integrity: sha512-OeLyBKBQoT265f5G9biReijeP8mBxNFwY7ZUu1dKL+YzqpG5q5z7J/N1eT8aWyKuhyDTiUHuKm5l+oIVzbtrjw==}
+    dev: false
+
+  /@tanstack/react-query/4.22.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-P9o+HjG42uB/xHR6dMsJaPhtZydSe4v0xdG5G/cEj1oHZAXelMlm67/rYJNQGKgBamKElKogj+HYGF+NY2yHYg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@tanstack/query-core': 4.22.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
   /@trpc/server/10.5.0:

@@ -19,6 +19,7 @@ const FooterContainer = styled(SpaceBetween, {
     outer: {
       true: {
         '@bp1': {
+          pl: '29px',
           gap: '10px !important',
         },
       },

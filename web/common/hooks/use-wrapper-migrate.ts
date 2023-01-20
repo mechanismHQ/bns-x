@@ -11,7 +11,7 @@ import {
   validRecipientState,
 } from '../store/migration';
 import { hexToBytes } from 'micro-stacks/common';
-import { stxAddressAtom } from '@micro-stacks/jotai';
+import { stxAddressAtom } from '@store/micro-stacks';
 import {
   PostConditionMode,
   makeStandardNonFungiblePostCondition,

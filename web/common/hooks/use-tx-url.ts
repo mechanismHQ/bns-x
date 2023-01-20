@@ -1,5 +1,5 @@
 import { getTxId, getTxUrl } from '@common/utils';
-import { networkAtom } from '@micro-stacks/jotai';
+import { networkAtom } from '@store/micro-stacks';
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 

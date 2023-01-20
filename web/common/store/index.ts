@@ -6,7 +6,7 @@ import {
   networkAtom,
   networkState,
   stxAddressAtom,
-} from '@micro-stacks/jotai';
+} from '@store/micro-stacks';
 import { Atom, atom } from 'jotai';
 import { StacksMocknet } from 'micro-stacks/network';
 import { atomFamilyWithQuery, atomWithQuery, useQueryAtom } from 'jotai-query-toolkit';

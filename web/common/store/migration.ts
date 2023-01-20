@@ -4,7 +4,7 @@ import { tupleCV, bufferCV } from 'micro-stacks/clarity';
 import { asciiToBytes } from 'micro-stacks/common';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { Atom, PrimitiveAtom } from 'jotai';
-import { networkAtom, stxAddressAtom } from '@micro-stacks/jotai';
+import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { fetchTransaction } from '@common/stacks-api';
 import { validateStacksAddress } from 'micro-stacks/crypto';
 import { bnsContractState, clarigenAtom, nameRegistryState } from '@store/index';

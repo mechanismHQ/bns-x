@@ -13,7 +13,7 @@ import { useAtomValue } from 'jotai/utils';
 import { Button } from '@components/button';
 import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
-import { stxAddressAtom } from '@micro-stacks/jotai';
+import { stxAddressAtom } from '@store/micro-stacks';
 
 export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
   const recipient = useAtomValue(validRecipientState);
