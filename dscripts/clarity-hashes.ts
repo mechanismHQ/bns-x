@@ -1,7 +1,7 @@
 import { contractPrincipalCV } from "npm:micro-stacks/clarity";
 import { makeClarityHash } from "npm:micro-stacks/connect";
 
-import { accounts } from "../artifacts/clarigen.ts";
+import { accounts } from "../tests/clarigen.ts";
 import { bytesToHex } from "../deps.ts";
 import {
   signWithKey,
@@ -11,7 +11,7 @@ import { hashSha256 } from "npm:micro-stacks/crypto-sha";
 import { c32addressDecode, c32checkDecode } from "npm:micro-stacks/crypto";
 import { Buffer } from "npm:buffer";
 
-const deployer = accounts.deployer.address;
+const deployer = accounts.addr("deployer");
 
 const alicePK = createStacksPrivateKey(
   "7287ba251d44a4d3fd9276c88ce34c5c52a038955511cccaf77e61068649c17801"
@@ -67,8 +67,8 @@ console.log(
   })
 );
 
-console.log("Alice pubkey hash", c32addressDecode(accounts.wallet_1.address));
+console.log("Alice pubkey hash", c32addressDecode(accounts.addr("wallet_1")));
 console.log(
   "Deployer pubkey hash",
-  bytesToHex(c32addressDecode(accounts.deployer.address)[1])
+  bytesToHex(c32addressDecode(accounts.addr("deployer"))[1])
 );

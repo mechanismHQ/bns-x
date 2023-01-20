@@ -7,7 +7,7 @@ import {
   contracts,
   NameWrapper,
 } from "./helpers.ts";
-import { accounts, simnet } from "../artifacts/clarigen.ts";
+import { accounts, simnet } from "./clarigen-types.ts";
 import { nameWrapperCode } from "./mocks/wrapper.ts";
 import { Chain, Tx, contractFactory, hexToBytes, txOk } from "../deps.ts";
 

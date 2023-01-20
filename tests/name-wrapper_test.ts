@@ -72,6 +72,15 @@ describe("name-wrapper", () => {
     assertEquals(chain.rovErr(contract.getNameInfo()), notWrappedErr);
   });
 
+  it("stores its own wrapper-id", () => {
+    const idFromMigrator = chain.rov(
+      contracts.wrapperMigrator.getIdFromWrapper(contract.identifier)
+    );
+    const idFromWrapper = chain.rov(contract.getWrapperId());
+    assertEquals(idFromMigrator, idFromWrapper);
+    assert(idFromWrapper !== null);
+  });
+
   describe("after being wrapped", () => {
     let nameId: bigint;
     it("has v2 name", () => {

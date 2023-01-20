@@ -15,7 +15,7 @@ import {
   registry,
   bob,
 } from "../tests/helpers.ts";
-import { btcBytes, signedContracts } from "../tests/mocks.ts";
+import { alicePubkeyHash, btcBytes, signedContracts } from "../tests/mocks.ts";
 import { Account, Name, Wrapper } from "../tests/prisma-types.ts";
 
 const server = "http://localhost:3003";
@@ -89,7 +89,7 @@ describe("chainhook tests", () => {
     chain.txOk(
       migrator.setSigners([
         {
-          signer: alice,
+          signer: alicePubkeyHash,
           enabled: true,
         },
       ]),

@@ -9,7 +9,7 @@ import {
   Chain,
   crypto,
 } from "../deps.ts";
-import { simnet } from "../artifacts/clarigen.ts";
+import { simnet } from "./clarigen-types.ts";
 export * from "../deps.ts";
 export * from "./clarigen.ts";
 import { accounts } from "./clarigen.ts";

@@ -2,7 +2,7 @@
 // Don't make changes to this file, or they'll
 // be overwritten.
 import { factory } from "https://deno.land/x/clarigen@v0.4.15/mod.ts";
-import { simnet } from "./../artifacts/clarigen.ts";
+import { simnet } from "./clarigen-types.ts";
 
 export const { test, contracts, accounts } = factory(simnet);
 

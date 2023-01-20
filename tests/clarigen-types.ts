@@ -2948,6 +2948,14 @@ export const contracts = {
   },
   nameWrapper: {
     functions: {
+      registerSelf: {
+        name: "register-self",
+        access: "private",
+        args: [],
+        outputs: {
+          type: { response: { ok: "uint128", error: "uint128" } },
+        },
+      } as TypedAbiFunction<[], Response<bigint, bigint>>,
       nameUpdate: {
         name: "name-update",
         access: "public",
@@ -3082,6 +3090,12 @@ export const contracts = {
           type: { response: { ok: "principal", error: "uint128" } },
         },
       } as TypedAbiFunction<[], Response<string, bigint>>,
+      getWrapperId: {
+        name: "get-wrapper-id",
+        access: "read_only",
+        args: [],
+        outputs: { type: { optional: "uint128" } },
+      } as TypedAbiFunction<[], bigint | null>,
     },
     maps: {},
     variables: {
@@ -3125,6 +3139,13 @@ export const contracts = {
         },
         access: "constant",
       } as TypedAbiVariable<Response<null, bigint>>,
+      wrapperIdVar: {
+        name: "wrapper-id-var",
+        type: {
+          optional: "uint128",
+        },
+        access: "variable",
+      } as TypedAbiVariable<bigint | null>,
     },
     constants: {
       ERR_NAME_TRANSFER: {
@@ -3143,6 +3164,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
+      wrapperIdVar: 1n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],

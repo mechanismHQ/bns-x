@@ -5,7 +5,7 @@ clarinet = "./Clarinet.toml"
 # Comment or remove section to skip Deno types
 [deno]
 # `output` can be a directory or a folder.
-output = "artifacts/clarigen.ts"
+output = "tests/clarigen-types.ts"
 helper = "tests/clarigen.ts"
 
 # Set where you'd like ESM types output.

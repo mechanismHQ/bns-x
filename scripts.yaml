@@ -44,6 +44,7 @@ scripts:
       - cp /dev/null indexer/mocks/nft.txt
       - cp /dev/null indexer/mocks/prints.txt
       - vr codegen
+      - mkdir -p tmp/devnet
       - clarinet integrate -d
 
   lt:
