@@ -32,7 +32,7 @@ export const ProfileRow: React.FC<{
   const manage = useCallback(async () => {
     if (v1) {
       await router.push({
-        pathname: '/migrate',
+        pathname: '/upgrade',
       });
     } else {
       await router.push({
@@ -84,6 +84,7 @@ export const LoadableProfileRow: React.FC<{ children?: React.ReactNode; id: numb
 };
 
 export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
+  const router = useRouter();
   const v1Name = useAtomValue(currentUserV1NameState);
 
   const holdings = useAtomValue(currentUserNameIdsState[0]);
@@ -105,6 +106,12 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
       );
     });
   }, [holdings, v1Name]);
+
+  useEffect(() => {
+    if (v1Name !== null && holdings.length === 0) {
+      void router.push({ pathname: '/upgrade' });
+    }
+  }, [v1Name === null, holdings.length]);
 
   const mintName = useCallback(() => {
     window.open('https://btc.us', '_blank');

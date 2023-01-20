@@ -14,6 +14,7 @@ import { useGradient } from '@common/hooks/use-gradient';
 import { useAuth } from '@micro-stacks/react';
 import { LogoIcon } from '@components/icons/logo';
 import { useRouter } from 'next/router';
+import { styled } from '@common/theme';
 
 export const TokenBalance: React.FC = () => {
   const stxAddress = useAtomValue(stxAddressAtom);
@@ -28,22 +29,20 @@ export const TokenBalance: React.FC = () => {
   return (
     <Stack isInline spacing="8px" alignItems={'center'}>
       <Box size="28px" borderRadius="50%" background={gradient} />
-      {name ? (
-        <Link
-          href="/profile"
-          color="$text"
-          variant="Label01"
-          textDecoration="none"
-          _hover={{ textDecoration: 'underline' }}
-        >
-          {name}
-        </Link>
-      ) : (
-        <HeaderLink href="/profile">{truncateMiddle(stxAddress)}</HeaderLink>
-      )}
+      <Box px="12px">
+        <Text variant="Label01">{name ? name : truncateMiddle(stxAddress)}</Text>
+      </Box>
     </Stack>
   );
 };
+
+const HeaderLinkBox = styled(Box, {
+  pl: '12px',
+  pr: '12px',
+  '@bp1': {
+    pl: '0',
+  },
+});
 
 export const HeaderLink: React.FC<
   LinkProps & {
@@ -53,7 +52,7 @@ export const HeaderLink: React.FC<
   }
 > = ({ children, href, target, ...rest }) => {
   return (
-    <Box px="12px" py="10px">
+    <HeaderLinkBox py="10px">
       <Link
         variant="Label01"
         textDecoration="none"
@@ -64,7 +63,7 @@ export const HeaderLink: React.FC<
       >
         {children}
       </Link>
-    </Box>
+    </HeaderLinkBox>
   );
 };
 

@@ -238,12 +238,13 @@ export const baseTheme = {
 export const { styled, getCssText } = createStitches({
   theme: baseTheme,
   media: {
-    bp1: '(min-width: 640px)',
+    bp1: '(max-width: 640px)',
     bp2: '(min-width: 768px)',
     bp3: '(min-width: 1024px)',
-    sm: '(min-width: 640px)',
+    sm: '(max-width: 640px)',
     md: '(min-width: 768px)',
     lg: '(min-width: 1024px)',
+    initial: '',
   },
   utils: {
     m: (value: PropertyValue<'margin'>) => ({

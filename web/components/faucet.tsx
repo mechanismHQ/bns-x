@@ -56,7 +56,7 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
   useEffect(() => {
     if (bnsName?.combined) {
       void router.push({
-        pathname: '/migrate',
+        pathname: '/upgrade',
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

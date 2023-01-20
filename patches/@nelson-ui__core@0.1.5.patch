@@ -1,0 +1,21 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 5720bda2f509bdc2cc369d05e0bcdbea97c51ed4..3d2c042bf0f4155a1cbfb7f01f475a037c1ea664 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1081,7 +1081,7 @@ declare type ValueByPropertyName<PropertyName> = PropertyName extends keyof CSSP
+ declare type TokenByPropertyName<PropertyName, Theme, ThemeMap> = PropertyName extends keyof ThemeMap ? TokenByScaleName<ThemeMap[PropertyName], Theme> : never;
+ declare type TokenByScaleName<ScaleName, Theme> = ScaleName extends keyof Theme ? Prefixed<'$', keyof Theme[ScaleName]> : never;
+ declare type CSS<Media = {}, Theme = {}, ThemeMap = DefaultThemeMap, Utils = {}> = {
+-    [K in Prefixed<'@', keyof Media>]?: CSS<Media, Theme, ThemeMap, Utils>;
++    [K in Prefixed<'@', keyof Media | 'initial'>]?: CSS<Media, Theme, ThemeMap, Utils>;
+ } & {
+     [K in keyof Utils as K extends keyof CSSProperties ? never : K]?: Utils[K] extends (arg: infer P) => any ? (P extends any[] ? ($$PropertyValue extends keyof P[0] ? ValueByPropertyName<P[0][$$PropertyValue]> | TokenByPropertyName<P[0][$$PropertyValue], Theme, ThemeMap> | Globals | ScaleValue | undefined : $$ScaleValue extends keyof P[0] ? TokenByScaleName<P[0][$$ScaleValue], Theme> | {
+         scale: P[0][$$ScaleValue];
+@@ -1109,6 +1109,7 @@ declare const css: <Composers extends (string | _stitches_core_types_util.Functi
+     bp1: "(min-width: 640px)";
+     bp2: "(min-width: 768px)";
+     bp3: "(min-width: 1024px)";
++    initial: "";
+ }, {
+     colors: {
+         background: string;

@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { Box, Flex, SpaceBetween, Stack, Grid } from '@nelson-ui/react';
 import { Text } from '../text';
 import { Button } from '../button';
+import { styled } from '@common/theme';
 
 import { currentUserV1NameState } from '../../common/store/names';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
@@ -19,6 +20,16 @@ import { MigrateDone } from '@components/migrate-old/done';
 import { NameCard } from '@components/name-card';
 import { useEffect } from 'react';
 import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
+// import { styled } from '@stitches/react';
+
+export const RespGrid = styled(Grid, {
+  gridTemplateColumns: '1fr 1fr',
+  gridColumnGap: '60px',
+  '@sm': {
+    gridTemplateColumns: '1fr',
+    gridRowGap: '32px',
+  },
+});
 
 export const UpgradeOverview: React.FC = () => {
   const { deploy, isRequestPending: deployPending } = useDeployWrapper();
@@ -30,7 +41,7 @@ export const UpgradeOverview: React.FC = () => {
       <Box flexGrow={1} />
       <Stack spacing="42px" px="29px">
         <Text variant="Display02">Upgrade to BNSx</Text>
-        <Grid gridTemplateColumns="1fr 1fr" gridColumnGap="60px">
+        <RespGrid>
           <Box width="100%">
             <Box
               width="100%"
@@ -123,7 +134,7 @@ export const UpgradeOverview: React.FC = () => {
               Learn more about BNSx
             </Text>
           </Stack>
-        </Grid>
+        </RespGrid>
       </Stack>
       <Box flexGrow={2} />
     </>

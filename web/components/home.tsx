@@ -5,26 +5,19 @@ import { Button } from '@components/button';
 import { Link } from '@components/link';
 import { useAuth } from '@micro-stacks/react';
 import { useRouter } from 'next/router';
+import { Profile } from '@components/profile';
 
 export const Home: React.FC<{ children?: React.ReactNode }> = () => {
   const { openAuthRequest, isSignedIn } = useAuth();
   const router = useRouter();
 
   const getStarted = useCallback(() => {
-    if (isSignedIn) {
-      void router.push({
-        pathname: '/profile',
-      });
-    } else {
-      void openAuthRequest({
-        onFinish: () => {
-          void router.push({
-            pathname: '/profile',
-          });
-        },
-      });
-    }
-  }, [router, isSignedIn]);
+    void openAuthRequest({});
+  }, [router]);
+
+  if (isSignedIn) {
+    return <Profile />;
+  }
 
   return (
     <>

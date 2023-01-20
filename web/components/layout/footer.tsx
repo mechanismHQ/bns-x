@@ -3,6 +3,28 @@ import { SpaceBetween, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { useAuth } from '@micro-stacks/react';
 import { HeaderLink } from '@components/layout/header';
+import { styled } from '@common/theme';
+
+const FooterContainer = styled(SpaceBetween, {
+  flexDirection: 'row',
+  alignItems: 'center',
+  '@bp1': {
+    flexDirection: 'column',
+    pt: '10px',
+    alignItems: 'flex-start',
+    gap: '0',
+    // alignItems: '',
+  },
+  variants: {
+    outer: {
+      true: {
+        '@bp1': {
+          gap: '10px !important',
+        },
+      },
+    },
+  },
+});
 
 export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
   const { signOut } = useAuth();
@@ -10,8 +32,8 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
     return new Date().getFullYear();
   }, []);
   return (
-    <SpaceBetween
-      isInline
+    <FooterContainer
+      // isInline
       width="100%"
       maxWidth="1120px"
       pt="25px"
@@ -19,8 +41,9 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
       pl="17px"
       pr="29px"
       alignItems="center"
+      outer
     >
-      <Stack isInline spacing="8px">
+      <FooterContainer spacing="8px">
         <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
           Discord
         </HeaderLink>
@@ -46,10 +69,10 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
         >
           Sign out
         </HeaderLink>
-      </Stack>
+      </FooterContainer>
       <Text variant="Body01" color="$onSurface-text-dim">
         © {year} dots.so
       </Text>
-    </SpaceBetween>
+    </FooterContainer>
   );
 };

@@ -30,7 +30,7 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
           mx="auto"
           mt="49px"
           onClick={async () => {
-            await router.push({ pathname: '/profile' });
+            await router.push({ pathname: '/' });
           }}
         >
           Ok bye 👋
