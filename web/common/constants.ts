@@ -1,7 +1,7 @@
 import { projectFactory } from '@clarigen/core';
 import { ClarigenNodeClient } from '@clarigen/node';
 import { project } from '@common/clarigen';
-import { StacksMocknet } from 'micro-stacks/network';
+import { StacksMocknet, NetworkConfig } from 'micro-stacks/network';
 
 export function getAppUrl() {
   const url = process.env.NEXT_PUBLIC_APP_URL;
@@ -11,8 +11,10 @@ export function getAppUrl() {
 }
 
 export function getNetwork() {
+  // let networkConfig: NetworkConfig | undefined = undefined;
   const nodeUrl = process.env.NEXT_PUBLIC_NODE_URL;
-  const network = new StacksMocknet({ url: nodeUrl });
+  const netConfig = nodeUrl ? { url: nodeUrl } : undefined;
+  const network = new StacksMocknet(netConfig);
 
   // if (process.env.NEXT_PUBLIC_NODE_URL) {
   //   network.coreApiUrl = process.env.NEXT_PUBLIC_NODE_URL;

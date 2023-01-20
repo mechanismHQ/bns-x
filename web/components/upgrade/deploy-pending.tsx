@@ -4,7 +4,7 @@ import { Text } from '../text';
 import { useAtomValue } from 'jotai';
 import { txReceiptState } from '@store/index';
 import { wrapperDeployTxidAtom } from '@store/migration';
-import { NameHeading, PendingRow } from '@components/upgrade/rows';
+import { NameHeading, PendingRow, UpgradeBox } from '@components/upgrade/rows';
 import { useFetchWrapperSig } from '@common/hooks/use-fetch-wrapper-sig';
 import { CenterBox } from '@components/layout';
 
@@ -27,11 +27,8 @@ export const DeployPending: React.FC<{ children?: React.ReactNode }> = () => {
   if (signature) return null;
 
   return (
-    <Stack width="100%" alignItems={'center'} spacing="0">
-      <NameHeading />
-      <CenterBox mt="20px">
-        <PendingRow txidAtom={wrapperDeployTxidAtom}>Waiting for your transaction</PendingRow>
-      </CenterBox>
-    </Stack>
+    <UpgradeBox>
+      <PendingRow txidAtom={wrapperDeployTxidAtom}>Waiting for confirmations</PendingRow>
+    </UpgradeBox>
   );
 };

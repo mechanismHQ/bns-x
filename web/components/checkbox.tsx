@@ -49,7 +49,7 @@ export const Checkbox: React.FC<{
       width="14px"
       height="14px"
       borderRadius={'2px'}
-      border="1.5px solid $onSurface-border-subdued"
+      border="1.5px solid $onSurface-icon-subdued"
       cursor="pointer"
       onClick={toggleChecked}
     ></Box>

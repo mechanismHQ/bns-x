@@ -6,14 +6,19 @@ import { CheckIcon } from '@components/icons/check';
 import { Atom, useAtomValue } from 'jotai';
 import { Spinner } from '@components/spinner';
 import { migrateNameAtom } from '@store/migration';
+import { CenterBox } from '@components/layout';
+import { atom } from 'jotai';
 
 interface BaseRowProps extends BoxProps {
   children?: React.ReactNode;
-  txidAtom: Atom<string | undefined>;
+  txidAtom?: Atom<string | undefined>;
 }
 
+const emptyAtom = atom<string | undefined>(undefined);
+
 export const DoneRow: React.FC<BaseRowProps> = ({ children, txidAtom, ...props }) => {
-  const txid = useAtomValue(txidAtom);
+  const _atom: Atom<string | undefined> = typeof txidAtom === 'undefined' ? emptyAtom : txidAtom;
+  const txid = useAtomValue(_atom);
   return (
     <SpaceBetween isInline alignItems="center" p="30px" {...props}>
       <Stack isInline spacing="$3" alignItems="center">
@@ -22,13 +27,14 @@ export const DoneRow: React.FC<BaseRowProps> = ({ children, txidAtom, ...props }
           {children}
         </Text>
       </Stack>
-      <ExternalTx txId={txid} />
+      {txid && <ExternalTx txId={txid} />}
     </SpaceBetween>
   );
 };
 
 export const PendingRow: React.FC<BaseRowProps> = ({ txidAtom, children, ...props }) => {
-  const txid = useAtomValue(txidAtom);
+  const _atom: Atom<string | undefined> = typeof txidAtom === 'undefined' ? emptyAtom : txidAtom;
+  const txid = useAtomValue(_atom);
   return (
     <SpaceBetween isInline alignItems="center" p="30px" {...props}>
       <Stack isInline spacing="$3" alignItems="center">
@@ -37,7 +43,7 @@ export const PendingRow: React.FC<BaseRowProps> = ({ txidAtom, children, ...prop
           {children}
         </Text>
       </Stack>
-      <ExternalTx txId={txid} />
+      {txid && <ExternalTx txId={txid} />}
     </SpaceBetween>
   );
 };
@@ -52,5 +58,24 @@ export const NameHeading: React.FC<{ children?: React.ReactNode }> = () => {
     <Text variant="Heading06" color="$text-onsurface-very-dim">
       {name}
     </Text>
+  );
+};
+
+export const UpgradeBox: React.FC<{
+  children?: React.ReactNode | React.ReactNode[];
+  bottom?: React.ReactNode;
+}> = ({ children, bottom }) => {
+  return (
+    <>
+      <Box flexGrow={1} />
+      <Stack spacing="0" alignItems={'center'} width="100%" pb="50px">
+        <NameHeading />
+        <CenterBox mt="20px" mb="30px">
+          <Stack spacing="0">{children}</Stack>
+        </CenterBox>
+        {bottom}
+      </Stack>
+      <Box flexGrow={1} />
+    </>
   );
 };

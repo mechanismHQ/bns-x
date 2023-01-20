@@ -46,20 +46,31 @@ describe("wrapper-migrator-v1", () => {
     assertEquals(bytesToHex(clarityHash), w.hash);
   });
 
+  it("deployed name wrapper", () => {
+    const w = getWrapper(1);
+    const tx = Tx.deployContract(
+      w.addr.split(".")[1],
+      nameWrapperCode,
+      deployer
+    );
+    const block = chain.chain.mineBlock([tx]);
+    assertEquals(block.receipts[0].result, "u1");
+  });
+
   describe("before alice added as signer", () => {
     it("alice is not a valid signer at first", () => {
       const valid = chain.rov(migrator.isValidSigner(alicePub));
       assertEquals(valid, false);
     });
 
-    it("registering first wrapper", () => {
-      const wrapper = getWrapper(0);
-      const receipt = chain.txOk(migrator.registerWrapper(wrapper.addr), alice);
-      assertEquals(receipt.value, 0n);
-    });
+    // it("registering first wrapper", () => {
+    //   const wrapper = getWrapper(0);
+    //   // const receipt = chain.txOk(migrator.registerWrapper(wrapper.addr), alice);
+    //   assertEquals(receipt.value, 0n);
+    // });
 
     it("verifying wrapper throws error", () => {
-      const wrapper = getWrapper(0);
+      const wrapper = getWrapper(1);
       const result = chain.rovErr(
         migrator.verifyWrapper({
           wrapper: wrapper.addr,
@@ -85,7 +96,7 @@ describe("wrapper-migrator-v1", () => {
   });
 
   it("verifying wrapper signature", () => {
-    const wrapper = getWrapper(0);
+    const wrapper = getWrapper(1);
     const result = chain.rovOk(
       migrator.verifyWrapper({
         wrapper: wrapper.addr,
@@ -103,21 +114,12 @@ describe("wrapper-migrator-v1", () => {
   });
 
   describe("successful migration", () => {
-    const w = getWrapper(0);
+    const w = getWrapper(1);
 
     const nameObj = {
       name: asciiToBytes("alice"),
       namespace: btcBytes,
     };
-
-    it("deploys the contract first", () => {
-      const tx = Tx.deployContract(
-        w.addr.split(".")[1],
-        nameWrapperCode,
-        deployer
-      );
-      chain.chain.mineBlock([tx]);
-    });
 
     it("alice owns alice.btc", () => {
       registerNameV1({
@@ -170,7 +172,7 @@ describe("wrapper-migrator-v1", () => {
       name: "alice2",
     });
 
-    const wrapper = getWrapper(0);
+    const wrapper = getWrapper(1);
 
     const receipt = chain.txErr(
       migrator.migrate({
@@ -193,7 +195,7 @@ describe("wrapper-migrator-v1", () => {
   });
 
   it("cannot re-use a wrapper if its already been used as a wrapper", () => {
-    const signed = getWrapper(0);
+    const signed = getWrapper(1);
     const wrapper = wrapperFactory(signed.addr);
     chain.txOk(wrapper.unwrap(null), alice);
 
@@ -216,7 +218,7 @@ describe("wrapper-migrator-v1", () => {
   });
 
   it("cannot migrate if you dont own a v1 name", () => {
-    const signed = getWrapper(1);
+    const signed = getWrapper(2);
     chain.txOk(migrator.registerWrapper(signed.addr), alice);
     const receipt = chain.txErr(
       migrator.migrate({

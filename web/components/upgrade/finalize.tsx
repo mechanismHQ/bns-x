@@ -14,7 +14,7 @@ import {
   validRecipientState,
   recipientIsBnsState,
 } from '@store/migration';
-import { Divider, DoneRow, NameHeading, PendingRow } from '@components/upgrade/rows';
+import { Divider, DoneRow, NameHeading, PendingRow, UpgradeBox } from '@components/upgrade/rows';
 import { useWrapperMigrate } from '@common/hooks/use-wrapper-migrate';
 import { Checkbox } from '@components/checkbox';
 import { Input } from '@components/form';
@@ -60,7 +60,7 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
   }, [isBNS, recipientAddress]);
 
   const stxAddrInvalid = useMemo(() => {
-    if (isBNS || !doSendElsewhere) return false;
+    if (isBNS || !doSendElsewhere || !recipient) return false;
     if (recipientAddress.state !== 'hasData') return false;
     return !recipientAddress.data;
   }, [isBNS, doSendElsewhere, recipientAddress]);
@@ -84,91 +84,88 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
   }, [recipientAddress, validatedInput]);
 
   if (!contractId) return null;
-  const contractName = contractId.split('.')[1];
 
   if (migrateTxid) return null;
 
   return (
-    <Stack width="100%" alignItems={'center'} spacing="0">
-      <NameHeading />
-      <CenterBox mt="20px" mb="30px">
-        <Stack spacing="0">
-          <DoneRow txidAtom={wrapperDeployTxidAtom}>Name wrapper created</DoneRow>
-          <Divider />
-          <Stack spacing="13px" p="30px">
-            <Stack isInline spacing="$3" alignItems="center">
-              <Checkbox atom={sendElsewhereAtom} />
-              <Text variant="Label01" color="$onSurface-text">
-                Send to different address
-                <span style={{ color: 'var(--colors-onSurface-text-subdued)' }}> (optional)</span>
-              </Text>
-            </Stack>
-            {doSendElsewhere ? (
+    <UpgradeBox
+      bottom={
+        <Flex width="100%" justifyContent="center">
+          <Button
+            type="big"
+            disabled={!canMigrate}
+            onClick={() => {
+              if (canMigrate) void migrate();
+            }}
+          >
+            {isRequestPending ? 'Waiting' : 'Finalize'}
+          </Button>
+        </Flex>
+      }
+    >
+      <DoneRow txidAtom={wrapperDeployTxidAtom}>Name wrapper created</DoneRow>
+      <Divider />
+      <Stack spacing="13px" p="30px">
+        <Stack isInline spacing="$3" alignItems="center">
+          <Checkbox atom={sendElsewhereAtom} />
+          <Text variant="Label01" color="$onSurface-text">
+            Send to different address
+            <span style={{ color: 'var(--colors-onSurface-text-subdued)' }}> (optional)</span>
+          </Text>
+        </Stack>
+        {doSendElsewhere ? (
+          <>
+            <Input
+              placeholder="Enter a BNS name or Stacks address"
+              {...recipientInput.props}
+              autoFocus={true}
+            />
+            {recipientAddress.state === 'loading' ? (
+              <Stack isInline spacing="$3" alignItems="center">
+                <Spinner size={16} />
+                <Text variant="Label02" color="$onSurface-text-subdued">
+                  Fetching BNS name
+                </Text>
+              </Stack>
+            ) : (
               <>
-                <Input
-                  placeholder="Enter a BNS name or Stacks address"
-                  {...recipientInput.props}
-                  autoFocus={true}
-                />
-                {recipientAddress.state === 'loading' ? (
+                {bnsInputValid && (
                   <Stack isInline spacing="$3" alignItems="center">
-                    <Spinner size={16} />
+                    <CheckIcon />
                     <Text variant="Label02" color="$onSurface-text-subdued">
-                      Fetching BNS name
+                      BNS Name looks good
                     </Text>
                   </Stack>
-                ) : (
-                  <>
-                    {bnsInputValid && (
-                      <Stack isInline spacing="$3" alignItems="center">
-                        <CheckIcon />
-                        <Text variant="Label02" color="$onSurface-text-subdued">
-                          BNS Name looks good
-                        </Text>
-                      </Stack>
-                    )}
-                    {bnsInputInvalid && (
-                      <Stack isInline spacing="$3" alignItems="center">
-                        <ErrorIcon />
-                        <Text variant="Label02" color="$text-error">
-                          Invalid BNS name
-                        </Text>
-                      </Stack>
-                    )}
-                    {stxAddrInvalid && (
-                      <Stack isInline spacing="$3" alignItems="center">
-                        <ErrorIcon />
-                        <Text variant="Label02" color="$text-error">
-                          Invalid Stacks address
-                        </Text>
-                      </Stack>
-                    )}
-                    {stxAddrValid && (
-                      <Stack isInline spacing="$3" alignItems="center">
-                        <CheckIcon />
-                        <Text variant="Label02" color="$onSurface-text-subdued">
-                          Stacks address looks good
-                        </Text>
-                      </Stack>
-                    )}
-                  </>
+                )}
+                {bnsInputInvalid && (
+                  <Stack isInline spacing="$3" alignItems="center">
+                    <ErrorIcon />
+                    <Text variant="Label02" color="$text-error">
+                      Invalid BNS name
+                    </Text>
+                  </Stack>
+                )}
+                {stxAddrInvalid && (
+                  <Stack isInline spacing="$3" alignItems="center">
+                    <ErrorIcon />
+                    <Text variant="Label02" color="$text-error">
+                      Invalid Stacks address
+                    </Text>
+                  </Stack>
+                )}
+                {stxAddrValid && (
+                  <Stack isInline spacing="$3" alignItems="center">
+                    <CheckIcon />
+                    <Text variant="Label02" color="$onSurface-text-subdued">
+                      Stacks address looks good
+                    </Text>
+                  </Stack>
                 )}
               </>
-            ) : null}
-          </Stack>
-        </Stack>
-      </CenterBox>
-      <Flex width="100%" justifyContent="center">
-        <Button
-          type="big"
-          disabled={!canMigrate}
-          onClick={() => {
-            if (canMigrate) void migrate();
-          }}
-        >
-          {isRequestPending ? 'Waiting' : 'Finalize'}
-        </Button>
-      </Flex>
-    </Stack>
+            )}
+          </>
+        ) : null}
+      </Stack>
+    </UpgradeBox>
   );
 };

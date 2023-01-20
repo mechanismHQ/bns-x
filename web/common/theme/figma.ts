@@ -158,19 +158,19 @@ const figma = {
     },
     fontWeights: {
       'ibm-plex-mono-0': {
-        value: 'Medium',
+        value: '500',
         type: 'fontWeights',
       },
       'inter-1': {
-        value: 'Medium',
+        value: '500',
         type: 'fontWeights',
       },
       'inter-2': {
-        value: 'Regular',
+        value: '400',
         type: 'fontWeights',
       },
       'open-sauce-one-3': {
-        value: 'Medium',
+        value: '500',
         type: 'fontWeights',
       },
     },

@@ -48,8 +48,12 @@ export function makeTheme() {
       const css: Record<string, string> = {};
       Object.entries(styles.value).forEach(([key, val]) => {
         if (key === 'text-decoration') return;
-        const [_, ...rest] = val.split('.');
-        css[key] = `$${rest.join('-')}`;
+        if (val.startsWith('$')) {
+          const [_, ...rest] = val.split('.');
+          css[key] = `$${rest.join('-')}`;
+        } else {
+          css[key] = val;
+        }
       });
       textStyles[variant] = css;
     });

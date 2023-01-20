@@ -14,35 +14,35 @@ plan:
             cost: 980
             path: contracts/traits/extension-trait.clar
             anchor-block-only: true
-            clarity-version: 1
+            # clarity-version: 1
         - contract-publish:
             contract-name: proposal-trait
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 860
             path: contracts/traits/proposal-trait.clar
             anchor-block-only: true
-            clarity-version: 1
+            # clarity-version: 1
         - contract-publish:
             contract-name: executor-dao
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 37230
             path: contracts/executor-dao.clar
             anchor-block-only: true
-            clarity-version: 1
+            # clarity-version: 1
         - contract-publish:
             contract-name: nft-trait
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 2620
             path: contracts/traits/nft-trait.clar
             anchor-block-only: true
-            clarity-version: 1
+            # clarity-version: 1
         - contract-publish:
             contract-name: name-registry
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 163600
             path: contracts/core/name-registry.clar
             anchor-block-only: true
-            clarity-version: 1
+            # clarity-version: 1
         #     clarity-version: 1
         - contract-publish:
             contract-name: proposal-bootstrap
@@ -50,22 +50,22 @@ plan:
             cost: 13970
             path: contracts/proposals/proposal-bootstrap.clar
             anchor-block-only: true
-            clarity-version: 1
+            # clarity-version: 1
         - contract-publish:
             contract-name: test-utils
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 14140
             path: contracts/test-utils.clar
             anchor-block-only: true
-            clarity-version: 1
+            # clarity-version: 1
         - contract-publish:
             contract-name: wrapper-migrator
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 83190
             path: contracts/testnet/wrapper-migrator-v1.clar
             anchor-block-only: true
-            clarity-version: 1
-      epoch: "2.0"
+            # clarity-version: 1
+      epoch: "2.1"
     - id: 1
       transactions:
         - contract-call:
@@ -76,3 +76,4 @@ plan:
             anchor_block_only: false
             parameters:
               - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap"
+      epoch: "2.1"

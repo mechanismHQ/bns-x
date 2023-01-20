@@ -11,6 +11,7 @@ import {
   MempoolTransaction,
   SmartContractTransaction,
 } from '@stacks/stacks-blockchain-api-types';
+import { hashSha256 } from 'micro-stacks/crypto-sha';
 
 async function fetchDeploy(txid: string): Promise<SmartContractTransaction | null> {
   const network = getNetwork();
@@ -64,6 +65,3 @@ export async function wrapperSignatureApi(req: NextApiRequest, res: NextApiRespo
 }
 
 export default wrapperSignatureApi;
-function hashSha256(encoded: any): Uint8Array {
-  throw new Error('Function not implemented.');
-}

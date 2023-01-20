@@ -51,7 +51,15 @@ scripts:
       - NEXT_PUBLIC_APP_URL="https://dots.loca.lt" NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev
       - pnpm r scripts/lt.ts
 
+  web: pnpm --filter web dev
+
   lt-app:
     cmd: NEXT_PUBLIC_APP_URL="https://dots.loca.lt" NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev
 
   tunnel: pnpm r scripts/lt.ts
+
+  bootstrap:
+    desc: Deploy contracts and run setup contract calls
+    cmd:
+      - clarinet deployments apply --devnet
+      - pnpm r scripts/bootstrap.ts

@@ -15,6 +15,8 @@ export const nameWrapperCode = `;; Source code for the name wrapper contract.
 (define-constant ERR_UNAUTHORIZED (err u10002))
 (define-constant ERR_NOT_WRAPPED (err u10003))
 
+(define-data-var wrapper-id-var (optional uint) none)
+
 ;; Unwrap the legacy BNS name from this contract.
 ;; 
 ;; When unwrapping, the BNSx name is burned. This ensures that there is a 1-to-1
@@ -79,4 +81,20 @@ export const nameWrapperCode = `;; Source code for the name wrapper contract.
     )
   )
 )
-`;
+
+(define-read-only (get-wrapper-id)
+  (var-get wrapper-id-var)
+)
+
+(define-private (register-self)
+  (let
+    (
+      (self (as-contract tx-sender))
+      (id (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator register-wrapper self)))
+    )
+    (var-set wrapper-id-var (some id))
+    (ok id)
+  )
+)
+
+(try! (register-self))`;

@@ -77,8 +77,7 @@ export const Header: React.FC<{ children?: React.ReactNode }> = () => {
       spacing="30px"
       width="100%"
       py="25px"
-      pl="29px"
-      pr="17px"
+      px="29px"
       // height="50px"
       maxWidth="1120px"
       alignItems={'center'}

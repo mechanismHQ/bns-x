@@ -1,13 +1,33 @@
 import React, { useCallback } from 'react';
 import { Flex, Box, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
-import { PendingRow, DoneRow, NameHeading, Divider } from './rows';
+import { PendingRow, DoneRow, NameHeading, Divider, UpgradeBox } from './rows';
 import { CenterBox } from '../layout';
-import { migrateTxidAtom, migrateTxState, wrapperDeployTxidAtom } from '@store/migration';
+import {
+  migrateTxidAtom,
+  migrateTxState,
+  validRecipientState,
+  wrapperDeployTxidAtom,
+} from '@store/migration';
 import { useAtomValue } from 'jotai/utils';
 import { Button } from '@components/button';
 import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
+import { stxAddressAtom } from '@micro-stacks/jotai';
+
+export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
+  const recipient = useAtomValue(validRecipientState);
+  const stxAddress = useAtomValue(stxAddressAtom);
+
+  if (recipient === null || recipient === stxAddress) return null;
+
+  return (
+    <>
+      <Divider />
+      <DoneRow>BNSx transferred</DoneRow>
+    </>
+  );
+};
 
 export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
   const migrateTxid = useAtomValue(migrateTxidAtom);
@@ -34,33 +54,36 @@ export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
   if (!migrateTxid) return null;
 
   return (
-    <Stack width="100%" alignItems={'center'} spacing="0">
-      <NameHeading />
-      <CenterBox mt="20px" mb="30px">
-        <Stack spacing="0">
-          <DoneRow txidAtom={wrapperDeployTxidAtom}>Name wrapper created</DoneRow>
-          <Divider />
-          {migrateTx?.tx_status === 'success' ? (
+    <UpgradeBox
+      bottom={
+        migrateTx?.tx_status === 'success' ? (
+          <Stack spacing="25px">
+            <Flex width="100%" justifyContent="center">
+              <Button type="big" onClick={done}>
+                Done
+              </Button>
+            </Flex>
+            <Flex width="100%" justifyContent="center">
+              <Button type="big" secondary onClick={switchAccounts}>
+                Switch accounts
+              </Button>
+            </Flex>
+          </Stack>
+        ) : null
+      }
+    >
+      <Stack spacing="0">
+        <DoneRow txidAtom={wrapperDeployTxidAtom}>Name wrapper created</DoneRow>
+        <Divider />
+        {migrateTx?.tx_status === 'success' ? (
+          <>
             <DoneRow txidAtom={migrateTxidAtom}>BNSx name created</DoneRow>
-          ) : (
-            <PendingRow txidAtom={migrateTxidAtom}>Waiting for confirmations</PendingRow>
-          )}
-        </Stack>
-      </CenterBox>
-      {migrateTx?.tx_status === 'success' ? (
-        <Stack spacing="25px">
-          <Flex width="100%" justifyContent="center">
-            <Button type="big" onClick={done}>
-              Done
-            </Button>
-          </Flex>
-          <Flex width="100%" justifyContent="center">
-            <Button type="big" secondary onClick={switchAccounts}>
-              Switch accounts
-            </Button>
-          </Flex>
-        </Stack>
-      ) : null}
-    </Stack>
+            <TransferredRow />
+          </>
+        ) : (
+          <PendingRow txidAtom={migrateTxidAtom}>Waiting for confirmations</PendingRow>
+        )}
+      </Stack>
+    </UpgradeBox>
   );
 };

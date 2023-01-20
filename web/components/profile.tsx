@@ -97,7 +97,9 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
           )}
           <LoadableProfileRow id={id} />
           {/* {index !== holdings.length - 1 ? ( */}
-          <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
+          <Flex width="100%" px="29px" alignItems="center">
+            <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
+          </Flex>
           {/* ) : null} */}
         </Box>
       );
