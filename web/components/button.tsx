@@ -1,6 +1,17 @@
 import { Text } from '@components/text';
 import { Box, BoxProps } from '@nelson-ui/react';
 import { styled, VariantProps } from '@stitches/react';
+import { keyframes } from '@nelson-ui/core';
+import { useCallback, useState } from 'react';
+
+const move = keyframes({
+  from: {
+    top: '0px',
+  },
+  to: {
+    top: '3px',
+  },
+});
 
 export const ButtonComp = styled(Box, {
   padding: '14px 24px',
@@ -12,7 +23,18 @@ export const ButtonComp = styled(Box, {
   color: '$surface-surface',
   '&:hover': {
     backgroundColor: '$slate-300',
+    // top: '3px',
   },
+  '&:active': {
+    animation: `${move} 50ms ease`,
+    animationFillMode: 'forwards',
+  },
+  // animation: `top 50ms ease`,
+  // '&.btn-clicked': {
+  //   // top: '3px',
+  //   animation: `${move} 50ms ease`,
+  //   animationFillMode: 'forwards',
+  // },
   variants: {
     disabled: {
       true: {
@@ -52,14 +74,16 @@ export const Button: React.FC<
     }
 > = ({ children, type, ...props }) => {
   return (
-    <ButtonComp {...props} type={type}>
-      <Text
-        className="button-text"
-        variant={type === 'big' ? 'Label01' : 'Label02'}
-        color="inherit"
-      >
-        {children}
-      </Text>
-    </ButtonComp>
+    <Box height={type === 'big' ? '64px' : '48px'} position="relative">
+      <ButtonComp {...props} type={type} position="relative">
+        <Text
+          className="button-text"
+          variant={type === 'big' ? 'Label01' : 'Label02'}
+          color="inherit"
+        >
+          {children}
+        </Text>
+      </ButtonComp>
+    </Box>
   );
 };

@@ -1,6 +1,6 @@
 import '../styles/globals.css';
 import { ClientProvider } from '@micro-stacks/react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { destroySession, saveSession } from '../common/fetchers';
 import '../public/fonts.css';
 import { JotaiClientProvider } from '@store/micro-stacks';
@@ -10,7 +10,7 @@ import { queryClient } from '@store/query-client';
 import type { AppProps } from 'next/app';
 import type { ClientConfig } from '@micro-stacks/client';
 import { useRouter } from 'next/router';
-import { getNetwork } from '@common/constants';
+import { getNetwork, getAppUrl } from '@common/constants';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -26,10 +26,14 @@ function MyApp({ Component, pageProps }: AppProps) {
     await router.push({ pathname: '/' });
   }, []);
 
+  const appUrl = useMemo(() => {
+    return getAppUrl();
+  }, []);
+
   return (
     <ClientProvider
       appName="Dots"
-      appIconUrl="/vercel.png"
+      appIconUrl={`${appUrl}/logo.svg`}
       dehydratedState={pageProps?.dehydratedState}
       onPersistState={onPersistState}
       onSignOut={onSignOut}

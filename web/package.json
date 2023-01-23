@@ -44,6 +44,7 @@
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
+    "@stacks/eslint-config": "1.0.9",
     "@stacks/prettier-config": "0.0.10",
     "@types/node": "18.0.6",
     "@types/react": "18.0.15",

@@ -217,3 +217,12 @@ export const typedTxReceiptState = atomFamilyWithQuery<string, ExtractTx<unknown
 export function useTypedTxReceipt<F>(txid: string) {
   return useQueryAtom<ExtractTx<F> | undefined>(typedTxReceiptState(txid));
 }
+
+export const pageTitleState = atom(get => {
+  const title = get(docTitleState);
+  const appName = 'Dots';
+  const suffix = title ? `- ${title}` : '';
+  return `Dots ${suffix}`;
+});
+
+export const docTitleState = atom('');

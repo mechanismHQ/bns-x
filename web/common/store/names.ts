@@ -36,6 +36,7 @@ export const v1NameAddressQueryState = atomFamilyWithQuery<string, NameExt | nul
 export const v1NameAddressQueryState2 = atomFamily((address: string) => {
   return atomsWithQuery(get => ({
     queryKey: ['v1NameState', address],
+    refetchInterval: 15000,
     queryFn: async () => {
       const bns = get(bnsContractState);
       const clarigen = get(clarigenAtom);

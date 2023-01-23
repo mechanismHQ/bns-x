@@ -13,6 +13,9 @@ import { LoadableNameCard } from '@components/name-card';
 import { Button } from '@components/button';
 import { useRouter } from 'next/router';
 import { useGradient } from '@common/hooks/use-gradient';
+import { stxAddressAtom } from '@store/micro-stacks';
+import { truncateMiddle } from '@common/utils';
+import { Link } from '@components/link';
 
 export const ProfileRow: React.FC<{
   children?: React.ReactNode;
@@ -21,6 +24,7 @@ export const ProfileRow: React.FC<{
 }> = ({ v1 = false, name }) => {
   const router = useRouter();
   const gradient = useGradient(name);
+  const primaryName = useAtomValue(userPrimaryNameState);
   const v1OuterProps: BoxProps = v1
     ? {
         backgroundColor: '$color-surface-error',
@@ -41,6 +45,7 @@ export const ProfileRow: React.FC<{
       });
     }
   }, [router, v1, name]);
+  const stxAddress = useAtomValue(stxAddressAtom);
 
   return (
     <SpaceBetween
@@ -58,13 +63,32 @@ export const ProfileRow: React.FC<{
             {name}
           </Text>
 
-          <Text
-            variant="Body02"
-            height="20px"
-            color={v1 ? '$text-error-subdued' : '$onSurface-text-subdued'}
-          >
-            {v1 ? 'Legacy BNS: Upgrade to BNSx' : ''}
-          </Text>
+          {v1 && (
+            <Text
+              variant="Body02"
+              height="20px"
+              color={v1 ? '$text-error-subdued' : '$onSurface-text-subdued'}
+            >
+              Legacy BNS: Upgrade to BNSx
+            </Text>
+          )}
+          {!v1 && (
+            <Stack isInline height="20px" spacing="27px">
+              <Link
+                href={`https://explorer.stacks.co/address/${stxAddress}`}
+                target="_blank"
+                variant="Body02"
+                color={'$onSurface-text-subdued'}
+              >
+                {truncateMiddle(stxAddress || '')}
+              </Link>
+              {primaryName?.combined === name && (
+                <Text variant="Body02" color="$onSurface-icon-subdued">
+                  Primary name
+                </Text>
+              )}
+            </Stack>
+          )}
         </Stack>
       </Stack>
       <Box>

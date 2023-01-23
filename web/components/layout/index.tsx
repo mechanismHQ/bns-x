@@ -3,6 +3,7 @@ import { Flex, Box, SpaceBetween, BoxProps } from '@nelson-ui/react';
 import { SafeSuspense } from '../safe-suspense';
 import { Header } from '@components/layout/header';
 import { Footer } from '@components/layout/footer';
+import { Head } from '@components/head';
 
 export const CenterBox: React.FC<{ children: React.ReactNode } & BoxProps> = ({
   children,
@@ -29,6 +30,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
       width="100%"
       spacing="20px"
     >
+      <Head />
       <Header />
       {centerBox ? (
         <>

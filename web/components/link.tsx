@@ -45,7 +45,11 @@ export const Link: React.FC<LinkProps> = ({ href, prefetch, children, plain, ...
           textDecoration: 'underline',
         },
       }
-    : {};
+    : {
+        _hover: {
+          textDecoration: 'none',
+        },
+      };
   return (
     <NextLink href={href} passHref>
       <LinkText {...{ ...props, ...extra }} as="a">
