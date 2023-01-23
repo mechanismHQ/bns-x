@@ -382,115 +382,62 @@ ExecutorDAO is the one DAO to rule them all. By Marvin Janssen
 
 ### executed-proposals
 
-[View in file](../contracts/executor-dao.clar#L12)
-
-`(define-map executed-proposals principal uint)`
-
-<details>
-  <summary>Source code:</summary>
-
 ```clarity
 (define-map executed-proposals principal uint)
 ```
 
-</details>
+[View in file](../contracts/executor-dao.clar#L12)
 
 ### extensions
-
-[View in file](../contracts/executor-dao.clar#L13)
-
-`(define-map extensions principal bool)`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-map extensions principal bool)
 ```
 
-</details>
+[View in file](../contracts/executor-dao.clar#L13)
 
 ### extension-roles
-
-[View in file](../contracts/executor-dao.clar#L14)
-
-`(define-map extension-roles (tuple (extension principal) (role (string-ascii 10))) bool)`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-map extension-roles { extension: principal, role: (string-ascii 10) } bool)
 ```
 
-</details>
+[View in file](../contracts/executor-dao.clar#L14)
 
 ## Variables
 
-### err-unauthorised
-
-Type: `constant`
-
-[View in file](../contracts/executor-dao.clar#L7)
-
-`(define-constant err-unauthorised (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
-
-```clarity
-(define-constant err-unauthorised (err u1000))
-```
-
-</details>
-
-### err-already-executed
-
-Type: `constant`
-
-[View in file](../contracts/executor-dao.clar#L8)
-
-`(define-constant err-already-executed (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
-
-```clarity
-(define-constant err-already-executed (err u1001))
-```
-
-</details>
-
-### err-invalid-extension
-
-Type: `constant`
-
-[View in file](../contracts/executor-dao.clar#L9)
-
-`(define-constant err-invalid-extension (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
-
-```clarity
-(define-constant err-invalid-extension (err u1002))
-```
-
-</details>
-
 ### executive
 
-Type: `variable`
-
-[View in file](../contracts/executor-dao.clar#L11)
-
-`(define-data-var executive principal)`
-
-<details>
-  <summary>Source code:</summary>
+principal
 
 ```clarity
 (define-data-var executive principal tx-sender)
 ```
 
-</details>
+[View in file](../contracts/executor-dao.clar#L11)
+
+## Constants
+
+### err-unauthorised
+
+```clarity
+(define-constant err-unauthorised (err u1000))
+```
+
+[View in file](../contracts/executor-dao.clar#L7)
+
+### err-already-executed
+
+```clarity
+(define-constant err-already-executed (err u1001))
+```
+
+[View in file](../contracts/executor-dao.clar#L8)
+
+### err-invalid-extension
+
+```clarity
+(define-constant err-invalid-extension (err u1002))
+```
+
+[View in file](../contracts/executor-dao.clar#L9)

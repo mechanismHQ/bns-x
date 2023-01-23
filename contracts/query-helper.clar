@@ -34,6 +34,7 @@
   )
 )
 
+;; Given a `name,namespace` tuple, return the properties of that name
 (define-read-only (resolve-legacy-name (name { name: (buff 48), namespace: (buff 20) }))
   (match (contract-call? 'SP000000000000000000002Q6VF78.bns name-resolve (get namespace name) (get name name))
     props (some props)
@@ -44,6 +45,8 @@
 
 ;; BNSx Names
 
+;; Fetch name details from the name registry as well as
+;; information from legacy BNS.
 (define-read-only (get-bnsx-name (id uint))
   (match (contract-call? .bnsx-registry get-name-properties-by-id id)
     props (some (merge props {
@@ -53,6 +56,24 @@
   )
 )
 
+;; Helper method to recursively fetch an account's names using the linked-list
+;; data structure exposed by the name registry. Starts with an account's primary name
+;; and fetches up to 19 more names.
+;; 
+;; This method _doesn't_ fetch an account's legacy name, if they have one. Use
+;; [`get-names`](#get-names) for that.
+;; 
+;; Returns a tuple with: 
+;; 
+;; - `legacy`: (see [`resolve-legacy-name`](#resolve-legacy-name))
+;; - `names`: a list of up to 20 names, starting with the account's primary. See
+;; [`get-bnsx-name`](#get-bnsx-name) for more information
+;; - `next-id`: A "cursor" representing the ID of the next name for this account,
+;; if the account has more than 20 names. See [`crawl-from-id`](#crawl-from-id) to
+;; paginate.
+;; 
+;; If an account has no names at all, `names` will be an empty list, and `legacy`
+;; will be `none`.
 (define-read-only (crawl-names (account principal))
   (match (contract-call? .bnsx-registry get-primary-name-properties account)
     primary (let
@@ -75,6 +96,7 @@
   )
 )
 
+;; If an account has more than 20 names, use this to paginate and fetch 20 more names.
 (define-read-only (crawl-from-id (id uint))
   (match (contract-call? .bnsx-registry get-name-properties-by-id id)
     props (let
@@ -97,6 +119,7 @@
   )
 )
 
+;; Internal method for iterating over names
 (define-read-only (crawl-fold 
   (index uint)
   (iterator { 

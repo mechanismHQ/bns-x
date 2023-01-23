@@ -1,8 +1,8 @@
 # Contracts
 
+- [`bnsx-registry`](bnsx-registry.md)
 - [`executor-dao`](executor-dao.md)
-- [`name-registry`](name-registry.md)
 - [`name-wrapper`](name-wrapper.md)
-- [`onchain-resolver`](onchain-resolver.md)
 - [`proposal-bootstrap`](proposal-bootstrap.md)
+- [`query-helper`](query-helper.md)
 - [`wrapper-migrator`](wrapper-migrator.md)

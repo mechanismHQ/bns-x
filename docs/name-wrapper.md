@@ -24,12 +24,17 @@ BNSx, then only Alice can interact with this contract.
 - [`get-own-name`](#get-own-name)
 - [`get-name-info`](#get-name-info)
 - [`get-owner`](#get-owner)
+- [`get-wrapper-id`](#get-wrapper-id)
 
 **Private functions:**
+
+- [`register-self`](#register-self)
 
 **Maps**
 
 **Variables**
+
+- [`wrapper-id-var`](#wrapper-id-var)
 
 **Constants**
 
@@ -42,7 +47,7 @@ BNSx, then only Alice can interact with this contract.
 
 ### unwrap
 
-[View in file](../contracts/name-wrapper.clar#L27)
+[View in file](../contracts/name-wrapper.clar#L29)
 
 `(define-public (unwrap ((recipient (optional principal))) (response (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal)) uint))`
 
@@ -65,7 +70,7 @@ mapping between BNSx and BNS legacy names.
       (owner (get owner props))
     )
     (asserts! (is-eq tx-sender owner) ERR_UNAUTHORIZED)
-    (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry burn (get id props)))
+    (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry burn (get id props)))
     (unwrap! (as-contract (contract-call? 'SP000000000000000000002Q6VF78.bns name-transfer (get namespace props) (get name props) new-owner none)) ERR_NAME_TRANSFER)
     (ok props)
   )
@@ -82,7 +87,7 @@ mapping between BNSx and BNS legacy names.
 
 ### get-own-name
 
-[View in file](../contracts/name-wrapper.clar#L42)
+[View in file](../contracts/name-wrapper.clar#L44)
 
 `(define-read-only (get-own-name () (response (tuple (name (buff 48)) (namespace (buff 20))) uint))`
 
@@ -101,7 +106,7 @@ Helper method to fetch the BNS legacy name owned by this contract.
 
 ### get-name-info
 
-[View in file](../contracts/name-wrapper.clar#L49)
+[View in file](../contracts/name-wrapper.clar#L51)
 
 `(define-read-only (get-name-info () (response (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal)) uint))`
 
@@ -117,7 +122,7 @@ legacy name owned by this contract. For example, if this contract owns
   (let
     (
       (name (try! (get-own-name)))
-      (props (unwrap! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry get-name-properties name) ERR_NOT_WRAPPED))
+      (props (unwrap! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry get-name-properties name) ERR_NOT_WRAPPED))
     )
     (ok props)
   )
@@ -128,7 +133,7 @@ legacy name owned by this contract. For example, if this contract owns
 
 ### get-owner
 
-[View in file](../contracts/name-wrapper.clar#L61)
+[View in file](../contracts/name-wrapper.clar#L63)
 
 `(define-read-only (get-owner () (response principal uint))`
 
@@ -148,7 +153,7 @@ contract's legacy name
 
 ### name-update
 
-[View in file](../contracts/name-wrapper.clar#L68)
+[View in file](../contracts/name-wrapper.clar#L70)
 
 `(define-public (name-update ((namespace (buff 20)) (name (buff 48)) (zonefile-hash (buff 20))) (response bool uint))`
 
@@ -186,74 +191,91 @@ Helper method to interact with legacy BNS to update the zonefile for this name
 | name          | (buff 48) |             |
 | zonefile-hash | (buff 20) |             |
 
+### get-wrapper-id
+
+[View in file](../contracts/name-wrapper.clar#L85)
+
+`(define-read-only (get-wrapper-id () (optional uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-read-only (get-wrapper-id)
+  (var-get wrapper-id-var)
+)
+```
+
+</details>
+
+### register-self
+
+[View in file](../contracts/name-wrapper.clar#L89)
+
+`(define-private (register-self () (response uint uint))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-private (register-self)
+  (let
+    (
+      (self (as-contract tx-sender))
+      (id (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator register-wrapper self)))
+    )
+    (var-set wrapper-id-var (some id))
+    (ok id)
+  )
+)
+```
+
+</details>
+
 ## Maps
 
 ## Variables
 
+### wrapper-id-var
+
+(optional uint)
+
+```clarity
+(define-data-var wrapper-id-var (optional uint) none)
+```
+
+[View in file](../contracts/name-wrapper.clar#L18)
+
+## Constants
+
 ### ERR_NO_NAME
-
-Type: `constant`
-
-[View in file](../contracts/name-wrapper.clar#L13)
-
-`(define-constant ERR_NO_NAME (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_NO_NAME (err u10000))
 ```
 
-</details>
+[View in file](../contracts/name-wrapper.clar#L13)
 
 ### ERR_NAME_TRANSFER
-
-Type: `constant`
-
-[View in file](../contracts/name-wrapper.clar#L14)
-
-`(define-constant ERR_NAME_TRANSFER (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_NAME_TRANSFER (err u10001))
 ```
 
-</details>
+[View in file](../contracts/name-wrapper.clar#L14)
 
 ### ERR_UNAUTHORIZED
-
-Type: `constant`
-
-[View in file](../contracts/name-wrapper.clar#L15)
-
-`(define-constant ERR_UNAUTHORIZED (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_UNAUTHORIZED (err u10002))
 ```
 
-</details>
+[View in file](../contracts/name-wrapper.clar#L15)
 
 ### ERR_NOT_WRAPPED
-
-Type: `constant`
-
-[View in file](../contracts/name-wrapper.clar#L16)
-
-`(define-constant ERR_NOT_WRAPPED (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_NOT_WRAPPED (err u10003))
 ```
 
-</details>
+[View in file](../contracts/name-wrapper.clar#L16)

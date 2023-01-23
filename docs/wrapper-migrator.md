@@ -1,6 +1,6 @@
 # wrapper-migrator
 
-[`wrapper-migrator.clar`](../contracts/wrapper-migrator.clar)
+[`wrapper-migrator-v1.clar`](../contracts/wrapper-migrator-v1.clar)
 
 The wrapper migrator contract provides a way for users to upgrade a BNS legacy
 name to BNSx.
@@ -23,7 +23,7 @@ Authorization for valid wrapper verifiers is only allowed through extensions
 with the "mig-signer" role. By default, the contract deployer is a valid signer.
 
 During migration, the legacy name is transferred to the wrapper contract. Then,
-this contract interfaces with the [`.name-registry`](`./core/name-registry.md`)
+this contract interfaces with the [`.bnsx-registry`](`./core/name-registry.md`)
 contract to mint a new BNSx name.
 
 **Public functions:**
@@ -31,34 +31,38 @@ contract to mint a new BNSx name.
 - [`is-dao-or-extension`](#is-dao-or-extension)
 - [`set-signers`](#set-signers)
 - [`migrate`](#migrate)
+- [`register-wrapper`](#register-wrapper)
 
 **Read-only functions:**
 
 - [`verify-wrapper`](#verify-wrapper)
+- [`hash-id`](#hash-id)
 - [`debug-signature`](#debug-signature)
 - [`recover-pubkey-hash`](#recover-pubkey-hash)
 - [`is-valid-signer`](#is-valid-signer)
-- [`hash-principal`](#hash-principal)
-- [`construct`](#construct)
 - [`get-legacy-name`](#get-legacy-name)
 - [`get-wrapper-name`](#get-wrapper-name)
 - [`get-name-wrapper`](#get-name-wrapper)
+- [`get-id-from-wrapper`](#get-id-from-wrapper)
+- [`get-wrapper-from-id`](#get-wrapper-from-id)
 
 **Private functions:**
 
 - [`set-signers-iter`](#set-signers-iter)
 - [`resolve-and-transfer`](#resolve-and-transfer)
+- [`get-next-wrapper-id`](#get-next-wrapper-id)
 
 **Maps**
 
 - [`migrator-signers-map`](#migrator-signers-map)
 - [`name-wrapper-map`](#name-wrapper-map)
 - [`wrapper-name-map`](#wrapper-name-map)
+- [`wrapper-id-map`](#wrapper-id-map)
+- [`id-wrapper-map`](#id-wrapper-map)
 
 **Variables**
 
-- [`wrapped-id-var`](#wrapped-id-var)
-- [`wrapper-deployer`](#wrapper-deployer)
+- [`next-wrapper-id-var`](#next-wrapper-id-var)
 
 **Constants**
 
@@ -69,13 +73,14 @@ contract to mint a new BNSx name.
 - [`ERR_INVALID_CONTRACT_NAME`](#ERR_INVALID_CONTRACT_NAME)
 - [`ERR_NAME_TRANSFER`](#ERR_NAME_TRANSFER)
 - [`ERR_WRAPPER_USED`](#ERR_WRAPPER_USED)
-- [`network-addr-version`](#network-addr-version)
+- [`ERR_WRAPPER_NOT_REGISTERED`](#ERR_WRAPPER_NOT_REGISTERED)
+- [`ERR_WRAPPER_ALREADY_REGISTERED`](#ERR_WRAPPER_ALREADY_REGISTERED)
 
 ## Functions
 
 ### is-dao-or-extension
 
-[View in file](../contracts/wrapper-migrator.clar#L51)
+[View in file](../contracts/wrapper-migrator-v1.clar#L49)
 
 `(define-public (is-dao-or-extension () (response bool uint))`
 
@@ -96,9 +101,9 @@ wrapper verifiers.
 
 ### set-signers-iter
 
-[View in file](../contracts/wrapper-migrator.clar#L57)
+[View in file](../contracts/wrapper-migrator-v1.clar#L55)
 
-`(define-private (set-signers-iter ((item (tuple (enabled bool) (signer principal)))) (buff 20))`
+`(define-private (set-signers-iter ((item (tuple (enabled bool) (signer (buff 20))))) (buff 20))`
 
 #[allow(unchecked_data)]
 
@@ -106,10 +111,10 @@ wrapper verifiers.
   <summary>Source code:</summary>
 
 ```clarity
-(define-private (set-signers-iter (item { signer: principal, enabled: bool }))
+(define-private (set-signers-iter (item { signer: (buff 20), enabled: bool }))
   (let
     (
-      (pubkey (get hash-bytes (unwrap-panic (principal-destruct? (get signer item)))))
+      (pubkey (get signer item))
     )
     (print pubkey)
     (map-set migrator-signers-map pubkey (get enabled item))
@@ -124,13 +129,13 @@ wrapper verifiers.
 
 | Name | Type                                      | Description |
 | ---- | ----------------------------------------- | ----------- |
-| item | (tuple (enabled bool) (signer principal)) |             |
+| item | (tuple (enabled bool) (signer (buff 20))) |             |
 
 ### set-signers
 
-[View in file](../contracts/wrapper-migrator.clar#L72)
+[View in file](../contracts/wrapper-migrator-v1.clar#L70)
 
-`(define-public (set-signers ((signers (list 50 (tuple (enabled bool) (signer principal))))) (response (list 50 (buff 20)) uint))`
+`(define-public (set-signers ((signers (list 50 (tuple (enabled bool) (signer (buff 20)))))) (response (list 50 (buff 20)) uint))`
 
 Set valid wrapper verifiers
 
@@ -138,7 +143,7 @@ Set valid wrapper verifiers
   <summary>Source code:</summary>
 
 ```clarity
-(define-public (set-signers (signers (list 50 { signer: principal, enabled: bool })))
+(define-public (set-signers (signers (list 50 { signer: (buff 20), enabled: bool })))
   (begin
     (try! (is-dao-or-extension))
     (ok (map set-signers-iter signers))
@@ -152,11 +157,11 @@ Set valid wrapper verifiers
 
 | Name    | Type                                                | Description                                                                                                             |
 | ------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| signers | (list 50 (tuple (enabled bool) (signer principal))) | a list of { signer: principal, enabled: bool } tuples. Existing verifiers can be removed by setting `enabled` to false. |
+| signers | (list 50 (tuple (enabled bool) (signer (buff 20)))) | a list of { signer: principal, enabled: bool } tuples. Existing verifiers can be removed by setting `enabled` to false. |
 
 ### migrate
 
-[View in file](../contracts/wrapper-migrator.clar#L93)
+[View in file](../contracts/wrapper-migrator-v1.clar#L91)
 
 `(define-public (migrate ((wrapper principal) (signature (buff 65)) (recipient principal)) (response (tuple (id uint) (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
 
@@ -168,7 +173,7 @@ This function has three main steps:
 - Transfer the BNS legacy name to the wrapper
   ([`resolve-and-transfer`](#resolve-and-transfer))
 - Register the name in the BNSx name registry
-  ([`.name-registry#register`](`./core/name-registry#register.md`))
+  ([`.bnsx-registry#register`](`./core/name-registry#register.md`))
 
   <details>
   <summary>Source code:</summary>
@@ -182,7 +187,7 @@ This function has three main steps:
       (properties (try! (resolve-and-transfer wrapper)))
       (name (get name properties))
       (namespace (get namespace properties))
-      (id (try! (contract-call? .name-registry register
+      (id (try! (contract-call? .bnsx-registry register
         {
           name: name,
           namespace: namespace,
@@ -214,9 +219,44 @@ This function has three main steps:
 | signature | (buff 65) | a signature attesting to the validity of the wrapper contract                                |
 | recipient | principal | a principal that will receive the BNSx name. Useful for consolidating names into one wallet. |
 
+### register-wrapper
+
+[View in file](../contracts/wrapper-migrator-v1.clar#L124)
+
+`(define-public (register-wrapper ((wrapper principal)) (response uint uint))`
+
+Register a wrapper contract
+
+This is necessary to establish an integer ID for each wrapper principal. This ID
+can then be used to validate signatures
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-public (register-wrapper (wrapper principal))
+  (let
+    (
+      (id (get-next-wrapper-id))
+    )
+    (asserts! (map-insert wrapper-id-map wrapper id) ERR_WRAPPER_ALREADY_REGISTERED)
+    (map-insert id-wrapper-map id wrapper)
+    (ok id)
+  )
+)
+```
+
+</details>
+
+**Parameters:**
+
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| wrapper | principal |             |
+
 ### verify-wrapper
 
-[View in file](../contracts/wrapper-migrator.clar#L138)
+[View in file](../contracts/wrapper-migrator-v1.clar#L150)
 
 `(define-read-only (verify-wrapper ((wrapper principal) (signature (buff 65))) (response bool uint))`
 
@@ -232,8 +272,6 @@ checked to ensure that pubkey hash is stored as a valid signer.
 
 @throws if the pubkey is not a valid verifier
 
-#[filter(wrapper)]
-
 <details>
   <summary>Source code:</summary>
 
@@ -241,10 +279,9 @@ checked to ensure that pubkey hash is stored as a valid signer.
 (define-read-only (verify-wrapper (wrapper principal) (signature (buff 65)))
   (let
     (
-      (msg (sha256 (unwrap-panic (to-consensus-buff? wrapper))))
+      (id (unwrap! (map-get? wrapper-id-map wrapper) ERR_WRAPPER_NOT_REGISTERED))
+      (msg (sha256 id))
       (pubkey (unwrap! (secp256k1-recover? msg signature) ERR_RECOVER))
-      ;; (addr (unwrap-panic (principal-of? pubkey)))
-      ;; (pubkey-hash (get hash-bytes (unwrap-panic (principal-destruct? addr))))
       (pubkey-hash (hash160 pubkey))
     )
     ;; (ok pubkey-hash)
@@ -263,11 +300,34 @@ checked to ensure that pubkey hash is stored as a valid signer.
 | wrapper   | principal |             |
 | signature | (buff 65) |             |
 
+### hash-id
+
+[View in file](../contracts/wrapper-migrator-v1.clar#L164)
+
+`(define-read-only (hash-id ((id uint)) (buff 32))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-read-only (hash-id (id uint))
+  (sha256 id)
+)
+```
+
+</details>
+
+**Parameters:**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| id   | uint |             |
+
 ### debug-signature
 
-[View in file](../contracts/wrapper-migrator.clar#L153)
+[View in file](../contracts/wrapper-migrator-v1.clar#L168)
 
-`(define-read-only (debug-signature ((wrapper principal) (signature (buff 65))) (response (tuple (pubkey-hash (buff 20)) (signer principal) (valid-signer bool)) uint))`
+`(define-read-only (debug-signature ((wrapper principal) (signature (buff 65))) (response (tuple (pubkey-hash (buff 20)) (valid-signer bool)) uint))`
 
 <details>
   <summary>Source code:</summary>
@@ -281,7 +341,6 @@ checked to ensure that pubkey hash is stored as a valid signer.
     (ok {
       pubkey-hash: pubkey-hash,
       valid-signer: (default-to false (map-get? migrator-signers-map pubkey-hash)),
-      signer: (unwrap-panic (principal-construct? network-addr-version pubkey-hash))
     })
   )
 )
@@ -298,7 +357,7 @@ checked to ensure that pubkey hash is stored as a valid signer.
 
 ### recover-pubkey-hash
 
-[View in file](../contracts/wrapper-migrator.clar#L166)
+[View in file](../contracts/wrapper-migrator-v1.clar#L180)
 
 `(define-read-only (recover-pubkey-hash ((wrapper principal) (signature (buff 65))) (response (buff 20) uint))`
 
@@ -309,7 +368,8 @@ checked to ensure that pubkey hash is stored as a valid signer.
 (define-read-only (recover-pubkey-hash (wrapper principal) (signature (buff 65)))
   (let
     (
-      (msg (sha256 (unwrap-panic (to-consensus-buff? wrapper))))
+      (id (unwrap! (map-get? wrapper-id-map wrapper) ERR_WRAPPER_NOT_REGISTERED))
+      (msg (sha256 id))
       (pubkey (unwrap! (secp256k1-recover? msg signature) ERR_RECOVER))
     )
     (ok (hash160 pubkey))
@@ -328,9 +388,9 @@ checked to ensure that pubkey hash is stored as a valid signer.
 
 ### is-valid-signer
 
-[View in file](../contracts/wrapper-migrator.clar#L177)
+[View in file](../contracts/wrapper-migrator-v1.clar#L192)
 
-`(define-read-only (is-valid-signer ((signer principal)) bool)`
+`(define-read-only (is-valid-signer ((pubkey (buff 20))) bool)`
 
 Helper method to check if a given principal is a valid verifier
 
@@ -338,13 +398,8 @@ Helper method to check if a given principal is a valid verifier
   <summary>Source code:</summary>
 
 ```clarity
-(define-read-only (is-valid-signer (signer principal))
-  (let
-    (
-      (pubkey (get hash-bytes (unwrap-panic (principal-destruct? signer))))
-    )
-    (default-to false (map-get? migrator-signers-map pubkey))
-  )
+(define-read-only (is-valid-signer (pubkey (buff 20)))
+  (default-to false (map-get? migrator-signers-map pubkey))
 )
 ```
 
@@ -354,57 +409,11 @@ Helper method to check if a given principal is a valid verifier
 
 | Name   | Type      | Description |
 | ------ | --------- | ----------- |
-| signer | principal |             |
-
-### hash-principal
-
-[View in file](../contracts/wrapper-migrator.clar#L186)
-
-`(define-read-only (hash-principal ((wrapper principal)) (buff 32))`
-
-<details>
-  <summary>Source code:</summary>
-
-```clarity
-(define-read-only (hash-principal (wrapper principal))
-  (sha256 (unwrap-panic (to-consensus-buff? wrapper)))
-)
-```
-
-</details>
-
-**Parameters:**
-
-| Name    | Type      | Description |
-| ------- | --------- | ----------- |
-| wrapper | principal |             |
-
-### construct
-
-[View in file](../contracts/wrapper-migrator.clar#L190)
-
-`(define-read-only (construct ((hash-bytes (buff 20))) (response principal (tuple (error_code uint) (value (optional principal)))))`
-
-<details>
-  <summary>Source code:</summary>
-
-```clarity
-(define-read-only (construct (hash-bytes (buff 20)))
-  (principal-construct? network-addr-version hash-bytes)
-)
-```
-
-</details>
-
-**Parameters:**
-
-| Name       | Type      | Description |
-| ---------- | --------- | ----------- |
-| hash-bytes | (buff 20) |             |
+| pubkey | (buff 20) |             |
 
 ### get-legacy-name
 
-[View in file](../contracts/wrapper-migrator.clar#L201)
+[View in file](../contracts/wrapper-migrator-v1.clar#L201)
 
 `(define-read-only (get-legacy-name ((account principal)) (response (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
 
@@ -441,11 +450,12 @@ Fetch the BNS legacy name and name properties owned by a given account.
 
 ### resolve-and-transfer
 
-[View in file](../contracts/wrapper-migrator.clar#L215)
+[View in file](../contracts/wrapper-migrator-v1.clar#L215)
 
 `(define-private (resolve-and-transfer ((wrapper principal)) (response (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
 
-Transfer an account's BNS legacy name to a wrapper contract. #[allow(unchecked_data)]
+Transfer an account's BNS legacy name to a wrapper contract.
+#[allow(unchecked_data)]
 
 <details>
   <summary>Source code:</summary>
@@ -486,9 +496,32 @@ Transfer an account's BNS legacy name to a wrapper contract. #[allow(unchecked_d
 | ------- | --------- | ----------- |
 | wrapper | principal |             |
 
+### get-next-wrapper-id
+
+[View in file](../contracts/wrapper-migrator-v1.clar#L241)
+
+`(define-private (get-next-wrapper-id () uint)`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-private (get-next-wrapper-id)
+  (let
+    (
+      (id (var-get next-wrapper-id-var))
+    )
+    (var-set next-wrapper-id-var (+ id u1))
+    id
+  )
+)
+```
+
+</details>
+
 ### get-wrapper-name
 
-[View in file](../contracts/wrapper-migrator.clar#L245)
+[View in file](../contracts/wrapper-migrator-v1.clar#L255)
 
 `(define-read-only (get-wrapper-name ((wrapper principal)) (optional uint))`
 
@@ -512,7 +545,7 @@ given wrapper contract.
 
 ### get-name-wrapper
 
-[View in file](../contracts/wrapper-migrator.clar#L251)
+[View in file](../contracts/wrapper-migrator-v1.clar#L261)
 
 `(define-read-only (get-name-wrapper ((name uint)) (optional principal))`
 
@@ -534,221 +567,176 @@ given name
 | ---- | ---- | -------------------------- |
 | name | uint | the name ID of a BNSx name |
 
-## Maps
+### get-id-from-wrapper
 
-### migrator-signers-map
+[View in file](../contracts/wrapper-migrator-v1.clar#L263)
 
-[View in file](../contracts/wrapper-migrator.clar#L33)
-
-`(define-map migrator-signers-map (buff 20) bool)`
+`(define-read-only (get-id-from-wrapper ((wrapper principal)) (optional uint))`
 
 <details>
   <summary>Source code:</summary>
+
+```clarity
+(define-read-only (get-id-from-wrapper (wrapper principal))
+  (map-get? wrapper-id-map wrapper)
+)
+```
+
+</details>
+
+**Parameters:**
+
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| wrapper | principal |             |
+
+### get-wrapper-from-id
+
+[View in file](../contracts/wrapper-migrator-v1.clar#L267)
+
+`(define-read-only (get-wrapper-from-id ((id uint)) (optional principal))`
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-read-only (get-wrapper-from-id (id uint))
+  (map-get? id-wrapper-map id)
+)
+```
+
+</details>
+
+**Parameters:**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| id   | uint |             |
+
+## Maps
+
+### migrator-signers-map
 
 ```clarity
 (define-map migrator-signers-map (buff 20) bool)
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L35)
 
 ### name-wrapper-map
-
-[View in file](../contracts/wrapper-migrator.clar#L35)
-
-`(define-map name-wrapper-map uint principal)`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-map name-wrapper-map uint principal)
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L37)
 
 ### wrapper-name-map
-
-[View in file](../contracts/wrapper-migrator.clar#L36)
-
-`(define-map wrapper-name-map principal uint)`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-map wrapper-name-map principal uint)
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L38)
+
+### wrapper-id-map
+
+```clarity
+(define-map wrapper-id-map principal uint)
+```
+
+[View in file](../contracts/wrapper-migrator-v1.clar#L40)
+
+### id-wrapper-map
+
+```clarity
+(define-map id-wrapper-map uint principal)
+```
+
+[View in file](../contracts/wrapper-migrator-v1.clar#L41)
 
 ## Variables
 
+### next-wrapper-id-var
+
+uint
+
+```clarity
+(define-data-var next-wrapper-id-var uint u0)
+```
+
+[View in file](../contracts/wrapper-migrator-v1.clar#L43)
+
+## Constants
+
 ### ROLE
-
-Type: `constant`
-
-[View in file](../contracts/wrapper-migrator.clar#L24)
-
-`(define-constant ROLE (string-ascii 10))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ROLE "mig-signer")
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L24)
 
 ### ERR_NO_NAME
-
-Type: `constant`
-
-[View in file](../contracts/wrapper-migrator.clar#L26)
-
-`(define-constant ERR_NO_NAME (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_NO_NAME (err u6000))
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L26)
 
 ### ERR_UNAUTHORIZED
-
-Type: `constant`
-
-[View in file](../contracts/wrapper-migrator.clar#L27)
-
-`(define-constant ERR_UNAUTHORIZED (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_UNAUTHORIZED (err u6001))
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L27)
 
 ### ERR_RECOVER
-
-Type: `constant`
-
-[View in file](../contracts/wrapper-migrator.clar#L28)
-
-`(define-constant ERR_RECOVER (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_RECOVER (err u6002))
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L28)
 
 ### ERR_INVALID_CONTRACT_NAME
-
-Type: `constant`
-
-[View in file](../contracts/wrapper-migrator.clar#L29)
-
-`(define-constant ERR_INVALID_CONTRACT_NAME (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_INVALID_CONTRACT_NAME (err u6003))
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L29)
 
 ### ERR_NAME_TRANSFER
-
-Type: `constant`
-
-[View in file](../contracts/wrapper-migrator.clar#L30)
-
-`(define-constant ERR_NAME_TRANSFER (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_NAME_TRANSFER (err u6004))
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L30)
 
 ### ERR_WRAPPER_USED
-
-Type: `constant`
-
-[View in file](../contracts/wrapper-migrator.clar#L31)
-
-`(define-constant ERR_WRAPPER_USED (response none uint))`
-
-<details>
-  <summary>Source code:</summary>
 
 ```clarity
 (define-constant ERR_WRAPPER_USED (err u6005))
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L31)
 
-### wrapped-id-var
-
-Type: `variable`
-
-[View in file](../contracts/wrapper-migrator.clar#L38)
-
-`(define-data-var wrapped-id-var uint)`
-
-<details>
-  <summary>Source code:</summary>
+### ERR_WRAPPER_NOT_REGISTERED
 
 ```clarity
-(define-data-var wrapped-id-var uint u0)
+(define-constant ERR_WRAPPER_NOT_REGISTERED (err u6006))
 ```
 
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L32)
 
-### wrapper-deployer
-
-Type: `variable`
-
-[View in file](../contracts/wrapper-migrator.clar#L39)
-
-`(define-data-var wrapper-deployer (buff 20))`
-
-<details>
-  <summary>Source code:</summary>
+### ERR_WRAPPER_ALREADY_REGISTERED
 
 ```clarity
-(define-data-var wrapper-deployer (buff 20) (get hash-bytes (unwrap-panic (principal-destruct? tx-sender))))
+(define-constant ERR_WRAPPER_ALREADY_REGISTERED (err u6007))
 ```
 
-</details>
-
-### network-addr-version
-
-Type: `constant`
-
-[View in file](../contracts/wrapper-migrator.clar#L41)
-
-`(define-constant network-addr-version (buff 1))`
-
-<details>
-  <summary>Source code:</summary>
-
-```clarity
-(define-constant network-addr-version (if is-in-mainnet 0x16 0x1a))
-```
-
-</details>
+[View in file](../contracts/wrapper-migrator-v1.clar#L33)
