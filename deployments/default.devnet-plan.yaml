@@ -43,7 +43,6 @@ plan:
             path: contracts/core/name-registry.clar
             anchor-block-only: true
             # clarity-version: 1
-        #     clarity-version: 1
         - contract-publish:
             contract-name: proposal-bootstrap
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
@@ -65,7 +64,7 @@ plan:
             path: contracts/testnet/wrapper-migrator-v1.clar
             anchor-block-only: true
             # clarity-version: 1
-      epoch: "2.1"
+      epoch: "2.0"
     - id: 1
       transactions:
         - contract-call:
@@ -76,4 +75,4 @@ plan:
             anchor_block_only: false
             parameters:
               - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap"
-      epoch: "2.1"
+      epoch: "2.0"

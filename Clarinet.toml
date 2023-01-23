@@ -75,6 +75,11 @@ path = 'contracts/wrapper-migrator-v1.clar'
 clarity_version = 1
 epoch = 2.0
 
+[contracts.query-helper]
+path = 'contracts/query-helper.clar'
+clarity_version = 1
+epoch = 2.0
+
 # [contracts.onchain-resolver]
 # path = "contracts/onchain-resolver.clar"
 # clarity_version = 2

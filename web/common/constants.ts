@@ -25,7 +25,7 @@ export function getNetwork() {
 
 export function getClarigenNodeClient() {
   const network = getNetwork();
-  return ClarigenNodeClient({ network });
+  return new ClarigenNodeClient(network);
 }
 
 export function getContracts() {

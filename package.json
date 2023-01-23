@@ -16,8 +16,8 @@
   "author": "Hank Stoever",
   "license": "ISC",
   "dependencies": {
-    "@clarigen/core": "1.0.2",
-    "@clarigen/node": "1.0.2",
+    "@clarigen/core": "1.0.5",
+    "@clarigen/node": "1.0.5",
     "@swc-node/register": "^1.3.7",
     "@swc/cli": "^0.1.51",
     "@swc/core": "^1.2.105",

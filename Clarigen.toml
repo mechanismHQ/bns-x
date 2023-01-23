@@ -12,8 +12,8 @@ helper = "tests/clarigen.ts"
 # Comment or remove section to skip ESM types
 [esm]
 # `output` can be a directory or a folder.
-output = "web/common/clarigen.ts"
-after = "pnpm prettier --write web/common/clarigen.ts "
+outputs = ["web/common/clarigen.ts", "indexer/src/contracts/clarigen.ts"]
+after = "pnpm prettier --write web/common/clarigen.ts indexer/src/contracts/clarigen.ts"
 # `esm.after` - script to run after ESM types are generated.
 # examples:
 # after = "yarn prettier ./esm/index.ts"

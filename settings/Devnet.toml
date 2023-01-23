@@ -91,7 +91,7 @@ working_dir = "tmp/devnet"
 # bitcoin_node_rpc_port = 18443
 # bitcoin_node_username = "devnet"
 # bitcoin_node_password = "devnet"
-# bitcoin_controller_block_time = 30_000
+bitcoin_controller_block_time = 20_000
 # stacks_node_rpc_port = 20443
 # stacks_node_p2p_port = 20444
 # stacks_api_port = 3999
@@ -126,8 +126,8 @@ stacks_explorer_image_url = "hirosystems/explorer:latest"
 enable_next_features = true
 # epoch_2_0 = 100
 # epoch_2_05 = 104
-# epoch_2_1 = 106
-pox_2_activation = 109
+epoch_2_1 = 110
+pox_2_activation = 120
 
 
 # Send some stacking orders

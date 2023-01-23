@@ -12,17 +12,19 @@
     "test:server": "dotenv -e .env.test -- node -r @swc-node/register scripts/server.ts",
     "test:run": "pnpm test:migrate && pnpm test:server",
     "sync": "pnpm r scripts/sync-prints.ts",
-    "db:reset": "pnpm prisma migrate reset"
+    "db:reset": "prisma migrate reset",
+    "typecheck": "tsc --noEmit"
   },
   "author": "Hank Stoever",
   "license": "ISC",
   "dependencies": {
-    "@clarigen/core": "1.0.4",
+    "@clarigen/core": "1.0.5",
     "@fastify/http-proxy": "8.4.0",
     "@hirosystems/chainhook-types": "1.1.2",
     "@pothos/core": "3.23.1",
     "@pothos/plugin-prisma": "3.37.0",
     "@prisma/client": "4.7.1",
+    "@stacks/stacks-blockchain-api-types": "^6.1.1",
     "@swc-node/register": "1.3.7",
     "@swc/cli": "0.1.51",
     "@swc/core": "1.2.105",

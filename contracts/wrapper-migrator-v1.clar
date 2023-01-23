@@ -193,8 +193,6 @@
   (default-to false (map-get? migrator-signers-map pubkey))
 )
 
-;; Transfer to a new contract
-
 ;; Fetch the BNS legacy name and name properties owned by a given account.
 ;; 
 ;; @throws if the account does not own a valid name

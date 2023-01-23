@@ -1,5 +1,4 @@
 import { contractFactory, DeploymentNetwork, OkType, projectFactory } from '@clarigen/core';
-import { WebProvider } from '@clarigen/web';
 import {
   clientState,
   currentAccountAtom,
