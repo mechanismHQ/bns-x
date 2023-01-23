@@ -132,7 +132,7 @@ export function filterNftEvents(blocks: Block[]) {
         useNFTBurnEvent(e, (event) => {
           if (
             event.data.asset_identifier ===
-            "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::names"
+            "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::BNSx-Names"
           )
             txs.push({
               tx: meta,
@@ -142,7 +142,7 @@ export function filterNftEvents(blocks: Block[]) {
         useNFTTransferEvent(e, (event) => {
           if (
             event.data.asset_identifier ===
-            "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::names"
+            "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::BNSx-Names"
           )
             txs.push({
               tx: meta,
@@ -153,7 +153,7 @@ export function filterNftEvents(blocks: Block[]) {
         useNFTMintEvent(e, (event) => {
           if (
             event.data.asset_identifier ===
-            "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::names"
+            "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::BNSx-Names"
           )
             txs.push({
               tx: meta,

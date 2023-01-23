@@ -5,7 +5,7 @@ export type ResponseType<T> = T extends TypedAbiFunction<TypedAbiArg<unknown, st
   ? R
   : never;
 
-export type RegistryContract = typeof contracts.nameRegistry;
+export type RegistryContract = typeof contracts.bnsxRegistry;
 
 export type NameProperties = NonNullable<
   ResponseType<RegistryContract['functions']['getNameProperties']>

@@ -11,5 +11,5 @@ export function queryHelperContract() {
 }
 
 export function registryContract() {
-  return getContracts().nameRegistry;
+  return getContracts().bnsxRegistry;
 }

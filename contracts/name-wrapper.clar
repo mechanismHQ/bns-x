@@ -34,7 +34,7 @@
       (owner (get owner props))
     )
     (asserts! (is-eq tx-sender owner) ERR_UNAUTHORIZED)
-    (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry burn (get id props)))
+    (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry burn (get id props)))
     (unwrap! (as-contract (contract-call? 'SP000000000000000000002Q6VF78.bns name-transfer (get namespace props) (get name props) new-owner none)) ERR_NAME_TRANSFER)
     (ok props)
   )
@@ -52,7 +52,7 @@
   (let
     (
       (name (try! (get-own-name)))
-      (props (unwrap! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry get-name-properties name) ERR_NOT_WRAPPED))
+      (props (unwrap! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry get-name-properties name) ERR_NOT_WRAPPED))
     )
     (ok props)
   )

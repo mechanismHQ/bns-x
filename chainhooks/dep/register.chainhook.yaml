@@ -6,11 +6,11 @@ networks:
   devnet:
     predicate:
       print-event:
-        contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+        contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry
         contains: new-name
       # Also supports the following predicates:
       # nft-event:
-      #   asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::names
+      #   asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry::BNSx-Names
       #   actions: [mint, transfer, burn]
       # ft-event:
       #     asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.cbtc-token::cbtc
@@ -19,7 +19,7 @@ networks:
       #     asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.cbtc-token::cbtc
       #     actions: [mint, transfer, lock]
     #   contract-call:
-    #     contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+    #     contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry
     #     method: mint
     action:
       # http:
@@ -31,11 +31,11 @@ networks:
   simnet:
     predicate:
       #   print-event:
-      #     contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+      #     contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry
       #     contains: vault
       # Also supports the following predicates:
       nft-event:
-        asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::names
+        asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry::BNSx-Names
         actions: [mint, transfer, burn]
       # ft-event:
       #     asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.cbtc-token::cbtc
@@ -44,7 +44,7 @@ networks:
       #     asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.cbtc-token::cbtc
       #     actions: [mint, transfer, lock]
     #   contract-call:
-    #     contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+    #     contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry
     #     method: mint
     action:
       http:

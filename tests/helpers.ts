@@ -40,7 +40,7 @@ export const contracts = {
   bns,
 };
 
-export const registry = contracts.nameRegistry;
+export const registry = contracts.bnsxRegistry;
 export const nftAsset = registry.non_fungible_tokens[0].name;
 export const nftAssetId = `${registry.identifier}::${nftAsset}`;
 

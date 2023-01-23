@@ -12,7 +12,7 @@
 (define-public (set-zonefile (id uint) (zonefile (buff 2048)))
   (let
     (
-      (owner (contract-call? .name-registry get-name-owner id))
+      (owner (contract-call? .bnsx-registry get-name-owner id))
     )
     ;; #[filter(zonefile)]
     (asserts! (is-eq (some tx-sender) owner) ERR_UNAUTHORIZED)
@@ -31,7 +31,7 @@
 )
 
 (define-read-only (resolve-zonefile-for-name (name (buff 48)) (namespace (buff 20)))
-  (match (contract-call? .name-registry get-id-for-name { name: name, namespace: namespace })
+  (match (contract-call? .bnsx-registry get-id-for-name { name: name, namespace: namespace })
     id (resolve-zonefile id)
     none
   )

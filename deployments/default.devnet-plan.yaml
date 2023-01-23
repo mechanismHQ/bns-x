@@ -37,7 +37,7 @@ plan:
             anchor-block-only: true
             # clarity-version: 1
         - contract-publish:
-            contract-name: name-registry
+            contract-name: bnsx-registry
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 163600
             path: contracts/core/name-registry.clar

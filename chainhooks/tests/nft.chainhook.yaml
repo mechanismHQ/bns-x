@@ -6,7 +6,7 @@ networks:
   devnet:
     predicate:
       nft-event:
-        asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry::names
+        asset-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry::BNSx-Names
         actions: [mint, transfer, burn]
     action:
       http:

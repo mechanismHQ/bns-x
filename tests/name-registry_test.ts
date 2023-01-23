@@ -20,7 +20,7 @@ import { btcBytes } from "./mocks.ts";
 
 describe("name registry", () => {
   const { chain, contracts, accounts } = deployWithNamespace();
-  const contract = contracts.nameRegistry;
+  const contract = contracts.bnsxRegistry;
 
   function registerName(name: string, owner: string) {
     const receipt = utilsRegisterBtc({ name, owner, chain });

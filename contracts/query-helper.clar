@@ -45,7 +45,7 @@
 ;; BNSx Names
 
 (define-read-only (get-bnsx-name (id uint))
-  (match (contract-call? .name-registry get-name-properties-by-id id)
+  (match (contract-call? .bnsx-registry get-name-properties-by-id id)
     props (some (merge props {
       legacy: (resolve-legacy-name { name: (get name props), namespace: (get namespace props) })
     }))
@@ -54,10 +54,10 @@
 )
 
 (define-read-only (crawl-names (account principal))
-  (match (contract-call? .name-registry get-primary-name-properties account)
+  (match (contract-call? .bnsx-registry get-primary-name-properties account)
     primary (let
       (
-        (next-id (contract-call? .name-registry get-next-node-id (get id primary)))
+        (next-id (contract-call? .bnsx-registry get-next-node-id (get id primary)))
         (first (merge primary {
           legacy: (resolve-legacy-name { name: (get name primary), namespace: (get namespace primary) })
         }))
@@ -76,10 +76,10 @@
 )
 
 (define-read-only (crawl-from-id (id uint))
-  (match (contract-call? .name-registry get-name-properties-by-id id)
+  (match (contract-call? .bnsx-registry get-name-properties-by-id id)
     props (let
       (
-        (next-id (contract-call? .name-registry get-next-node-id (get id props)))
+        (next-id (contract-call? .bnsx-registry get-next-node-id (get id props)))
         (first (merge props {
           legacy: (resolve-legacy-name { name: (get name props), namespace: (get namespace props) })
         }))
@@ -119,9 +119,9 @@
   (match (get next-id iterator)
     id (let
       (
-        ;; (name (unwrap-panic (contract-call? .name-registry get-name-properties-by-id id)))
+        ;; (name (unwrap-panic (contract-call? .bnsx-registry get-name-properties-by-id id)))
         (name (unwrap-panic (get-bnsx-name id)))
-        (next-id (contract-call? .name-registry get-next-node-id id))
+        (next-id (contract-call? .bnsx-registry get-next-node-id id))
         (name-list (unwrap-panic (as-max-len? (get names iterator) u19)))
       )
       {

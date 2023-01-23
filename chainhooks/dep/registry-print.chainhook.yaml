@@ -6,7 +6,7 @@ networks:
   devnet:
     predicate:
       print-event:
-        contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registry
+        contract-identifier: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry
         contains: topic
     action:
       file:

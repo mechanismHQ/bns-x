@@ -1520,328 +1520,7 @@ export const contracts = {
     'clarity_version': 'Clarity1',
     contractName: 'bns-v1',
   },
-  executorDao: {
-    'functions': {
-      isSelfOrExtension: {
-        'name': 'is-self-or-extension',
-        'access': 'private',
-        'args': [],
-        'outputs': {
-          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
-        },
-      } as TypedAbiFunction<[], Response<boolean, bigint>>,
-      setExtensionsIter: {
-        'name': 'set-extensions-iter',
-        'access': 'private',
-        'args': [{
-          'name': 'item',
-          'type': {
-            'tuple': [{ 'name': 'enabled', 'type': 'bool' }, {
-              'name': 'extension',
-              'type': 'principal',
-            }],
-          },
-        }],
-        'outputs': { 'type': 'bool' },
-      } as TypedAbiFunction<[
-        item: TypedAbiArg<{
-          'enabled': boolean;
-          'extension': string;
-        }, 'item'>,
-      ], boolean>,
-      setRolesIter: {
-        'name': 'set-roles-iter',
-        'access': 'private',
-        'args': [{
-          'name': 'item',
-          'type': {
-            'tuple': [{ 'name': 'enabled', 'type': 'bool' }, {
-              'name': 'extension',
-              'type': 'principal',
-            }, {
-              'name': 'role',
-              'type': { 'string-ascii': { 'length': 10 } },
-            }],
-          },
-        }],
-        'outputs': { 'type': 'bool' },
-      } as TypedAbiFunction<[
-        item: TypedAbiArg<{
-          'enabled': boolean;
-          'extension': string;
-          'role': string;
-        }, 'item'>,
-      ], boolean>,
-      construct: {
-        'name': 'construct',
-        'access': 'public',
-        'args': [{ 'name': 'proposal', 'type': 'trait_reference' }],
-        'outputs': {
-          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
-        },
-      } as TypedAbiFunction<
-        [proposal: TypedAbiArg<string, 'proposal'>],
-        Response<boolean, bigint>
-      >,
-      execute: {
-        'name': 'execute',
-        'access': 'public',
-        'args': [{ 'name': 'proposal', 'type': 'trait_reference' }, {
-          'name': 'sender',
-          'type': 'principal',
-        }],
-        'outputs': {
-          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
-        },
-      } as TypedAbiFunction<
-        [
-          proposal: TypedAbiArg<string, 'proposal'>,
-          sender: TypedAbiArg<string, 'sender'>,
-        ],
-        Response<boolean, bigint>
-      >,
-      requestExtensionCallback: {
-        'name': 'request-extension-callback',
-        'access': 'public',
-        'args': [{ 'name': 'extension', 'type': 'trait_reference' }, {
-          'name': 'memo',
-          'type': { 'buffer': { 'length': 34 } },
-        }],
-        'outputs': {
-          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
-        },
-      } as TypedAbiFunction<
-        [
-          extension: TypedAbiArg<string, 'extension'>,
-          memo: TypedAbiArg<Uint8Array, 'memo'>,
-        ],
-        Response<boolean, bigint>
-      >,
-      setExtension: {
-        'name': 'set-extension',
-        'access': 'public',
-        'args': [{ 'name': 'extension', 'type': 'principal' }, {
-          'name': 'enabled',
-          'type': 'bool',
-        }],
-        'outputs': {
-          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
-        },
-      } as TypedAbiFunction<
-        [
-          extension: TypedAbiArg<string, 'extension'>,
-          enabled: TypedAbiArg<boolean, 'enabled'>,
-        ],
-        Response<boolean, bigint>
-      >,
-      setExtensionRoles: {
-        'name': 'set-extension-roles',
-        'access': 'public',
-        'args': [{
-          'name': 'extension-list',
-          'type': {
-            'list': {
-              'type': {
-                'tuple': [{ 'name': 'enabled', 'type': 'bool' }, {
-                  'name': 'extension',
-                  'type': 'principal',
-                }, {
-                  'name': 'role',
-                  'type': { 'string-ascii': { 'length': 10 } },
-                }],
-              },
-              'length': 200,
-            },
-          },
-        }],
-        'outputs': {
-          'type': {
-            'response': {
-              'ok': { 'list': { 'type': 'bool', 'length': 200 } },
-              'error': 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<[
-        extensionList: TypedAbiArg<{
-          'enabled': boolean;
-          'extension': string;
-          'role': string;
-        }[], 'extensionList'>,
-      ], Response<boolean[], bigint>>,
-      setExtensions: {
-        'name': 'set-extensions',
-        'access': 'public',
-        'args': [{
-          'name': 'extension-list',
-          'type': {
-            'list': {
-              'type': {
-                'tuple': [{ 'name': 'enabled', 'type': 'bool' }, {
-                  'name': 'extension',
-                  'type': 'principal',
-                }],
-              },
-              'length': 200,
-            },
-          },
-        }],
-        'outputs': {
-          'type': {
-            'response': {
-              'ok': { 'list': { 'type': 'bool', 'length': 200 } },
-              'error': 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<[
-        extensionList: TypedAbiArg<{
-          'enabled': boolean;
-          'extension': string;
-        }[], 'extensionList'>,
-      ], Response<boolean[], bigint>>,
-      executedAt: {
-        'name': 'executed-at',
-        'access': 'read_only',
-        'args': [{ 'name': 'proposal', 'type': 'trait_reference' }],
-        'outputs': { 'type': { 'optional': 'uint128' } },
-      } as TypedAbiFunction<
-        [proposal: TypedAbiArg<string, 'proposal'>],
-        bigint | null
-      >,
-      hasRole: {
-        'name': 'has-role',
-        'access': 'read_only',
-        'args': [{ 'name': 'extension', 'type': 'principal' }, {
-          'name': 'role',
-          'type': { 'string-ascii': { 'length': 10 } },
-        }],
-        'outputs': { 'type': 'bool' },
-      } as TypedAbiFunction<
-        [
-          extension: TypedAbiArg<string, 'extension'>,
-          role: TypedAbiArg<string, 'role'>,
-        ],
-        boolean
-      >,
-      hasRoleOrExtension: {
-        'name': 'has-role-or-extension',
-        'access': 'read_only',
-        'args': [{ 'name': 'extension', 'type': 'principal' }, {
-          'name': 'role',
-          'type': { 'string-ascii': { 'length': 10 } },
-        }],
-        'outputs': { 'type': 'bool' },
-      } as TypedAbiFunction<
-        [
-          extension: TypedAbiArg<string, 'extension'>,
-          role: TypedAbiArg<string, 'role'>,
-        ],
-        boolean
-      >,
-      isExtension: {
-        'name': 'is-extension',
-        'access': 'read_only',
-        'args': [{ 'name': 'extension', 'type': 'principal' }],
-        'outputs': { 'type': 'bool' },
-      } as TypedAbiFunction<
-        [extension: TypedAbiArg<string, 'extension'>],
-        boolean
-      >,
-    },
-    'maps': {
-      executedProposals: {
-        'name': 'executed-proposals',
-        'key': 'principal',
-        'value': 'uint128',
-      } as TypedAbiMap<string, bigint>,
-      extensionRoles: {
-        'name': 'extension-roles',
-        'key': {
-          'tuple': [{ 'name': 'extension', 'type': 'principal' }, {
-            'name': 'role',
-            'type': { 'string-ascii': { 'length': 10 } },
-          }],
-        },
-        'value': 'bool',
-      } as TypedAbiMap<{
-        'extension': string;
-        'role': string;
-      }, boolean>,
-      extensions: {
-        'name': 'extensions',
-        'key': 'principal',
-        'value': 'bool',
-      } as TypedAbiMap<string, boolean>,
-    },
-    'variables': {
-      errAlreadyExecuted: {
-        name: 'err-already-executed',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      errInvalidExtension: {
-        name: 'err-invalid-extension',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      errUnauthorised: {
-        name: 'err-unauthorised',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      executive: {
-        name: 'executive',
-        type: 'principal',
-        access: 'variable',
-      } as TypedAbiVariable<string>,
-    },
-    constants: {
-      errAlreadyExecuted: {
-        isOk: false,
-        value: 1001n,
-      },
-      errInvalidExtension: {
-        isOk: false,
-        value: 1002n,
-      },
-      errUnauthorised: {
-        isOk: false,
-        value: 1000n,
-      },
-      executive: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-    },
-    'non_fungible_tokens': [],
-    'fungible_tokens': [],
-    'clarity_version': 'Clarity1',
-    contractName: 'executor-dao',
-  },
-  extensionTrait: {
-    'functions': {},
-    'maps': {},
-    'variables': {},
-    constants: {},
-    'non_fungible_tokens': [],
-    'fungible_tokens': [],
-    'clarity_version': 'Clarity1',
-    contractName: 'extension-trait',
-  },
-  nameRegistry: {
+  bnsxRegistry: {
     'functions': {
       addNode: {
         'name': 'add-node',
@@ -2639,11 +2318,335 @@ export const contracts = {
       tokenUriVar: '',
     },
     'non_fungible_tokens': [
-      { 'name': 'names', 'type': 'uint128' } as ClarityAbiTypeNonFungibleToken,
+      {
+        'name': 'BNSx-Names',
+        'type': 'uint128',
+      } as ClarityAbiTypeNonFungibleToken,
     ],
     'fungible_tokens': [],
     'clarity_version': 'Clarity1',
-    contractName: 'name-registry',
+    contractName: 'bnsx-registry',
+  },
+  executorDao: {
+    'functions': {
+      isSelfOrExtension: {
+        'name': 'is-self-or-extension',
+        'access': 'private',
+        'args': [],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<[], Response<boolean, bigint>>,
+      setExtensionsIter: {
+        'name': 'set-extensions-iter',
+        'access': 'private',
+        'args': [{
+          'name': 'item',
+          'type': {
+            'tuple': [{ 'name': 'enabled', 'type': 'bool' }, {
+              'name': 'extension',
+              'type': 'principal',
+            }],
+          },
+        }],
+        'outputs': { 'type': 'bool' },
+      } as TypedAbiFunction<[
+        item: TypedAbiArg<{
+          'enabled': boolean;
+          'extension': string;
+        }, 'item'>,
+      ], boolean>,
+      setRolesIter: {
+        'name': 'set-roles-iter',
+        'access': 'private',
+        'args': [{
+          'name': 'item',
+          'type': {
+            'tuple': [{ 'name': 'enabled', 'type': 'bool' }, {
+              'name': 'extension',
+              'type': 'principal',
+            }, {
+              'name': 'role',
+              'type': { 'string-ascii': { 'length': 10 } },
+            }],
+          },
+        }],
+        'outputs': { 'type': 'bool' },
+      } as TypedAbiFunction<[
+        item: TypedAbiArg<{
+          'enabled': boolean;
+          'extension': string;
+          'role': string;
+        }, 'item'>,
+      ], boolean>,
+      construct: {
+        'name': 'construct',
+        'access': 'public',
+        'args': [{ 'name': 'proposal', 'type': 'trait_reference' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [proposal: TypedAbiArg<string, 'proposal'>],
+        Response<boolean, bigint>
+      >,
+      execute: {
+        'name': 'execute',
+        'access': 'public',
+        'args': [{ 'name': 'proposal', 'type': 'trait_reference' }, {
+          'name': 'sender',
+          'type': 'principal',
+        }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          proposal: TypedAbiArg<string, 'proposal'>,
+          sender: TypedAbiArg<string, 'sender'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      requestExtensionCallback: {
+        'name': 'request-extension-callback',
+        'access': 'public',
+        'args': [{ 'name': 'extension', 'type': 'trait_reference' }, {
+          'name': 'memo',
+          'type': { 'buffer': { 'length': 34 } },
+        }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          extension: TypedAbiArg<string, 'extension'>,
+          memo: TypedAbiArg<Uint8Array, 'memo'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      setExtension: {
+        'name': 'set-extension',
+        'access': 'public',
+        'args': [{ 'name': 'extension', 'type': 'principal' }, {
+          'name': 'enabled',
+          'type': 'bool',
+        }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          extension: TypedAbiArg<string, 'extension'>,
+          enabled: TypedAbiArg<boolean, 'enabled'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      setExtensionRoles: {
+        'name': 'set-extension-roles',
+        'access': 'public',
+        'args': [{
+          'name': 'extension-list',
+          'type': {
+            'list': {
+              'type': {
+                'tuple': [{ 'name': 'enabled', 'type': 'bool' }, {
+                  'name': 'extension',
+                  'type': 'principal',
+                }, {
+                  'name': 'role',
+                  'type': { 'string-ascii': { 'length': 10 } },
+                }],
+              },
+              'length': 200,
+            },
+          },
+        }],
+        'outputs': {
+          'type': {
+            'response': {
+              'ok': { 'list': { 'type': 'bool', 'length': 200 } },
+              'error': 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<[
+        extensionList: TypedAbiArg<{
+          'enabled': boolean;
+          'extension': string;
+          'role': string;
+        }[], 'extensionList'>,
+      ], Response<boolean[], bigint>>,
+      setExtensions: {
+        'name': 'set-extensions',
+        'access': 'public',
+        'args': [{
+          'name': 'extension-list',
+          'type': {
+            'list': {
+              'type': {
+                'tuple': [{ 'name': 'enabled', 'type': 'bool' }, {
+                  'name': 'extension',
+                  'type': 'principal',
+                }],
+              },
+              'length': 200,
+            },
+          },
+        }],
+        'outputs': {
+          'type': {
+            'response': {
+              'ok': { 'list': { 'type': 'bool', 'length': 200 } },
+              'error': 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<[
+        extensionList: TypedAbiArg<{
+          'enabled': boolean;
+          'extension': string;
+        }[], 'extensionList'>,
+      ], Response<boolean[], bigint>>,
+      executedAt: {
+        'name': 'executed-at',
+        'access': 'read_only',
+        'args': [{ 'name': 'proposal', 'type': 'trait_reference' }],
+        'outputs': { 'type': { 'optional': 'uint128' } },
+      } as TypedAbiFunction<
+        [proposal: TypedAbiArg<string, 'proposal'>],
+        bigint | null
+      >,
+      hasRole: {
+        'name': 'has-role',
+        'access': 'read_only',
+        'args': [{ 'name': 'extension', 'type': 'principal' }, {
+          'name': 'role',
+          'type': { 'string-ascii': { 'length': 10 } },
+        }],
+        'outputs': { 'type': 'bool' },
+      } as TypedAbiFunction<
+        [
+          extension: TypedAbiArg<string, 'extension'>,
+          role: TypedAbiArg<string, 'role'>,
+        ],
+        boolean
+      >,
+      hasRoleOrExtension: {
+        'name': 'has-role-or-extension',
+        'access': 'read_only',
+        'args': [{ 'name': 'extension', 'type': 'principal' }, {
+          'name': 'role',
+          'type': { 'string-ascii': { 'length': 10 } },
+        }],
+        'outputs': { 'type': 'bool' },
+      } as TypedAbiFunction<
+        [
+          extension: TypedAbiArg<string, 'extension'>,
+          role: TypedAbiArg<string, 'role'>,
+        ],
+        boolean
+      >,
+      isExtension: {
+        'name': 'is-extension',
+        'access': 'read_only',
+        'args': [{ 'name': 'extension', 'type': 'principal' }],
+        'outputs': { 'type': 'bool' },
+      } as TypedAbiFunction<
+        [extension: TypedAbiArg<string, 'extension'>],
+        boolean
+      >,
+    },
+    'maps': {
+      executedProposals: {
+        'name': 'executed-proposals',
+        'key': 'principal',
+        'value': 'uint128',
+      } as TypedAbiMap<string, bigint>,
+      extensionRoles: {
+        'name': 'extension-roles',
+        'key': {
+          'tuple': [{ 'name': 'extension', 'type': 'principal' }, {
+            'name': 'role',
+            'type': { 'string-ascii': { 'length': 10 } },
+          }],
+        },
+        'value': 'bool',
+      } as TypedAbiMap<{
+        'extension': string;
+        'role': string;
+      }, boolean>,
+      extensions: {
+        'name': 'extensions',
+        'key': 'principal',
+        'value': 'bool',
+      } as TypedAbiMap<string, boolean>,
+    },
+    'variables': {
+      errAlreadyExecuted: {
+        name: 'err-already-executed',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      errInvalidExtension: {
+        name: 'err-invalid-extension',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      errUnauthorised: {
+        name: 'err-unauthorised',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      executive: {
+        name: 'executive',
+        type: 'principal',
+        access: 'variable',
+      } as TypedAbiVariable<string>,
+    },
+    constants: {
+      errAlreadyExecuted: {
+        isOk: false,
+        value: 1001n,
+      },
+      errInvalidExtension: {
+        isOk: false,
+        value: 1002n,
+      },
+      errUnauthorised: {
+        isOk: false,
+        value: 1000n,
+      },
+      executive: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+    },
+    'non_fungible_tokens': [],
+    'fungible_tokens': [],
+    'clarity_version': 'Clarity1',
+    contractName: 'executor-dao',
+  },
+  extensionTrait: {
+    'functions': {},
+    'maps': {},
+    'variables': {},
+    constants: {},
+    'non_fungible_tokens': [],
+    'fungible_tokens': [],
+    'clarity_version': 'Clarity1',
+    contractName: 'extension-trait',
   },
   nameWrapper: {
     'functions': {

@@ -58,7 +58,7 @@ function ensure<T>(contract: T): T {
 }
 
 export const nameRegistryState = atom(get => {
-  return ensure(get(contractsState).nameRegistry);
+  return ensure(get(contractsState).bnsxRegistry);
 });
 
 export const registryAssetState = atom(get => {

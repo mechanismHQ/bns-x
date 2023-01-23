@@ -43,7 +43,7 @@
 
 ;; Data
 
-(define-non-fungible-token names uint)
+(define-non-fungible-token BNSx-Names uint)
 
 ;; linked list for account->names
 (define-map owner-primary-name-map principal uint)
@@ -95,7 +95,7 @@
       name: name,
       id: id,
     })
-    (unwrap-panic (nft-mint? names id owner))
+    (unwrap-panic (nft-mint? BNSx-Names id owner))
     (add-node owner id)
     (ok id)
   )
@@ -147,7 +147,7 @@
       (owner (unwrap-panic (map-get? name-owner-map id)))
     )
     (remove-node owner id)
-    (try! (nft-burn? names id owner))
+    (try! (nft-burn? BNSx-Names id owner))
     (map-delete name-id-map name)
     (map-delete id-name-map id)
     (map-delete name-owner-map id)
@@ -165,7 +165,7 @@
   ;; #[allow(unchecked_data)]
   (begin
     (map-set name-owner-map id recipient)
-    (unwrap-panic (nft-transfer? names id sender recipient))
+    (unwrap-panic (nft-transfer? BNSx-Names id sender recipient))
     (print {
       topic: "transfer-ownership",
       id: id,
@@ -266,7 +266,7 @@
 )
 
 (define-read-only (get-owner (id uint))
-  (ok (nft-get-owner? names id))
+  (ok (nft-get-owner? BNSx-Names id))
 )
 
 ;; Returns the total number of names owned by an account

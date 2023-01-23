@@ -35,7 +35,7 @@ export async function queryNameId(
           },
         },
       ],
-      contractId: `${deployer}.name-registry`,
+      contractId: `${deployer}.bnsx-registry`,
       // value: {
 
       // }

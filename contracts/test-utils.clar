@@ -20,7 +20,7 @@
   )
   (begin
     (try! (is-deployer))
-    (contract-call? .name-registry register
+    (contract-call? .bnsx-registry register
       {
         name: name,
         namespace: namespace,

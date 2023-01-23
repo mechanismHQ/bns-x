@@ -18,7 +18,7 @@
 ;; "mig-signer" role. By default, the contract deployer is a valid signer.
 ;; 
 ;; During migration, the legacy name is transferred to the wrapper contract. Then,
-;; this contract interfaces with the [`.name-registry`](`./core/name-registry.md`)
+;; this contract interfaces with the [`.bnsx-registry`](`./core/name-registry.md`)
 ;; contract to mint a new BNSx name.
 
 (define-constant ROLE "mig-signer")
@@ -82,7 +82,7 @@
 ;; 
 ;; - Verify the wrapper ([`verify-wrapper`](#verify-wrapper))
 ;; - Transfer the BNS legacy name to the wrapper ([`resolve-and-transfer`](#resolve-and-transfer))
-;; - Register the name in the BNSx name registry ([`.name-registry#register`](`./core/name-registry#register.md`))
+;; - Register the name in the BNSx name registry ([`.bnsx-registry#register`](`./core/name-registry#register.md`))
 ;; 
 ;; @param wrapper; the principal of the wrapper contract that will be used
 ;; @param signature; a signature attesting to the validity of the wrapper contract
@@ -96,7 +96,7 @@
       (properties (try! (resolve-and-transfer wrapper)))
       (name (get name properties))
       (namespace (get namespace properties))
-      (id (try! (contract-call? .name-registry register
+      (id (try! (contract-call? .bnsx-registry register
         {
           name: name,
           namespace: namespace,

@@ -9,9 +9,9 @@ export const { test, contracts, accounts } = factory(simnet);
 
 export const {
   bnsV1,
+  bnsxRegistry,
   executorDao,
   extensionTrait,
-  nameRegistry,
   nameWrapper,
   nftTrait,
   proposalBootstrap,
