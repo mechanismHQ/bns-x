@@ -121,7 +121,9 @@ export function deployWithNamespace() {
 
   beforeAll(() => {
     chain.txOk(
-      contracts.executorDao.construct(contracts.proposalBootstrap.identifier),
+      contracts.bnsxExtensions.construct(
+        contracts.proposalBootstrap.identifier
+      ),
       deployer
     );
     registerAllNamespaces(chain);

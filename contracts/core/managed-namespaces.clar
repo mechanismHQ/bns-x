@@ -14,7 +14,7 @@
 (define-private (is-dao-or-controller (namespace (buff 20)))
   (match (map-get? namespace-owners-map namespace)
     owner (ok (asserts! (is-controller namespace contract-caller) ERR_UNAUTHORIZED))
-    (ok (asserts! (or (is-eq tx-sender .executor-dao) (contract-call? .executor-dao has-role-or-extension contract-caller NAMESPACE_MANAGER_ROLE)) ERR_UNAUTHORIZED))
+    (ok (asserts! (or (is-eq tx-sender .bnsx-extensions) (contract-call? .bnsx-extensions has-role-or-extension contract-caller NAMESPACE_MANAGER_ROLE)) ERR_UNAUTHORIZED))
   )
 )
 
@@ -35,7 +35,7 @@
 (define-private (validate-namespace-update (namespace (buff 20)))
   (match (map-get? namespace-owners-map namespace)
     owner (ok (asserts! (is-eq owner contract-caller) ERR_NAMESPACE_UPDATE_UNAUTHORIZED))
-    (ok (asserts! (or (is-eq tx-sender .executor-dao) (contract-call? .executor-dao has-role-or-extension contract-caller NAMESPACE_MANAGER_ROLE)) ERR_UNAUTHORIZED))
+    (ok (asserts! (or (is-eq tx-sender .bnsx-extensions) (contract-call? .bnsx-extensions has-role-or-extension contract-caller NAMESPACE_MANAGER_ROLE)) ERR_UNAUTHORIZED))
   )
 )
 

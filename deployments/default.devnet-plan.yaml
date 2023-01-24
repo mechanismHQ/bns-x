@@ -23,10 +23,10 @@ plan:
             anchor-block-only: true
             # clarity-version: 1
         - contract-publish:
-            contract-name: executor-dao
+            contract-name: bnsx-extensions
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 37230
-            path: contracts/executor-dao.clar
+            path: contracts/bnsx-extensions.clar
             anchor-block-only: true
             # clarity-version: 1
         - contract-publish:
@@ -75,7 +75,7 @@ plan:
     - id: 1
       transactions:
         - contract-call:
-            contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.executor-dao
+            contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-extensions
             method: construct
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 100000

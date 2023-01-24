@@ -14,7 +14,7 @@ import { hashRipemd160 } from "micro-stacks/crypto";
 import { hashSha256 } from "micro-stacks/crypto-sha";
 import { asciiToBytes, utf8ToBytes } from "micro-stacks/common";
 
-const { executorDao } = contracts;
+const { bnsxExtensions } = contracts;
 
 const wrapper = contractFactory(
   _contracts.nameWrapper,
@@ -34,25 +34,25 @@ const name = "grim-alligator";
 
 const contractName = "onchain-resolver-1673288207749";
 
-const resolver = contractFactory(
-  _contracts.onchainResolver,
-  `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.${contractName}`
-);
+// const resolver = contractFactory(
+//   _contracts.onchainResolver,
+//   `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.${contractName}`
+// );
 
 async function run() {
   const bytesLength = 102400;
   const bytes = Array(bytesLength).fill(0);
   const zonefile = new Uint8Array(bytes);
 
-  const tx = await makeContractCall({
-    ...resolver.emitZonefile(zonefile),
-    senderKey: privateKey,
-    anchorMode: AnchorMode.Any,
-    network,
-  });
+  // const tx = await makeContractCall({
+  //   ...resolver.emitZonefile(zonefile),
+  //   senderKey: privateKey,
+  //   anchorMode: AnchorMode.Any,
+  //   network,
+  // });
 
-  const res = await broadcastTransaction(tx, network);
-  console.log(res);
+  // const res = await broadcastTransaction(tx, network);
+  // console.log(res);
 }
 
 run()

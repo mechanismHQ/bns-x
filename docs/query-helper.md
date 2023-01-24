@@ -15,6 +15,7 @@ execution cost associated with fetching data.
 - [`get-legacy-name`](#get-legacy-name)
 - [`resolve-legacy-name`](#resolve-legacy-name)
 - [`get-bnsx-name`](#get-bnsx-name)
+- [`get-bnsx-by-name`](#get-bnsx-by-name)
 - [`crawl-names`](#crawl-names)
 - [`crawl-from-id`](#crawl-from-id)
 - [`crawl-fold`](#crawl-fold)
@@ -157,9 +158,39 @@ BNS.
 | ---- | ---- | ----------- |
 | id   | uint |             |
 
+### get-bnsx-by-name
+
+[View in file](../contracts/query-helper.clar#L60)
+
+`(define-read-only (get-bnsx-by-name ((name (tuple (name (buff 48)) (namespace (buff 20))))) (optional (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 20)) (owner principal))))`
+
+Same as [`get-bnsx-name`](#get-bnsx-name) but looking up via {name, namespace}.
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-read-only (get-bnsx-by-name (name { name: (buff 48), namespace: (buff 20) }))
+  (match (contract-call? .bnsx-registry get-name-properties name)
+    props (some (merge props {
+      legacy: (resolve-legacy-name name)
+    }))
+    none
+  )
+)
+```
+
+</details>
+
+**Parameters:**
+
+| Name | Type                                           | Description |
+| ---- | ---------------------------------------------- | ----------- |
+| name | (tuple (name (buff 48)) (namespace (buff 20))) |             |
+
 ### crawl-names
 
-[View in file](../contracts/query-helper.clar#L77)
+[View in file](../contracts/query-helper.clar#L87)
 
 `(define-read-only (crawl-names ((account principal)) (tuple (names (list 20 (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 48)) (owner principal)))) (next-id (optional uint))))`
 
@@ -219,7 +250,7 @@ will be `none`.
 
 ### crawl-from-id
 
-[View in file](../contracts/query-helper.clar#L100)
+[View in file](../contracts/query-helper.clar#L110)
 
 `(define-read-only (crawl-from-id ((id uint)) (tuple (names (list 20 (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 48)) (owner principal)))) (next-id (optional uint))))`
 
@@ -263,7 +294,7 @@ names.
 
 ### crawl-fold
 
-[View in file](../contracts/query-helper.clar#L123)
+[View in file](../contracts/query-helper.clar#L133)
 
 `(define-read-only (crawl-fold ((index uint) (iterator (tuple (names (list 20 (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 48)) (owner principal)))) (next-id (optional uint))))) (tuple (names (list 20 (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 48)) (owner principal)))) (next-id (optional uint))))`
 

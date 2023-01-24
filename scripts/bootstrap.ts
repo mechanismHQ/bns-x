@@ -14,7 +14,7 @@ import { hashSha256 } from "micro-stacks/crypto-sha";
 import { asciiToBytes, bytesToHex, hexToBytes } from "micro-stacks/common";
 import { fetchAccountNonces } from "micro-stacks/api";
 
-const { executorDao } = contracts;
+const { bnsxExtensions } = contracts;
 
 config();
 
@@ -107,7 +107,7 @@ async function run() {
     })
   );
 
-  const deployer = contracts.executorDao.identifier.split(".")[0];
+  const deployer = contracts.bnsxExtensions.identifier.split(".")[0];
   const [_, pubHash] = c32addressDecode(deployer);
 
   await broadcast(

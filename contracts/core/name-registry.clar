@@ -4,7 +4,7 @@
 ;; 
 ;; Registering a new name is not publicly exposed through this contract. Instead,
 ;; registrations must be initiated via a different contract. The originating contract
-;; must have the "registry" role in the [`.executor-dao`](`../executor-dao.md`) contract.
+;; must have the "registry" role in the [`.bnsx-extensions`](`../bnsx-extension.md`) contract.
 ;; 
 ;; The name registry includes functionality for "managed namespaces". A managed namespace
 ;; is controlled by an external set of contracts - such as a separate DAO. The set
@@ -64,8 +64,8 @@
 
 ;; Validate an action that can only be executed by a BNS X extension.
 (define-read-only (is-dao-or-extension)
-  (ok (asserts! (or (is-eq tx-sender .executor-dao) (contract-call? .executor-dao has-role-or-extension contract-caller ROLE)) ERR_UNAUTHORIZED))
-  ;; (ok (asserts! (contract-call? .executor-dao has-role-or-extension contract-caller ROLE) ERR_UNAUTHORIZED))
+  (ok (asserts! (or (is-eq tx-sender .bnsx-extensions) (contract-call? .bnsx-extensions has-role-or-extension contract-caller ROLE)) ERR_UNAUTHORIZED))
+  ;; (ok (asserts! (contract-call? .bnsx-extensions has-role-or-extension contract-caller ROLE) ERR_UNAUTHORIZED))
 )
 
 ;; Mutators

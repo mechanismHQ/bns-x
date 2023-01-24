@@ -1,0 +1,85 @@
+---
+id: 0
+name: Testnet deployment
+network: testnet
+stacks-node: "https://stacks-node-api.testnet.stacks.co"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: extension-trait
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 42663
+            path: contracts/traits/extension-trait.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: proposal-trait
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 44727
+            path: contracts/traits/proposal-trait.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: bnsx-extensions
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 39865
+            path: contracts/bnsx-extensions.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: nft-trait
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 42869
+            path: contracts/traits/nft-trait.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: bnsx-registry
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 43705
+            path: contracts/core/name-registry.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: proposal-bootstrap
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 43342
+            path: contracts/proposals/proposal-bootstrap.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: query-helper
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 39872
+            path: contracts/testnet/query-helper.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: test-utils
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 39193
+            path: contracts/test-utils.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: wrapper-migrator
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 42490
+            path: contracts/testnet/wrapper-migrator-v1.clar
+            anchor-block-only: true
+            clarity-version: 1
+      epoch: "2.0"
+    - id: 1
+      transactions:
+        - contract-call:
+            contract-id: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.bnsx-extensions
+            method: construct
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 100000
+            anchor_block_only: false
+            parameters:
+              - "'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.proposal-bootstrap"
+      epoch: "2.0"

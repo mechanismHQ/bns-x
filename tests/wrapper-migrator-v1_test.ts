@@ -108,7 +108,7 @@ describe("wrapper-migrator-v1", () => {
 
   it("migrator is set as extension", () => {
     const isExt = chain.rov(
-      contracts.executorDao.hasRole(migrator.identifier, "registry")
+      contracts.bnsxExtensions.hasRole(migrator.identifier, "registry")
     );
     assert(isExt);
   });

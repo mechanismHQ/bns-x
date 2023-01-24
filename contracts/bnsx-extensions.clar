@@ -1,5 +1,6 @@
-;; ExecutorDAO is the one DAO to rule them all. 
-;; By Marvin Janssen
+;; BNSx Extensions registry
+;; 
+;; A modified version of the `.executor-dao` framework
 
 (use-trait proposal-trait .proposal-trait.proposal-trait)
 (use-trait extension-trait .extension-trait.extension-trait)

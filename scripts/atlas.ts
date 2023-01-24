@@ -14,7 +14,7 @@ import { hashRipemd160 } from "micro-stacks/crypto";
 import { hashSha256 } from "micro-stacks/crypto-sha";
 import { asciiToBytes, bytesToHex, utf8ToBytes } from "micro-stacks/common";
 
-const { executorDao } = contracts;
+const { bnsxExtensions } = contracts;
 
 const wrapper = contractFactory(
   _contracts.nameWrapper,

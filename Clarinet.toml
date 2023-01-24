@@ -15,8 +15,8 @@ path = 'contracts/demo-controller.clar'
 clarity_version = 1
 epoch = 2.0
 
-[contracts.executor-dao]
-path = 'contracts/executor-dao.clar'
+[contracts.bnsx-extensions]
+path = 'contracts/bnsx-extensions.clar'
 clarity_version = 1
 epoch = 2.0
 

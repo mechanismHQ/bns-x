@@ -10,13 +10,12 @@ import {
   PostConditionMode,
 } from 'micro-stacks/transactions';
 import { fetchAccountNonces } from 'micro-stacks/api';
+import { getNetwork, getContracts, getNetworkKey } from '@common/constants';
+import { privateKeyToStxAddress, StacksNetworkVersion } from 'micro-stacks/crypto';
 
-const testUtils = contractFactory(
-  contracts.testUtils,
-  'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.test-utils'
-);
+const testUtils = getContracts().testUtils;
 
-const network = new StacksMocknet();
+const network = getNetwork();
 
 export async function faucetApi(req: NextApiRequest, res: NextApiResponse) {
   const { name, recipient } = req.query;
@@ -26,14 +25,20 @@ export async function faucetApi(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const privateKey = process.env.FAUCET_KEY!;
+  const networkKey = getNetworkKey();
+  const version =
+    networkKey === 'mainnet'
+      ? StacksNetworkVersion.mainnetP2PKH
+      : StacksNetworkVersion.testnetP2PKH;
+  const faucetAddr = privateKeyToStxAddress(privateKey, version);
 
   const zonefile = asciiToBytes(
-    `$ORIGIN ${name}.btc.\n$TTL 3600\n_http._tcp\tIN\tURI\t10\t1\t"https://gaia.blockstack.org/hub/13WcjxWGz3JkZYhoPeCHw2ukcK1f1zH6M1/profile.json"\n\n`
+    `$ORIGIN ${name}.testable.\n$TTL 3600\n_http._tcp\tIN\tURI\t10\t1\t"https://gaia.blockstack.org/hub/13WcjxWGz3JkZYhoPeCHw2ukcK1f1zH6M1/profile.json"\n\n`
   );
 
   const nonces = await fetchAccountNonces({
     url: network.getCoreApiUrl(),
-    principal: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+    principal: faucetAddr,
   });
 
   const tx = await makeContractCall({
@@ -47,7 +52,7 @@ export async function faucetApi(req: NextApiRequest, res: NextApiResponse) {
     anchorMode: AnchorMode.Any,
     postConditionMode: PostConditionMode.Allow,
     senderKey: privateKey,
-    fee: 1000005,
+    fee: 50000,
   });
 
   const result = await broadcastTransaction(tx, network, zonefile);

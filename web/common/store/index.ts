@@ -29,12 +29,10 @@ import { createAssetInfo } from 'micro-stacks/transactions';
 import { ClarigenClient } from '@clarigen/web';
 import { atomFamily } from 'jotai/utils';
 import { atomsWithQuery } from 'jotai-tanstack-query';
+import { getNetworkKey } from '@common/constants';
 
-export const networkKeyAtom = atom<DeploymentNetwork>(get => {
-  const network = get(networkAtom);
-  if (network.isMainnet()) return 'mainnet';
-  if (network instanceof StacksMocknet) return 'devnet';
-  return 'testnet';
+export const networkKeyAtom = atom<DeploymentNetwork>(() => {
+  return getNetworkKey();
 });
 
 export const clarigenAtom = atom(get => {
