@@ -45,7 +45,7 @@ function getVariantStyles(variant?: TextVariant): CSSTypes {
   // if (!textStyles.hasOwnProperty(lower)) {
   //   console.warn('Only found old theme styles for text variant:', variant);
   // }
-  return styles;
+  return styles || {};
 }
 
 export const Text = React.forwardRef<HTMLElement, TextProps>(

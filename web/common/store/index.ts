@@ -17,7 +17,7 @@ import {
   MempoolTransaction,
   Transaction,
 } from '@stacks/stacks-blockchain-api-types';
-import { shiftInt } from '../utils';
+import { getContractParts, shiftInt } from '../utils';
 import {
   convertTypedTx,
   ExtractTx,
@@ -75,14 +75,14 @@ export const bnsContractState = atom(get => {
 
 export const tokenAssetInfoState = atom(get => {
   const token = get(nameRegistryState);
-  const [addr, name] = token.identifier.split('.');
+  const [addr, name] = getContractParts(token.identifier);
   const asset = token.non_fungible_tokens[0].name;
   return createAssetInfo(addr, name, asset);
 });
 
 export const bnsAssetInfoState = atom(get => {
   const bns = get(bnsContractState);
-  const [addr, name] = bns.identifier.split('.');
+  const [addr, name] = getContractParts(bns.identifier);
   const asset = bns.non_fungible_tokens[0].name;
   return createAssetInfo(addr, name, asset);
 });

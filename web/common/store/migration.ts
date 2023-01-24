@@ -9,6 +9,7 @@ import { fetchTransaction } from '@common/stacks-api';
 import { validateStacksAddress } from 'micro-stacks/crypto';
 import { bnsContractState, clarigenAtom, nameRegistryState } from '@store/index';
 import { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
+import { getContractParts } from '@common/utils';
 
 function hashAtom(name: string) {
   return typeof window === 'undefined'
@@ -33,7 +34,7 @@ export const recipientAddrAtom = atom<string | null>(null);
 export const migrateNameAssetIdState = atom(get => {
   const nameStr = get(migrateNameAtom);
   if (!nameStr) throw new Error('Cannot get BNS name asset - empty');
-  const [name, namespace] = nameStr.split('.');
+  const [name, namespace] = getContractParts(nameStr);
   return tupleCV({
     name: bufferCV(asciiToBytes(name)),
     namespace: bufferCV(asciiToBytes(namespace)),
@@ -84,7 +85,7 @@ export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
     const clarigen = get(clarigenAtom);
     const registry = get(nameRegistryState);
     const bns = get(bnsContractState);
-    const [nameStr, namespaceStr] = recipient.split('.');
+    const [nameStr, namespaceStr] = getContractParts(recipient);
     console.log(`Fetching addr for BNS name ${nameStr}.${namespaceStr}`);
     const name = asciiToBytes(nameStr);
     const namespace = asciiToBytes(namespaceStr);

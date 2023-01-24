@@ -185,4 +185,15 @@ describe("query helper", () => {
       assertEquals(names.length, 5);
     });
   });
+
+  it("looking up by fqn", () => {
+    const nameById = chain.rov(query.getBnsxName(1n))!;
+    const name = chain.rov(
+      query.getBnsxByName({
+        name: nameById.name,
+        namespace: nameById.namespace,
+      })
+    );
+    assertEquals(name, nameById);
+  });
 });

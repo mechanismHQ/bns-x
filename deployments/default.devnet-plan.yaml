@@ -64,6 +64,13 @@ plan:
             path: contracts/testnet/wrapper-migrator-v1.clar
             anchor-block-only: true
             # clarity-version: 1
+        - contract-publish:
+            contract-name: query-helper
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 83190
+            path: contracts/testnet/query-helper.clar
+            anchor-block-only: true
+            # clarity-version: 1
       epoch: "2.0"
     - id: 1
       transactions:

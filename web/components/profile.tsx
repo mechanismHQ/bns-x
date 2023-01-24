@@ -5,11 +5,11 @@ import {
   currentUserV1NameState,
   nameByIdState,
   userPrimaryNameState,
+  currentUserNamesState,
 } from '@store/names';
 import { Text } from './text';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
-import { LoadableNameCard } from '@components/name-card';
 import { Button } from '@components/button';
 import { useRouter } from 'next/router';
 import { useGradient } from '@common/hooks/use-gradient';
@@ -110,25 +110,33 @@ export const LoadableProfileRow: React.FC<{ children?: React.ReactNode; id: numb
 export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
   const v1Name = useAtomValue(currentUserV1NameState);
+  const allNames = useAtomValue(currentUserNamesState);
 
-  const holdings = useAtomValue(currentUserNameIdsState[0]);
+  useEffect(() => {
+    console.log('allNames', allNames);
+  }, [allNames]);
+
+  const holdings = useAtomValue(currentUserNameIdsState);
 
   const rows = useMemo(() => {
-    return holdings.map((id, index) => {
-      return (
-        <Box key={`name-${id}`}>
-          {index === 0 && v1Name !== null ? null : (
-            <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
-          )}
-          <LoadableProfileRow id={id} />
-          {/* {index !== holdings.length - 1 ? ( */}
-          <Flex width="100%" px="29px" alignItems="center">
-            <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
-          </Flex>
-          {/* ) : null} */}
-        </Box>
-      );
-    });
+    return (
+      allNames?.nameProperties.map((name, index) => {
+        return (
+          <Box key={`name-${name.id}`}>
+            {index === 0 && v1Name !== null ? null : (
+              <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
+            )}
+            <ProfileRow name={name.combined} />
+            {/* <LoadableProfileRow id={name} /> */}
+            {/* {index !== holdings.length - 1 ? ( */}
+            <Flex width="100%" px="29px" alignItems="center">
+              <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
+            </Flex>
+            {/* ) : null} */}
+          </Box>
+        );
+      }) ?? null
+    );
   }, [holdings, v1Name]);
 
   useEffect(() => {

@@ -1,14 +1,10 @@
-import { TypedAbiFunction, TypedAbiArg } from '@clarigen/core';
+import { FunctionReturnType } from '@clarigen/core';
 import { contracts } from '@common/clarigen';
-
-export type ResponseType<T> = T extends TypedAbiFunction<TypedAbiArg<unknown, string>[], infer R>
-  ? R
-  : never;
 
 export type RegistryContract = typeof contracts.bnsxRegistry;
 
 export type NameProperties = NonNullable<
-  ResponseType<RegistryContract['functions']['getNameProperties']>
+  FunctionReturnType<RegistryContract['functions']['getNameProperties']>
 >;
 
 export type Name = {

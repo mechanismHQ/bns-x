@@ -28,7 +28,7 @@
 ;; 
 ;; @returns `none` if the account doesn't own a legacy name.
 (define-read-only (get-legacy-name (account principal))
-  (match (contract-call? 'SP000000000000000000002Q6VF78.bns resolve-principal account)
+  (match (contract-call? 'ST000000000000000000002AMW42H.bns resolve-principal account)
     name (some (merge name (unwrap-panic (resolve-legacy-name name))))
     e none
   )
@@ -36,7 +36,7 @@
 
 ;; Given a `name,namespace` tuple, return the properties of that name
 (define-read-only (resolve-legacy-name (name { name: (buff 48), namespace: (buff 20) }))
-  (match (contract-call? 'SP000000000000000000002Q6VF78.bns name-resolve (get namespace name) (get name name))
+  (match (contract-call? 'ST000000000000000000002AMW42H.bns name-resolve (get namespace name) (get name name))
     props (some props)
     ;; props (some (merge name props))
     e none

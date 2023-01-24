@@ -10,6 +10,12 @@ export function getAppUrl() {
   throw new Error('Unable to get app URL');
 }
 
+export function getApiUrl() {
+  const url = process.env.API_URL;
+  if (url) return url;
+  return 'http://localhost:3002';
+}
+
 export function getNetwork() {
   // let networkConfig: NetworkConfig | undefined = undefined;
   const nodeUrl = process.env.NEXT_PUBLIC_NODE_URL;

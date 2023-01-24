@@ -71,8 +71,8 @@ export function makeTheme() {
   return {
     colors: {
       ...colors,
-      background: colors['color-background'],
-      'color-base-black': colors['color-background'],
+      background: colors['color-background'] ?? '',
+      'color-base-black': colors['color-background'] ?? '',
       text: '$color-slate-90',
     },
     textStyles,
@@ -183,7 +183,7 @@ export const baseTheme = {
     ...newTheme.colors,
     ...fsColors,
     ...colors3,
-    text: fsColors['onSurface-text'],
+    text: fsColors['onSurface-text'] ?? '',
     background: '#0c0c0d',
     'foil-radial':
       'conic-gradient(from 134.29deg at 51.84% 49.4%, #F8A4E5 0deg, #5E7FFF 114.38deg, #38FBFC 219.37deg, #FFEFC5 236.25deg, #F8A4E5 360deg)',

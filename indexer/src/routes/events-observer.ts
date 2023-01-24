@@ -1,6 +1,6 @@
 import "../prisma-plugin";
 import { FastifyPluginCallback } from "fastify";
-import { dataRouter } from "./trpc-router";
+// import { dataRouter } from "./trpc-router";
 import { createContext } from "./context";
 
 export interface CoreNodeAttachmentMessage {

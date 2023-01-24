@@ -19,6 +19,7 @@ import {
   NonFungibleConditionCode,
   makeContractNonFungiblePostCondition,
 } from 'micro-stacks/transactions';
+import { getContractParts } from '@common/utils';
 
 export function useWrapperMigrate() {
   const { isRequestPending, openContractCall } = useOpenContractCall();
@@ -49,7 +50,7 @@ export function useWrapperMigrate() {
           bnsAsset,
           bnsTupleId
         );
-        const [wrapperAddr, wrapperName] = contractId.split('.');
+        const [wrapperAddr, wrapperName] = getContractParts(contractId);
         const wrapperPC = makeContractNonFungiblePostCondition(
           wrapperAddr,
           wrapperName,

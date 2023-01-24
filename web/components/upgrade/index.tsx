@@ -17,7 +17,6 @@ import {
   wrapperSignatureAtom,
 } from '@store/migration';
 import { MigrateDone } from '@components/migrate-old/done';
-import { NameCard } from '@components/name-card';
 import { useEffect } from 'react';
 import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
 import { UpgradeOverview } from '@components/upgrade/overview';

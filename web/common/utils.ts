@@ -75,3 +75,11 @@ export function truncateMiddle(input: string, offset = 5): string {
     return `${start}…${end}`;
   }
 }
+
+export function getContractParts(identifier: string): [string, string] {
+  const [addr, name] = identifier.split('.');
+  if (!addr || !name) {
+    throw new Error(`Invalid contract ID: ${identifier}`);
+  }
+  return [addr, name];
+}

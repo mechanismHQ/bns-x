@@ -194,13 +194,15 @@ async function handleNewNames(prisma: PrismaClient, event: StacksChainEvent) {
           },
         },
       };
-      const name = await prisma.name.upsert({
-        where: {
-          nftId: id,
-        },
-        create: nameProps,
-        update: nameProps,
-      });
+      // const name = await prisma.name.upsert({
+      //   where: {
+      //     nftId: id,
+      //   },
+      //   // create: {},
+      //   // update: {},
+      //   create: nameProps,
+      //   update: nameProps,
+      // });
 
       if (account.primaryNameId === null) {
         await prisma.account.update({
@@ -248,22 +250,22 @@ async function handleNfts(prisma: PrismaClient, event: StacksChainEvent) {
   txs.forEach((nft) => {
     queue.add(async () => {
       if (nft.newOwner) {
-        const name = await prisma.name.update({
-          where: {
-            nftId: nft.id,
-          },
-          include: {
-            owner: true,
-          },
-          data: {
-            owner: {
-              connectOrCreate: {
-                where: { principal: nft.newOwner },
-                create: { principal: nft.newOwner },
-              },
-            },
-          },
-        });
+        // const name = await prisma.name.update({
+        //   where: {
+        //     nftId: nft.id,
+        //   },
+        //   include: {
+        //     owner: true,
+        //   },
+        //   data: {
+        //     owner: {
+        //       connectOrCreate: {
+        //         where: { principal: nft.newOwner },
+        //         create: { principal: nft.newOwner },
+        //       },
+        //     },
+        //   },
+        // });
         await prisma.account.update({
           where: {
             principal: nft.newOwner,

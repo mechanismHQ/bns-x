@@ -1,4 +1,10 @@
 import { DEPLOYMENT_NETWORKS } from "@clarigen/core";
+import {
+  StacksMainnet,
+  StacksMocknet,
+  StacksNetwork,
+  StacksTestnet,
+} from "micro-stacks/network";
 
 export function getDeployerAddr() {
   return "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM";
@@ -17,4 +23,24 @@ export function getNetworkKey(): NetworkKey {
       ","
     )}`
   );
+}
+
+export function getNetwork(): StacksNetwork {
+  const networkKey = getNetworkKey();
+  const upstream = process.env.STACKS_API_UPSTREAM;
+  const netConfig = upstream ? { url: upstream } : undefined;
+  switch (networkKey) {
+    case "devnet":
+      return new StacksMocknet(netConfig);
+    case "testnet":
+      return new StacksTestnet(netConfig);
+    case "mainnet":
+      return new StacksMainnet(netConfig);
+    default:
+      return new StacksMocknet(netConfig);
+  }
+}
+
+export function getNodeUrl() {
+  return getNetwork().getCoreApiUrl();
 }

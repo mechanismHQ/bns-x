@@ -60,11 +60,18 @@ plan:
         #     anchor_block_only: true
         #     parameters:
         #       - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap"
-        - contract-call:
-            contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.executor-dao
-            method: construct
+        # - contract-call:
+        #     contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.executor-dao
+        #     method: construct
+        #     expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     cost: 100000
+        #     anchor_block_only: false
+        #     parameters:
+        #       - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap"
+        - contract-publish:
+            contract-name: query-helper
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            cost: 100000
-            anchor_block_only: false
-            parameters:
-              - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap"
+            cost: 83190
+            path: contracts/testnet/query-helper.clar
+            anchor-block-only: true
+            clarity-version: 1

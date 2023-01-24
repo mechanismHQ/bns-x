@@ -1,4 +1,4 @@
-import { StacksPrisma } from "../src/stacks-api/client";
+import { StacksPrisma } from "../src/stacks-api-db/client";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { deserializeCV, cvToTrueValue } from "micro-stacks/clarity";
 import { bytesToHex } from "micro-stacks/common";

@@ -16,24 +16,15 @@ import { atomsWithQuery } from 'jotai-tanstack-query';
 import { cvToValue } from '@clarigen/core';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { atomFamily } from 'jotai/utils';
+import { namesForAddressState } from './api';
 
-export const v1NameAddressQueryState = atomFamilyWithQuery<string, NameExt | null>(
-  (get, address) => ['v1NameState', address],
-  async (get, address) => {
-    const bns = get(bnsContractState);
-    const clarigen = get(clarigenAtom);
-    bns.resolvePrincipal(address);
-    const res = await clarigen.ro(bns.resolvePrincipal(address), {
-      latest: true,
-    });
-    if (res.isOk) {
-      return convertNameBuff(res.value);
-    }
-    return null;
-  }
-);
+export const currentUserNamesState = atom(get => {
+  const address = get(stxAddressAtom);
+  if (!address) return null;
+  return get(namesForAddressState(address));
+});
 
-export const v1NameAddressQueryState2 = atomFamily((address: string) => {
+export const v1NameAddressQueryState = atomFamily((address: string) => {
   return atomsWithQuery(get => ({
     queryKey: ['v1NameState', address],
     refetchInterval: 15000,
@@ -53,10 +44,15 @@ export const v1NameAddressQueryState2 = atomFamily((address: string) => {
 }, Object.is);
 
 export const currentUserV1NameState = atom(get => {
-  const address = get(stxAddressAtom);
-  if (!address) return null;
-  return get(v1NameAddressQueryState2(address));
+  const names = get(currentUserNamesState);
+  return names?.legacy ?? null;
 });
+
+// export const currentUserV1NameState2 = atom(get => {
+//   const address = get(stxAddressAtom);
+//   if (!address) return null;
+//   return get(v1NameAddressQueryState(address));
+// });
 
 export const addressPrimaryNameState = atomFamilyWithQuery<
   string,
@@ -75,20 +71,14 @@ export const addressPrimaryNameState = atomFamilyWithQuery<
 );
 
 export const userPrimaryNameState = atom(get => {
-  const address = get(stxAddressAtom);
-  if (!address) return null;
-  const name = get(addressPrimaryNameState(address));
-  return name;
+  const names = get(currentUserNamesState);
+  if (names === null) return null;
+  return names.primaryProperties;
 });
 
 export const userNameState = atom(get => {
-  const address = get(stxAddressAtom);
-  if (!address) return null;
-  const primary = get(userPrimaryNameState);
-  if (primary) return primary.combined;
-  const v1 = get(currentUserV1NameState);
-  if (v1) return v1.combined;
-  return null;
+  const names = get(currentUserNamesState);
+  return names?.names[0] ?? null;
 });
 
 export const nameByIdState = atomFamily((id: number | bigint) => {
@@ -104,7 +94,13 @@ export const nameByIdState = atomFamily((id: number | bigint) => {
   }))[0];
 }, Object.is);
 
-export const currentUserNameIdsState = atomsWithQuery<number[]>(get => ({
+export const currentUserNameIdsState = atom<number[]>(get => {
+  const names = get(currentUserNamesState);
+  if (!names) return [];
+  return names.nameProperties.map(n => parseInt(n.id, 10));
+});
+
+export const currentUserNameIdsState2 = atomsWithQuery<number[]>(get => ({
   queryKey: ['cur-user-names', get(stxAddressAtom)],
   refetchInterval: 10000,
   queryFn: async ctx => {

@@ -13,3 +13,4 @@ contracts/_deprecated
 indexer/prisma/generated
 dep-tests/
 .DS_Store
+dist/

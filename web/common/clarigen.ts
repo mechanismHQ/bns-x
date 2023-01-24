@@ -2899,6 +2899,68 @@ export const contracts = {
           nextId: bigint | null;
         }
       >,
+      getBnsxByName: {
+        name: 'get-bnsx-by-name',
+        access: 'read_only',
+        args: [
+          {
+            name: 'name',
+            type: {
+              tuple: [
+                { name: 'name', type: { buffer: { length: 48 } } },
+                { name: 'namespace', type: { buffer: { length: 20 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            optional: {
+              tuple: [
+                { name: 'id', type: 'uint128' },
+                {
+                  name: 'legacy',
+                  type: {
+                    optional: {
+                      tuple: [
+                        { name: 'lease-ending-at', type: { optional: 'uint128' } },
+                        { name: 'lease-started-at', type: 'uint128' },
+                        { name: 'owner', type: 'principal' },
+                        { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
+                      ],
+                    },
+                  },
+                },
+                { name: 'name', type: { buffer: { length: 48 } } },
+                { name: 'namespace', type: { buffer: { length: 20 } } },
+                { name: 'owner', type: 'principal' },
+              ],
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          name: TypedAbiArg<
+            {
+              name: Uint8Array;
+              namespace: Uint8Array;
+            },
+            'name'
+          >
+        ],
+        {
+          id: bigint;
+          legacy: {
+            leaseEndingAt: bigint | null;
+            leaseStartedAt: bigint;
+            owner: string;
+            zonefileHash: Uint8Array;
+          } | null;
+          name: Uint8Array;
+          namespace: Uint8Array;
+          owner: string;
+        } | null
+      >,
       getBnsxName: {
         name: 'get-bnsx-name',
         access: 'read_only',

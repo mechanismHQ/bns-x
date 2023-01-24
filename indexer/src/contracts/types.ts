@@ -1,16 +1,13 @@
-import { OkType, TypedAbiFunction, Jsonize, TypedAbiArg } from "@clarigen/core";
+import {
+  OkType,
+  TypedAbiFunction,
+  Jsonize,
+  TypedAbiArg,
+  FunctionReturnType,
+} from "@clarigen/core";
 import { contracts } from "./clarigen";
 
-// Helper type for inferring the return type of a function. Like `ReturnType`,
-// but for Clarigen types
-export type FunctionReturnType<T> = T extends TypedAbiFunction<
-  TypedAbiArg<unknown, string>[],
-  infer R
->
-  ? R
-  : never;
-
-export type Registry = typeof contracts["nameRegistry"]["functions"];
+export type Registry = typeof contracts["bnsxRegistry"]["functions"];
 export type QueryHelper = typeof contracts["queryHelper"]["functions"];
 
 export type NameProperties = NonNullable<
@@ -24,4 +21,30 @@ export type QueryHelperLegacyName = Jsonize<
 >;
 export type QueryHelperName = Jsonize<QueryHelperResponse["names"][number]> & {
   legacy: Jsonize<NonNullable<QueryHelperResponse["names"][number]["legacy"]>>;
+};
+
+export type NameBase = {
+  name: string;
+  namespace: string;
+};
+
+export type NameBuff = {
+  name: Uint8Array;
+  namespace: Uint8Array;
+};
+
+export type NameExtended = NameBase & { combined: string };
+
+export type WithCombined<T extends NameBase | NameBuff> = T extends NameBuff
+  ? Omit<T, "name" | "namespace"> & NameBase & { combined: string }
+  : T & { combined: string };
+
+export type LegacyJson = NonNullable<QueryHelperName["legacy"]>;
+
+export type LegacyDetails = Omit<
+  LegacyJson,
+  "leaseStartedAt" | "leaseEndingAt"
+> & {
+  leaseStartedAt: number;
+  leaseEndingAt: number | null;
 };

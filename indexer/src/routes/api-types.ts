@@ -2,14 +2,16 @@ import {
   BnsGetNameInfoResponse,
   BnsNamesOwnByAddressResponse,
 } from "@stacks/stacks-blockchain-api-types";
+import { LegacyDetails } from "../contracts/types";
 
 export interface NameInfoResponseLegacy extends BnsGetNameInfoResponse {
-  is_bnsx: false;
+  isBnsx: false;
 }
 
 export interface NameInfoResponseBnsx extends BnsGetNameInfoResponse {
-  is_bnsx: true;
-  nft_id: number;
+  isBnsx: true;
+  id: string;
+  legacy: LegacyDetails | null;
 }
 
 export type NameInfoResponse = NameInfoResponseLegacy | NameInfoResponseBnsx;
