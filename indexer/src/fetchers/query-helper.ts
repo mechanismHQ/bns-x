@@ -49,3 +49,12 @@ export async function getNameDetails(name: string, namespace: string) {
     legacy: convertLegacyDetailsJson(details.legacy),
   };
 }
+
+export async function getLegacyName(address: string) {
+  const helper = queryHelperContract();
+  const clarigen = clarigenProvider();
+  const props = await clarigen.ro(helper.getLegacyName(address), {
+    json: true,
+  });
+  return props;
+}

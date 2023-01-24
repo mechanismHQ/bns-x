@@ -28,9 +28,9 @@ export function convertNameBuff<T extends NameBuff | NameBase>(
   } as WithCombined<T>;
 }
 
-export function convertLegacyDetailsJson(
-  details: LegacyJson | null
-): LegacyDetails | null {
+export function convertLegacyDetailsJson<T extends LegacyJson>(
+  details: T | null
+): (T & LegacyDetails) | null {
   if (details === null) return null;
   return {
     ...details,

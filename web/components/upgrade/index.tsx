@@ -7,7 +7,6 @@ import { currentUserV1NameState } from '../../common/store/names';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { Link } from '../link';
 // import { MigrateFinalizeStep } from './finalize';
-import { DeployStep } from '@components/migrate-old/deploy';
 import { contractsState, txReceiptState, useReadOnly } from '@store/index';
 import {
   migrateNameAtom,
@@ -16,7 +15,6 @@ import {
   wrapperDeployTxidAtom,
   wrapperSignatureAtom,
 } from '@store/migration';
-import { MigrateDone } from '@components/migrate-old/done';
 import { useEffect } from 'react';
 import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
 import { UpgradeOverview } from '@components/upgrade/overview';

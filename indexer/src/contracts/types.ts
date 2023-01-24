@@ -14,6 +14,8 @@ export type NameProperties = NonNullable<
   FunctionReturnType<Registry["getNameProperties"]>
 >;
 
+export type NamePropertiesJson = Jsonize<NameProperties>;
+
 export type QueryHelperResponse = FunctionReturnType<QueryHelper["getNames"]>;
 
 export type QueryHelperLegacyName = Jsonize<

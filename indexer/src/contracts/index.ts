@@ -15,6 +15,12 @@ export function registryContract() {
   return getContracts().bnsxRegistry;
 }
 
+export function registryContractAsset() {
+  const contract = registryContract();
+  const nft = contract.non_fungible_tokens[0].name;
+  return `${contract.identifier}::${nft}`;
+}
+
 export function clarigenProvider() {
   const networkKey = getNetworkKey();
   const network = getNetwork();

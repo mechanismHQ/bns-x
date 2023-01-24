@@ -24,35 +24,10 @@ export const currentUserNamesState = atom(get => {
   return get(namesForAddressState(address));
 });
 
-export const v1NameAddressQueryState = atomFamily((address: string) => {
-  return atomsWithQuery(get => ({
-    queryKey: ['v1NameState', address],
-    refetchInterval: 15000,
-    queryFn: async () => {
-      const bns = get(bnsContractState);
-      const clarigen = get(clarigenAtom);
-      bns.resolvePrincipal(address);
-      const res = await clarigen.ro(bns.resolvePrincipal(address), {
-        latest: true,
-      });
-      if (res.isOk) {
-        return convertNameBuff(res.value);
-      }
-      return null;
-    },
-  }))[0];
-}, Object.is);
-
 export const currentUserV1NameState = atom(get => {
   const names = get(currentUserNamesState);
   return names?.legacy ?? null;
 });
-
-// export const currentUserV1NameState2 = atom(get => {
-//   const address = get(stxAddressAtom);
-//   if (!address) return null;
-//   return get(v1NameAddressQueryState(address));
-// });
 
 export const addressPrimaryNameState = atomFamilyWithQuery<
   string,

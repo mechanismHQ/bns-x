@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { getAddressNames } from "../fetchers/query-helper";
-import { getNameDetails } from "../fetchers";
+// import { getAddressNames } from "../fetchers/query-helper";
+import { getNameDetails, getAddressNames } from "../fetchers";
 import { router, procedure } from "./trpc";
 
 export const queryHelperRouter = router({
