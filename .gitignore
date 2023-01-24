@@ -14,3 +14,4 @@ indexer/prisma/generated
 dep-tests/
 .DS_Store
 dist/
+.turbo

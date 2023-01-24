@@ -7,7 +7,6 @@ import {
   stxAddressAtom,
 } from '@store/micro-stacks';
 import { Atom, atom } from 'jotai';
-import { StacksMocknet } from 'micro-stacks/network';
 import { atomFamilyWithQuery, atomWithQuery, useQueryAtom } from 'jotai-query-toolkit';
 import { ContractCall, Response } from '@clarigen/core';
 import { fetchAccountBalances } from 'micro-stacks/api';

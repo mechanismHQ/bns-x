@@ -6,8 +6,7 @@
         "^build"
       ],
       "outputs": [
-        "dist/**",
-        "installer/**"
+        "dist/**"
       ]
     },
     "test": {
@@ -25,9 +24,6 @@
     },
     "typecheck": {
       "dependsOk": ["^build"],
-      "outputs": []
-    },
-    "publish:dev": {
       "outputs": []
     }
   }

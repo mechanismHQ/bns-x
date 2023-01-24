@@ -1,7 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { contracts } from '../../common/clarigen';
-import { contractFactory } from '@clarigen/core';
-import { StacksMocknet } from 'micro-stacks/network';
 import { asciiToBytes } from 'micro-stacks/common';
 import {
   AnchorMode,
