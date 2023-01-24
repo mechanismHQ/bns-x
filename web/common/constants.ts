@@ -1,10 +1,11 @@
 import { DEPLOYMENT_NETWORKS, projectFactory } from '@clarigen/core';
 import { ClarigenNodeClient } from '@clarigen/node';
 import { project } from '@common/clarigen';
-import { StacksMocknet, StacksMainnet, StacksNetwork, StacksTestnet } from 'micro-stacks/network';
+import type { StacksNetwork } from 'micro-stacks/network';
+import { StacksMocknet, StacksMainnet, StacksTestnet } from 'micro-stacks/network';
 
 export function getAppUrl() {
-  const url = process.env.NEXT_PUBLIC_APP_URL;
+  const url = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
   if (url) return url;
   if (process.env.NODE_ENV === 'development') return 'http://localhost:3000';
   throw new Error('Unable to get app URL');

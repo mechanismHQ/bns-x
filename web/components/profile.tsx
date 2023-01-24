@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
-import { Stack, Box, Flex, Grid, SpaceBetween, BoxProps } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Stack, Box, Flex, SpaceBetween } from '@nelson-ui/react';
 import {
   currentUserNameIdsState,
   currentUserV1NameState,
@@ -75,7 +76,7 @@ export const ProfileRow: React.FC<{
           {!v1 && (
             <Stack isInline height="20px" spacing="27px">
               <Link
-                href={`https://explorer.stacks.co/address/${stxAddress}`}
+                href={`https://explorer.stacks.co/address/${stxAddress ?? ''}`}
                 target="_blank"
                 variant="Body02"
                 color={'$onSurface-text-subdued'}
@@ -159,7 +160,8 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
               No names here
             </Text>
             <Text width="100%" mt="15px" variant="Body02">
-              Looks like this address doesn't own any BNS or BNSx names. Mint a name then come back.
+              Looks like this address doesn&apos;t own any BNS or BNSx names. Mint a name then come
+              back.
             </Text>
             <Button type="big" onClick={mintName} mx="auto" mt="49px">
               Mint name
