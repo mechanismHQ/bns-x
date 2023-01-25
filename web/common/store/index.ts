@@ -37,7 +37,6 @@ export const networkKeyAtom = atom<DeploymentNetwork>(() => {
 });
 
 export const clarigenAtom = atom(get => {
-  const network = get(networkAtom);
   const client = get(clientState);
 
   return new ClarigenClient(client);
@@ -68,7 +67,7 @@ export const registryAssetState = atom(get => {
 });
 
 // todo: fix for mainnet
-export const bnsContractState = atom(get => {
+export const bnsContractState = atom(() => {
   const bns = contracts.bnsV1;
   return contractFactory(bns, 'ST000000000000000000002AMW42H.bns');
 });

@@ -39,7 +39,6 @@ importers:
       typescript: ^4.8.4
     dependencies:
       '@clarigen/core': 1.0.7
-      '@clarigen/node': 1.0.7
       '@swc-node/register': 1.5.4_ldaqumno46ke76prz5kcgkjhhy
       '@swc/cli': 0.1.57_@swc+core@1.3.14
       '@swc/core': 1.3.14
@@ -51,6 +50,7 @@ importers:
       start-server-and-test: 1.15.2
       typescript: 4.8.4
     devDependencies:
+      '@clarigen/node': 1.0.7
       '@stacks/eslint-config': 1.2.0_kj7qlb4q5hmrgdzs3xi7r3snqu
       '@stacks/prettier-config': 0.0.10
       '@types/localtunnel': 2.0.1
@@ -603,7 +603,6 @@ packages:
     transitivePeerDependencies:
       - '@scure/bip32'
       - '@scure/bip39'
-    dev: false
 
   /@clarigen/node/1.0.7:
     resolution: {integrity: sha512-DroV8P6bpuKyPE1TVYIle32PYM2RS5cWK8ZKlgc4gB41rL0fn0LFgKd2MXc0dqIEN9U8YMdQO0j8XTT/YdKlXg==}
@@ -614,7 +613,6 @@ packages:
     transitivePeerDependencies:
       - '@scure/bip32'
       - '@scure/bip39'
-    dev: false
 
   /@clarigen/web/1.0.7_react@18.2.0:
     resolution: {integrity: sha512-MkoUuIpJN3H/huQ7lRaJCMLL4AqWPN5528IJf0AeaS+VxbYn8/oH5ggjGgsQg00QB+bGLcwED8mKdquJjxOypw==}
@@ -1377,11 +1375,9 @@ packages:
 
   /@noble/hashes/1.1.2:
     resolution: {integrity: sha512-KYRCASVTv6aeUi1tsF8/vpyR7zpfs3FUzy2Jqm+MU+LmUKhQ0y2FpfwqkCcxSg2ua4GALJd8k2R76WxwZGbQpA==}
-    dev: false
 
   /@noble/secp256k1/1.6.3:
     resolution: {integrity: sha512-T04e4iTurVy7I8Sw4+c5OSN9/RkPlo1uKxAomtxQNLq8j1uPAqnsqG1bqvY3Jv7c13gyr6dui0zmh/I3+f/JaQ==}
-    dev: false
 
   /@node-rs/helper/1.3.3:
     resolution: {integrity: sha512-p4OdfQObGN9YFy5WZaGwlPYICQSe7xZYyXB0sxREmvj1HzGKp5bPg2PlfgfMZEfnjIA882B9ZrnagYzZihIwjA==}
@@ -6059,7 +6055,6 @@ packages:
     dependencies:
       '@noble/hashes': 1.1.2
       '@noble/secp256k1': 1.6.3
-    dev: false
 
   /micromatch/4.0.5:
     resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}

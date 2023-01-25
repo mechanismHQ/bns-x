@@ -18,7 +18,6 @@
   "license": "ISC",
   "dependencies": {
     "@clarigen/core": "1.0.7",
-    "@clarigen/node": "1.0.7",
     "@swc-node/register": "^1.3.7",
     "@swc/cli": "^0.1.51",
     "@swc/core": "^1.2.105",
@@ -31,6 +30,7 @@
     "typescript": "^4.8.4"
   },
   "devDependencies": {
+    "@clarigen/node": "1.0.7",
     "@stacks/eslint-config": "1.2.0",
     "@stacks/prettier-config": "0.0.10",
     "@types/localtunnel": "^2.0.1",
