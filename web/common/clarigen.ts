@@ -3755,7 +3755,7 @@ export const deployments = {
   nameWrapper: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-wrapper',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-wrapper',
-    testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.name-wrapper',
+    testnet: null,
     mainnet: null,
   },
   nftTrait: {

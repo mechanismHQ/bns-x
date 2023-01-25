@@ -5,8 +5,11 @@ import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMocknet, StacksMainnet, StacksTestnet } from 'micro-stacks/network';
 
 export function getAppUrl() {
-  const url = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
+  const url = process.env.NEXT_PUBLIC_APP_URL;
   if (url) return url;
+  if (process.env.NEXT_PUBLIC_VERCEL_URL) {
+    return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+  }
   if (process.env.NODE_ENV === 'development') return 'http://localhost:3000';
   throw new Error('Unable to get app URL');
 }

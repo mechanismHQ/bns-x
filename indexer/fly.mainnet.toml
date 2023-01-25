@@ -10,6 +10,8 @@ processes = []
 
 [env]
   PORT = "8080"
+  NETWORK_KEY = "mainnet"
+  NODE_ENV = "production"
 
 [experimental]
   allowed_public_ports = []

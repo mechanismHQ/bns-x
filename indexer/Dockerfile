@@ -1,8 +1,10 @@
-FROM node:16
+FROM node:18
 
 WORKDIR /usr/src/app
 
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+RUN npm install -g pnpm
+
+# RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
 
 COPY package.json ./
 

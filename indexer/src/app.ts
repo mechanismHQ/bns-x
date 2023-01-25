@@ -1,6 +1,6 @@
 import fastify, { FastifyServerOptions } from "fastify";
 import { prismaPlugin } from "./prisma-plugin";
-import { aliasRoutes } from "./routes/aliases";
+import { aliasRoutes } from "./routes/alias-routes";
 import { proxyRoutes } from "./routes/proxy-routes";
 import { getContracts } from "./contracts";
 import { mergeRouters } from "./routes/trpc";
@@ -8,6 +8,7 @@ import { queryHelperRouter } from "./routes/query-helper-router";
 import cors from "@fastify/cors";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import { createContext } from "./routes/context";
+import { getNetworkKey, getNodeUrl } from "./constants";
 
 const options: FastifyServerOptions = {};
 if (process.env.NODE_ENV === "test") {
@@ -37,13 +38,19 @@ app.register(fastifyTRPCPlugin, {
   },
 });
 
+const networkKey = getNetworkKey();
+console.log(`NETWORK_KEY=${networkKey}`);
+console.log(`STACKS_API=${getNodeUrl()}`);
+
 const contracts = getContracts();
 // Handler for production without contracts
 if (typeof contracts.bnsxRegistry !== "undefined") {
+  console.log("Real mode");
   app.register(aliasRoutes, {
     prefix: "/v1",
   });
 } else {
+  console.log("Proxy mode");
   app.register(proxyRoutes);
 }
 

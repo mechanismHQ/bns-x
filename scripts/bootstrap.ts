@@ -8,18 +8,16 @@ import {
   makeContractCall,
   StacksTransaction,
 } from "micro-stacks/transactions";
-import { contracts, bns } from "./script-utils";
 import { c32addressDecode, hashRipemd160 } from "micro-stacks/crypto";
 import { hashSha256 } from "micro-stacks/crypto-sha";
 import { asciiToBytes, bytesToHex, hexToBytes } from "micro-stacks/common";
 import { fetchAccountNonces } from "micro-stacks/api";
 
-const { bnsxExtensions } = contracts;
-
 config();
 
+import { contracts, bns, network } from "./script-utils";
+
 const privateKey = process.env.DEPLOYER_KEY!;
-const network = new StacksMocknet();
 
 async function broadcast(tx: StacksTransaction) {
   const res = await broadcastTransaction(tx, network);
@@ -32,12 +30,21 @@ async function run() {
   const salted = hashRipemd160(
     hashSha256(hexToBytes(bytesToHex(namespace) + "00"))
   );
+  const deployer = contracts.bnsxExtensions.identifier.split(".")[0];
   // console.log("salted", bytesToHex(hashRipemd160(salted)));
   const nonces = await fetchAccountNonces({
     url: network.getCoreApiUrl(),
-    principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+    // principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+    principal: deployer,
   });
   const nonce = nonces.possible_next_nonce - 1;
+
+  if (process.argv.length < 10) {
+    console.log(network.getCoreApiUrl());
+    console.log(deployer);
+    console.log(nonce);
+    throw new Error("safe exit - comment if ready");
+  }
 
   // const tx = await makeContractCall({
   //   ...executorDao.construct(contracts.proposalBootstrap.identifier),
@@ -86,7 +93,7 @@ async function run() {
         1,
         1,
         0,
-        "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
+        deployer
       ),
       network,
       anchorMode: AnchorMode.Any,
@@ -107,7 +114,6 @@ async function run() {
     })
   );
 
-  const deployer = contracts.bnsxExtensions.identifier.split(".")[0];
   const [_, pubHash] = c32addressDecode(deployer);
 
   await broadcast(

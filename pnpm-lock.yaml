@@ -26,6 +26,7 @@ importers:
       '@typescript-eslint/parser': ^5.49.0
       cross-fetch: ^3.1.5
       dotenv: ^16.0.3
+      dotenv-cli: ^6.0.0
       eslint: 8.20.0
       eslint-plugin-unused-imports: ^2.0.0
       localtunnel: ^2.0.2
@@ -56,6 +57,7 @@ importers:
       '@types/node': 18.11.9
       '@typescript-eslint/eslint-plugin': 5.49.0_v2jz6w5v27ii5uxsubbnydnw5q
       '@typescript-eslint/parser': 5.49.0_3wg4h5ynvvzze5kok5uwjq3zc4
+      dotenv-cli: 6.0.0
       eslint: 8.20.0
       eslint-plugin-unused-imports: 2.0.0_fxyadxdxv3tpgec2rgbcaxnrga
       localtunnel: 2.0.2
@@ -81,6 +83,7 @@ importers:
       '@tsconfig/node18': ^1.0.1
       '@types/jest': ^29.2.4
       '@types/node': ^18.11.9
+      cross-fetch: ^3.1.5
       dotenv-cli: ^6.0.0
       fastify: 4.10.2
       fastify-plugin: 4.4.0
@@ -111,6 +114,7 @@ importers:
       '@swc/cli': 0.1.51_@swc+core@1.2.105
       '@swc/core': 1.2.105
       '@trpc/server': 10.5.0
+      cross-fetch: 3.1.5
       fastify: 4.10.2
       fastify-plugin: 4.4.0
       graphql: 16.5.0

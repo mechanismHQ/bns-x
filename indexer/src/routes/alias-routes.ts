@@ -4,18 +4,19 @@ import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import { queryHelperRouter } from "./query-helper-router";
 import { createContext } from "./context";
 import { TRPCError } from "@trpc/server";
+import { getContractParts } from "../utils";
 
 export const aliasRoutes: FastifyPluginCallback = (fastify, opts, done) => {
   fastify.get<{
     Params: {
-      name: string;
-      namespace: string;
+      fqn: string;
     };
-  }>("/names/:name/:namespace", async (req, res) => {
+  }>("/names/:fqn", async (req, res) => {
+    console.log("req.params", req.params);
     const caller = queryHelperRouter.createCaller(createContext({ req, res }));
-    const { name, namespace } = req.params;
+    const [name, namespace] = getContractParts(req.params.fqn);
     try {
-      const details = await caller.getNameDetails(req.params);
+      const details = await caller.getNameDetails({ name, namespace });
       return res.status(200).send(details);
     } catch (error) {
       if (error instanceof TRPCError) {

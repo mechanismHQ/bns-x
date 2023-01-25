@@ -19,7 +19,7 @@ export function getNetworkKey(): NetworkKey {
     if (type === key) return key;
   }
   throw new Error(
-    `Invalid SUPPLIER_NETWORK config. Valid values are ${DEPLOYMENT_NETWORKS.join(
+    `Invalid NETWORK_KEY config. Valid values are ${DEPLOYMENT_NETWORKS.join(
       ","
     )}`
   );

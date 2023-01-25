@@ -1,19 +1,21 @@
 import fp from "fastify-plugin";
 import { FastifyPluginAsync } from "fastify";
 import { PrismaClient } from "@prisma/client";
-import { StacksPrisma } from "./stacks-api-db/client";
+// import { StacksPrisma } from "./stacks-api-db/client";
 
 // Use TypeScript module augmentation to declare the type of server.prisma to be PrismaClient
 declare module "fastify" {
   interface FastifyInstance {
     prisma: PrismaClient;
-    stacksPrisma: StacksPrisma;
+    stacksPrisma: PrismaClient;
+    // stacksPrisma: StacksPrisma;
   }
 }
 
 export const prismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
   const prisma = new PrismaClient();
-  const stacksPrisma = new StacksPrisma();
+  const stacksPrisma = new PrismaClient();
+  // const stacksPrisma = new StacksPrisma();
 
   await Promise.all([
     prisma.$connect(),

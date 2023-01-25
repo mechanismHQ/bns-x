@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "r": "NODE_ENV=development node -r @swc-node/register",
+    "r": "NODE_ENV=development dotenv -- node -r @swc-node/register",
     "test:server": "pnpm run --filter indexer test:server",
     "chainhook-test": "clarinet test --chainhooks chainhooks/tests/testing.chainhook.yaml --chainhooks chainhooks/tests/wrapper.chainhook.yaml --chainhooks chainhooks/tests/nft.chainhook.yaml --mine-block-delay 2 --allow-net tests/chainhooks-test.ts",
     "integration-test": "start-server-and-test test:server http://localhost:3003 chainhook-test",
@@ -37,6 +37,7 @@
     "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
+    "dotenv-cli": "^6.0.0",
     "eslint": "8.20.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "localtunnel": "^2.0.2",
