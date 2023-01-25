@@ -9,6 +9,7 @@ import { getNodeUrl } from "../constants";
 import { clarigenProvider, registryContract } from "../contracts";
 import { NamePropertiesJson } from "../contracts/types";
 import { convertLegacyDetailsJson, convertNameBuff } from "../contracts/utils";
+import { IntegerType, intToBigInt } from "micro-stacks/common";
 
 export async function getNameDetails(
   name: string,

@@ -1,4 +1,4 @@
-import { asciiToBytes } from "micro-stacks/common";
+import { asciiToBytes, IntegerType, intToBigInt } from "micro-stacks/common";
 import { clarigenProvider, queryHelperContract } from "../contracts/index";
 import { QueryHelperName, QueryHelperLegacyName } from "../contracts/types";
 import { convertLegacyDetailsJson, convertNameBuff } from "../contracts/utils";
@@ -30,6 +30,19 @@ export async function getAddressNames(address: string) {
     primaryName: primary?.combined ?? null,
     names: nameStrings,
     displayName: nameStrings[0] ?? null,
+  };
+}
+
+export async function getNameById(_id: IntegerType) {
+  const id = intToBigInt(_id);
+  const helper = queryHelperContract();
+  const clarigen = clarigenProvider();
+  const details = await clarigen.ro(helper.getBnsxName(id), { json: true });
+
+  if (details === null) return null;
+  return {
+    ...convertNameBuff(details),
+    legacy: convertLegacyDetailsJson(details.legacy),
   };
 }
 
