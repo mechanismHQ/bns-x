@@ -15,14 +15,14 @@ export function getAppUrl() {
 }
 
 export function getApiUrl() {
-  const url = process.env.API_URL;
+  const url = process.env.NEXT_PUBLIC_API_URL;
   if (url) return url;
   return 'http://localhost:3002';
 }
 
 type NetworkKey = typeof DEPLOYMENT_NETWORKS[number];
 export function getNetworkKey(): NetworkKey {
-  const key = process.env.NETWORK_KEY;
+  const key = process.env.NEXT_PUBLIC_NETWORK_KEY;
   if (key === 'mocknet') return 'devnet';
   if (typeof key === 'undefined') return 'devnet';
   for (const type of DEPLOYMENT_NETWORKS) {
