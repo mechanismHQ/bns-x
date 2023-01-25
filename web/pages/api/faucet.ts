@@ -27,7 +27,7 @@ export async function faucetApi(req: NextApiRequest, res: NextApiResponse) {
     networkKey === 'mainnet'
       ? StacksNetworkVersion.mainnetP2PKH
       : StacksNetworkVersion.testnetP2PKH;
-  const faucetAddr = privateKeyToStxAddress(privateKey, version);
+  const faucetAddr = privateKeyToStxAddress(privateKey.slice(0, 64), version, true);
 
   const zonefile = asciiToBytes(
     `$ORIGIN ${name}.testable.\n$TTL 3600\n_http._tcp\tIN\tURI\t10\t1\t"https://gaia.blockstack.org/hub/13WcjxWGz3JkZYhoPeCHw2ukcK1f1zH6M1/profile.json"\n\n`
