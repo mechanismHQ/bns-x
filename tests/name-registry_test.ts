@@ -15,6 +15,7 @@ import {
   deployer,
   utils,
   registry,
+  assert,
 } from "./helpers.ts";
 import { btcBytes } from "./mocks.ts";
 
@@ -236,6 +237,24 @@ describe("name registry", () => {
     it("updates state appropriately", () => {
       assertEquals(getNames(alice), namesBefore);
       assertEquals(chain.rov(contract.getBalance(alice)), balanceBefore);
+    });
+
+    it("names can be registered after burning", () => {
+      const receipt = utilsRegisterBtc({
+        name: "toburn",
+        owner: bob,
+        chain,
+      });
+
+      assert(receipt.value !== id);
+      assertEquals(chain.rov(contract.getNameOwner(receipt.value)), bob);
+      const props = chain.rov(
+        contract.getNameProperties({
+          name: asciiToBytes("toburn"),
+          namespace: btcBytes,
+        })
+      )!;
+      assertEquals(props.id, receipt.value);
     });
   });
 });

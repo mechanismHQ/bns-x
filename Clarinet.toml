@@ -45,6 +45,16 @@ path = 'contracts/traits/nft-trait.clar'
 clarity_version = 1
 epoch = 2.0
 
+[contracts.commission-trait]
+path = 'contracts/traits/commission-trait.clar'
+clarity_version = 1
+epoch = 2.0
+
+[contracts.marketplace]
+path = "contracts/marketplace.clar"
+clarity_version = 1
+epoch = 2.0
+
 [contracts.proposal-bootstrap]
 path = 'contracts/proposals/proposal-bootstrap.clar'
 clarity_version = 1
