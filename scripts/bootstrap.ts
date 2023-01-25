@@ -131,9 +131,6 @@ async function run() {
       nonce: nonce + 4,
     })
   );
-
-  // const res = await broadcastTransaction(tx, network);
-  // console.log("res", res);
 }
 
 run()

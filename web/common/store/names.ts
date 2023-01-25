@@ -1,22 +1,17 @@
-import {
-  bnsContractState,
-  clarigenAtom,
-  readOnlyState,
-  nameRegistryState,
-  registryAssetState,
-} from '.';
-import { atom, Getter } from 'jotai';
+import { clarigenAtom, nameRegistryState, registryAssetState } from '.';
+import { atom } from 'jotai';
 
-import { atomFamilyWithQuery, atomWithQuery, useQueryAtom } from 'jotai-query-toolkit';
+import { atomFamilyWithQuery } from 'jotai-query-toolkit';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { convertNameBuff } from '../utils';
-import { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
-import { NameExt, NameProperties, WithCombined } from '../types';
+import type { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
+import type { NameProperties, WithCombined } from '../types';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { cvToValue } from '@clarigen/core';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { atomFamily } from 'jotai/utils';
 import { namesForAddressState } from './api';
+import { makeNameWrapper } from '@common/wrapper';
 
 export const currentUserNamesState = atom(get => {
   const address = get(stxAddressAtom);
@@ -89,7 +84,7 @@ export const currentUserNameIdsState2 = atomsWithQuery<number[]>(get => ({
       unanchored: 'true',
       // asset_identifiers: asset,
     });
-    const url = `${urlBase}/extended/v1/tokens/nft/holdings?${params}`;
+    const url = `${urlBase}/extended/v1/tokens/nft/holdings?${params.toString()}`;
     const res = await fetch(url);
     const data = (await res.json()) as NonFungibleTokenHoldingsList;
     return data.results

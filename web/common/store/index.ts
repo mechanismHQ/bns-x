@@ -1,4 +1,5 @@
-import { contractFactory, DeploymentNetwork, OkType, projectFactory } from '@clarigen/core';
+import type { DeploymentNetwork } from '@clarigen/core';
+import { contractFactory, OkType, projectFactory } from '@clarigen/core';
 import {
   clientState,
   currentAccountAtom,
@@ -8,18 +9,19 @@ import {
 } from '@store/micro-stacks';
 import { Atom, atom } from 'jotai';
 import { atomFamilyWithQuery, atomWithQuery, useQueryAtom } from 'jotai-query-toolkit';
-import { ContractCall, Response } from '@clarigen/core';
+import type { ContractCall } from '@clarigen/core';
+import { Response } from '@clarigen/core';
 import { fetchAccountBalances } from 'micro-stacks/api';
 import { contracts, project } from '../clarigen';
-import {
+import type {
   AddressBalanceResponse,
   MempoolTransaction,
   Transaction,
 } from '@stacks/stacks-blockchain-api-types';
 import { getContractParts, shiftInt } from '../utils';
+import type { ExtractTx } from '../stacks-api';
 import {
   convertTypedTx,
-  ExtractTx,
   fetchTransaction,
   fetchTypedTransaction,
   ResponseType,
@@ -65,6 +67,7 @@ export const registryAssetState = atom(get => {
   return `${contractId}::${asset}`;
 });
 
+// todo: fix for mainnet
 export const bnsContractState = atom(get => {
   const bns = contracts.bnsV1;
   return contractFactory(bns, 'ST000000000000000000002AMW42H.bns');
@@ -88,6 +91,7 @@ function callToQueryKey(contractCall: ContractCall<any>) {
   return [
     contractCall.contractAddress,
     contractCall.function.name,
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     ...contractCall.nativeArgs.map(a => `${a}`),
   ];
 }
@@ -104,6 +108,7 @@ export const readOnlyState = atomFamilyWithQuery<ContractCall<any>, any>(
 );
 
 export function useReadOnly<R>(contractCall: ContractCall<R>) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return useQueryAtom<R>(readOnlyState(contractCall));
 }
 
@@ -116,11 +121,11 @@ export const addressBalanceState = atomFamilyWithQuery<string, AddressBalanceRes
   (get, address) => ['stxAddressBalances', address],
   async (get, address) => {
     const network = get(networkAtom);
-    const balances = (await fetchAccountBalances({
+    const balances = await fetchAccountBalances({
       url: network.getCoreApiUrl(),
       unanchored: true,
       principal: address,
-    })) as AddressBalanceResponse;
+    });
 
     return balances;
   }
