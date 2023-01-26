@@ -42,6 +42,7 @@ export async function getNameById(_id: IntegerType) {
   if (details === null) return null;
   return {
     ...convertNameBuff(details),
+    id: Number(id),
     legacy: convertLegacyDetailsJson(details.legacy),
   };
 }
@@ -59,6 +60,7 @@ export async function getNameDetails(name: string, namespace: string) {
   if (details === null) return null;
   return {
     ...convertNameBuff(details),
+    id: parseInt(details.id, 10),
     legacy: convertLegacyDetailsJson(details.legacy),
   };
 }

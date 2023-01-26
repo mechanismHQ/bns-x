@@ -28,11 +28,13 @@ export type QueryHelperName = Jsonize<QueryHelperResponse["names"][number]> & {
 export type NameBase = {
   name: string;
   namespace: string;
+  id?: string | number;
 };
 
 export type NameBuff = {
   name: Uint8Array;
   namespace: Uint8Array;
+  id?: string | number;
 };
 
 export type NameExtended = NameBase & { combined: string };

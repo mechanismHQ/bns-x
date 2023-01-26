@@ -5,8 +5,20 @@ import { queryHelperRouter } from "./query-helper-router";
 import { createContext } from "./context";
 import { TRPCError } from "@trpc/server";
 import { getContractParts } from "../utils";
+import {
+  FastifyPlugin,
+  namesByAddressBnsxSchema,
+  NamesByAddressResponse,
+} from "./api-types";
+import { z } from "zod";
 
-export const aliasRoutes: FastifyPluginCallback = (fastify, opts, done) => {
+const errorSchema = z.object({
+  error: z.object({
+    message: z.string(),
+  }),
+});
+
+export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
   fastify.get<{
     Params: {
       fqn: string;
@@ -37,29 +49,42 @@ export const aliasRoutes: FastifyPluginCallback = (fastify, opts, done) => {
     }
   });
 
-  fastify.get<{
-    Params: {
-      principal: string;
-    };
-  }>("/addresses/stacks/:principal", async (req, res) => {
-    const caller = queryHelperRouter.createCaller(createContext({ req, res }));
-    const { principal } = req.params;
-    try {
-      const names = await caller.getAddressNames(principal);
-      return res.status(200).send(names);
-    } catch (error) {
-      if (error instanceof TRPCError) {
-        const status = getHTTPStatusCodeFromError(error);
-        console.error(`Error fetching details for ${principal}:`, error);
-        return res.status(status).send({ error: { message: error.message } });
-      }
-      console.error(
-        `Unexpected error fetching details for ${principal}:`,
-        error
+  fastify.get(
+    "/addresses/stacks/:principal",
+    {
+      schema: {
+        params: z.object({
+          principal: z.string(),
+        }),
+        response: {
+          200: namesByAddressBnsxSchema,
+          404: errorSchema,
+          500: errorSchema,
+        },
+      },
+    },
+    async (req, res) => {
+      const caller = queryHelperRouter.createCaller(
+        createContext({ req, res })
       );
-      return res.status(500).send({ error: { message: "Unexpected error" } });
+      const { principal } = req.params;
+      try {
+        const names = await caller.getAddressNames(principal);
+        return res.status(200).send(names);
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          const status = getHTTPStatusCodeFromError(error);
+          console.error(`Error fetching details for ${principal}:`, error);
+          return res.status(status).send({ error: { message: error.message } });
+        }
+        console.error(
+          `Unexpected error fetching details for ${principal}:`,
+          error
+        );
+        return res.status(500).send({ error: { message: "Unexpected error" } });
+      }
     }
-  });
+  );
 
   done();
 };

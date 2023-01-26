@@ -11,6 +11,7 @@ import { validateStacksAddress } from 'micro-stacks/crypto';
 import { bnsContractState, clarigenAtom, nameRegistryState } from '@store/index';
 import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
 import { getContractParts } from '@common/utils';
+import { currentUserV1NameState } from '@store/names';
 
 function hashAtom(name: string) {
   return typeof window === 'undefined'
@@ -27,6 +28,13 @@ export const wrapperContractIdAtom = hashAtom('wrapperId');
 export const migrateTxidAtom = hashAtom('migrateTxid');
 
 export const migrateNameAtom = hashAtom('name');
+
+export const nameUpgradingAtom = atom(get => {
+  const cacheName = get(migrateNameAtom);
+  const fromQuery = get(currentUserV1NameState);
+  if (cacheName) return cacheName;
+  return fromQuery?.combined ?? null;
+});
 
 export const upgradeRecipientAtom = atom('');
 

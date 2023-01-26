@@ -3,7 +3,7 @@ import {
   getNameDetails as getNameDetailsQuery,
 } from "./query-helper";
 import { getAssetIds, getNameDetailsApi } from "./stacks-api";
-import { NameInfoResponse } from "../routes/api-types";
+import { NameInfoResponse, NamesByAddressResponse } from "../routes/api-types";
 import { fetchNamesByAddress } from "micro-stacks/api";
 import { getNodeUrl } from "../constants";
 import { clarigenProvider, registryContract } from "../contracts";
@@ -29,7 +29,7 @@ export async function getNameDetails(
     return {
       ...api,
       ...query,
-      address: query?.owner,
+      address: query.owner,
       isBnsx: true,
     };
   } catch (error) {
@@ -41,7 +41,9 @@ export async function getNameDetails(
   }
 }
 
-export async function getAddressNames(address: string) {
+export async function getAddressNames(
+  address: string
+): Promise<NamesByAddressResponse> {
   const [_legacy, assetIds] = await Promise.all([
     getLegacyName(address),
     getAssetIds(address),
@@ -60,7 +62,10 @@ export async function getAddressNames(address: string) {
     )
   )
     .filter((n): n is NamePropertiesJson => n !== null)
-    .map((n) => convertNameBuff(n));
+    .map((n) => ({
+      ...convertNameBuff(n),
+      id: parseInt(n.id, 10),
+    }));
   const legacy =
     _legacy === null
       ? null
@@ -80,5 +85,6 @@ export async function getAddressNames(address: string) {
     nameProperties: names,
     primaryProperties,
     displayName,
+    primaryName: primaryProperties?.combined ?? null,
   };
 }

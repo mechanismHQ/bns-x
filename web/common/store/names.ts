@@ -67,17 +67,16 @@ export const nameByIdState = atomFamily((id: number | bigint) => {
 export const currentUserNameIdsState = atom<number[]>(get => {
   const names = get(currentUserNamesState);
   if (!names) return [];
-  return names.nameProperties.map(n => parseInt(n.id, 10));
+  return names.nameProperties.map(n => n.id);
 });
 
 export const currentUserNameIdsState2 = atomsWithQuery<number[]>(get => ({
   queryKey: ['cur-user-names', get(stxAddressAtom)],
   refetchInterval: 10000,
-  queryFn: async ctx => {
+  queryFn: async () => {
     const network = get(networkAtom);
     const urlBase = network.getCoreApiUrl();
     const addr = get(stxAddressAtom);
-    const asset = get(registryAssetState);
     if (!addr) return [];
     const params = new URLSearchParams({
       principal: addr,

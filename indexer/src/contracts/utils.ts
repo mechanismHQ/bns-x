@@ -1,4 +1,4 @@
-import { bytesToAscii, hexToBytes } from "micro-stacks/common";
+import { bytesToAscii, hexToBytes, intToBigInt } from "micro-stacks/common";
 import {
   WithCombined,
   NameBuff,

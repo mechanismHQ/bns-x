@@ -2,13 +2,17 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 // import { getAddressNames } from "../fetchers/query-helper";
 import { getNameDetails, getAddressNames } from "../fetchers";
+import { namesByAddressBnsxSchema } from "./api-types";
 import { router, procedure } from "./trpc";
 
 export const queryHelperRouter = router({
-  getAddressNames: procedure.input(z.string()).query(async ({ ctx, input }) => {
-    const namesResponse = await getAddressNames(input);
-    return namesResponse;
-  }),
+  getAddressNames: procedure
+    .input(z.string())
+    .output(namesByAddressBnsxSchema)
+    .query(async ({ ctx, input }) => {
+      const namesResponse = await getAddressNames(input);
+      return namesResponse;
+    }),
 
   getNameDetails: procedure
     .input(

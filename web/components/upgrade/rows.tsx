@@ -1,11 +1,13 @@
 import React from 'react';
-import { Box, Stack, SpaceBetween, Flex, BoxProps } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box, Stack, SpaceBetween, Flex } from '@nelson-ui/react';
 import { Text } from '../text';
 import { ExternalTx } from '@components/icons/external-tx';
 import { CheckIcon } from '@components/icons/check';
-import { Atom, useAtomValue } from 'jotai';
+import type { Atom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { Spinner } from '@components/spinner';
-import { migrateNameAtom } from '@store/migration';
+import { migrateNameAtom, nameUpgradingAtom } from '@store/migration';
 import { CenterBox } from '@components/layout';
 import { atom } from 'jotai';
 
@@ -53,7 +55,7 @@ export const Divider: React.FC<{ children?: React.ReactNode }> = () => {
 };
 
 export const NameHeading: React.FC<{ children?: React.ReactNode }> = () => {
-  const name = useAtomValue(migrateNameAtom);
+  const name = useAtomValue(nameUpgradingAtom);
   return (
     <Text variant="Heading06" color="$text-onsurface-very-dim">
       {name}

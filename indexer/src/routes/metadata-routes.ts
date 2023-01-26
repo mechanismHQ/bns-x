@@ -27,14 +27,12 @@ export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
       // const { leaseEndingAt, ...legacy } =
 
       const properties: Record<string, NftProperty> = {
-        id: {
-          type: "integer",
-          description: "The SIP9 ID of this name",
-          value: Number(name.id),
-        },
+        id: name.id,
         namespace: name.namespace,
         fullName: name.combined,
         name: name.name,
+        collection: "BNSx Names",
+        collection_image: "https://api.bns.xyz/static/bnsx-image.png",
       };
 
       if (name.legacy !== null) {

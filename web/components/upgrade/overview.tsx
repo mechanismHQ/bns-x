@@ -8,7 +8,7 @@ import { currentUserV1NameState } from '../../common/store/names';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { useEffect } from 'react';
 import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
-import { migrateNameAtom } from '@store/migration';
+import { nameUpgradingAtom } from '@store/migration';
 // import { styled } from '@stitches/react';
 
 export const RespGrid = styled(Grid, {
@@ -22,8 +22,7 @@ export const RespGrid = styled(Grid, {
 
 export const UpgradeOverview: React.FC = () => {
   const { deploy, isRequestPending: deployPending } = useDeployWrapper();
-  const v1Name = useAtomValue(migrateNameAtom);
-  // const v1Name = useAtomValue(currentUserV1NameState);
+  const v1Name = useAtomValue(nameUpgradingAtom);
   if (!v1Name) throw new Error('Invalid state');
 
   return (
