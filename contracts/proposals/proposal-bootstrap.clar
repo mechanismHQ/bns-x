@@ -4,15 +4,7 @@
 
 (define-public (execute (sender principal))
   (begin
-    ;; Enable genesis extensions
-    ;; (try! (contract-call? .bnsx-extensions set-extensions
-    ;;   (list
-    ;;   )
-    ;; ))
-    ;; WORKAROUND PRE-2.1
-    ;; NOT IN PROD
-    (try! (add-test-utils))
-    ;; (and (not is-in-mainnet) (try! (add-test-utils)))
+    (try! (add-bootstrap-utils))
 
     (try! (contract-call? .bnsx-extensions set-extension-roles
       (list
@@ -24,10 +16,8 @@
   )
 )
 
-(define-private (add-test-utils)
+(define-private (add-bootstrap-utils)
   (begin
-    ;; workaround for https://github.com/stacks-network/stacks-blockchain/pull/3440
-
     (try! (contract-call? .bnsx-extensions set-extensions 
       (list 
         { extension: DEPLOYER, enabled: true }

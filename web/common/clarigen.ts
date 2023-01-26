@@ -1488,18 +1488,6 @@ export const contracts = {
         [extension: TypedAbiArg<string, 'extension'>, memo: TypedAbiArg<Uint8Array, 'memo'>],
         Response<boolean, bigint>
       >,
-      setExtension: {
-        name: 'set-extension',
-        access: 'public',
-        args: [
-          { name: 'extension', type: 'principal' },
-          { name: 'enabled', type: 'bool' },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [extension: TypedAbiArg<string, 'extension'>, enabled: TypedAbiArg<boolean, 'enabled'>],
-        Response<boolean, bigint>
-      >,
       setExtensionRoles: {
         name: 'set-extension-roles',
         access: 'public',
@@ -2623,10 +2611,35 @@ export const contracts = {
     clarity_version: 'Clarity1',
     contractName: 'nft-trait',
   },
+  proposal2: {
+    functions: {
+      execute: {
+        name: 'execute',
+        access: 'public',
+        args: [{ name: 'sender', type: 'principal' }],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<[sender: TypedAbiArg<string, 'sender'>], Response<boolean, bigint>>,
+    },
+    maps: {},
+    variables: {
+      DEPLOYER: {
+        name: 'DEPLOYER',
+        type: 'principal',
+        access: 'constant',
+      } as TypedAbiVariable<string>,
+    },
+    constants: {
+      DEPLOYER: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+    },
+    non_fungible_tokens: [],
+    fungible_tokens: [],
+    clarity_version: 'Clarity1',
+    contractName: 'proposal-2',
+  },
   proposalBootstrap: {
     functions: {
-      addTestUtils: {
-        name: 'add-test-utils',
+      addBootstrapUtils: {
+        name: 'add-bootstrap-utils',
         access: 'private',
         args: [],
         outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
@@ -3738,19 +3751,19 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-extensions',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-extensions',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.bnsx-extensions',
-    mainnet: null,
+    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.bnsx-extensions',
   },
   bnsxRegistry: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.bnsx-registry',
-    mainnet: null,
+    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.bnsx-registry',
   },
   extensionTrait: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.extension-trait',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.extension-trait',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.extension-trait',
-    mainnet: null,
+    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.extension-trait',
   },
   nameWrapper: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-wrapper',
@@ -3762,25 +3775,31 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.nft-trait',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.nft-trait',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.nft-trait',
+    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.nft-trait',
+  },
+  proposal2: {
+    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-2',
+    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-2',
+    testnet: null,
     mainnet: null,
   },
   proposalBootstrap: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.proposal-bootstrap',
-    mainnet: null,
+    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.proposal-bootstrap',
   },
   proposalTrait: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-trait',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-trait',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.proposal-trait',
-    mainnet: null,
+    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.proposal-trait',
   },
   queryHelper: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.query-helper',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.query-helper',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.query-helper',
-    mainnet: null,
+    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.query-helper',
   },
   testUtils: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.test-utils',
@@ -3792,7 +3811,7 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.wrapper-migrator',
-    mainnet: null,
+    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.wrapper-migrator',
   },
 } as const;
 

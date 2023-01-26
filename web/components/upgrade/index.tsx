@@ -23,7 +23,6 @@ import { UpgradeSteps } from '@components/upgrade/steps';
 export const Upgrade: React.FC = () => {
   const deployTxid = useAtomValue(wrapperDeployTxidAtom);
   const v1Name = useAtomValue(currentUserV1NameState);
-  const migrateTxid = useAtomValue(migrateTxidAtom);
   const name = useAtomValue(migrateNameAtom);
 
   const cacheName = useAtomCallback(
@@ -34,7 +33,7 @@ export const Upgrade: React.FC = () => {
 
   useEffect(() => {
     if (v1Name?.combined) {
-      cacheName(v1Name?.combined);
+      void cacheName(v1Name?.combined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [v1Name?.combined]);

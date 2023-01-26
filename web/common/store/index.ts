@@ -30,7 +30,7 @@ import { createAssetInfo } from 'micro-stacks/transactions';
 import { ClarigenClient } from '@clarigen/web';
 import { atomFamily } from 'jotai/utils';
 import { atomsWithQuery } from 'jotai-tanstack-query';
-import { getNetworkKey } from '@common/constants';
+import { getBnsDeployer, getNetworkKey } from '@common/constants';
 
 export const networkKeyAtom = atom<DeploymentNetwork>(() => {
   return getNetworkKey();
@@ -69,7 +69,7 @@ export const registryAssetState = atom(get => {
 // todo: fix for mainnet
 export const bnsContractState = atom(() => {
   const bns = contracts.bnsV1;
-  return contractFactory(bns, 'ST000000000000000000002AMW42H.bns');
+  return contractFactory(bns, `${getBnsDeployer()}.bns`);
 });
 
 export const tokenAssetInfoState = atom(get => {
@@ -99,7 +99,6 @@ export const readOnlyState = atomFamilyWithQuery<ContractCall<any>, any>(
   (get, param) => callToQueryKey(param),
   async (get, param) => {
     const webProvider = get(clarigenAtom);
-    const network = get(networkAtom);
     return webProvider.ro(param, {
       latest: true,
     });
@@ -221,7 +220,6 @@ export function useTypedTxReceipt<F>(txid: string) {
 
 export const pageTitleState = atom(get => {
   const title = get(docTitleState);
-  const appName = 'Dots';
   const suffix = title ? `- ${title}` : '';
   return `Dots ${suffix}`;
 });

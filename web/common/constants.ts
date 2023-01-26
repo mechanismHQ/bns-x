@@ -49,6 +49,13 @@ export function getNetwork(): StacksNetwork {
   }
 }
 
+export function getBnsDeployer() {
+  if (getNetworkKey() === 'mainnet') {
+    return 'SP000000000000000000002Q6VF78';
+  }
+  return 'ST000000000000000000002AMW42H';
+}
+
 export function getClarigenNodeClient() {
   const network = getNetwork();
   return new ClarigenNodeClient(network);

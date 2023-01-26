@@ -15,7 +15,7 @@ import { fetchAccountNonces } from "micro-stacks/api";
 
 config();
 
-import { contracts, bns, network } from "./script-utils";
+import { contracts, bns, network, networkKey } from "./script-utils";
 
 const privateKey = process.env.DEPLOYER_KEY!;
 
@@ -37,84 +37,87 @@ async function run() {
     // principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
     principal: deployer,
   });
-  const nonce = nonces.possible_next_nonce - 1;
+  let nonce = nonces.possible_next_nonce;
 
-  if (process.argv.length < 10) {
-    console.log(network.getCoreApiUrl());
-    console.log(deployer);
-    console.log(nonce);
-    throw new Error("safe exit - comment if ready");
+  console.log(network.getCoreApiUrl());
+  console.log(deployer);
+  console.log(nonce);
+  console.log(
+    "contracts.wrapperMigrator.identifier",
+    contracts.wrapperMigrator.identifier
+  );
+  console.log("bns.identifier", bns.identifier);
+  console.log("networkKey", networkKey);
+
+  if (networkKey === "devnet") {
+    await broadcast(
+      await makeContractCall({
+        ...bns.namespacePreorder(salted, 640000000),
+        network,
+        anchorMode: AnchorMode.Any,
+        postConditionMode: PostConditionMode.Allow,
+        senderKey: privateKey,
+        nonce: nonce,
+      })
+    );
+    nonce += 1;
+
+    await broadcast(
+      await makeContractCall({
+        ...bns.namespaceReveal(
+          namespace,
+          salt,
+          1000,
+          10,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          deployer
+        ),
+        network,
+        anchorMode: AnchorMode.Any,
+        postConditionMode: PostConditionMode.Allow,
+        senderKey: privateKey,
+        nonce: nonce,
+      })
+    );
+    nonce += 1;
+
+    await broadcast(
+      await makeContractCall({
+        ...bns.namespaceReady(namespace),
+        network,
+        anchorMode: AnchorMode.Any,
+        postConditionMode: PostConditionMode.Allow,
+        senderKey: privateKey,
+        nonce: nonce,
+      })
+    );
+    nonce += 1;
   }
 
-  // const tx = await makeContractCall({
-  //   ...executorDao.construct(contracts.proposalBootstrap.identifier),
-  //   network,
-  //   anchorMode: AnchorMode.Any,
-  //   postConditionMode: PostConditionMode.Allow,
-  //   senderKey: privateKey,
-  //   nonce,
-  // });
-  // await broadcast(tx);
-
-  await broadcast(
-    await makeContractCall({
-      ...bns.namespacePreorder(salted, 640000000),
-      network,
-      anchorMode: AnchorMode.Any,
-      postConditionMode: PostConditionMode.Allow,
-      senderKey: privateKey,
-      nonce: nonce + 1,
-    })
-  );
-
-  await broadcast(
-    await makeContractCall({
-      ...bns.namespaceReveal(
-        namespace,
-        salt,
-        1000,
-        10,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        0,
-        deployer
-      ),
-      network,
-      anchorMode: AnchorMode.Any,
-      postConditionMode: PostConditionMode.Allow,
-      senderKey: privateKey,
-      nonce: nonce + 2,
-    })
-  );
-
-  await broadcast(
-    await makeContractCall({
-      ...bns.namespaceReady(namespace),
-      network,
-      anchorMode: AnchorMode.Any,
-      postConditionMode: PostConditionMode.Allow,
-      senderKey: privateKey,
-      nonce: nonce + 3,
-    })
-  );
-
   const [_, pubHash] = c32addressDecode(deployer);
+
+  if (networkKey === "mainnet") {
+    console.log("pubhash", bytesToHex(pubHash));
+    // throw new Error("safety check");
+  }
 
   await broadcast(
     await makeContractCall({
@@ -128,7 +131,7 @@ async function run() {
       anchorMode: AnchorMode.Any,
       postConditionMode: PostConditionMode.Allow,
       senderKey: privateKey,
-      nonce: nonce + 4,
+      nonce: nonce,
     })
   );
 }

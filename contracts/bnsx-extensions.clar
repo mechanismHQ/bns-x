@@ -36,15 +36,6 @@
   (or (is-extension extension) (has-role extension role) (is-eq extension (as-contract tx-sender)))
 )
 
-(define-public (set-extension (extension principal) (enabled bool))
-  (begin
-    (try! (is-self-or-extension))
-    (asserts! (is-eq tx-sender (as-contract tx-sender)) (err u4))
-    (print {event: "extension", extension: extension, enabled: enabled})
-    (ok (map-set extensions extension enabled))
-  )
-)
-
 (define-private (set-extensions-iter (item {extension: principal, enabled: bool}))
   (begin
     (print {event: "extension", extension: (get extension item), enabled: (get enabled item)})

@@ -22,7 +22,6 @@ export function registryContractAsset() {
 }
 
 export function clarigenProvider() {
-  const networkKey = getNetworkKey();
   const network = getNetwork();
   const clarigen = new ClarigenNodeClient(network);
   return clarigen;

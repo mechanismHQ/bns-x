@@ -3,12 +3,13 @@ import { atomWithHash } from 'jotai-location';
 import { tupleCV, bufferCV } from 'micro-stacks/clarity';
 import { asciiToBytes } from 'micro-stacks/common';
 import { atomsWithQuery } from 'jotai-tanstack-query';
-import { Atom, PrimitiveAtom } from 'jotai';
+import type { Atom } from 'jotai';
+import { PrimitiveAtom } from 'jotai';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { fetchTransaction } from '@common/stacks-api';
 import { validateStacksAddress } from 'micro-stacks/crypto';
 import { bnsContractState, clarigenAtom, nameRegistryState } from '@store/index';
-import { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
+import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
 import { getContractParts } from '@common/utils';
 
 function hashAtom(name: string) {

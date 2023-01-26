@@ -14,6 +14,7 @@ export const {
   extensionTrait,
   nameWrapper,
   nftTrait,
+  proposal2,
   proposalBootstrap,
   proposalTrait,
   queryHelper,

@@ -8,6 +8,7 @@ import { currentUserV1NameState } from '../../common/store/names';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { useEffect } from 'react';
 import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
+import { migrateNameAtom } from '@store/migration';
 // import { styled } from '@stitches/react';
 
 export const RespGrid = styled(Grid, {
@@ -21,8 +22,9 @@ export const RespGrid = styled(Grid, {
 
 export const UpgradeOverview: React.FC = () => {
   const { deploy, isRequestPending: deployPending } = useDeployWrapper();
-  const v1Name = useAtomValue(currentUserV1NameState);
-  if (v1Name === null) throw new Error('Invalid state');
+  const v1Name = useAtomValue(migrateNameAtom);
+  // const v1Name = useAtomValue(currentUserV1NameState);
+  if (!v1Name) throw new Error('Invalid state');
 
   return (
     <>
@@ -40,7 +42,7 @@ export const UpgradeOverview: React.FC = () => {
             >
               <SpaceBetween height="90px" alignItems="center" px="32px" isInline>
                 <Text variant="Body01" color="$color-alert-red">
-                  {v1Name.combined}
+                  {v1Name}
                 </Text>
                 <Box padding="3px 10px" borderRadius="5px" backgroundColor="#301211">
                   <Text variant="Label01" color="$color-alert-red">
@@ -77,7 +79,7 @@ export const UpgradeOverview: React.FC = () => {
           <Stack spacing="25px">
             <Box width="100%" borderRadius="18px" border="1px solid $onSurface-border-subdued">
               <SpaceBetween height="90px" alignItems="center" px="32px" isInline>
-                <Text variant="Body01">{v1Name.combined}</Text>
+                <Text variant="Body01">{v1Name}</Text>
                 <Box padding="3px 10px" borderRadius="5px" backgroundColor="$grey-800">
                   <Text variant="Label01">BNSx</Text>
                 </Box>

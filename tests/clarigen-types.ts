@@ -1617,23 +1617,6 @@ export const contracts = {
         ],
         Response<boolean, bigint>
       >,
-      setExtension: {
-        'name': 'set-extension',
-        'access': 'public',
-        'args': [{ 'name': 'extension', 'type': 'principal' }, {
-          'name': 'enabled',
-          'type': 'bool',
-        }],
-        'outputs': {
-          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
-        },
-      } as TypedAbiFunction<
-        [
-          extension: TypedAbiArg<string, 'extension'>,
-          enabled: TypedAbiArg<boolean, 'enabled'>,
-        ],
-        Response<boolean, bigint>
-      >,
       setExtensionRoles: {
         'name': 'set-extension-roles',
         'access': 'public',
@@ -2861,10 +2844,40 @@ export const contracts = {
     'clarity_version': 'Clarity1',
     contractName: 'nft-trait',
   },
+  proposal2: {
+    'functions': {
+      execute: {
+        'name': 'execute',
+        'access': 'public',
+        'args': [{ 'name': 'sender', 'type': 'principal' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [sender: TypedAbiArg<string, 'sender'>],
+        Response<boolean, bigint>
+      >,
+    },
+    'maps': {},
+    'variables': {
+      DEPLOYER: {
+        name: 'DEPLOYER',
+        type: 'principal',
+        access: 'constant',
+      } as TypedAbiVariable<string>,
+    },
+    constants: {
+      DEPLOYER: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+    },
+    'non_fungible_tokens': [],
+    'fungible_tokens': [],
+    'clarity_version': 'Clarity1',
+    contractName: 'proposal-2',
+  },
   proposalBootstrap: {
     'functions': {
-      addTestUtils: {
-        'name': 'add-test-utils',
+      addBootstrapUtils: {
+        'name': 'add-bootstrap-utils',
         'access': 'private',
         'args': [],
         'outputs': {
