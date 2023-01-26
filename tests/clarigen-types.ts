@@ -1962,8 +1962,36 @@ export const contracts = {
         [id: TypedAbiArg<number | bigint, 'id'>],
         Response<boolean, bigint>
       >,
-      daoSetTokenUri: {
-        'name': 'dao-set-token-uri',
+      mngBurn: {
+        'name': 'mng-burn',
+        'access': 'public',
+        'args': [{ 'name': 'id', 'type': 'uint128' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [id: TypedAbiArg<number | bigint, 'id'>],
+        Response<boolean, bigint>
+      >,
+      mngSetNamespaceTokenUri: {
+        'name': 'mng-set-namespace-token-uri',
+        'access': 'public',
+        'args': [{
+          'name': 'namespace',
+          'type': { 'buffer': { 'length': 20 } },
+        }, { 'name': 'uri', 'type': { 'string-ascii': { 'length': 256 } } }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          uri: TypedAbiArg<string, 'uri'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      mngSetTokenUri: {
+        'name': 'mng-set-token-uri',
         'access': 'public',
         'args': [{
           'name': 'uri',
@@ -1974,17 +2002,6 @@ export const contracts = {
         },
       } as TypedAbiFunction<
         [uri: TypedAbiArg<string, 'uri'>],
-        Response<boolean, bigint>
-      >,
-      mngBurn: {
-        'name': 'mng-burn',
-        'access': 'public',
-        'args': [{ 'name': 'id', 'type': 'uint128' }],
-        'outputs': {
-          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
-        },
-      } as TypedAbiFunction<
-        [id: TypedAbiArg<number | bigint, 'id'>],
         Response<boolean, bigint>
       >,
       mngTransfer: {
@@ -2338,16 +2355,33 @@ export const contracts = {
       getTokenUri: {
         'name': 'get-token-uri',
         'access': 'read_only',
-        'args': [],
+        'args': [{ 'name': 'id', 'type': 'uint128' }],
         'outputs': {
           'type': {
             'response': {
-              'ok': { 'string-ascii': { 'length': 256 } },
+              'ok': { 'optional': { 'string-ascii': { 'length': 256 } } },
               'error': 'none',
             },
           },
         },
-      } as TypedAbiFunction<[], Response<string, null>>,
+      } as TypedAbiFunction<
+        [id: TypedAbiArg<number | bigint, 'id'>],
+        Response<string | null, null>
+      >,
+      getTokenUriForNamespace: {
+        'name': 'get-token-uri-for-namespace',
+        'access': 'read_only',
+        'args': [{
+          'name': 'namespace',
+          'type': { 'buffer': { 'length': 20 } },
+        }],
+        'outputs': {
+          'type': { 'optional': { 'string-ascii': { 'length': 256 } } },
+        },
+      } as TypedAbiFunction<
+        [namespace: TypedAbiArg<Uint8Array, 'namespace'>],
+        string | null
+      >,
       isDaoOrExtension: {
         'name': 'is-dao-or-extension',
         'access': 'read_only',
@@ -2452,6 +2486,11 @@ export const contracts = {
         'manager': string;
         'namespace': Uint8Array;
       }, boolean>,
+      namespaceTokenUriMap: {
+        'name': 'namespace-token-uri-map',
+        'key': { 'buffer': { 'length': 20 } },
+        'value': { 'string-ascii': { 'length': 256 } },
+      } as TypedAbiMap<Uint8Array, string>,
       namespaceTransfersAllowed: {
         'name': 'namespace-transfers-allowed',
         'key': { 'buffer': { 'length': 20 } },

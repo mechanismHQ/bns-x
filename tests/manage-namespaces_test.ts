@@ -87,6 +87,11 @@ describe("managed namespaces", () => {
         })
       );
     });
+
+    it("cannot set namespace-specific token-uri", () => {
+      const uri = "https://example.com";
+      expectTxErr(registry.mngSetNamespaceTokenUri(namespace, uri));
+    });
   });
 
   it("only dao can set manager first", () => {
@@ -116,11 +121,11 @@ describe("managed namespaces", () => {
 
   it("only dao can set token-uri", () => {
     const uri = "https://example.com";
-    expectTxErr(registry.daoSetTokenUri(uri));
+    expectTxErr(registry.mngSetTokenUri(uri));
 
-    chain.txOk(registry.daoSetTokenUri(uri), deployer);
+    chain.txOk(registry.mngSetTokenUri(uri), deployer);
 
-    assertEquals(chain.rovOk(registry.getTokenUri()), uri);
+    assertEquals(chain.rovOk(registry.getTokenUri(0n)), uri);
   });
 
   describe("with manager set", () => {
@@ -139,6 +144,8 @@ describe("managed namespaces", () => {
         chain.rov(registry.isNamespaceManager(btcBytes, manager)),
         false
       );
+
+      expectTxErr(registry.mngSetNamespaceTokenUri(btcBytes, "asdf"));
     });
 
     let managerNameId: bigint;
@@ -155,6 +162,28 @@ describe("managed namespaces", () => {
         manager
       );
       managerNameId = value;
+    });
+
+    it("cannot set base token URI", () => {
+      expectTxErr(registry.mngSetTokenUri("asdf"));
+    });
+
+    const uri = "https://myuri.com";
+    it("can set namespace-specific token URI", () => {
+      chain.txOk(registry.mngSetNamespaceTokenUri(namespace, uri), manager);
+
+      assertEquals(chain.rov(registry.getTokenUriForNamespace(namespace)), uri);
+    });
+
+    it("returns namespace-specific token URI", () => {
+      assertEquals(chain.rovOk(registry.getTokenUri(managerNameId)), uri);
+    });
+
+    it("returns base token uri for invalid IDs", () => {
+      assertEquals(
+        chain.rovOk(registry.getTokenUri(111111111n)),
+        "https://example.com"
+      );
     });
 
     it("can transfer names", () => {

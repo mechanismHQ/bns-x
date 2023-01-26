@@ -36,6 +36,7 @@
 
 (define-data-var last-id-var uint u0)
 (define-data-var token-uri-var (string-ascii 256) "")
+(define-map namespace-token-uri-map (buff 20) (string-ascii 256))
 
 (define-map namespace-managers-map { manager: principal, namespace: (buff 20) } bool)
 (define-map dao-namespace-manager-map (buff 20) bool)
@@ -246,10 +247,23 @@
 ;; 
 ;; @throws if called by an unauthorized contract
 ;; #[allow(unchecked_data)]
-(define-public (dao-set-token-uri (uri (string-ascii 256)))
+(define-public (mng-set-token-uri (uri (string-ascii 256)))
   (begin
     (try! (is-dao-or-extension))
     (ok (var-set token-uri-var uri))
+  )
+)
+
+;; Set a namespace-specific metadata URI
+;; 
+;; @param namespace; the namespace to be associated with this URI
+;; @param uri; a URI that returns valid metadata according to SIP16
+(define-public (mng-set-namespace-token-uri (namespace (buff 20)) (uri (string-ascii 256)))
+  (begin
+    ;; #[filter(namespace, uri)]
+    (try! (validate-namespace-action namespace))
+    (map-set namespace-token-uri-map namespace uri)
+    (ok true)
   )
 )
 
@@ -261,10 +275,30 @@
   )
 )
 
-(define-read-only (get-token-uri)
-  (ok (var-get token-uri-var))
+;; SIP9 - get a SIP16-valid token URI.
+;; 
+;; If the namespace for the name associated with `id` has
+;; a namespace-specific token-uri, that URI is returned.
+;; 
+;; Otherwise, the contract's base token URI is returned.
+(define-read-only (get-token-uri (id uint))
+  (let
+    (
+      (base-uri (var-get token-uri-var))
+    )
+    (match (get-namespace-for-id id)
+      namespace (ok (some (default-to base-uri (get-token-uri-for-namespace namespace))))
+      e (ok (some base-uri))
+    )   
+  )
 )
 
+;; Fetch a namespace-specific token URI.
+(define-read-only (get-token-uri-for-namespace (namespace (buff 20)))
+  (map-get? namespace-token-uri-map namespace)
+)
+
+;; SIP9 - fetch owner of an NFT
 (define-read-only (get-owner (id uint))
   (ok (nft-get-owner? BNSx-Names id))
 )

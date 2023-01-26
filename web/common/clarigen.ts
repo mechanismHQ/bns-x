@@ -1809,18 +1809,30 @@ export const contracts = {
         args: [{ name: 'id', type: 'uint128' }],
         outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
       } as TypedAbiFunction<[id: TypedAbiArg<number | bigint, 'id'>], Response<boolean, bigint>>,
-      daoSetTokenUri: {
-        name: 'dao-set-token-uri',
-        access: 'public',
-        args: [{ name: 'uri', type: { 'string-ascii': { length: 256 } } }],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<[uri: TypedAbiArg<string, 'uri'>], Response<boolean, bigint>>,
       mngBurn: {
         name: 'mng-burn',
         access: 'public',
         args: [{ name: 'id', type: 'uint128' }],
         outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
       } as TypedAbiFunction<[id: TypedAbiArg<number | bigint, 'id'>], Response<boolean, bigint>>,
+      mngSetNamespaceTokenUri: {
+        name: 'mng-set-namespace-token-uri',
+        access: 'public',
+        args: [
+          { name: 'namespace', type: { buffer: { length: 20 } } },
+          { name: 'uri', type: { 'string-ascii': { length: 256 } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [namespace: TypedAbiArg<Uint8Array, 'namespace'>, uri: TypedAbiArg<string, 'uri'>],
+        Response<boolean, bigint>
+      >,
+      mngSetTokenUri: {
+        name: 'mng-set-token-uri',
+        access: 'public',
+        args: [{ name: 'uri', type: { 'string-ascii': { length: 256 } } }],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<[uri: TypedAbiArg<string, 'uri'>], Response<boolean, bigint>>,
       mngTransfer: {
         name: 'mng-transfer',
         access: 'public',
@@ -2124,9 +2136,22 @@ export const contracts = {
       getTokenUri: {
         name: 'get-token-uri',
         access: 'read_only',
-        args: [],
-        outputs: { type: { response: { ok: { 'string-ascii': { length: 256 } }, error: 'none' } } },
-      } as TypedAbiFunction<[], Response<string, null>>,
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: {
+          type: {
+            response: { ok: { optional: { 'string-ascii': { length: 256 } } }, error: 'none' },
+          },
+        },
+      } as TypedAbiFunction<
+        [id: TypedAbiArg<number | bigint, 'id'>],
+        Response<string | null, null>
+      >,
+      getTokenUriForNamespace: {
+        name: 'get-token-uri-for-namespace',
+        access: 'read_only',
+        args: [{ name: 'namespace', type: { buffer: { length: 20 } } }],
+        outputs: { type: { optional: { 'string-ascii': { length: 256 } } } },
+      } as TypedAbiFunction<[namespace: TypedAbiArg<Uint8Array, 'namespace'>], string | null>,
       isDaoOrExtension: {
         name: 'is-dao-or-extension',
         access: 'read_only',
@@ -2224,6 +2249,11 @@ export const contracts = {
         },
         boolean
       >,
+      namespaceTokenUriMap: {
+        name: 'namespace-token-uri-map',
+        key: { buffer: { length: 20 } },
+        value: { 'string-ascii': { length: 256 } },
+      } as TypedAbiMap<Uint8Array, string>,
       namespaceTransfersAllowed: {
         name: 'namespace-transfers-allowed',
         key: { buffer: { length: 20 } },
@@ -3751,19 +3781,19 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-extensions',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-extensions',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.bnsx-extensions',
-    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.bnsx-extensions',
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.bnsx-extensions',
   },
   bnsxRegistry: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.bnsx-registry',
-    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.bnsx-registry',
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.bnsx-registry',
   },
   extensionTrait: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.extension-trait',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.extension-trait',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.extension-trait',
-    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.extension-trait',
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.extension-trait',
   },
   nameWrapper: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-wrapper',
@@ -3775,7 +3805,7 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.nft-trait',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.nft-trait',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.nft-trait',
-    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.nft-trait',
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.nft-trait',
   },
   proposal2: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-2',
@@ -3787,19 +3817,19 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.proposal-bootstrap',
-    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.proposal-bootstrap',
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.proposal-bootstrap',
   },
   proposalTrait: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-trait',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-trait',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.proposal-trait',
-    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.proposal-trait',
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.proposal-trait',
   },
   queryHelper: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.query-helper',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.query-helper',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.query-helper',
-    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.query-helper',
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.query-helper',
   },
   testUtils: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.test-utils',
@@ -3811,7 +3841,7 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.wrapper-migrator',
-    mainnet: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.wrapper-migrator',
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.wrapper-migrator',
   },
 } as const;
 

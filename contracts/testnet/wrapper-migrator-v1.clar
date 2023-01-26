@@ -47,8 +47,7 @@
 ;; Authorization check - only extensions with the role "mig-signer" can add/remove
 ;; wrapper verifiers.
 (define-public (is-dao-or-extension)
-  ;; (ok (asserts! (or (is-eq tx-sender .bnsx-extensions) (contract-call? .bnsx-extensions has-role-or-extension contract-caller ROLE)) ERR_UNAUTHORIZED))
-  (ok (asserts! (contract-call? .bnsx-extensions has-role-or-extension contract-caller ROLE) ERR_UNAUTHORIZED))
+  (ok (asserts! (or (is-eq tx-sender .bnsx-extensions) (contract-call? .bnsx-extensions has-role-or-extension contract-caller ROLE)) ERR_UNAUTHORIZED))
 )
 
 ;; #[allow(unchecked_data)]

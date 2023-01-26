@@ -1,0 +1,28 @@
+---
+id: 0
+name: Mainnet deployment
+network: mainnet
+stacks-node: "https://stacks-node-api.mainnet.stacks.co"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: proposal-bootstrap
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 24877
+            path: contracts/proposals/proposal-bootstrap.clar
+            anchor-block-only: true
+            clarity-version: 1
+    - id: 1
+      transactions:
+        - contract-call:
+            contract-id: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.bnsx-extensions
+            method: construct
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 100000
+            anchor_block_only: false
+            parameters:
+              - "'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.proposal-bootstrap"
+      epoch: "2.0"

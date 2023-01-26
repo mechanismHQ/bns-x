@@ -256,5 +256,10 @@ describe("name registry", () => {
       )!;
       assertEquals(props.id, receipt.value);
     });
+
+    it("cannot burn invalid ID", () => {
+      const receipt = chain.txErr(contract.burn(10000000n), alice);
+      assertEquals(receipt.value, contract.constants.ERR_NOT_OWNER.value);
+    });
   });
 });

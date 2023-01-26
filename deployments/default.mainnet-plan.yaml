@@ -10,69 +10,69 @@ plan:
       transactions:
         - contract-publish:
             contract-name: extension-trait
-            expected-sender: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
             cost: 26259
             path: contracts/traits/extension-trait.clar
             anchor-block-only: true
             clarity-version: 1
         - contract-publish:
             contract-name: proposal-trait
-            expected-sender: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
             cost: 24747
             path: contracts/traits/proposal-trait.clar
             anchor-block-only: true
             clarity-version: 1
         - contract-publish:
             contract-name: bnsx-extensions
-            expected-sender: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
             cost: 22659
             path: contracts/bnsx-extensions.clar
             anchor-block-only: true
             clarity-version: 1
         - contract-publish:
             contract-name: nft-trait
-            expected-sender: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
             cost: 22356
             path: contracts/traits/nft-trait.clar
             anchor-block-only: true
             clarity-version: 1
         - contract-publish:
             contract-name: bnsx-registry
-            expected-sender: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
             cost: 26647
             path: contracts/core/name-registry.clar
             anchor-block-only: true
             clarity-version: 1
         - contract-publish:
-            contract-name: proposal-bootstrap
-            expected-sender: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7
-            cost: 24877
-            path: contracts/proposals/proposal-bootstrap.clar
-            anchor-block-only: true
-            clarity-version: 1
-        - contract-publish:
             contract-name: query-helper
-            expected-sender: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
             cost: 25407
             path: contracts/query-helper.clar
             anchor-block-only: true
             clarity-version: 1
         - contract-publish:
             contract-name: wrapper-migrator
-            expected-sender: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
             cost: 25004
             path: contracts/wrapper-migrator-v1.clar
+            anchor-block-only: true
+            clarity-version: 1
+        - contract-publish:
+            contract-name: proposal-bootstrap
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 24877
+            path: contracts/proposals/proposal-bootstrap.clar
             anchor-block-only: true
             clarity-version: 1
       epoch: "2.0"
     - id: 1
       transactions:
         - contract-call:
-            contract-id: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.bnsx-extensions
+            contract-id: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.bnsx-extensions
             method: construct
-            expected-sender: SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
             cost: 100000
             anchor_block_only: false
             parameters:
-              - "'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.proposal-bootstrap"
+              - "'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.proposal-bootstrap"
       epoch: "2.0"

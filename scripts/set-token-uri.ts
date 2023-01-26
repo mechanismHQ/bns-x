@@ -14,12 +14,12 @@ const privateKey = process.env.DEPLOYER_KEY!;
 async function run() {
   console.log("networkKey", networkKey);
   const uri = "https://api.bns.xyz/nft-metadata/{id}";
-  const tokenUri = await clarigen.ro(registry.getTokenUri());
+  const tokenUri = await clarigen.ro(registry.getTokenUri(0n));
 
   console.log("existing tokenUri", tokenUri);
 
   const tx = await makeContractCall({
-    ...registry.daoSetTokenUri(uri),
+    ...registry.mngSetTokenUri(uri),
     senderKey: privateKey,
     anchorMode: AnchorMode.Any,
     network,

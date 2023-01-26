@@ -79,6 +79,14 @@ describe("wrapper-migrator-v1", () => {
       );
       assertEquals(result, migrator.constants.ERR_UNAUTHORIZED.value);
     });
+
+    it("is registered after deployment", () => {
+      const wrapper = getWrapper(1);
+      const id = chain.rov(migrator.getIdFromWrapper(wrapper.addr));
+      assertEquals(id, 1n);
+      const addr = chain.rov(migrator.getWrapperFromId(1n));
+      assertEquals(addr, wrapper.addr);
+    });
   });
 
   it("alice added as a signer", () => {
@@ -163,6 +171,14 @@ describe("wrapper-migrator-v1", () => {
       assertEquals(name?.namespace, nameObj.namespace);
       assertEquals(chain.rov(migrator.getNameWrapper(nameId)), contractId);
     });
+  });
+
+  it("can debug signatures", () => {
+    const wrapper = getWrapper(1);
+    const info = chain.rovOk(
+      migrator.debugSignature(wrapper.addr, wrapper.signature)
+    );
+    assertEquals(info.pubkeyHash, alicePub);
   });
 
   it("cannot re-use a wrapper if it already has a name", () => {
