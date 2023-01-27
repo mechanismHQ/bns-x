@@ -100,9 +100,16 @@ export const [wrapperSignatureState] = atomsWithQuery<string | null>(get => {
       if (!deployTxid) return null;
       if (wrapperId === null) return null;
 
-      const res = await fetch(`/api/wrapper-sig?wrapper=${deployTxid}`);
-      const data = (await res.json()) as { signature: string; contractId: string };
-      return data.signature;
+      try {
+        const res = await fetch(`/api/wrapper-sig?wrapper=${deployTxid}`);
+        if (!res.ok) {
+          return null;
+        }
+        const data = (await res.json()) as { signature: string; contractId: string };
+        return data.signature;
+      } catch (error) {
+        return null;
+      }
     },
   };
 });
