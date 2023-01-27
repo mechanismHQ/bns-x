@@ -5,7 +5,6 @@ import { atom, useAtom, useAtomValue } from 'jotai';
 import { bnsContractState, clarigenAtom, nameRegistryState, txReceiptState } from '@store/index';
 import {
   migrateTxidAtom,
-  wrapperContractIdAtom,
   wrapperDeployTxidAtom,
   upgradeRecipientAtom,
   migrateTxState,
@@ -13,6 +12,7 @@ import {
   sendElsewhereAtom,
   validRecipientState,
   recipientIsBnsState,
+  wrapperContractIdState,
 } from '@store/migration';
 import { Divider, DoneRow, NameHeading, PendingRow, UpgradeBox } from '@components/upgrade/rows';
 import { useWrapperMigrate } from '@common/hooks/use-wrapper-migrate';
@@ -34,7 +34,7 @@ import { ErrorIcon } from '@components/icons/error';
 const validatedRecipientInputAtom = atom('');
 
 export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
-  const contractId = useAtomValue(wrapperContractIdAtom);
+  const contractId = useAtomValue(wrapperContractIdState);
   const { migrate, isRequestPending } = useWrapperMigrate();
   const migrateTxid = useAtomValue(migrateTxidAtom);
   const doSendElsewhere = useAtomValue(sendElsewhereAtom);
@@ -63,7 +63,7 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
     if (isBNS || !doSendElsewhere || !recipient) return false;
     if (recipientAddress.state !== 'hasData') return false;
     return !recipientAddress.data;
-  }, [isBNS, doSendElsewhere, recipientAddress]);
+  }, [isBNS, doSendElsewhere, recipientAddress, recipient]);
 
   const stxAddrValid = useMemo(() => {
     if (isBNS || !doSendElsewhere) return false;
@@ -74,7 +74,7 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
   const canMigrate = useMemo(() => {
     console.log(`can-migrate: state=${recipientAddress.state}`);
     if (recipientAddress.state !== 'hasData') return false;
-    console.log(`can-migrate: data=${recipientAddress.data}`);
+    console.log(`can-migrate: data=${recipientAddress.data ?? ''}`);
     return !!recipientAddress.data;
   }, [recipientAddress]);
 

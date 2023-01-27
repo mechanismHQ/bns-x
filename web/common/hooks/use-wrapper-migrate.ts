@@ -5,10 +5,9 @@ import { bnsAssetInfoState, bnsContractState, contractsState, tokenAssetInfoStat
 import {
   migrateNameAssetIdState,
   migrateTxidAtom,
-  wrapperContractIdAtom,
-  wrapperSignatureAtom,
-  recipientAddrAtom,
   validRecipientState,
+  wrapperSignatureState,
+  wrapperContractIdState,
 } from '../store/migration';
 import { hexToBytes } from 'micro-stacks/common';
 import { stxAddressAtom } from '@store/micro-stacks';
@@ -29,8 +28,8 @@ export function useWrapperMigrate() {
       async (get, set) => {
         const contracts = get(contractsState);
         const migrator = contracts.wrapperMigrator;
-        const contractId = get(wrapperContractIdAtom);
-        const signature = get(wrapperSignatureAtom);
+        const contractId = get(wrapperContractIdState);
+        const signature = get(wrapperSignatureState);
         const recipient = get(validRecipientState);
         const address = get(stxAddressAtom)!;
         const bnsAsset = get(bnsAssetInfoState);

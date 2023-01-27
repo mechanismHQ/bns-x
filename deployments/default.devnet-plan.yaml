@@ -44,13 +44,6 @@ plan:
             anchor-block-only: true
             # clarity-version: 1
         - contract-publish:
-            contract-name: proposal-bootstrap
-            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            cost: 13970
-            path: contracts/proposals/proposal-bootstrap.clar
-            anchor-block-only: true
-            # clarity-version: 1
-        - contract-publish:
             contract-name: test-utils
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 14140
@@ -69,6 +62,13 @@ plan:
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 83190
             path: contracts/testnet/query-helper.clar
+            anchor-block-only: true
+            # clarity-version: 1
+        - contract-publish:
+            contract-name: proposal-bootstrap
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 13970
+            path: contracts/proposals/proposal-bootstrap.clar
             anchor-block-only: true
             # clarity-version: 1
       epoch: "2.0"

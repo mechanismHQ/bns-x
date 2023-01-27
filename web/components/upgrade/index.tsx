@@ -8,13 +8,7 @@ import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { Link } from '../link';
 // import { MigrateFinalizeStep } from './finalize';
 import { contractsState, txReceiptState, useReadOnly } from '@store/index';
-import {
-  migrateNameAtom,
-  migrateTxidAtom,
-  wrapperContractIdAtom,
-  wrapperDeployTxidAtom,
-  wrapperSignatureAtom,
-} from '@store/migration';
+import { migrateNameAtom, wrapperDeployTxidAtom } from '@store/migration';
 import { useEffect } from 'react';
 import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
 import { UpgradeOverview } from '@components/upgrade/overview';

@@ -6,7 +6,7 @@ import { makeClarityHash } from 'micro-stacks/connect';
 import { signatureVrsToRsv } from '../../common/utils';
 import { fetchTransaction, txEndpoint } from 'micro-stacks/api';
 import { getNetwork, getClarigenNodeClient, getContracts } from '../../common/constants';
-import {
+import type {
   Transaction,
   MempoolTransaction,
   SmartContractTransaction,
@@ -41,7 +41,6 @@ export async function wrapperSignatureApi(req: NextApiRequest, res: NextApiRespo
   }
   // todo: verify source code
   const contractId = tx.smart_contract.contract_id;
-  const [deployer, contractName] = contractId.split('.');
   const wrapperId = await clarigen.ro(contracts.wrapperMigrator.getIdFromWrapper(contractId));
   if (wrapperId === null) {
     return res.status(400).send({ error: 'Wrapper not registered' });

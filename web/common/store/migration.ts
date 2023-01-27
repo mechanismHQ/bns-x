@@ -21,10 +21,6 @@ function hashAtom(name: string) {
 
 export const wrapperDeployTxidAtom = hashAtom('deployTx');
 
-export const wrapperSignatureAtom = hashAtom('wrapperSig');
-
-export const wrapperContractIdAtom = hashAtom('wrapperId');
-
 export const migrateTxidAtom = hashAtom('migrateTxid');
 
 export const migrateNameAtom = hashAtom('name');
@@ -76,6 +72,40 @@ export function txidQueryAtom(txidAtom: Atom<string | undefined>) {
 export const [migrateTxState] = txidQueryAtom(migrateTxidAtom);
 
 export const sendElsewhereAtom = atom(false);
+
+export const [wrapperDeployTxState] = txidQueryAtom(wrapperDeployTxidAtom);
+
+export const wrapperContractIdState = atom(get => {
+  const tx = get(wrapperDeployTxState);
+  if (tx === null) return null;
+  if (tx.tx_status !== 'success') return null;
+  if (tx.tx_type !== 'smart_contract') return null;
+  return tx.smart_contract.contract_id;
+});
+
+export const [wrapperSignatureState] = atomsWithQuery<string | null>(get => {
+  const deployTxid = get(wrapperDeployTxidAtom);
+  // const wrapperDeploy = get(wrapperDeployTxState);
+  const wrapperId = get(wrapperContractIdState);
+  return {
+    queryKey: ['wrapper-sig-state', wrapperId, deployTxid],
+    refetchInterval(data, query) {
+      const [_, id] = query.queryKey;
+      if (id === null) return false;
+      if (typeof data === 'string') return false;
+
+      return 5000;
+    },
+    queryFn: async () => {
+      if (!deployTxid) return null;
+      if (wrapperId === null) return null;
+
+      const res = await fetch(`/api/wrapper-sig?wrapper=${deployTxid}`);
+      const data = (await res.json()) as { signature: string; contractId: string };
+      return data.signature;
+    },
+  };
+});
 
 export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
   queryKey: ['valid-recipient', get(upgradeRecipientAtom), get(sendElsewhereAtom)],
