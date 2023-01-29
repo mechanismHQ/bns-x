@@ -13,6 +13,7 @@ import {
   validRecipientState,
   recipientIsBnsState,
   wrapperContractIdState,
+  wrapperSignatureState,
 } from '@store/migration';
 import { Divider, DoneRow, NameHeading, PendingRow, UpgradeBox } from '@components/upgrade/rows';
 import { useWrapperMigrate } from '@common/hooks/use-wrapper-migrate';
@@ -34,13 +35,13 @@ import { ErrorIcon } from '@components/icons/error';
 const validatedRecipientInputAtom = atom('');
 
 export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
-  const contractId = useAtomValue(wrapperContractIdState);
   const { migrate, isRequestPending } = useWrapperMigrate();
   const migrateTxid = useAtomValue(migrateTxidAtom);
   const doSendElsewhere = useAtomValue(sendElsewhereAtom);
   const recipientInput = useInput(useAtom(upgradeRecipientAtom));
   const recipient = useAtomValue(upgradeRecipientAtom);
   const recipientAddress = useAtomValue(loadable(validRecipientState));
+  const wrapperSignature = useAtomValue(wrapperSignatureState);
   // const recipientAddress = useAtomValue(recipientAddrAtom);
   const validatedInput = useAtomValue(validatedRecipientInputAtom);
   const isBNS = useAtomValue(recipientIsBnsState);
@@ -83,7 +84,7 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
     console.log('Validated input is', validatedInput);
   }, [recipientAddress, validatedInput]);
 
-  if (!contractId) return null;
+  if (!wrapperSignature) return null;
 
   if (migrateTxid) return null;
 
