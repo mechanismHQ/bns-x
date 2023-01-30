@@ -11,6 +11,7 @@ import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import { createContext } from "./routes/context";
 import { getNetworkKey, getNodeUrl } from "./constants";
 import staticPlugin from "@fastify/static";
+import metricsPlugin from "fastify-metrics";
 import { join } from "path";
 import {
   ZodTypeProvider,
@@ -31,6 +32,8 @@ app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
 app.register(cors);
+
+app.register(metricsPlugin);
 
 if (process.env.POSTGRES_URL) {
   app.register(prismaPlugin);

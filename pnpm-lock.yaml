@@ -88,7 +88,9 @@ importers:
       '@types/node': ^18.11.9
       cross-fetch: ^3.1.5
       dotenv-cli: ^6.0.0
+      dotenv-flow: ^3.2.0
       fastify: 4.10.2
+      fastify-metrics: ^10.0.2
       fastify-plugin: 4.4.0
       fastify-type-provider-zod: ^1.1.8
       graphql: 16.5.0
@@ -99,6 +101,7 @@ importers:
       micro-stacks: 1.1.4
       p-queue: 6.6.2
       prisma: 4.7.1
+      prom-client: ^14.1.1
       stacks-encoding-native-js: 1.0.0
       ts-jest: ^29.0.3
       tsup: ^6.5.0
@@ -121,7 +124,9 @@ importers:
       '@trpc/server': 10.5.0
       '@types/node': 18.11.9
       cross-fetch: 3.1.5
+      dotenv-flow: 3.2.0
       fastify: 4.10.2
+      fastify-metrics: 10.0.2_fastify@4.10.2
       fastify-plugin: 4.4.0
       fastify-type-provider-zod: 1.1.8_fastify@4.10.2+zod@3.20.0
       graphql: 16.5.0
@@ -130,6 +135,7 @@ importers:
       micro-stacks: 1.1.4
       p-queue: 6.6.2
       prisma: 4.7.1
+      prom-client: 14.1.1
       stacks-encoding-native-js: 1.0.0
       tsup: 6.5.0_lxy3i4egorhr4ox4evcrm44dy4
       typescript: 4.8.4
@@ -3063,6 +3069,10 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
+  /bintrees/1.0.2:
+    resolution: {integrity: sha512-VOMgTMwjAaUG580SXn3LacVgjurrbMme7ZZNYGSSV7mmtY6QQRh0Eg3pwIcntQ77DErK1L0NxkbetjcoXzVwKw==}
+    dev: false
+
   /blakejs/1.2.1:
     resolution: {integrity: sha512-QXUSXI3QVc/gJME0dBpXrag1kbzOqCjCX8/b54ntNyW6sjtoqxqRk3LTmXzaJoh71zMsDCjM+47jS7XiwN/+fQ==}
     dev: false
@@ -3590,9 +3600,21 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
+  /dotenv-flow/3.2.0:
+    resolution: {integrity: sha512-GEB6RrR4AbqDJvNSFrYHqZ33IKKbzkvLYiD5eo4+9aFXr4Y4G+QaFrB/fNp0y6McWBmvaPn3ZNjIufnj8irCtg==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      dotenv: 8.6.0
+    dev: false
+
   /dotenv/16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
+
+  /dotenv/8.6.0:
+    resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
+    engines: {node: '>=10'}
+    dev: false
 
   /dset/3.1.2:
     resolution: {integrity: sha512-g/M9sqy3oHe477Ar4voQxWtaPIFw1jTdKZuomOjhCcBx9nHUNn0pu6NopuFFrTh/TRZIKEj+76vLWFu9BNKk+Q==}
@@ -4524,6 +4546,16 @@ packages:
 
   /fast-uri/2.2.0:
     resolution: {integrity: sha512-cIusKBIt/R/oI6z/1nyfe2FvGKVTohVRfvkOhvx0nCEW+xf5NoCXjAHcWp93uOUBchzYcsvPlrapAdX1uW+YGg==}
+    dev: false
+
+  /fastify-metrics/10.0.2_fastify@4.10.2:
+    resolution: {integrity: sha512-j+NrJKRbHArM0Kr+PbQ0OGLIIjfH6JN/y+BviKKaETwKwwN16w8JB4fCpJSNIDneHOYXWJvIuqq7RCh6RNbehw==}
+    peerDependencies:
+      fastify: ^4.9.2
+    dependencies:
+      fastify: 4.10.2
+      fastify-plugin: 4.4.0
+      prom-client: 14.1.1
     dev: false
 
   /fastify-plugin/4.4.0:
@@ -6703,6 +6735,13 @@ packages:
     engines: {node: '>= 0.6.0'}
     dev: false
 
+  /prom-client/14.1.1:
+    resolution: {integrity: sha512-hFU32q7UZQ59bVJQGUtm3I2PrJ3gWvoCkilX9sF165ks1qflhugVCeK+S1JjJYHvyt3o5kj68+q3bchormjnzw==}
+    engines: {node: '>=10'}
+    dependencies:
+      tdigest: 0.1.2
+    dev: false
+
   /prompts/2.4.2:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}
     engines: {node: '>= 6'}
@@ -7430,6 +7469,12 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
     dev: true
+
+  /tdigest/0.1.2:
+    resolution: {integrity: sha512-+G0LLgjjo9BZX2MfdvPfH+MKLCrxlXSYec5DaPYP1fe6Iyhf0/fSmJ0bFiZ1F8BT6cGXl2LpltQptzjXKWEkKA==}
+    dependencies:
+      bintrees: 1.0.2
+    dev: false
 
   /test-exclude/6.0.0:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
