@@ -126,7 +126,7 @@ stacks_explorer_image_url = "hirosystems/explorer:latest"
 enable_next_features = true
 # epoch_2_0 = 100
 # epoch_2_05 = 104
-epoch_2_1 = 110
+epoch_2_1 = 111
 pox_2_activation = 120
 
 
