@@ -36,6 +36,10 @@ export const networkKeyAtom = atom<DeploymentNetwork>(() => {
   return getNetworkKey();
 });
 
+export const isMainnetState = atom(get => {
+  return get(networkKeyAtom) === 'mainnet';
+});
+
 export const clarigenAtom = atom(get => {
   const client = get(clientState);
 

@@ -4,6 +4,8 @@ import { Text } from '../text';
 import { useAuth } from '@micro-stacks/react';
 import { HeaderLink } from '@components/layout/header';
 import { styled } from '@common/theme';
+import { useAtomValue } from 'jotai';
+import { isMainnetState } from '@store/index';
 
 const FooterContainer = styled(SpaceBetween, {
   flexDirection: 'row',
@@ -32,6 +34,7 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
   const year = useMemo(() => {
     return new Date().getFullYear();
   }, []);
+  const isMainnet = useAtomValue(isMainnetState);
   return (
     <FooterContainer
       // isInline
@@ -57,9 +60,11 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
         {/* <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
             Mint BNS names
           </HeaderLink> */}
-        <HeaderLink href="/faucet" color="$onSurface-text-subdued">
-          Testnet faucet
-        </HeaderLink>
+        {!isMainnet && (
+          <HeaderLink href="/faucet" color="$onSurface-text-subdued">
+            Testnet faucet
+          </HeaderLink>
+        )}
         <HeaderLink
           // onClick={() => {}}
           href="#"

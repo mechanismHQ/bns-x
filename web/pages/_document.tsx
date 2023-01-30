@@ -41,6 +41,12 @@ export default class Document extends NextDocument {
             as="font"
             crossOrigin=""
           />
+          <link
+            rel="preload"
+            href="/fonts/OpenSauce/OpenSauceSans-Regular.ttf"
+            as="font"
+            crossOrigin=""
+          />
         </Head>
         <body>
           <Main />

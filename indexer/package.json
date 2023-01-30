@@ -9,10 +9,10 @@
   ],
   "private": true,
   "scripts": {
-    "r": "NODE_ENV=development node -r @swc-node/register",
+    "r": "NODE_ENV=development node -r @swc-node/register -r dotenv-flow/config",
     "rp": "NODE_ENV=production node -r @swc-node/register -r dotenv-flow/config",
     "dev:mainnet": "pnpm rp scripts/server.ts",
-    "dev": "dotenv -- node -r @swc-node/register scripts/server.ts",
+    "dev": "pnpm r scripts/server.ts",
     "start": "node -r @swc-node/register scripts/server.ts",
     "test:migrate": "dotenv -e .env.test -- prisma migrate dev --name test-init",
     "test:server": "dotenv -e .env.test -- node -r @swc-node/register scripts/server.ts",
