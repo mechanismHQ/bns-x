@@ -1,20 +1,16 @@
-import {
+import type {
   ContractCallTransaction,
   MempoolContractCallTransaction,
   MempoolTransaction,
   Transaction,
 } from '@stacks/stacks-blockchain-api-types';
-import { contracts, TypedAbiArg, TypedAbiFunction } from './clarigen';
-import {
-  ArgsRecord,
-  ArgsTuple,
-  cvToValue,
-  ExtractArgs,
-  ExtractArgsRecord,
-  toCamelCase,
-} from '@clarigen/core';
+import type { TypedAbiArg, TypedAbiFunction } from './clarigen';
+import { contracts } from './clarigen';
+import type { ArgsRecord, ExtractArgsRecord } from '@clarigen/core';
+import { ArgsTuple, cvToValue, ExtractArgs, toCamelCase } from '@clarigen/core';
 import { fetchJson, generateUrl, txEndpoint } from 'micro-stacks/api';
 import { hexToCV } from 'micro-stacks/clarity';
+import { fetchPrivate } from 'micro-stacks/common';
 
 export type ResponseType<T> = T extends TypedAbiFunction<TypedAbiArg<unknown, string>[], infer R>
   ? R
@@ -58,7 +54,11 @@ export async function fetchTransaction({
     event_limit,
     unanchored,
   });
-  return fetchJson<Transaction | MempoolTransaction>(path);
+  const res = await fetchPrivate(path);
+  if (!res.ok) {
+    throw new Error('Unable to fetch transaction');
+  }
+  return (await res.json()) as Transaction | MempoolTransaction;
 }
 
 export async function fetchTypedTransaction<F>(options: FetchTxArgs): Promise<ExtractTx<F>> {
@@ -83,7 +83,7 @@ export function convertTypedTx<F>(transaction: Transaction | MempoolTransaction)
     status === 'abort_by_post_condition'
   ) {
     const resultHex = transaction.tx_result.hex;
-    const result = cvToValue(hexToCV(resultHex), true) as ResponseType<F>;
+    const result = cvToValue(hexToCV(resultHex), true);
     const success = status === 'success';
     return {
       args,

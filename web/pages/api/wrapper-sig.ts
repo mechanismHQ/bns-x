@@ -12,6 +12,7 @@ import type {
   SmartContractTransaction,
 } from '@stacks/stacks-blockchain-api-types';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
+import { makeNameWrapper } from '@common/wrapper';
 
 async function fetchDeploy(txid: string): Promise<SmartContractTransaction | null> {
   const network = getNetwork();
@@ -39,10 +40,19 @@ export async function wrapperSignatureApi(req: NextApiRequest, res: NextApiRespo
   if (!tx) {
     return res.status(400).send({ error: 'Contract not found' });
   }
-  // todo: verify source code
+
+  // verify source code
   const contractId = tx.smart_contract.contract_id;
+  const code = tx.smart_contract.source_code;
+  const expected = makeNameWrapper();
+  if (code !== expected) {
+    console.warn('Attempted invalid name wrapper:', contractId);
+    return res.status(429).send({ error: 'Invalid source code' });
+  }
+
   const wrapperId = await clarigen.ro(contracts.wrapperMigrator.getIdFromWrapper(contractId));
   if (wrapperId === null) {
+    console.warn('Name wrapper not registered:', contractId);
     return res.status(400).send({ error: 'Wrapper not registered' });
   }
 
@@ -56,6 +66,7 @@ export async function wrapperSignatureApi(req: NextApiRequest, res: NextApiRespo
   const sig = await signWithKey(signerKey, hash);
 
   const signature = signatureVrsToRsv(sig.data);
+  console.log('Signing name wrapper:', contractId);
 
   return res.status(200).json({
     signature,

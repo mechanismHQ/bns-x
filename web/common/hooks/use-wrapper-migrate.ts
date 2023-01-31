@@ -10,7 +10,7 @@ import {
   wrapperContractIdState,
 } from '../store/migration';
 import { hexToBytes } from 'micro-stacks/common';
-import { stxAddressAtom } from '@store/micro-stacks';
+import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import {
   PostConditionMode,
   makeStandardNonFungiblePostCondition,
@@ -34,6 +34,7 @@ export function useWrapperMigrate() {
         const address = get(stxAddressAtom)!;
         const bnsAsset = get(bnsAssetInfoState);
         const bnsTupleId = get(migrateNameAssetIdState);
+        const network = get(networkAtom);
         if (!contractId || !signature) {
           console.error('No signature');
           return;
@@ -64,6 +65,12 @@ export function useWrapperMigrate() {
             signature: hexToBytes(signature),
             recipient: recipient,
           }),
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          network: {
+            ...network,
+            coreApiUrl: network.getCoreApiUrl(),
+          },
           postConditionMode: PostConditionMode.Deny,
           postConditions: [postCondition, wrapperPC],
           onFinish(payload) {

@@ -59,12 +59,16 @@ export function txidQueryAtom(txidAtom: Atom<string | undefined>) {
       const txid = get(txidAtom);
       const network = get(networkAtom);
       if (!txid) return Promise.resolve(null);
-      const tx = await fetchTransaction({
-        url: network.getCoreApiUrl(),
-        unanchored: true,
-        txid,
-      });
-      return tx;
+      try {
+        const tx = await fetchTransaction({
+          url: network.getCoreApiUrl(),
+          unanchored: true,
+          txid,
+        });
+        return tx;
+      } catch (error) {
+        return null;
+      }
     },
   }));
 }
