@@ -16,6 +16,8 @@ RUN ./node_modules/.bin/prisma generate --schema prisma/stacks-api-schema.prisma
 
 COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
 
+RUN chmod 755 /docker-entrypoint.sh
+
 EXPOSE 8080
 # CMD ["node", "-r", "@swc-node/register", "scripts/server.ts"]
 CMD /docker-entrypoint.sh
