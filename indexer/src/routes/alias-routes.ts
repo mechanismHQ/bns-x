@@ -1,8 +1,8 @@
 import "../prisma-plugin";
 import { FastifyPluginCallback } from "fastify";
 import { getHTTPStatusCodeFromError } from "@trpc/server/http";
-import { queryHelperRouter } from "./query-helper-router";
-import { createContext } from "./context";
+import { queryHelperRouter } from "./trpc/query-helper-router";
+import { createContext } from "./trpc/context";
 import { TRPCError } from "@trpc/server";
 import { getContractParts } from "../utils";
 import {

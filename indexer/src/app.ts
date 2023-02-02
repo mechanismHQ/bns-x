@@ -3,12 +3,11 @@ import { prismaPlugin } from "./prisma-plugin";
 import { aliasRoutes } from "./routes/alias-routes";
 import { proxyRoutes } from "./routes/proxy-routes";
 import { getContracts } from "./contracts";
-import { mergeRouters } from "./routes/trpc";
 import { metadataRoutes } from "./routes/metadata-routes";
-import { queryHelperRouter } from "./routes/query-helper-router";
+import { appRouter } from "./routes/trpc";
 import cors from "@fastify/cors";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
-import { createContext } from "./routes/context";
+import { createContext } from "./routes/trpc/context";
 import { getNetworkKey, getNodeUrl } from "./constants";
 import staticPlugin from "@fastify/static";
 import metricsPlugin from "fastify-metrics";
@@ -18,6 +17,7 @@ import {
   validatorCompiler,
   serializerCompiler,
 } from "fastify-type-provider-zod";
+import { makeMetrics } from "./metrics";
 
 const options: FastifyServerOptions = {};
 if (process.env.NODE_ENV === "test") {
@@ -35,13 +35,11 @@ app.register(cors);
 
 app.register(metricsPlugin);
 
-if (process.env.POSTGRES_URL) {
+makeMetrics(app);
+
+if (process.env.STACKS_API_POSTGRES) {
   app.register(prismaPlugin);
 }
-
-const appRouter = mergeRouters(queryHelperRouter);
-
-export type AppRouter = typeof appRouter;
 
 app.register(fastifyTRPCPlugin, {
   prefix: "/trpc",

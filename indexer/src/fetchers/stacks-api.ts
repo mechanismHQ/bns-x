@@ -1,14 +1,23 @@
 import { fetch } from "cross-fetch";
-import { getNodeUrl } from "../constants";
-import { fetchName, fetchNamesByAddress } from "micro-stacks/api";
-import { NonFungibleTokenHoldingsList } from "@stacks/stacks-blockchain-api-types";
-import { cvToValue } from "@clarigen/core";
+import { getNetwork, getNodeUrl } from "../constants";
 import {
+  fetchName,
+  fetchNamesByAddress,
+  fetchContractDataMapEntry,
+} from "micro-stacks/api";
+import { NonFungibleTokenHoldingsList } from "@stacks/stacks-blockchain-api-types";
+import { cvToValue, fetchMapGet } from "@clarigen/core";
+import {
+  clarigenProvider,
   getContracts,
   registryContract,
   registryContractAsset,
 } from "../contracts";
 import { deserializeCV } from "micro-stacks/clarity";
+import { convertNameBuff, convertLegacyDetailsJson } from "../contracts/utils";
+import { NamesByAddressResponse } from "../routes/api-types";
+import { NamePropertiesJson } from "../contracts/types";
+import { getLegacyName } from "./query-helper";
 
 export async function getNameDetailsApi(name: string, namespace: string) {
   const fqn = `${name}.${namespace}`;
@@ -33,4 +42,68 @@ export async function getAssetIds(address: string): Promise<number[]> {
       return Number(bign);
     })
     .filter((n) => !Number.isNaN(n));
+}
+
+export async function fetchPrimaryId(address: string): Promise<number | null> {
+  const registry = registryContract();
+  const network = getNetwork();
+  const idOpt = await fetchMapGet(
+    registry.identifier,
+    registry.maps.ownerPrimaryNameMap,
+    address,
+    {
+      network,
+    }
+  );
+  if (idOpt === null) return null;
+  return Number(idOpt);
+}
+
+export async function getAddressNamesApi(
+  address: string
+): Promise<NamesByAddressResponse> {
+  const [_legacy, assetIds, primaryId] = await Promise.all([
+    getLegacyName(address),
+    getAssetIds(address),
+    fetchPrimaryId(address),
+  ]);
+  const clarigen = clarigenProvider();
+  const registry = registryContract();
+
+  const names = (
+    await Promise.all(
+      assetIds.map(async (id) => {
+        const name = await clarigen.ro(registry.getNamePropertiesById(id), {
+          json: true,
+        });
+        return name;
+      })
+    )
+  )
+    .filter((n): n is NamePropertiesJson => n !== null)
+    .map((n) => ({
+      ...convertNameBuff(n),
+      id: parseInt(n.id, 10),
+    }));
+  const legacy =
+    _legacy === null
+      ? null
+      : convertLegacyDetailsJson(convertNameBuff(_legacy));
+
+  const nameStrings = names.map((n) => n.combined);
+  if (legacy !== null) {
+    nameStrings.push(legacy.combined);
+  }
+  const displayName = nameStrings[0] ?? null;
+
+  const primaryProperties = names.find((n) => n.id === primaryId) ?? null;
+
+  return {
+    legacy,
+    names: nameStrings,
+    nameProperties: names,
+    primaryProperties,
+    displayName,
+    primaryName: primaryProperties?.combined ?? null,
+  };
 }

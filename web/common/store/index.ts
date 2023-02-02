@@ -114,56 +114,6 @@ export function useReadOnly<R>(contractCall: ContractCall<R>) {
   return useQueryAtom<R>(readOnlyState(contractCall));
 }
 
-// export const addressBalanceStatev2 = atomsWithQuery((get) => ({
-//   queryKey:
-// }))
-
-// type AddressBalanceResponse = ReturnType<typeof fetchAccountBalances>;
-export const addressBalanceState = atomFamilyWithQuery<string, AddressBalanceResponse | undefined>(
-  (get, address) => ['stxAddressBalances', address],
-  async (get, address) => {
-    const network = get(networkAtom);
-    const balances = await fetchAccountBalances({
-      url: network.getCoreApiUrl(),
-      unanchored: true,
-      principal: address,
-    });
-
-    return balances;
-  }
-);
-
-export const userBalancesQueryAtom = atom<AddressBalanceResponse | undefined>(get => {
-  const address = get(stxAddressAtom);
-  if (typeof address === 'undefined') return undefined;
-  const balance = get(addressBalanceState(address));
-  return balance;
-});
-
-export const userBalancesState = atom(get => {
-  const balances = get(userBalancesQueryAtom);
-  let stx = '0';
-  let token = '0';
-  if (typeof balances !== 'undefined') {
-    stx = balances.stx.balance;
-    const tokenContract = get(nameRegistryState);
-    const id = `${tokenContract.identifier}::${tokenContract.non_fungible_tokens[0].name}`;
-    token = balances.fungible_tokens[id]?.balance || '0';
-  }
-  return {
-    stx,
-    token,
-  };
-});
-
-export const userFormattedBalancesState = atom(get => {
-  const { stx, token } = get(userBalancesState);
-  return {
-    stx: shiftInt(stx, -6).toFormat(),
-    token: shiftInt(token, -8).toFormat(),
-  };
-});
-
 export const txReceiptState = atomFamilyWithQuery<
   string | undefined,
   Transaction | MempoolTransaction | null

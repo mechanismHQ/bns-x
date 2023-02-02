@@ -1,35 +1,31 @@
-import fp from "fastify-plugin";
-import { FastifyPluginAsync } from "fastify";
-import { PrismaClient } from "@prisma/client";
-// import { StacksPrisma } from "./stacks-api-db/client";
-
-// Use TypeScript module augmentation to declare the type of server.prisma to be PrismaClient
+import { StacksPrisma } from "./stacks-api-db/client";
+import { FastifyPlugin } from "./routes/api-types";
 declare module "fastify" {
   interface FastifyInstance {
-    prisma: PrismaClient;
-    stacksPrisma: PrismaClient;
-    // stacksPrisma: StacksPrisma;
+    // prisma: PrismaClient;
+    stacksPrisma?: StacksPrisma;
   }
 }
 
-export const prismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
-  const prisma = new PrismaClient();
-  const stacksPrisma = new PrismaClient();
-  // const stacksPrisma = new StacksPrisma();
-
-  await Promise.all([
-    prisma.$connect(),
-    // stacksPrisma.$connect()
-  ]);
-
-  // Make Prisma Client available through the fastify server instance: server.prisma
-  server.decorate("prisma", prisma);
-  server.decorate("stacksPrisma", stacksPrisma);
-
-  server.addHook("onClose", async (server) => {
+export const prismaPlugin: FastifyPlugin = async (server, options, done) => {
+  const dbEnv = process.env.STACKS_API_POSTGRES;
+  const useDb = process.env.USE_DB;
+  if (typeof dbEnv !== "undefined" && useDb === "1") {
+    const stacksPrisma = new StacksPrisma();
     await Promise.all([
-      await server.prisma.$disconnect(),
-      // await server.stacksPrisma.$disconnect(),
+      // prisma.$connect(),
+      stacksPrisma.$connect(),
     ]);
-  });
-});
+
+    server.decorate("stacksPrisma", stacksPrisma);
+
+    server.addHook("onClose", async (server) => {
+      await Promise.all([
+        // await server.prisma.$disconnect(),
+        await server.stacksPrisma?.$disconnect(),
+      ]);
+    });
+  }
+  done();
+};
+// });

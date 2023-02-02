@@ -1,17 +1,17 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 // import { getAddressNames } from "../fetchers/query-helper";
-import { getNameDetails, getAddressNames } from "../fetchers";
-import { namesByAddressBnsxSchema } from "./api-types";
-import { router, procedure } from "./trpc";
+import { getNameDetails, getAddressNames } from "../../fetchers";
+import { getAddressNamesDb } from "../../fetchers/stacks-db";
+import { namesByAddressBnsxSchema } from "../api-types";
+import { router, procedure } from "./base";
 
 export const queryHelperRouter = router({
   getAddressNames: procedure
     .input(z.string())
     .output(namesByAddressBnsxSchema)
     .query(async ({ ctx, input }) => {
-      const namesResponse = await getAddressNames(input);
-      return namesResponse;
+      return await getAddressNames(input, ctx.prisma);
     }),
 
   getNameDetails: procedure

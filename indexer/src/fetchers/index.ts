@@ -2,14 +2,11 @@ import {
   getLegacyName,
   getNameDetails as getNameDetailsQuery,
 } from "./query-helper";
-import { getAssetIds, getNameDetailsApi } from "./stacks-api";
+import { getAddressNamesApi, getNameDetailsApi } from "./stacks-api";
 import { NameInfoResponse, NamesByAddressResponse } from "../routes/api-types";
-import { fetchNamesByAddress } from "micro-stacks/api";
-import { getNodeUrl } from "../constants";
-import { clarigenProvider, registryContract } from "../contracts";
-import { NamePropertiesJson } from "../contracts/types";
-import { convertLegacyDetailsJson, convertNameBuff } from "../contracts/utils";
-import { IntegerType, intToBigInt } from "micro-stacks/common";
+import { StacksPrisma } from "../stacks-api-db/client";
+import { getAddressNamesDb } from "./stacks-db";
+import { Histogram } from "prom-client";
 
 export async function getNameDetails(
   name: string,
@@ -41,50 +38,24 @@ export async function getNameDetails(
   }
 }
 
+const getAddressNamesHist = new Histogram({
+  name: "fetch_address_names_seconds_hist",
+  help: "Histogram for how long it takes to fetch names owned by an address",
+  labelNames: ["hasBnsx", "hasLegacy"] as const,
+});
+
 export async function getAddressNames(
-  address: string
+  address: string,
+  db?: StacksPrisma
 ): Promise<NamesByAddressResponse> {
-  const [_legacy, assetIds] = await Promise.all([
-    getLegacyName(address),
-    getAssetIds(address),
-  ]);
-  const clarigen = clarigenProvider();
-  const registry = registryContract();
-
-  const names = (
-    await Promise.all(
-      assetIds.map(async (id) => {
-        const name = await clarigen.ro(registry.getNamePropertiesById(id), {
-          json: true,
-        });
-        return name;
-      })
-    )
-  )
-    .filter((n): n is NamePropertiesJson => n !== null)
-    .map((n) => ({
-      ...convertNameBuff(n),
-      id: parseInt(n.id, 10),
-    }));
-  const legacy =
-    _legacy === null
-      ? null
-      : convertLegacyDetailsJson(convertNameBuff(_legacy));
-
-  const nameStrings = names.map((n) => n.combined);
-  if (legacy !== null) {
-    nameStrings.push(legacy.combined);
-  }
-  const displayName = nameStrings[0] ?? null;
-
-  const primaryProperties = names[0] ?? null;
-
-  return {
-    legacy,
-    names: nameStrings,
-    nameProperties: names,
-    primaryProperties,
-    displayName,
-    primaryName: primaryProperties?.combined ?? null,
-  };
+  const end = getAddressNamesHist.startTimer();
+  const names: NamesByAddressResponse =
+    typeof db === "undefined"
+      ? await getAddressNamesApi(address)
+      : await getAddressNamesDb(address, db);
+  end({
+    hasBnsx: names.primaryProperties === null ? "false" : "true",
+    hasLegacy: names.legacy === null ? "false" : "true",
+  });
+  return names;
 }

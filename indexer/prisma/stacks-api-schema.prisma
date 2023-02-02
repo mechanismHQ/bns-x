@@ -1,11 +1,23 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "./generated/stacks-api-schema"
+  provider        = "prisma-client-js"
+  output          = "./generated/stacks-api-schema"
+  previewFeatures = ["views"]
 }
 
 datasource db {
   provider = "postgres"
   url      = env("STACKS_API_POSTGRES")
+}
+
+view NftCustody {
+  assetIdentifier String @map("asset_identifier")
+  value           Bytes
+  recipient       String
+  txId            Bytes  @map("tx_id")
+  blockHeight     Int    @map("block_height")
+
+  @@unique([assetIdentifier, value])
+  @@map("nft_custody_unanchored")
 }
 
 model blocks {
@@ -374,7 +386,7 @@ model pox2_events {
 
 model pox_state {
   id                   Boolean @id @default(true)
-  pox_v1_unlock_height Int     @default(0)
+  pox_v1_unlock_height BigInt  @default(0)
 }
 
 model principal_stx_txs {

@@ -1,7 +1,7 @@
 import "../prisma-plugin";
 import { FastifyPluginCallback } from "fastify";
 // import { dataRouter } from "./trpc-router";
-import { createContext } from "./context";
+import { createContext } from "./trpc/context";
 
 export interface CoreNodeAttachmentMessage {
   attachment_index: number;
