@@ -12,9 +12,9 @@ RUN pnpm install --prod
 
 COPY prisma/stacks-api-schema.prisma ./prisma
 
-RUN ./node_modules/.bin/prisma generate --schema prisma/stacks-api-schema.prisma
-
 COPY . .
+
+RUN ./node_modules/.bin/prisma generate --schema prisma/stacks-api-schema.prisma
 
 EXPOSE 8080
 CMD ["node", "-r", "@swc-node/register", "scripts/server.ts"]
