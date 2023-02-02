@@ -1,3 +1,6 @@
 node_modules
 tests
 prisma/generated
+**/.env
+**/.env.local
+**/.env.*.local
