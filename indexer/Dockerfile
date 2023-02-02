@@ -10,6 +10,8 @@ COPY package.json ./
 
 RUN pnpm install --prod
 
+RUN pnpm prisma generate --schema prisma/stacks-api-schema.prisma
+
 COPY . .
 
 EXPOSE 8080
