@@ -13,8 +13,8 @@ importers:
 
   .:
     specifiers:
-      '@clarigen/core': 1.0.8
-      '@clarigen/node': 1.0.8
+      '@clarigen/core': 1.0.10
+      '@clarigen/node': 1.0.10
       '@stacks/eslint-config': 1.2.0
       '@stacks/prettier-config': 0.0.10
       '@swc-node/register': ^1.3.7
@@ -39,7 +39,7 @@ importers:
       turbo: ^1.7.0
       typescript: ^4.8.4
     dependencies:
-      '@clarigen/core': 1.0.8
+      '@clarigen/core': 1.0.10
       '@swc-node/register': 1.5.4_ldaqumno46ke76prz5kcgkjhhy
       '@swc/cli': 0.1.57_@swc+core@1.3.14
       '@swc/core': 1.3.14
@@ -53,7 +53,7 @@ importers:
       turbo: 1.7.0
       typescript: 4.8.4
     devDependencies:
-      '@clarigen/node': 1.0.8
+      '@clarigen/node': 1.0.10
       '@stacks/eslint-config': 1.2.0_kj7qlb4q5hmrgdzs3xi7r3snqu
       '@stacks/prettier-config': 0.0.10
       '@types/localtunnel': 2.0.1
@@ -68,8 +68,8 @@ importers:
 
   indexer:
     specifiers:
-      '@clarigen/core': 1.0.8
-      '@clarigen/node': 1.0.8
+      '@clarigen/core': 1.0.10
+      '@clarigen/node': 1.0.10
       '@fastify/cors': ^8.2.0
       '@fastify/http-proxy': 8.4.0
       '@fastify/static': ^6.6.1
@@ -108,8 +108,8 @@ importers:
       typescript: 4.8.4
       zod: 3.20.0
     dependencies:
-      '@clarigen/core': 1.0.8
-      '@clarigen/node': 1.0.8
+      '@clarigen/core': 1.0.10
+      '@clarigen/node': 1.0.10
       '@fastify/cors': 8.2.0
       '@fastify/http-proxy': 8.4.0
       '@fastify/static': 6.6.1
@@ -152,9 +152,9 @@ importers:
   web:
     specifiers:
       '@bns-x/api-server': workspace:*
-      '@clarigen/core': 1.0.8
-      '@clarigen/node': 1.0.8
-      '@clarigen/web': 1.0.8
+      '@clarigen/core': 1.0.10
+      '@clarigen/node': 1.0.10
+      '@clarigen/web': 1.0.10
       '@micro-stacks/client': 1.1.2
       '@micro-stacks/jotai': ^1.0.6
       '@micro-stacks/react': 1.0.6
@@ -205,9 +205,9 @@ importers:
       unique-names-generator: ^4.7.1
     dependencies:
       '@bns-x/api-server': link:../indexer
-      '@clarigen/core': 1.0.8
-      '@clarigen/node': 1.0.8
-      '@clarigen/web': 1.0.8_react@18.2.0
+      '@clarigen/core': 1.0.10
+      '@clarigen/node': 1.0.10
+      '@clarigen/web': 1.0.10_react@18.2.0
       '@micro-stacks/client': 1.1.2_react@18.2.0
       '@micro-stacks/jotai': 1.0.6_5hegripkw2pwstpbdvgaz5vrvm
       '@micro-stacks/react': 1.0.6_biqbaboplfbrettd7655fr4n2y
@@ -610,8 +610,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@clarigen/core/1.0.8:
-    resolution: {integrity: sha512-OdFC8cjVAfXsBn2L1svYEfsRqxDUlwh5kzOdaeBAJCzM8dzFwn2a50X21U8uf6TiJV7tWnbuiWvm3nSWUoM0Ig==}
+  /@clarigen/core/1.0.10:
+    resolution: {integrity: sha512-8eaOl0V4taxcZSZE36/zTHwIoBhJh5YuPNFZnTZtQZy2AFQnCvCZ25IGt+l/E3fBWig8k0zAg0i6ZKSeG6u2uQ==}
     engines: {node: '>=10'}
     dependencies:
       micro-stacks: 1.1.4
@@ -619,21 +619,21 @@ packages:
       - '@scure/bip32'
       - '@scure/bip39'
 
-  /@clarigen/node/1.0.8:
-    resolution: {integrity: sha512-5LVCsLpCP5UBJxchOr9YRnw+MYSWS9vIVs455UaHO4dlXSEA0IbeRZw1F7INMj+5AGqAmSa8tHrrxZI17nbO/A==}
+  /@clarigen/node/1.0.10:
+    resolution: {integrity: sha512-qNe+XTTS/qxw3y54eVFB1BNSFTyBQBUE+C9s833GT6qNC367HfSZNVkHhSNMsY5VDSuQXRBn15J5dSWIdqr5Hg==}
     engines: {node: '>=10'}
     dependencies:
-      '@clarigen/core': 1.0.8
+      '@clarigen/core': 1.0.10
       micro-stacks: 1.1.4
     transitivePeerDependencies:
       - '@scure/bip32'
       - '@scure/bip39'
 
-  /@clarigen/web/1.0.8_react@18.2.0:
-    resolution: {integrity: sha512-vevhJnksgG5P8Ed+1JVEHATyUEDTtH5cz9FSoY+Luxb13yPA3f8+0Mbn75rmaI3ILxZtPksrAE+PQRtYUxOYRQ==}
+  /@clarigen/web/1.0.10_react@18.2.0:
+    resolution: {integrity: sha512-m8M6q/1z0y81kXgxAuYrp7Fc9ZPWwEeO9k+qq2HbaLKoNjpJvYfcEr4vaY3lKjZDzb8npYr4xnLodsrtxcVsjQ==}
     engines: {node: '>=10'}
     dependencies:
-      '@clarigen/core': 1.0.8
+      '@clarigen/core': 1.0.10
       '@micro-stacks/client': 1.1.2_react@18.2.0
       micro-stacks: 1.1.4
     transitivePeerDependencies:
