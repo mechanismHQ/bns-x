@@ -10,8 +10,6 @@ COPY package.json ./
 
 RUN pnpm install --prod
 
-COPY prisma/stacks-api-schema.prisma ./prisma
-
 COPY . .
 
 RUN ./node_modules/.bin/prisma generate --schema prisma/stacks-api-schema.prisma
