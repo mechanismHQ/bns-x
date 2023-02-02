@@ -172,6 +172,7 @@ importers:
       '@trpc/react-query': ^10.9.0
       '@trpc/server': 10.5.0
       '@types/jest': ^29.2.4
+      '@types/lodash-es': ^4.17.6
       '@types/node': 18.0.6
       '@types/react': 18.0.15
       '@types/react-datepicker': ^4.8.0
@@ -190,6 +191,7 @@ importers:
       jotai-query-toolkit: ^0.1.23
       jotai-tanstack-query: ^0.4.0
       jotai-trpc: ^0.4.1
+      lodash-es: ^4.17.21
       micro-stacks: ^1.1.4
       next: 12.2.2
       prettier: 2.7.1
@@ -223,6 +225,7 @@ importers:
       '@trpc/react-query': 10.9.0_5577yyyphyc3pzzcyyphm36wke
       '@trpc/server': 10.5.0
       '@types/jest': 29.2.4
+      '@types/lodash-es': 4.17.6
       '@types/node': 18.0.6
       '@types/react': 18.0.15
       '@types/react-datepicker': 4.8.0_biqbaboplfbrettd7655fr4n2y
@@ -238,6 +241,7 @@ importers:
       jotai-query-toolkit: 0.1.23_7gpduzaz4csxytrukenoyuq3te
       jotai-tanstack-query: 0.4.0_n52txdzhfzl3zjjiqnzyrotal4
       jotai-trpc: 0.4.1_4cytaggtva3t7ptfi6rahpg4rm
+      lodash-es: 4.17.21
       micro-stacks: 1.1.4
       next: 12.2.2_biqbaboplfbrettd7655fr4n2y
       random-gradient: 0.0.2
@@ -2303,6 +2307,16 @@ packages:
     dependencies:
       '@types/node': 18.11.9
     dev: true
+
+  /@types/lodash-es/4.17.6:
+    resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==}
+    dependencies:
+      '@types/lodash': 4.14.191
+    dev: false
+
+  /@types/lodash/4.14.191:
+    resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
+    dev: false
 
   /@types/mime/3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
@@ -6033,6 +6047,10 @@ packages:
     dependencies:
       p-locate: 5.0.0
     dev: true
+
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
 
   /lodash.memoize/4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}

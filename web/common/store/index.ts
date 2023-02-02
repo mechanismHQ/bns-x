@@ -1,36 +1,18 @@
 import type { DeploymentNetwork } from '@clarigen/core';
-import { contractFactory, OkType, projectFactory } from '@clarigen/core';
-import {
-  clientState,
-  currentAccountAtom,
-  networkAtom,
-  networkState,
-  stxAddressAtom,
-} from '@store/micro-stacks';
-import { Atom, atom } from 'jotai';
-import { atomFamilyWithQuery, atomWithQuery, useQueryAtom } from 'jotai-query-toolkit';
+import { contractFactory, projectFactory } from '@clarigen/core';
+import { clientState, networkAtom } from '@store/micro-stacks';
+import { atom, useAtomValue } from 'jotai';
 import type { ContractCall } from '@clarigen/core';
-import { Response } from '@clarigen/core';
-import { fetchAccountBalances } from 'micro-stacks/api';
 import { contracts, project } from '../clarigen';
-import type {
-  AddressBalanceResponse,
-  MempoolTransaction,
-  Transaction,
-} from '@stacks/stacks-blockchain-api-types';
+import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
 import { getContractParts, shiftInt } from '../utils';
-import type { ExtractTx } from '../stacks-api';
-import {
-  convertTypedTx,
-  fetchTransaction,
-  fetchTypedTransaction,
-  ResponseType,
-} from '../stacks-api';
+import { fetchTransaction } from '../stacks-api';
 import { createAssetInfo } from 'micro-stacks/transactions';
 import { ClarigenClient } from '@clarigen/web';
 import { atomFamily } from 'jotai/utils';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { getBnsDeployer, getNetworkKey } from '@common/constants';
+import isEqual from 'lodash-es/isEqual';
 
 export const networkKeyAtom = atom<DeploymentNetwork>(() => {
   return getNetworkKey();
@@ -44,7 +26,6 @@ export const clarigenAtom = atom(get => {
   const client = get(clientState);
 
   return new ClarigenClient(client);
-  // return WebProvider({ network });
 });
 
 export const contractsState = atom(get => {
@@ -99,78 +80,44 @@ function callToQueryKey(contractCall: ContractCall<any>) {
   ];
 }
 
-export const readOnlyState = atomFamilyWithQuery<ContractCall<any>, any>(
-  (get, param) => callToQueryKey(param),
-  async (get, param) => {
-    const webProvider = get(clarigenAtom);
-    return webProvider.ro(param, {
-      latest: true,
-    });
+export const readOnlyState = atomFamily(
+  (contractCall: ContractCall<any>) => {
+    return atomsWithQuery(get => ({
+      queryKey: callToQueryKey(contractCall),
+      async queryFn() {
+        const webProvider = get(clarigenAtom);
+        return webProvider.ro(contractCall, {
+          latest: true,
+        });
+      },
+    }))[0];
+  },
+  (a, b) => {
+    const aKey = callToQueryKey(a);
+    const bKey = callToQueryKey(b);
+    return isEqual(aKey, bKey);
   }
 );
 
 export function useReadOnly<R>(contractCall: ContractCall<R>) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  return useQueryAtom<R>(readOnlyState(contractCall));
+  return useAtomValue<R>(readOnlyState(contractCall));
 }
 
-export const txReceiptState = atomFamilyWithQuery<
-  string | undefined,
-  Transaction | MempoolTransaction | null
->(
-  (get, txid) => ['fetchTxReceipt', txid],
-  async (get, txid) => {
-    if (!txid) return null;
-    const network = get(networkAtom);
-    const tx = await fetchTransaction({
-      url: network.getCoreApiUrl(),
-      unanchored: true,
-      txid,
-    });
-    return tx;
-  }
-);
-
-// export const txReceiptStatev2 = atomFamily<string, Atom<Transaction | MempoolTransaction | null>>(
-//   (txid: string) => {
-//     return atomsWithQuery(get => ({
-//       queryKey: ['fetchTxReceipt2', txid],
-//       async queryFn() {
-//         if (!txid) return null;
-//         const network = get(networkAtom);
-//         const tx = await fetchTransaction({
-//           url: network.getCoreApiUrl(),
-//           unanchored: true,
-//           txid,
-//         });
-//         return tx;
-//       },
-//     }))[0];
-//   },
-//   Object.is
-// );
-// export const txReceiptStatev2 = atomsWithQuery<string>((get, txid) => ({
-//   queryKey: ['fetchTxReceipt2', txid],
-//   async queryFn()
-// }))
-
-export const typedTxReceiptState = atomFamilyWithQuery<string, ExtractTx<unknown> | undefined>(
-  (get, txid) => ['fetchTypedTxReceipt', txid],
-  async (get, txid) => {
-    const network = get(networkAtom);
-    if (!txid) return Promise.resolve(undefined);
-    const tx = await fetchTransaction({
-      url: network.getCoreApiUrl(),
-      unanchored: true,
-      txid,
-    });
-    return convertTypedTx(tx);
-  }
-);
-
-export function useTypedTxReceipt<F>(txid: string) {
-  return useQueryAtom<ExtractTx<F> | undefined>(typedTxReceiptState(txid));
-}
+export const txReceiptState = atomFamily((txid: string | undefined) => {
+  return atomsWithQuery<Transaction | MempoolTransaction | null>(get => ({
+    queryKey: ['fetchTxReceipt', txid],
+    async queryFn() {
+      if (!txid) return null;
+      const network = get(networkAtom);
+      const tx = await fetchTransaction({
+        url: network.getCoreApiUrl(),
+        unanchored: true,
+        txid,
+      });
+      return tx;
+    },
+  }))[0];
+}, isEqual);
 
 export const pageTitleState = atom(get => {
   const title = get(docTitleState);

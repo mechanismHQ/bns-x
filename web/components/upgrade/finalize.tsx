@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { Box, Flex, SpaceBetween, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { atom, useAtom, useAtomValue } from 'jotai';
-import { bnsContractState, clarigenAtom, nameRegistryState, txReceiptState } from '@store/index';
 import {
   migrateTxidAtom,
   wrapperDeployTxidAtom,

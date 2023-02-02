@@ -1,7 +1,5 @@
 import { clarigenAtom, nameRegistryState, registryAssetState } from '.';
 import { atom } from 'jotai';
-
-import { atomFamilyWithQuery } from 'jotai-query-toolkit';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { convertNameBuff } from '../utils';
 import type { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
@@ -12,6 +10,7 @@ import { deserializeCV } from 'micro-stacks/clarity';
 import { atomFamily } from 'jotai/utils';
 import { namesForAddressState } from './api';
 import { makeNameWrapper } from '@common/wrapper';
+import isEqual from 'lodash-es/isEqual';
 
 export const currentUserNamesState = atom(get => {
   const address = get(stxAddressAtom);
@@ -24,21 +23,20 @@ export const currentUserV1NameState = atom(get => {
   return names?.legacy ?? null;
 });
 
-export const addressPrimaryNameState = atomFamilyWithQuery<
-  string,
-  WithCombined<NameProperties> | null
->(
-  (get, address) => ['addr-primary-name', address],
-  async (get, address) => {
-    const registry = get(nameRegistryState);
-    const clarigen = get(clarigenAtom);
-    const res = await clarigen.ro(registry.getPrimaryNameProperties(address));
-    if (res) {
-      return convertNameBuff(res);
-    }
-    return res;
-  }
-);
+export const addressPrimaryNameState2 = atomFamily((address: string) => {
+  return atomsWithQuery(get => ({
+    queryKey: ['addr-primary-name', address],
+    async queryFn() {
+      const registry = get(nameRegistryState);
+      const clarigen = get(clarigenAtom);
+      const res = await clarigen.ro(registry.getPrimaryNameProperties(address));
+      if (res) {
+        return convertNameBuff(res);
+      }
+      return res;
+    },
+  }))[0];
+}, isEqual);
 
 export const userPrimaryNameState = atom(get => {
   const names = get(currentUserNamesState);
