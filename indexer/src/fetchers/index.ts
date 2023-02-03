@@ -49,10 +49,11 @@ export async function getAddressNames(
   db?: StacksPrisma
 ): Promise<NamesByAddressResponse> {
   const end = getAddressNamesHist.startTimer();
-  const names: NamesByAddressResponse =
-    typeof db === "undefined"
-      ? await getAddressNamesApi(address)
-      : await getAddressNamesDb(address, db);
+  const useDb = typeof db !== "undefined" && process.env.USE_DB === "1";
+  const names: NamesByAddressResponse = useDb
+    ? await getAddressNamesDb(address, db)
+    : await getAddressNamesApi(address);
+
   end({
     hasBnsx: names.primaryProperties === null ? "false" : "true",
     hasLegacy: names.legacy === null ? "false" : "true",
