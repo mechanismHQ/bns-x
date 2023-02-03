@@ -148,3 +148,12 @@ export async function getAddressNamesDb(
     primaryName,
   };
 }
+
+export async function getTotalNames(db: StacksPrisma) {
+  const count = db.nftCustody.count({
+    where: {
+      assetIdentifier: registryContractAsset(),
+    },
+  });
+  return count;
+}

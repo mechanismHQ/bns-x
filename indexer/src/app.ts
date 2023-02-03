@@ -33,13 +33,13 @@ app.setSerializerCompiler(serializerCompiler);
 
 app.register(cors);
 
-app.register(metricsPlugin);
-
-makeMetrics(app);
-
 if (process.env.STACKS_API_POSTGRES) {
   app.register(prismaPlugin);
 }
+
+app.register(metricsPlugin);
+
+makeMetrics(app);
 
 app.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
