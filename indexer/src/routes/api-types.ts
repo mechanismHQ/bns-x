@@ -9,6 +9,7 @@ import {
   RawRequestDefaultExpression,
   RawServerDefault,
   FastifyPluginCallback,
+  FastifyPluginAsync as FastifyPluginAsyncBase,
 } from "fastify";
 import { LegacyDetails } from "../contracts/types";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
@@ -23,6 +24,12 @@ export type FastifyServer = FastifyInstance<
 >;
 
 export type FastifyPlugin = FastifyPluginCallback<
+  {},
+  RawServerDefault,
+  ZodTypeProvider
+>;
+
+export type FastifyPluginAsync = FastifyPluginAsyncBase<
   {},
   RawServerDefault,
   ZodTypeProvider

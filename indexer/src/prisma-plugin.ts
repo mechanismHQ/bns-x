@@ -1,5 +1,6 @@
 import { StacksPrisma } from "./stacks-api-db/client";
-import { FastifyPlugin } from "./routes/api-types";
+import { FastifyPluginAsync } from "./routes/api-types";
+import fp from "fastify-plugin";
 declare module "fastify" {
   interface FastifyInstance {
     // prisma: PrismaClient;
@@ -7,7 +8,7 @@ declare module "fastify" {
   }
 }
 
-export const prismaPlugin: FastifyPlugin = async (server, options, done) => {
+export const prismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
   const dbEnv = process.env.STACKS_API_POSTGRES;
   const useDb = process.env.USE_DB;
   if (typeof dbEnv !== "undefined" && useDb === "1") {
@@ -26,6 +27,5 @@ export const prismaPlugin: FastifyPlugin = async (server, options, done) => {
       ]);
     });
   }
-  done();
-};
+});
 // });

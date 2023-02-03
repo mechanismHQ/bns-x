@@ -17,7 +17,7 @@ import {
   validatorCompiler,
   serializerCompiler,
 } from "fastify-type-provider-zod";
-import { makeMetrics } from "./metrics";
+import { serverMetricsPlugin } from "./metrics";
 
 const options: FastifyServerOptions = {};
 if (process.env.NODE_ENV === "test") {
@@ -27,56 +27,60 @@ if (process.env.NODE_ENV === "test") {
   };
 }
 
-export const app = fastify(options).withTypeProvider<ZodTypeProvider>();
-app.setValidatorCompiler(validatorCompiler);
-app.setSerializerCompiler(serializerCompiler);
+export async function makeApp() {
+  const app = fastify(options).withTypeProvider<ZodTypeProvider>();
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
 
-app.register(cors);
+  app.register(cors);
 
-if (process.env.STACKS_API_POSTGRES) {
-  app.register(prismaPlugin);
-}
+  if (process.env.STACKS_API_POSTGRES) {
+    await app.register(prismaPlugin);
+  }
 
-app.register(metricsPlugin);
+  await app.register(metricsPlugin);
 
-makeMetrics(app);
+  await app.register(serverMetricsPlugin);
 
-app.register(fastifyTRPCPlugin, {
-  prefix: "/trpc",
-  trpcOptions: {
-    router: appRouter,
-    createContext,
-  },
-});
-
-const staticRoot = join(__dirname, "..", "static");
-// console.log("Serving static files from", staticRoot);
-app.register(staticPlugin, {
-  root: staticRoot,
-  prefix: "/static/",
-  cacheControl: true,
-  maxAge: "1d",
-});
-
-app.register(metadataRoutes);
-
-const networkKey = getNetworkKey();
-console.log(`NETWORK_KEY=${networkKey}`);
-console.log(`STACKS_API=${getNodeUrl()}`);
-
-const contracts = getContracts();
-
-// Handler for production without contracts
-if (typeof contracts.bnsxRegistry !== "undefined") {
-  console.log("Real mode");
-  app.register(aliasRoutes, {
-    prefix: "/v1",
+  await app.register(fastifyTRPCPlugin, {
+    prefix: "/trpc",
+    trpcOptions: {
+      router: appRouter,
+      createContext,
+    },
   });
-} else {
-  console.log("Proxy mode");
-  app.register(proxyRoutes);
-}
 
-app.get("/", (req, res) => {
-  return res.send({ success: true });
-});
+  const staticRoot = join(__dirname, "..", "static");
+  // console.log("Serving static files from", staticRoot);
+  await app.register(staticPlugin, {
+    root: staticRoot,
+    prefix: "/static/",
+    cacheControl: true,
+    maxAge: "1d",
+  });
+
+  await app.register(metadataRoutes);
+
+  const networkKey = getNetworkKey();
+  console.log(`NETWORK_KEY=${networkKey}`);
+  console.log(`STACKS_API=${getNodeUrl()}`);
+
+  const contracts = getContracts();
+
+  // Handler for production without contracts
+  if (typeof contracts.bnsxRegistry !== "undefined") {
+    console.log("Real mode");
+    await app.register(aliasRoutes, {
+      prefix: "/v1",
+    });
+  } else {
+    console.log("Proxy mode");
+    await app.register(proxyRoutes);
+  }
+
+  app.get("/", (req, res) => {
+    return res.send({ success: true });
+  });
+
+  return app;
+}
