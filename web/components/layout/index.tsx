@@ -1,5 +1,6 @@
 import React from 'react';
-import { Flex, Box, SpaceBetween, BoxProps } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Flex, Box, SpaceBetween } from '@nelson-ui/react';
 import { SafeSuspense } from '../safe-suspense';
 import { Header } from '@components/layout/header';
 import { Footer } from '@components/layout/footer';

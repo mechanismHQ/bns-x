@@ -1,12 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-import { getDeployerAddr } from "../constants";
-import { bytesToHex, utf8ToBytes } from "micro-stacks/common";
+import type { PrismaClient } from '@prisma/client';
+import { getDeployerAddr } from '../constants';
+import { bytesToHex, utf8ToBytes } from 'micro-stacks/common';
 
-export async function queryNameId(
-  prisma: PrismaClient,
-  name: string,
-  namespace: string
-) {
+export async function queryNameId(prisma: PrismaClient, name: string, namespace: string) {
   // const rows = await prisma.$queryRaw`
   //   SELECT id from
   // `;
@@ -18,19 +14,19 @@ export async function queryNameId(
       AND: [
         {
           value: {
-            path: ["topic"],
-            equals: "new-name",
+            path: ['topic'],
+            equals: 'new-name',
           },
         },
         {
           value: {
-            path: ["name", "name"],
+            path: ['name', 'name'],
             equals: nameHex,
           },
         },
         {
           value: {
-            path: ["name", "namespace"],
+            path: ['name', 'namespace'],
             equals: namespaceHex,
           },
         },

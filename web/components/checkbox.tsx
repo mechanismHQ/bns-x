@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import { PrimitiveAtom, useAtomValue } from 'jotai';
+import type { PrimitiveAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { Box } from '@nelson-ui/react';
 import { useAtomCallback } from 'jotai/utils';
 

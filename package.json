@@ -13,10 +13,12 @@
     "integration-test": "start-server-and-test test:server http://localhost:3003 chainhook-test",
     "web": "pnpm run --filter web dev",
     "web:prod": "pnpm --filter web start",
-    "build": "turbo run build"
+    "build": "turbo run build",
+    "lint:fix": "eslint --fix packages/**/*.ts indexer/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}"
   },
   "author": "Hank Stoever",
   "license": "ISC",
+  "prettier": "@stacks/prettier-config",
   "dependencies": {
     "@clarigen/core": "1.0.10",
     "@swc-node/register": "^1.3.7",
@@ -43,6 +45,8 @@
     "dotenv-cli": "^6.0.0",
     "eslint": "8.20.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "eslint-plugin-jest": "^23.16.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "localtunnel": "^2.0.2",
     "punycode": "^2.1.1"
   },

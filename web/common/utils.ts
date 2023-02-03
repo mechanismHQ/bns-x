@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { bytesToAscii, hexToBytes, IntegerType } from 'micro-stacks/common';
-import { Name, NameBuff, WithCombined } from '@common/types';
-import { StacksNetwork } from 'micro-stacks/network';
+import type { IntegerType } from 'micro-stacks/common';
+import { bytesToAscii, hexToBytes } from 'micro-stacks/common';
+import type { Name, NameBuff, WithCombined } from '@common/types';
+import type { StacksNetwork } from 'micro-stacks/network';
 
 export function intToString(int: IntegerType) {
   const str = typeof int === 'bigint' ? int.toString() : String(int);

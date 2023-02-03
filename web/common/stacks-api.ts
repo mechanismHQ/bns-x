@@ -83,10 +83,12 @@ export function convertTypedTx<F>(transaction: Transaction | MempoolTransaction)
     status === 'abort_by_post_condition'
   ) {
     const resultHex = transaction.tx_result.hex;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = cvToValue(hexToCV(resultHex), true);
     const success = status === 'success';
     return {
       args,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       result,
       finished: true,
       transaction: transaction,

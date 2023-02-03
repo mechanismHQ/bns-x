@@ -1,8 +1,6 @@
-import {
-  BnsGetNameInfoResponse,
-  BnsNamesOwnByAddressResponse,
-} from "@stacks/stacks-blockchain-api-types";
-import {
+import type { BnsGetNameInfoResponse } from '@stacks/stacks-blockchain-api-types';
+import { BnsNamesOwnByAddressResponse } from '@stacks/stacks-blockchain-api-types';
+import type {
   FastifyInstance,
   FastifyBaseLogger,
   RawReplyDefaultExpression,
@@ -10,10 +8,10 @@ import {
   RawServerDefault,
   FastifyPluginCallback,
   FastifyPluginAsync as FastifyPluginAsyncBase,
-} from "fastify";
-import { LegacyDetails } from "../contracts/types";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { z } from "zod";
+} from 'fastify';
+import type { LegacyDetails } from '../contracts/types';
+import type { ZodTypeProvider } from 'fastify-type-provider-zod';
+import { z } from 'zod';
 
 export type FastifyServer = FastifyInstance<
   RawServerDefault,
@@ -24,13 +22,13 @@ export type FastifyServer = FastifyInstance<
 >;
 
 export type FastifyPlugin = FastifyPluginCallback<
-  {},
+  Record<any, any>,
   RawServerDefault,
   ZodTypeProvider
 >;
 
 export type FastifyPluginAsync = FastifyPluginAsyncBase<
-  {},
+  Record<any, any>,
   RawServerDefault,
   ZodTypeProvider
 >;

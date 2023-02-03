@@ -1,5 +1,6 @@
 import { useMicroStacksClient } from '@micro-stacks/react';
-import { DeploymentNetwork, ProjectFactory, projectFactory } from '@clarigen/core';
+import type { DeploymentNetwork, ProjectFactory } from '@clarigen/core';
+import { projectFactory } from '@clarigen/core';
 import { project } from '../clarigen';
 
 export function useNetworkKey(): DeploymentNetwork {

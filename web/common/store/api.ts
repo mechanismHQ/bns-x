@@ -19,7 +19,7 @@ export const trpc = createTRPCProxyClient<AppRouter>({
 });
 
 export const namesForAddressState = atomFamily((address: string) => {
-  return atomsWithQuery(get => ({
+  return atomsWithQuery(() => ({
     queryKey: ['apiNamesState', address],
     refetchInterval: 15000,
     queryFn: async () => {

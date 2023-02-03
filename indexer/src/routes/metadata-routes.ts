@@ -1,13 +1,13 @@
-import type { NftMetadata, NftProperty } from "../metadata";
-import { nftMetadata } from "../metadata";
-import { FastifyPlugin } from "./api-types";
-import { z } from "zod";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { getNameById } from "../fetchers/query-helper";
+import type { NftMetadata, NftProperty } from '../metadata';
+import { nftMetadata } from '../metadata';
+import type { FastifyPlugin } from './api-types';
+import { z } from 'zod';
+import { ZodTypeProvider } from 'fastify-type-provider-zod';
+import { getNameById } from '../fetchers/query-helper';
 
 export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
   fastify.get(
-    "/nft-metadata/:id",
+    '/nft-metadata/:id',
     {
       schema: {
         params: z.object({ id: z.string() }),
@@ -21,7 +21,7 @@ export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
       const name = await getNameById(req.params.id);
 
       if (name === null) {
-        return res.status(404).send({ error: "Not found" });
+        return res.status(404).send({ error: 'Not found' });
       }
 
       // const { leaseEndingAt, ...legacy } =
@@ -31,22 +31,23 @@ export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
         namespace: name.namespace,
         fullName: name.combined,
         name: name.name,
-        collection: "BNSx Names",
-        collection_image: "https://api.bns.xyz/static/bnsx-image.png",
+        collection: 'BNSx Names',
+        collection_image: 'https://api.bns.xyz/static/bnsx-image.png',
       };
 
       if (name.legacy !== null) {
         const { leaseEndingAt, ...legacy } = name.legacy;
         properties.leaseStartedAt = legacy.leaseStartedAt;
         properties.zonefileHash = legacy.zonefileHash;
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (leaseEndingAt) properties.leaseEndingAt = leaseEndingAt;
         properties.wrapperPrincipal = legacy.owner;
       }
 
-      res.send({
+      await res.send({
         sip: 16,
         name: name.combined,
-        image: "https://api.bns.xyz/static/bnsx-image.png",
+        image: 'https://api.bns.xyz/static/bnsx-image.png',
         properties: properties,
       });
     }

@@ -1,7 +1,8 @@
 import React from 'react';
 import NextLink from 'next/link';
 // import { getTxUrl } from '../common/utils';
-import { BoxProps, Text } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Text } from '@nelson-ui/react';
 import { Button } from './button';
 
 export interface LinkProps extends BoxProps {

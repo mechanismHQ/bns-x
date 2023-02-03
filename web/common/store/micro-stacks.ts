@@ -1,5 +1,7 @@
-import React, { createElement, useMemo } from 'react';
-import { Atom, atom, Provider, useAtomValue } from 'jotai';
+import type React from 'react';
+import { createElement, useMemo } from 'react';
+import type { Atom } from 'jotai';
+import { atom, Provider, useAtomValue } from 'jotai';
 import { useMicroStacksClient } from '@micro-stacks/react';
 import {
   watchAccounts,

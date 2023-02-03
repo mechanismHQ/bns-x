@@ -1,7 +1,8 @@
 import { fetchTypedTransaction } from '../stacks-api';
 // import { contracts } from '../clarigen';
 import { useNetwork } from '@micro-stacks/react';
-import { Atom, useAtomValue } from 'jotai';
+import type { Atom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { txidQueryAtom } from '@store/migration';
 
 export function useTxStatus(txidAtom: Atom<string | undefined>) {

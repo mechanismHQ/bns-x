@@ -1,16 +1,13 @@
-import "../prisma-plugin";
-import { FastifyPluginCallback } from "fastify";
-import { getHTTPStatusCodeFromError } from "@trpc/server/http";
-import { queryHelperRouter } from "./trpc/query-helper-router";
-import { createContext } from "./trpc/context";
-import { TRPCError } from "@trpc/server";
-import { getContractParts } from "../utils";
-import {
-  FastifyPlugin,
-  namesByAddressBnsxSchema,
-  NamesByAddressResponse,
-} from "./api-types";
-import { z } from "zod";
+import '../prisma-plugin';
+import { FastifyPluginCallback } from 'fastify';
+import { getHTTPStatusCodeFromError } from '@trpc/server/http';
+import { queryHelperRouter } from './trpc/query-helper-router';
+import { createContext } from './trpc/context';
+import { TRPCError } from '@trpc/server';
+import { getContractParts } from '../utils';
+import type { FastifyPlugin } from './api-types';
+import { namesByAddressBnsxSchema, NamesByAddressResponse } from './api-types';
+import { z } from 'zod';
 
 const errorSchema = z.object({
   error: z.object({
@@ -23,8 +20,8 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
     Params: {
       fqn: string;
     };
-  }>("/names/:fqn", async (req, res) => {
-    console.log("req.params", req.params);
+  }>('/names/:fqn', async (req, res) => {
+    console.log('req.params', req.params);
     const caller = queryHelperRouter.createCaller(createContext({ req, res }));
     const [name, namespace] = getContractParts(req.params.fqn);
     try {
@@ -34,23 +31,17 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
       if (error instanceof TRPCError) {
         const status = getHTTPStatusCodeFromError(error);
         if (status !== 404) {
-          console.error(
-            `Error fetching details for ${name}.${namespace}:`,
-            error
-          );
+          console.error(`Error fetching details for ${name}.${namespace}:`, error);
         }
         return res.status(status).send({ error: { message: error.message } });
       }
-      console.error(
-        `Unexpected error fetching details for ${name}.${namespace}:`,
-        error
-      );
-      return res.status(500).send({ error: { message: "Unexpected error" } });
+      console.error(`Unexpected error fetching details for ${name}.${namespace}:`, error);
+      return res.status(500).send({ error: { message: 'Unexpected error' } });
     }
   });
 
   fastify.get(
-    "/addresses/stacks/:principal",
+    '/addresses/stacks/:principal',
     {
       schema: {
         params: z.object({
@@ -64,9 +55,7 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
       },
     },
     async (req, res) => {
-      const caller = queryHelperRouter.createCaller(
-        createContext({ req, res })
-      );
+      const caller = queryHelperRouter.createCaller(createContext({ req, res }));
       const { principal } = req.params;
       try {
         const names = await caller.getAddressNames(principal);
@@ -77,11 +66,8 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
           console.error(`Error fetching details for ${principal}:`, error);
           return res.status(status).send({ error: { message: error.message } });
         }
-        console.error(
-          `Unexpected error fetching details for ${principal}:`,
-          error
-        );
-        return res.status(500).send({ error: { message: "Unexpected error" } });
+        console.error(`Unexpected error fetching details for ${principal}:`, error);
+        return res.status(500).send({ error: { message: 'Unexpected error' } });
       }
     }
   );

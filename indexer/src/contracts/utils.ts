@@ -1,22 +1,14 @@
-import { bytesToAscii, hexToBytes, intToBigInt } from "micro-stacks/common";
-import {
-  WithCombined,
-  NameBuff,
-  NameBase,
-  LegacyDetails,
-  LegacyJson,
-} from "./types";
+import { bytesToAscii, hexToBytes, intToBigInt } from 'micro-stacks/common';
+import type { WithCombined, NameBuff, NameBase, LegacyDetails, LegacyJson } from './types';
 
 export function bytesToName(input: string | Uint8Array) {
-  if (typeof input === "string") {
+  if (typeof input === 'string') {
     return bytesToAscii(hexToBytes(input));
   }
   return bytesToAscii(input);
 }
 
-export function convertNameBuff<T extends NameBuff | NameBase>(
-  nameObj: T
-): WithCombined<T> {
+export function convertNameBuff<T extends NameBuff | NameBase>(nameObj: T): WithCombined<T> {
   const { name: nameB, namespace: ns, ...rest } = nameObj;
   const name = bytesToName(nameB);
   const namespace = bytesToName(ns);
@@ -34,8 +26,7 @@ export function convertLegacyDetailsJson<T extends LegacyJson>(
   if (details === null) return null;
   return {
     ...details,
-    leaseEndingAt:
-      details.leaseEndingAt === null ? null : Number(details.leaseEndingAt),
+    leaseEndingAt: details.leaseEndingAt === null ? null : Number(details.leaseEndingAt),
     leaseStartedAt: Number(details.leaseStartedAt),
   };
 }

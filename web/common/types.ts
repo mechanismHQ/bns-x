@@ -1,5 +1,5 @@
-import { FunctionReturnType } from '@clarigen/core';
-import { contracts } from '@common/clarigen';
+import type { FunctionReturnType } from '@clarigen/core';
+import type { contracts } from '@common/clarigen';
 
 export type RegistryContract = typeof contracts.bnsxRegistry;
 

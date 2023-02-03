@@ -1,12 +1,9 @@
-import {
-  getLegacyName,
-  getNameDetails as getNameDetailsQuery,
-} from "./query-helper";
-import { getAddressNamesApi, getNameDetailsApi } from "./stacks-api";
-import { NameInfoResponse, NamesByAddressResponse } from "../routes/api-types";
-import { StacksPrisma } from "../stacks-api-db/client";
-import { getAddressNamesDb } from "./stacks-db";
-import { Histogram } from "prom-client";
+import { getLegacyName, getNameDetails as getNameDetailsQuery } from './query-helper';
+import { getAddressNamesApi, getNameDetailsApi } from './stacks-api';
+import type { NameInfoResponse, NamesByAddressResponse } from '../routes/api-types';
+import type { StacksPrisma } from '../stacks-api-db/client';
+import { getAddressNamesDb } from './stacks-db';
+import { Histogram } from 'prom-client';
 
 export async function getNameDetails(
   name: string,
@@ -30,18 +27,15 @@ export async function getNameDetails(
       isBnsx: true,
     };
   } catch (error) {
-    console.warn(
-      `Error fetching name details for ${name}.${namespace}:`,
-      error
-    );
+    console.warn(`Error fetching name details for ${name}.${namespace}:`, error);
     return null;
   }
 }
 
 const getAddressNamesHist = new Histogram({
-  name: "fetch_address_names_seconds_hist",
-  help: "Histogram for how long it takes to fetch names owned by an address",
-  labelNames: ["hasBnsx", "hasLegacy"] as const,
+  name: 'fetch_address_names_seconds_hist',
+  help: 'Histogram for how long it takes to fetch names owned by an address',
+  labelNames: ['hasBnsx', 'hasLegacy'] as const,
 });
 
 export async function getAddressNames(
@@ -49,14 +43,14 @@ export async function getAddressNames(
   db?: StacksPrisma
 ): Promise<NamesByAddressResponse> {
   const end = getAddressNamesHist.startTimer();
-  const useDb = typeof db !== "undefined" && process.env.USE_DB === "1";
+  const useDb = typeof db !== 'undefined' && process.env.USE_DB === '1';
   const names: NamesByAddressResponse = useDb
     ? await getAddressNamesDb(address, db)
     : await getAddressNamesApi(address);
 
   end({
-    hasBnsx: names.primaryProperties === null ? "false" : "true",
-    hasLegacy: names.legacy === null ? "false" : "true",
+    hasBnsx: names.primaryProperties === null ? 'false' : 'true',
+    hasLegacy: names.legacy === null ? 'false' : 'true',
   });
   return names;
 }

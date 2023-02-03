@@ -1,18 +1,20 @@
+import type {
+  StacksNFTMintEventData,
+  StacksNFTBurnEventData,
+  StacksNFTTransferEventData,
+} from '@hirosystems/chainhook-types';
 import {
   BitcoinChainEvent,
   BitcoinTransactionMetadata,
   Block,
   StacksChainEvent,
   StacksFTBurnEventData,
-  StacksNFTMintEventData,
-  StacksNFTBurnEventData,
-  StacksNFTTransferEventData,
   StacksTransactionEventType,
   Transaction,
   StacksTransactionMetadata,
   StacksSmartContractEventData,
   StacksTransactionEvent,
-} from "@hirosystems/chainhook-types";
+} from '@hirosystems/chainhook-types';
 
 export type Mutation<Key extends string, Data> = {
   key: Key;
@@ -20,7 +22,7 @@ export type Mutation<Key extends string, Data> = {
 };
 
 export type UpdatePrimaryName = Mutation<
-  "update-primary",
+  'update-primary',
   {
     principal: string;
     previous: bigint;
@@ -29,7 +31,7 @@ export type UpdatePrimaryName = Mutation<
 >;
 
 export type NameMint = Mutation<
-  "name-mint",
+  'name-mint',
   {
     owner: string;
     name: {
@@ -41,7 +43,7 @@ export type NameMint = Mutation<
 >;
 
 export type Transfer = Mutation<
-  "transfer",
+  'transfer',
   {
     id: bigint;
     sender: string;
@@ -52,22 +54,22 @@ export type Transfer = Mutation<
 // NFT Events
 
 export type NFTBurnEvent = {
-  type: "NFTBurnEvent";
+  type: 'NFTBurnEvent';
   data: StacksNFTBurnEventData & { raw_value: string };
 };
 export type NFTTransferEvent = {
-  type: "NFTTransferEvent";
+  type: 'NFTTransferEvent';
   data: StacksNFTTransferEventData & { raw_value: string };
 };
 export type NFTMintEvent = {
-  type: "NFTMintEvent";
+  type: 'NFTMintEvent';
   data: StacksNFTMintEventData & { raw_value: string };
 };
 
 // Prints
 
 export interface NewNamePrint {
-  topic: "new-name";
+  topic: 'new-name';
   owner: string;
   name: {
     name: Uint8Array;
@@ -77,13 +79,13 @@ export interface NewNamePrint {
 }
 
 export interface MigratePrint {
-  topic: "migrate";
+  topic: 'migrate';
   wrapper: string;
-  id: BigInt;
+  id: bigint;
 }
 
 export interface PrimaryUpdatePrint {
-  topic: "primary-update";
+  topic: 'primary-update';
   account: string;
   id: bigint;
   prev: bigint | null;

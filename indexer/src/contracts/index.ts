@@ -1,10 +1,10 @@
-import { project } from "./clarigen";
-import { projectFactory } from "@clarigen/core";
-import { ClarigenNodeClient } from "@clarigen/node";
-import { getNetwork, getNetworkKey } from "../constants";
+import { project } from './clarigen';
+import { projectFactory } from '@clarigen/core';
+import { ClarigenNodeClient } from '@clarigen/node';
+import { getNetwork, getNetworkKey } from '../constants';
 
 export function getContracts() {
-  return projectFactory(project, getNetworkKey() as unknown as "devnet");
+  return projectFactory(project, getNetworkKey() as unknown as 'devnet');
 }
 
 export function queryHelperContract() {

@@ -1,6 +1,8 @@
 import { Text } from '@components/text';
-import { Box, BoxProps } from '@nelson-ui/react';
-import { styled, VariantProps } from '@stitches/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box } from '@nelson-ui/react';
+import type { VariantProps } from '@stitches/react';
+import { styled } from '@stitches/react';
 import { keyframes } from '@nelson-ui/core';
 import { useCallback, useState } from 'react';
 

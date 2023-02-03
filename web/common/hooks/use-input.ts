@@ -1,4 +1,4 @@
-import { SyncState } from 'jotai-form/dist/src/atomWithValidate';
+import type { SyncState } from 'jotai-form/dist/src/atomWithValidate';
 import React from 'react';
 
 type FormAtom<T> = (SyncState<T> & { value: T }) | T;
@@ -18,7 +18,8 @@ export function useInput<T>(input: Input<T>) {
     },
     [setter]
   );
-  const v = ((value as any).value ? (value as any).value : value) as T;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const v = (Boolean((value as any).value) ? (value as any).value : value) as T;
   // const v = 'value' in value ? (value as any).value : value;
   return {
     // value,

@@ -1,15 +1,14 @@
+import type { ContractCallFunction, TypedAbiArg } from '@clarigen/core';
 import {
   AllContracts,
-  ContractCallFunction,
   DeploymentNetwork,
   DeploymentsForContracts,
   Project,
   ProjectFactory,
-  TypedAbiArg,
 } from '@clarigen/core';
 import { useOpenContractCall } from '@micro-stacks/react';
 // import { ContractCall } from 'micro-stacks/transactions';
-import { ContractCallParams } from '@micro-stacks/client';
+import type { ContractCallParams } from '@micro-stacks/client';
 
 type UnknownArg = TypedAbiArg<unknown, string>;
 type UnknownArgs = UnknownArg[];

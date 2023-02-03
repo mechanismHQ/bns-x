@@ -1,10 +1,10 @@
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
 // import { getAddressNames } from "../fetchers/query-helper";
-import { getNameDetails, getAddressNames } from "../../fetchers";
-import { getAddressNamesDb } from "../../fetchers/stacks-db";
-import { namesByAddressBnsxSchema } from "../api-types";
-import { router, procedure } from "./base";
+import { getNameDetails, getAddressNames } from '../../fetchers';
+import { getAddressNamesDb } from '../../fetchers/stacks-db';
+import { namesByAddressBnsxSchema } from '../api-types';
+import { router, procedure } from './base';
 
 export const queryHelperRouter = router({
   getAddressNames: procedure
@@ -26,7 +26,7 @@ export const queryHelperRouter = router({
       if (details === null) {
         throw new TRPCError({
           message: `Unable to fetch details for ${name}.${namespace}`,
-          code: "NOT_FOUND",
+          code: 'NOT_FOUND',
         });
       }
       return details;

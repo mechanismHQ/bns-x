@@ -1,7 +1,7 @@
-import "../prisma-plugin";
-import { FastifyPluginCallback } from "fastify";
+import '../prisma-plugin';
+import type { FastifyPluginCallback } from 'fastify';
 // import { dataRouter } from "./trpc-router";
-import { createContext } from "./trpc/context";
+import { createContext } from './trpc/context';
 
 export interface CoreNodeAttachmentMessage {
   attachment_index: number;
@@ -16,25 +16,21 @@ export interface CoreNodeAttachmentMessage {
   content: string;
 }
 
-export const eventObserverRoutes: FastifyPluginCallback = (
-  fastify,
-  opts,
-  done
-) => {
+export const eventObserverRoutes: FastifyPluginCallback = (fastify, opts, done) => {
   fastify.post<{
     Body: CoreNodeAttachmentMessage[];
-  }>("/attachments/new", async (req, res) => {
+  }>('/attachments/new', async (req, res) => {
     const data = req.body;
-    console.log("---");
-    console.log("Attachments:");
-    data.forEach((a) => console.log(a));
-    console.log("---");
-    return res.status(200).send({ result: "ok" });
+    console.log('---');
+    console.log('Attachments:');
+    data.forEach(a => console.log(a));
+    console.log('---');
+    return res.status(200).send({ result: 'ok' });
   });
 
-  fastify.post("*", async (req, res) => {
+  fastify.post('*', async (req, res) => {
     console.log(req.url);
-    return res.status(200).send({ result: "ok" });
+    return res.status(200).send({ result: 'ok' });
   });
 
   done();

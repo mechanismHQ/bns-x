@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    // "composite": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "declaration": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "target": "es2020",
+    "lib": ["dom", "esnext"],
+    // break
+    "importHelpers": true,
+    "jsx": "react",
+    "sourceMap": true,
+    "strict": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "types": ["jest"],
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules", "dist"]
+}

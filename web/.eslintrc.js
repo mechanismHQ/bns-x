@@ -8,7 +8,7 @@ module.exports = {
   parserOptions: {
     project: './tsconfig.json',
   },
-  plugins: ['unused-imports'],
+  plugins: ['unused-imports', 'jest'],
   rules: {
     '@typescript-eslint/no-unused-vars': [0],
     '@typescript-eslint/explicit-module-boundary-types': [0],
