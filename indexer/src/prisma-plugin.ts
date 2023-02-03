@@ -10,9 +10,10 @@ declare module "fastify" {
 
 export const prismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
   const dbEnv = process.env.STACKS_API_POSTGRES;
-  const useDb = process.env.USE_DB;
-  if (typeof dbEnv !== "undefined" && useDb === "1") {
+  if (typeof dbEnv !== "undefined") {
     const stacksPrisma = new StacksPrisma();
+    const params = new URLSearchParams(dbEnv.split("?")[1]);
+    console.log("Connection query parameters:", params);
     await Promise.all([
       // prisma.$connect(),
       stacksPrisma.$connect(),
