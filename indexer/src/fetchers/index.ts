@@ -3,7 +3,7 @@ import { getAddressNamesApi, getNameDetailsApi } from './stacks-api';
 import type { NameInfoResponse, NamesByAddressResponse } from '../routes/api-types';
 import type { StacksPrisma } from '../stacks-api-db/client';
 import { getAddressNamesDb } from './stacks-db';
-import { Histogram } from 'prom-client';
+import { Histogram, Summary } from 'prom-client';
 
 export async function getNameDetails(
   name: string,
@@ -38,19 +38,28 @@ const getAddressNamesHist = new Histogram({
   labelNames: ['hasBnsx', 'hasLegacy'] as const,
 });
 
+const getAddressNamesSummary = new Summary({
+  name: 'fetch_address_names_seconds_summary',
+  help: 'Summary for how long it takes to fetch names owned by an address',
+  labelNames: ['hasBnsx', 'hasLegacy'] as const,
+});
+
 export async function getAddressNames(
   address: string,
   db?: StacksPrisma
 ): Promise<NamesByAddressResponse> {
   const end = getAddressNamesHist.startTimer();
+  const endSum = getAddressNamesSummary.startTimer();
   const useDb = typeof db !== 'undefined' && process.env.USE_DB === '1';
   const names: NamesByAddressResponse = useDb
     ? await getAddressNamesDb(address, db)
     : await getAddressNamesApi(address);
 
-  end({
+  const labels = {
     hasBnsx: names.primaryProperties === null ? 'false' : 'true',
     hasLegacy: names.legacy === null ? 'false' : 'true',
-  });
+  };
+  end(labels);
+  endSum(labels);
   return names;
 }

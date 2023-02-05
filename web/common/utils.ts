@@ -68,7 +68,7 @@ export function truncateMiddle(input: string, offset = 5): string {
     const parts = input.split('.');
     const start = parts[0]?.substr(0, offset);
     const end = parts[0]?.substr(parts[0].length - offset, parts[0].length);
-    return `${start}…${end}.${parts[1]}`;
+    return `${start || ''}…${end || ''}.${parts[1] || ''}`;
   } else {
     // everything else
     const start = input?.substr(0, offset);

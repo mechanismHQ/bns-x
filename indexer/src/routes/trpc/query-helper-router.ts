@@ -2,7 +2,6 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 // import { getAddressNames } from "../fetchers/query-helper";
 import { getNameDetails, getAddressNames } from '../../fetchers';
-import { getAddressNamesDb } from '../../fetchers/stacks-db';
 import { namesByAddressBnsxSchema } from '../api-types';
 import { router, procedure } from './base';
 

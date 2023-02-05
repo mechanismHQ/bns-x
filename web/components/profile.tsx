@@ -4,7 +4,6 @@ import { Stack, Box, Flex, SpaceBetween } from '@nelson-ui/react';
 import {
   currentUserNameIdsState,
   currentUserV1NameState,
-  nameByIdState,
   userPrimaryNameState,
   currentUserNamesState,
 } from '@store/names';
@@ -100,14 +99,6 @@ export const ProfileRow: React.FC<{
   );
 };
 
-export const LoadableProfileRow: React.FC<{ children?: React.ReactNode; id: number }> = ({
-  id,
-}) => {
-  const name = useAtomValue(nameByIdState(id));
-
-  return <ProfileRow name={name.combined} />;
-};
-
 export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
   const v1Name = useAtomValue(currentUserV1NameState);
@@ -138,13 +129,13 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
         );
       }) ?? null
     );
-  }, [holdings, v1Name]);
+  }, [allNames?.nameProperties, v1Name]);
 
   useEffect(() => {
     if (v1Name !== null && holdings.length === 0) {
       void router.push({ pathname: '/upgrade' });
     }
-  }, [v1Name === null, holdings.length]);
+  }, [v1Name !== null, holdings.length, router]);
 
   const mintName = useCallback(() => {
     window.open('https://btc.us', '_blank');

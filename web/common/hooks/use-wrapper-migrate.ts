@@ -50,14 +50,14 @@ export function useWrapperMigrate() {
           bnsAsset,
           bnsTupleId
         );
-        const [wrapperAddr, wrapperName] = getContractParts(contractId);
-        const wrapperPC = makeContractNonFungiblePostCondition(
-          wrapperAddr,
-          wrapperName,
-          NonFungibleConditionCode.Owns,
-          bnsAsset,
-          bnsTupleId
-        );
+        // const [wrapperAddr, wrapperName] = getContractParts(contractId);
+        // const wrapperPC = makeContractNonFungiblePostCondition(
+        //   wrapperAddr,
+        //   wrapperName,
+        //   NonFungibleConditionCode.Owns,
+        //   bnsAsset,
+        //   bnsTupleId
+        // );
 
         await openContractCall({
           ...migrator.migrate({
@@ -72,7 +72,7 @@ export function useWrapperMigrate() {
             coreApiUrl: network.getCoreApiUrl(),
           },
           postConditionMode: PostConditionMode.Deny,
-          postConditions: [postCondition, wrapperPC],
+          postConditions: [postCondition],
           onFinish(payload) {
             set(migrateTxidAtom, payload.txId);
           },

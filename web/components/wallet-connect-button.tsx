@@ -3,12 +3,11 @@ import { Link, LinkText } from './link';
 import { Button } from '@components/button';
 
 export const WalletConnectButton = () => {
-  const { openAuthRequest, isRequestPending, signOut, isSignedIn } = useAuth();
+  const { openAuthRequest, isRequestPending } = useAuth();
   const label = isRequestPending ? 'Loading...' : 'Connect wallet';
   return (
     <Button
       onClick={async () => {
-        console.log('signing in');
         await openAuthRequest();
       }}
     >

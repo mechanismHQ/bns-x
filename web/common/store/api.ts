@@ -1,22 +1,9 @@
-import type { AppRouter } from '@bns-x/api-server';
-import { createTRPCReact } from '@trpc/react-query';
-import { httpLink, httpBatchLink } from '@trpc/client';
-import { createTRPCJotai } from 'jotai-trpc';
+import { trpcClient } from '@bns-x/client';
 import { getApiUrl, getAppUrl } from '@common/constants';
-import { stxAddressAtom } from '@store/micro-stacks';
 import { atomsWithQuery } from 'jotai-tanstack-query';
-import { createTRPCProxyClient } from '@trpc/client';
 import { atomFamily } from 'jotai/utils';
-import { atom } from 'jotai';
 
-// export const trpcReact = createTRPCReact<AppRouter>();
-export const trpc = createTRPCProxyClient<AppRouter>({
-  links: [
-    httpBatchLink({
-      url: `${getApiUrl()}/trpc`,
-    }),
-  ],
-});
+export const trpc = trpcClient(getApiUrl());
 
 export const namesForAddressState = atomFamily((address: string) => {
   return atomsWithQuery(() => ({

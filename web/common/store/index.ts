@@ -1,9 +1,7 @@
 import type { DeploymentNetwork } from '@clarigen/core';
-import { contractFactory, projectFactory } from '@clarigen/core';
 import { clientState, networkAtom } from '@store/micro-stacks';
 import { atom, useAtomValue } from 'jotai';
 import type { ContractCall } from '@clarigen/core';
-import { contracts, project } from '../clarigen';
 import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
 import { getContractParts, shiftInt } from '../utils';
 import { fetchTransaction } from '../stacks-api';
@@ -11,8 +9,9 @@ import { createAssetInfo } from 'micro-stacks/transactions';
 import { ClarigenClient } from '@clarigen/web';
 import { atomFamily } from 'jotai/utils';
 import { atomsWithQuery } from 'jotai-tanstack-query';
-import { getBnsDeployer, getNetworkKey } from '@common/constants';
+import { getNetworkKey } from '@common/constants';
 import isEqual from 'lodash-es/isEqual';
+import { BnsxContractsClient } from '@bns-x/client';
 
 export const networkKeyAtom = atom<DeploymentNetwork>(() => {
   return getNetworkKey();
@@ -28,9 +27,17 @@ export const clarigenAtom = atom(get => {
   return new ClarigenClient(client);
 });
 
-export const contractsState = atom(get => {
+export const contractsClientState = atom(get => {
   const networkKey = get(networkKeyAtom);
-  return projectFactory(project, networkKey as unknown as 'devnet');
+  return new BnsxContractsClient(networkKey);
+});
+
+export const contractsState = atom(get => {
+  return get(contractsClientState).contracts;
+});
+
+export const nameWrapperCodeState = atom(get => {
+  return get(contractsClientState).nameWrapperCode;
 });
 
 function ensure<T>(contract: T): T {
@@ -51,10 +58,8 @@ export const registryAssetState = atom(get => {
   return `${contractId}::${asset}`;
 });
 
-// todo: fix for mainnet
-export const bnsContractState = atom(() => {
-  const bns = contracts.bnsV1;
-  return contractFactory(bns, `${getBnsDeployer()}.bns`);
+export const bnsContractState = atom(get => {
+  return get(contractsClientState).legacyBns;
 });
 
 export const tokenAssetInfoState = atom(get => {

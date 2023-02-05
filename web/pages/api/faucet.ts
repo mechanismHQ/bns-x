@@ -7,15 +7,18 @@ import {
   PostConditionMode,
 } from 'micro-stacks/transactions';
 import { fetchAccountNonces } from 'micro-stacks/api';
-import { getNetwork, getContracts, getNetworkKey } from '@common/constants';
+import { getNetwork, getNetworkKey, testUtilsContract } from '@common/constants';
 import { privateKeyToStxAddress, StacksNetworkVersion } from 'micro-stacks/crypto';
-
-const testUtils = getContracts().testUtils;
 
 const network = getNetwork();
 
 export async function faucetApi(req: NextApiRequest, res: NextApiResponse) {
   const { name, recipient } = req.query;
+  const testUtils = testUtilsContract();
+
+  if (testUtils === null) {
+    return res.status(400).send({ error: 'Not available.' });
+  }
 
   if (typeof name !== 'string' || typeof recipient !== 'string') {
     return res.status(400).send({ error: 'Missing name, recipient' });

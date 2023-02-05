@@ -1,7 +1,7 @@
 import type { FunctionReturnType } from '@clarigen/core';
-import type { contracts } from '@common/clarigen';
+import type { BnsxContracts } from '@bns-x/client';
 
-export type RegistryContract = typeof contracts.bnsxRegistry;
+export type RegistryContract = BnsxContracts['bnsxRegistry'];
 
 export type NameProperties = NonNullable<
   FunctionReturnType<RegistryContract['functions']['getNameProperties']>

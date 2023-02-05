@@ -1,4 +1,3 @@
 packages:
   - "indexer"
   - "web"
-  - "packages/client"

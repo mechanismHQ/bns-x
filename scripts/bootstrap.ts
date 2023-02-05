@@ -1,36 +1,35 @@
-import "cross-fetch/polyfill";
-import { StacksMocknet } from "micro-stacks/network";
-import { config } from "dotenv";
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import 'cross-fetch/polyfill';
+import { StacksMocknet } from 'micro-stacks/network';
+import { config } from 'dotenv';
+import type { StacksTransaction } from 'micro-stacks/transactions';
 import {
   AnchorMode,
   broadcastTransaction,
   PostConditionMode,
   makeContractCall,
-  StacksTransaction,
-} from "micro-stacks/transactions";
-import { c32addressDecode, hashRipemd160 } from "micro-stacks/crypto";
-import { hashSha256 } from "micro-stacks/crypto-sha";
-import { asciiToBytes, bytesToHex, hexToBytes } from "micro-stacks/common";
-import { fetchAccountNonces } from "micro-stacks/api";
+} from 'micro-stacks/transactions';
+import { c32addressDecode, hashRipemd160 } from 'micro-stacks/crypto';
+import { hashSha256 } from 'micro-stacks/crypto-sha';
+import { asciiToBytes, bytesToHex, hexToBytes } from 'micro-stacks/common';
+import { fetchAccountNonces } from 'micro-stacks/api';
 
 config();
 
-import { contracts, bns, network, networkKey } from "./script-utils";
+import { contracts, bns, network, networkKey } from './script-utils';
 
 const privateKey = process.env.DEPLOYER_KEY!;
 
 async function broadcast(tx: StacksTransaction) {
   const res = await broadcastTransaction(tx, network);
-  console.log("res", res);
+  console.log('res', res);
 }
 
 async function run() {
-  const namespace = asciiToBytes("testable");
-  const salt = hexToBytes("00");
-  const salted = hashRipemd160(
-    hashSha256(hexToBytes(bytesToHex(namespace) + "00"))
-  );
-  const deployer = contracts.bnsxExtensions.identifier.split(".")[0];
+  const namespace = asciiToBytes('testable');
+  const salt = hexToBytes('00');
+  const salted = hashRipemd160(hashSha256(hexToBytes(bytesToHex(namespace) + '00')));
+  const deployer = contracts.bnsxExtensions.identifier.split('.')[0];
   // console.log("salted", bytesToHex(hashRipemd160(salted)));
   const nonces = await fetchAccountNonces({
     url: network.getCoreApiUrl(),
@@ -42,14 +41,11 @@ async function run() {
   console.log(network.getCoreApiUrl());
   console.log(deployer);
   console.log(nonce);
-  console.log(
-    "contracts.wrapperMigrator.identifier",
-    contracts.wrapperMigrator.identifier
-  );
-  console.log("bns.identifier", bns.identifier);
-  console.log("networkKey", networkKey);
+  console.log('contracts.wrapperMigrator.identifier', contracts.wrapperMigrator.identifier);
+  console.log('bns.identifier', bns.identifier);
+  console.log('networkKey', networkKey);
 
-  if (networkKey === "devnet") {
+  if (networkKey === 'devnet') {
     await broadcast(
       await makeContractCall({
         ...bns.namespacePreorder(salted, 640000000),
@@ -114,8 +110,8 @@ async function run() {
 
   const [_, pubHash] = c32addressDecode(deployer);
 
-  if (networkKey === "mainnet") {
-    console.log("pubhash", bytesToHex(pubHash));
+  if (networkKey === 'mainnet') {
+    console.log('pubhash', bytesToHex(pubHash));
     // throw new Error("safety check");
   }
 

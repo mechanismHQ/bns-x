@@ -123,7 +123,6 @@ export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
   queryFn: async () => {
     const recipient = get(upgradeRecipientAtom).trim();
     const sendElsewhere = get(sendElsewhereAtom);
-    console.log('recipient', recipient, !!recipient);
     if (!sendElsewhere) {
       const me = get(stxAddressAtom);
       return me || null;
@@ -148,7 +147,6 @@ export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
       console.log(`Setting recipient from BNSx: ${xName.owner}`);
       return xName.owner;
     }
-    console.log('v1Name', v1Name);
     if (v1Name.isOk) {
       console.log(`Setting name from v1 to addr`, v1Name.value.owner);
       return v1Name.value.owner;

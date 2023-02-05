@@ -9,7 +9,6 @@ import { cvToValue } from '@clarigen/core';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { atomFamily } from 'jotai/utils';
 import { namesForAddressState } from './api';
-import { makeNameWrapper } from '@common/wrapper';
 import isEqual from 'lodash-es/isEqual';
 
 export const currentUserNamesState = atom(get => {
@@ -48,19 +47,6 @@ export const userNameState = atom(get => {
   const names = get(currentUserNamesState);
   return names?.names[0] ?? null;
 });
-
-export const nameByIdState = atomFamily((id: number | bigint) => {
-  return atomsWithQuery(get => ({
-    queryKey: ['name-by-id', id],
-    queryFn: async () => {
-      const clarigen = get(clarigenAtom);
-      const registry = get(nameRegistryState);
-      const props = await clarigen.ro(registry.getNamePropertiesById(id));
-      if (props) return convertNameBuff(props);
-      throw new Error(`Unable to find name by id ${id}`);
-    },
-  }))[0];
-}, Object.is);
 
 export const currentUserNameIdsState = atom<number[]>(get => {
   const names = get(currentUserNamesState);

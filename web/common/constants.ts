@@ -1,6 +1,6 @@
+import { BnsxContractsClient, project } from '@bns-x/client';
 import { DEPLOYMENT_NETWORKS, projectFactory } from '@clarigen/core';
 import { ClarigenNodeClient } from '@clarigen/node';
-import { project } from '@common/clarigen';
 import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMocknet, StacksMainnet, StacksTestnet } from 'micro-stacks/network';
 
@@ -61,7 +61,18 @@ export function getClarigenNodeClient() {
   return new ClarigenNodeClient(network);
 }
 
+export function getContractsClient() {
+  return new BnsxContractsClient(getNetworkKey());
+}
+
 export function getContracts() {
-  const key = getNetworkKey();
-  return projectFactory(project, key as unknown as 'devnet');
+  return getContractsClient().contracts;
+}
+
+export function testUtilsContract() {
+  const networkKey = getNetworkKey();
+  if (networkKey === 'mainnet') {
+    return null;
+  }
+  return projectFactory(project, networkKey).testUtils;
 }

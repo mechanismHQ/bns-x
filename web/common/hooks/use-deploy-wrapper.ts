@@ -1,5 +1,5 @@
-import { makeNameWrapper } from '@common/wrapper';
 import { useOpenContractDeploy } from '@micro-stacks/react';
+import { nameWrapperCodeState } from '@store/index';
 import { networkAtom } from '@store/micro-stacks';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
@@ -12,7 +12,7 @@ export function useDeployWrapper() {
     useCallback(
       async (get, set) => {
         const network = get(networkAtom);
-        const wrapperCode = makeNameWrapper();
+        const wrapperCode = get(nameWrapperCodeState);
         const nonce = new Date().getTime() % 2000;
         await openContractDeploy({
           contractName: `name-wrapper-${nonce}`,

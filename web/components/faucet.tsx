@@ -20,12 +20,11 @@ function useFakeName() {
         dictionaries: [adjectives, animals],
         separator: '-',
       });
-      console.log(name);
       set(nameAtom, name);
     }, [])
   );
   useEffect(() => {
-    setFake();
+    void setFake();
   }, [setFake]);
 }
 
@@ -33,7 +32,6 @@ const txidAtom = atom('');
 const submittingAtom = atom(false);
 
 export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
-  const address = useAtomValue(stxAddressAtom);
   const name = useInput(useAtom(nameAtom));
   const bnsName = useAtomValue(currentUserV1NameState);
   const router = useRouter();

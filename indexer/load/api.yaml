@@ -1,0 +1,12 @@
+config:
+  target: "https://api.bns.xyz"
+  phases:
+    - duration: 30
+      arrivalRate: 5
+      maxVusers: 100
+      rampTo: 15
+scenarios:
+  - name: "get addresses"
+    flow:
+      - get:
+          url: "/v1/addresses/stacks/SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60"

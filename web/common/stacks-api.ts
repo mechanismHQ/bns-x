@@ -4,9 +4,7 @@ import type {
   MempoolTransaction,
   Transaction,
 } from '@stacks/stacks-blockchain-api-types';
-import type { TypedAbiArg, TypedAbiFunction } from './clarigen';
-import { contracts } from './clarigen';
-import type { ArgsRecord, ExtractArgsRecord } from '@clarigen/core';
+import type { ArgsRecord, ExtractArgsRecord, TypedAbiFunction, TypedAbiArg } from '@clarigen/core';
 import { ArgsTuple, cvToValue, ExtractArgs, toCamelCase } from '@clarigen/core';
 import { fetchJson, generateUrl, txEndpoint } from 'micro-stacks/api';
 import { hexToCV } from 'micro-stacks/clarity';

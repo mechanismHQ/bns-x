@@ -6,12 +6,9 @@ import {
   migrateTxidAtom,
   wrapperDeployTxidAtom,
   upgradeRecipientAtom,
-  migrateTxState,
-  recipientAddrAtom,
   sendElsewhereAtom,
   validRecipientState,
   recipientIsBnsState,
-  wrapperContractIdState,
   wrapperSignatureState,
 } from '@store/migration';
 import { Divider, DoneRow, NameHeading, PendingRow, UpgradeBox } from '@components/upgrade/rows';
@@ -19,19 +16,12 @@ import { useWrapperMigrate } from '@common/hooks/use-wrapper-migrate';
 import { Checkbox } from '@components/checkbox';
 import { Input } from '@components/form';
 import { useInput } from '@common/hooks/use-input';
-import { CenterBox } from '@components/layout';
 import { Button } from '@components/button';
-import { loadable, useAtomCallback } from 'jotai/utils';
-import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
-import { validateStacksAddress } from 'micro-stacks/crypto';
-import { asciiToBytes } from 'micro-stacks/common';
-import { useEffect } from 'react';
+import { loadable } from 'jotai/utils';
 import { CheckIcon } from '@components/icons/check';
 import { useMemo } from 'react';
 import { Spinner } from '@components/spinner';
 import { ErrorIcon } from '@components/icons/error';
-
-const validatedRecipientInputAtom = atom('');
 
 export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
   const { migrate, isRequestPending } = useWrapperMigrate();
@@ -41,8 +31,6 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
   const recipient = useAtomValue(upgradeRecipientAtom);
   const recipientAddress = useAtomValue(loadable(validRecipientState));
   const wrapperSignature = useAtomValue(wrapperSignatureState);
-  // const recipientAddress = useAtomValue(recipientAddrAtom);
-  const validatedInput = useAtomValue(validatedRecipientInputAtom);
   const isBNS = useAtomValue(recipientIsBnsState);
 
   const bnsInputValid = useMemo(() => {
@@ -72,16 +60,9 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
   }, [isBNS, doSendElsewhere, recipientAddress]);
 
   const canMigrate = useMemo(() => {
-    console.log(`can-migrate: state=${recipientAddress.state}`);
     if (recipientAddress.state !== 'hasData') return false;
-    console.log(`can-migrate: data=${recipientAddress.data ?? ''}`);
     return !!recipientAddress.data;
   }, [recipientAddress]);
-
-  useEffect(() => {
-    console.log('Recipient is', recipientAddress);
-    console.log('Validated input is', validatedInput);
-  }, [recipientAddress, validatedInput]);
 
   if (!wrapperSignature) return null;
 
