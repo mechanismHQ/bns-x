@@ -64,7 +64,6 @@ export function makeTheme() {
         colors[key.toLowerCase().replace(/–/g, '-')] = v.value;
       } catch (error) {
         console.error(error);
-        console.log(key, v.value);
       }
     });
   });
