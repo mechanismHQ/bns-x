@@ -2,21 +2,9 @@ import React from 'react';
 import type { BoxProps } from '@nelson-ui/react';
 import { Box } from '@nelson-ui/react';
 import type { TextVariant } from '../common/theme';
-import { styled } from '@common/theme';
-import { baseTheme, textStyles } from '../common/theme';
+import { textStyles } from '../common/theme';
 import clsx from 'clsx';
 import type { CSSTypes } from '@nelson-ui/core';
-
-// const { textStyles } = generatedTheme;
-const { colors } = baseTheme;
-
-export const StyledText = styled(Box, {
-  variants: {
-    variant: {
-      Body01: textStyles['Body01'],
-    },
-  },
-});
 
 const getDefaultColor = (type?: keyof typeof textStyles): string => {
   switch (type) {
@@ -44,9 +32,13 @@ const getDefaultColor = (type?: keyof typeof textStyles): string => {
   return '$text';
 };
 
-export type TextProps = BoxProps & { variant?: TextVariant };
+type BP = 'initial' | '@bp1' | '@bp2' | '@bp3';
 
-function getVariantStyles(variant?: TextVariant): CSSTypes {
+export type ResponsiveVariant = Record<BP, TextVariant>;
+
+export type TextProps = BoxProps & { variant?: TextVariant | ResponsiveVariant };
+
+function getVariantStyles(variant: TextVariant): CSSTypes {
   if (typeof variant === 'undefined') return {};
   const lower = variant.slice(0, 1).toLowerCase() + variant.slice(1);
 
@@ -58,9 +50,29 @@ function getVariantStyles(variant?: TextVariant): CSSTypes {
 }
 
 export const Text = React.forwardRef<HTMLElement, TextProps>(
-  ({ variant, className, css = {}, ...props }, ref) => {
-    const color = getDefaultColor(variant);
-    const styles = getVariantStyles(variant);
+  ({ variant = 'Body01', className, css = {}, ...props }, ref) => {
+    const baseVariant = typeof variant === 'string' ? variant : variant.initial;
+    const color = getDefaultColor(baseVariant);
+    // const styles = getVariantStyles(baseVariant);
+    const responsiveVariant: ResponsiveVariant =
+      typeof variant === 'string'
+        ? ({
+            initial: baseVariant,
+          } as ResponsiveVariant)
+        : variant;
+    // const colorObj = Object.fromEntries(
+    //   Object.entries(responsiveVariant).map(([bp, v]) => {
+    //     return [bp, getDefaultColor(v)];
+    //   })
+    // ) as Record<BP, string>;
+    const stylesObj = Object.fromEntries(
+      Object.entries(responsiveVariant).map(([bp, v]) => {
+        return [bp, getVariantStyles(v)];
+      })
+    ) as Record<BP, CSSTypes>;
+    if (typeof variant === 'object') {
+      console.log(stylesObj);
+    }
     if (typeof variant === 'undefined') {
       console.warn('No text style found for variant:', variant);
     }
@@ -70,7 +82,7 @@ export const Text = React.forwardRef<HTMLElement, TextProps>(
         ref={ref}
         color={color}
         css={{
-          ...styles,
+          ...stylesObj,
           ...css,
         }}
         {...props}

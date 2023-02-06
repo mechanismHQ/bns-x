@@ -7,6 +7,7 @@ import {
   userPrimaryNameState,
   currentUserNamesState,
 } from '@store/names';
+import type { ResponsiveVariant } from './text';
 import { Text } from './text';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
@@ -19,6 +20,10 @@ import { Link } from '@components/link';
 import { styled } from '@common/theme';
 
 const StyledName = styled(Text, {
+  // initial: {
+  fontSize: '28px',
+  lineHeight: '44px',
+  // },
   '@bp1': {
     fontSize: '22px',
     lineHeight: '36px',
@@ -74,7 +79,17 @@ export const ProfileRow: React.FC<{
       <Stack alignItems={'center'} isInline>
         <Box borderRadius="50%" size="86px" backgroundImage={gradient} />
         <Stack spacing="6px">
-          <StyledName variant="Heading035" color={v1 ? '$text-error' : '$text'}>
+          {/* <Text
+            variant={{ initial: 'Heading035', '@bp1': 'Heading022' } as ResponsiveVariant}
+            color={v1 ? '$text-error' : '$text'}
+          >
+            {name}
+          </Text> */}
+          <StyledName
+            // variant={{ initial: 'Heading035', '@bp1': 'Heading022' } as ResponsiveVariant}
+            variant="Heading035"
+            color={v1 ? '$text-error' : '$text'}
+          >
             {name}
           </StyledName>
 
