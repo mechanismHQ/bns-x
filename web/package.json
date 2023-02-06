@@ -27,6 +27,7 @@
     "@stitches/react": "^1.2.8",
     "@tanstack/query-core": "^4.14.1",
     "@tanstack/react-query": "^4.22.0",
+    "@tippyjs/react": "^4.2.6",
     "@trpc/client": "^10.9.1",
     "@trpc/next": "^10.9.1",
     "@trpc/react-query": "^10.9.1",
@@ -55,7 +56,9 @@
     "react": "18.2.0",
     "react-datepicker": "^4.8.0",
     "react-dom": "18.2.0",
+    "react-spring": "^9.6.1",
     "tinycolor2": "^1.5.2",
+    "tippy.js": "^6.3.7",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {

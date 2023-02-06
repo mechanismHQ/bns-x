@@ -14,6 +14,7 @@ import { Button } from '@components/button';
 import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
 import { stxAddressAtom } from '@store/micro-stacks';
+import { useSwitchAccounts } from '@common/hooks/use-switch-accounts';
 
 export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
   const recipient = useAtomValue(validRecipientState);
@@ -33,23 +34,13 @@ export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
   const migrateTxid = useAtomValue(migrateTxidAtom);
   const migrateTx = useAtomValue(migrateTxState);
   const router = useRouter();
-  const { openAuthRequest } = useAuth();
+  const { switchAccounts } = useSwitchAccounts();
 
   const done = useCallback(() => {
     void router.push({
       pathname: '/profile',
     });
   }, [router]);
-
-  const switchAccounts = useCallback(async () => {
-    await openAuthRequest({
-      async onFinish() {
-        await router.push({
-          pathname: '/profile',
-        });
-      },
-    });
-  }, [openAuthRequest, router]);
 
   if (!migrateTxid) return null;
 

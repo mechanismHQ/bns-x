@@ -28,7 +28,7 @@ export const ButtonComp = styled(Box, {
     // top: '3px',
   },
   '&:active': {
-    animation: `${move} 50ms ease`,
+    animation: `${move()} 50ms ease`,
     animationFillMode: 'forwards',
   },
   // animation: `top 50ms ease`,

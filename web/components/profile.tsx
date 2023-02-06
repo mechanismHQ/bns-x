@@ -103,12 +103,18 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
   const v1Name = useAtomValue(currentUserV1NameState);
   const allNames = useAtomValue(currentUserNamesState);
+  const hasV1 = v1Name !== null;
+  const holdings = useAtomValue(currentUserNameIdsState);
+
+  const shouldRedirect = useMemo(() => {
+    const noBnsx = holdings.length === 0;
+    const canRedirect = router.query.redirect !== 'false';
+    return hasV1 && noBnsx && canRedirect;
+  }, [hasV1, holdings.length, router.query.redirect]);
 
   useEffect(() => {
-    console.log('allNames', allNames);
+    console.log('All names:', allNames);
   }, [allNames]);
-
-  const holdings = useAtomValue(currentUserNameIdsState);
 
   const rows = useMemo(() => {
     return (
@@ -132,10 +138,10 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
   }, [allNames?.nameProperties, v1Name]);
 
   useEffect(() => {
-    if (v1Name !== null && holdings.length === 0) {
+    if (shouldRedirect) {
       void router.push({ pathname: '/upgrade' });
     }
-  }, [v1Name !== null, holdings.length, router]);
+  }, [shouldRedirect, router]);
 
   const mintName = useCallback(() => {
     window.open('https://btc.us', '_blank');

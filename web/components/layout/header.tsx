@@ -15,25 +15,16 @@ import { useAuth } from '@micro-stacks/react';
 import { LogoIcon } from '@components/icons/logo';
 import { useRouter } from 'next/router';
 import { styled } from '@common/theme';
+import { Menu } from '@components/layout/menu';
 
 export const TokenBalance: React.FC = () => {
   const stxAddress = useAtomValue(stxAddressAtom);
-  const name = useAtomValue(userNameState);
-
-  const gradient = useGradient(name || stxAddress || 'NONE');
 
   if (!stxAddress) {
     return <WalletConnectButton />;
   }
 
-  return (
-    <Stack isInline spacing="8px" alignItems={'center'}>
-      <Box size="28px" borderRadius="50%" background={gradient} />
-      <Box px="12px">
-        <Text variant="Label01">{name ? name : truncateMiddle(stxAddress)}</Text>
-      </Box>
-    </Stack>
-  );
+  return <Menu />;
 };
 
 const HeaderLinkBox = styled(Box, {

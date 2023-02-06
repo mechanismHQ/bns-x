@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React, { Suspense, useMemo } from 'react';
 import { SpaceBetween, Stack } from '@nelson-ui/react';
 import { Text } from '../text';

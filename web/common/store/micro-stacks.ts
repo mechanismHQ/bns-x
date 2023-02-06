@@ -128,7 +128,7 @@ export const useDecentralizedIDValue = () => useAtomValue(decentralizedIDAtom);
  */
 
 export const authState = atom(get => {
-  const client = useMicroStacksClient();
+  const client = get(clientState);
   const stxAddress = get(stxAddressAtom);
   const status = get(statusAtom);
   return {
