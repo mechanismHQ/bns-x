@@ -409,6 +409,19 @@ const figma = {
         },
         type: 'typography',
       },
+      Heading022: {
+        value: {
+          fontFamily: '$fontFamilies.open-sauce-one',
+          fontWeight: '$fontWeights.open-sauce-one-3',
+          lineHeight: '36px',
+          fontSize: '22px',
+          letterSpacing: '$letterSpacing.2',
+          paragraphSpacing: '$paragraphSpacing.0',
+          textCase: '$textCase.none',
+          textDecoration: '$textDecoration.none',
+        },
+        type: 'typography',
+      },
       Heading03: {
         value: {
           fontFamily: '$fontFamilies.open-sauce-one',

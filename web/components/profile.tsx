@@ -16,6 +16,21 @@ import { useGradient } from '@common/hooks/use-gradient';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { truncateMiddle } from '@common/utils';
 import { Link } from '@components/link';
+import { styled } from '@common/theme';
+
+const StyledName = styled(Text, {
+  '@bp1': {
+    fontSize: '22px',
+    lineHeight: '36px',
+  },
+});
+
+const StyledPrimary = styled(Text, {
+  display: 'block',
+  '@bp1': {
+    display: 'none',
+  },
+});
 
 export const ProfileRow: React.FC<{
   children?: React.ReactNode;
@@ -59,9 +74,9 @@ export const ProfileRow: React.FC<{
       <Stack alignItems={'center'} isInline>
         <Box borderRadius="50%" size="86px" backgroundImage={gradient} />
         <Stack spacing="6px">
-          <Text variant="Heading035" color={v1 ? '$text-error' : '$text'}>
+          <StyledName variant="Heading035" color={v1 ? '$text-error' : '$text'}>
             {name}
-          </Text>
+          </StyledName>
 
           {v1 && (
             <Text
@@ -83,9 +98,13 @@ export const ProfileRow: React.FC<{
                 {truncateMiddle(stxAddress || '')}
               </Link>
               {primaryName?.combined === name && (
-                <Text variant="Body02" color="$onSurface-icon-subdued">
+                <StyledPrimary
+                  variant="Body02"
+                  // display={{ '@bp1': 'none', initial: 'block' }}
+                  color="$onSurface-icon-subdued"
+                >
                   Primary name
-                </Text>
+                </StyledPrimary>
               )}
             </Stack>
           )}

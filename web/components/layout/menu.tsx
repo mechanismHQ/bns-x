@@ -8,7 +8,7 @@ import { useGradient } from '@common/hooks/use-gradient';
 import { stxAddressAtom, useAuthState } from '@store/micro-stacks';
 import { Text } from '@components/text';
 import { keyframes } from '@nelson-ui/core';
-import { styled } from '@stitches/react';
+import { styled } from '@common/theme';
 import Tippy from '@tippyjs/react/headless';
 import type { Instance, Placement, Props } from 'tippy.js';
 import { followCursor } from 'tippy.js';
@@ -24,6 +24,13 @@ const StyledMenu = styled(Stack, {
   },
 });
 
+const StyledName = styled(Text, {
+  display: 'block',
+  '@bp1': {
+    display: 'none',
+  },
+});
+
 export const MenuName: React.FC = () => {
   const name = useAtomValue(userNameState);
   const stxAddress = useAtomValue(stxAddressAtom);
@@ -32,8 +39,8 @@ export const MenuName: React.FC = () => {
 
   const display = useMemo(() => {
     const show = name || stxAddress || '';
-    if (show.length > 10) {
-      return show.slice(0, 7) + '...';
+    if (show.length > 11) {
+      return show.slice(0, 8) + '...';
     }
     return show;
   }, [name, stxAddress]);
@@ -61,7 +68,7 @@ export const MenuName: React.FC = () => {
     >
       <Stack isInline alignItems={'center'} spacing="8px">
         <Box borderRadius="50%" size="32px" background={gradient} />
-        <Text variant="Label01">{display}</Text>
+        <StyledName variant="Label01">{display}</StyledName>
       </Stack>
     </StyledMenu>
   );

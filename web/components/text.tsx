@@ -2,12 +2,21 @@ import React from 'react';
 import type { BoxProps } from '@nelson-ui/react';
 import { Box } from '@nelson-ui/react';
 import type { TextVariant } from '../common/theme';
+import { styled } from '@common/theme';
 import { baseTheme, textStyles } from '../common/theme';
 import clsx from 'clsx';
 import type { CSSTypes } from '@nelson-ui/core';
 
 // const { textStyles } = generatedTheme;
 const { colors } = baseTheme;
+
+export const StyledText = styled(Box, {
+  variants: {
+    variant: {
+      Body01: textStyles['Body01'],
+    },
+  },
+});
 
 const getDefaultColor = (type?: keyof typeof textStyles): string => {
   switch (type) {
@@ -40,7 +49,7 @@ export type TextProps = BoxProps & { variant?: TextVariant };
 function getVariantStyles(variant?: TextVariant): CSSTypes {
   if (typeof variant === 'undefined') return {};
   const lower = variant.slice(0, 1).toLowerCase() + variant.slice(1);
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+
   const styles = textStyles[lower] || textStyles[variant];
   // if (!textStyles.hasOwnProperty(lower)) {
   //   console.warn('Only found old theme styles for text variant:', variant);
