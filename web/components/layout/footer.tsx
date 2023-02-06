@@ -31,7 +31,6 @@ const FooterContainer = styled(SpaceBetween, {
 });
 
 export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
-  const { signOut } = useAuth();
   const year = useMemo(() => {
     return new Date().getFullYear();
   }, []);
@@ -66,16 +65,6 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
             Testnet faucet
           </HeaderLink>
         )}
-        <HeaderLink
-          // onClick={() => {}}
-          href="#"
-          color="$onSurface-text-subdued"
-          onClick={async () => {
-            await signOut();
-          }}
-        >
-          Sign out
-        </HeaderLink>
       </FooterContainer>
       <Text variant="Body01" color="$onSurface-text-dim">
         © {year} dots.so

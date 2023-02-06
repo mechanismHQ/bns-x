@@ -28,6 +28,7 @@ export const MenuName: React.FC = () => {
   const name = useAtomValue(userNameState);
   const stxAddress = useAtomValue(stxAddressAtom);
   const gradient = useGradient(name || stxAddress || '');
+  const router = useRouter();
 
   const display = useMemo(() => {
     const show = name || stxAddress || '';
@@ -49,6 +50,14 @@ export const MenuName: React.FC = () => {
       spacing="12px"
       alignItems={'center'}
       pr="50px"
+      onClick={async () => {
+        await router.push({
+          pathname: '/profile',
+          query: {
+            redirect: 'false',
+          },
+        });
+      }}
     >
       <Stack isInline alignItems={'center'} spacing="8px">
         <Box borderRadius="50%" size="32px" background={gradient} />
