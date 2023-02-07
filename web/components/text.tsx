@@ -32,7 +32,7 @@ const getDefaultColor = (type?: keyof typeof textStyles): string => {
   return '$text';
 };
 
-type BP = 'initial' | '@bp1' | '@bp2' | '@bp3';
+type BP = '@initial' | '@bp1' | '@bp2' | '@bp3';
 
 export type ResponsiveVariant = Record<BP, TextVariant>;
 
@@ -51,13 +51,13 @@ function getVariantStyles(variant: TextVariant): CSSTypes {
 
 export const Text = React.forwardRef<HTMLElement, TextProps>(
   ({ variant = 'Body01', className, css = {}, ...props }, ref) => {
-    const baseVariant = typeof variant === 'string' ? variant : variant.initial;
+    const baseVariant = typeof variant === 'string' ? variant : variant['@initial'];
     const color = getDefaultColor(baseVariant);
     // const styles = getVariantStyles(baseVariant);
     const responsiveVariant: ResponsiveVariant =
       typeof variant === 'string'
         ? ({
-            initial: baseVariant,
+            '@initial': baseVariant,
           } as ResponsiveVariant)
         : variant;
     // const colorObj = Object.fromEntries(
@@ -67,6 +67,9 @@ export const Text = React.forwardRef<HTMLElement, TextProps>(
     // ) as Record<BP, string>;
     const stylesObj = Object.fromEntries(
       Object.entries(responsiveVariant).map(([bp, v]) => {
+        if (v === 'Display02') {
+          console.log(getVariantStyles(v));
+        }
         return [bp, getVariantStyles(v)];
       })
     ) as Record<BP, CSSTypes>;
@@ -83,6 +86,7 @@ export const Text = React.forwardRef<HTMLElement, TextProps>(
         color={color}
         css={{
           ...stylesObj,
+          ...stylesObj['@initial'],
           ...css,
         }}
         {...props}

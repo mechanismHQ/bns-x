@@ -39,8 +39,9 @@ export const MenuName: React.FC = () => {
 
   const display = useMemo(() => {
     const show = name || stxAddress || '';
-    if (show.length > 11) {
-      return show.slice(0, 8) + '...';
+    const MAX_NAME = 20;
+    if (show.length > MAX_NAME) {
+      return show.slice(0, MAX_NAME - 3) + '...';
     }
     return show;
   }, [name, stxAddress]);

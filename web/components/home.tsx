@@ -46,6 +46,7 @@ export const Home: React.FC<{ children?: React.ReactNode }> = () => {
             BNSx
           </Link>
           <Link
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             onClick={() => {}}
             href="#"
             // target="_blank"

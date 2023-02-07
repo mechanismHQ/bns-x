@@ -243,7 +243,7 @@ export const { styled, getCssText } = createStitches({
     sm: '(max-width: 640px)',
     md: '(min-width: 768px)',
     lg: '(min-width: 1024px)',
-    initial: '',
+    // initial: '',
   },
   utils: {
     m: (value: PropertyValue<'margin'>) => ({
