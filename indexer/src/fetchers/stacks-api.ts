@@ -51,10 +51,15 @@ export async function fetchPrimaryId(address: string): Promise<number | null> {
 }
 
 export async function getAddressNamesApi(address: string): Promise<NamesByAddressResponse> {
-  const [_legacy, assetIds, primaryId] = await Promise.all([
+  const [_legacy, assetIds, primaryId, legacyStrings] = await Promise.all([
     getLegacyName(address),
     getAssetIds(address),
     fetchPrimaryId(address),
+    fetchNamesByAddress({
+      url: getNodeUrl(),
+      blockchain: 'stacks',
+      address: address,
+    }),
   ]);
   const clarigen = clarigenProvider();
   const registry = registryContract();
@@ -83,6 +88,10 @@ export async function getAddressNamesApi(address: string): Promise<NamesByAddres
   const displayName = nameStrings[0] ?? null;
 
   const primaryProperties = names.find(n => n.id === primaryId) ?? null;
+
+  if ('names' in legacyStrings && nameStrings.length === 0) {
+    nameStrings.push(...legacyStrings.names);
+  }
 
   return {
     legacy,
