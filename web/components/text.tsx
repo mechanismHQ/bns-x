@@ -60,11 +60,6 @@ export const Text = React.forwardRef<HTMLElement, TextProps>(
             '@initial': baseVariant,
           } as ResponsiveVariant)
         : variant;
-    // const colorObj = Object.fromEntries(
-    //   Object.entries(responsiveVariant).map(([bp, v]) => {
-    //     return [bp, getDefaultColor(v)];
-    //   })
-    // ) as Record<BP, string>;
     const stylesObj = Object.fromEntries(
       Object.entries(responsiveVariant).map(([bp, v]) => {
         if (v === 'Display02') {

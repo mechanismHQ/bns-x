@@ -30,7 +30,7 @@ export async function makeApp() {
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
-  app.register(cors);
+  await app.register(cors);
 
   if (process.env.STACKS_API_POSTGRES) {
     await app.register(prismaPlugin);
