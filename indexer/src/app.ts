@@ -65,16 +65,9 @@ export async function makeApp() {
 
   const contracts = getContracts();
 
-  // Handler for production without contracts
-  if (typeof contracts.bnsxRegistry !== 'undefined') {
-    console.log('Real mode');
-    await app.register(aliasRoutes, {
-      prefix: '/v1',
-    });
-  } else {
-    console.log('Proxy mode');
-    await app.register(proxyRoutes);
-  }
+  await app.register(aliasRoutes, {
+    prefix: '/v1',
+  });
 
   app.get('/', (req, res) => {
     return res.send({ success: true });

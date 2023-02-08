@@ -66,6 +66,10 @@ const theme = {
       value: '#0b120f',
       type: 'color',
     },
+    'text-very-dim': {
+      value: '#4d4d4d',
+      type: 'color',
+    },
     fontFamilies: {
       'ibm-plex-mono': {
         value: 'IBM Plex Mono',

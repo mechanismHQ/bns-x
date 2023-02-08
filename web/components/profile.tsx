@@ -16,7 +16,7 @@ import { useRouter } from 'next/router';
 import { useGradient } from '@common/hooks/use-gradient';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { truncateMiddle } from '@common/utils';
-import { Link } from '@components/link';
+import { Link, LinkText } from '@components/link';
 import { styled } from '@common/theme';
 
 const StyledName = styled(Text, {
@@ -79,17 +79,7 @@ export const ProfileRow: React.FC<{
       <Stack alignItems={'center'} isInline>
         <Box borderRadius="50%" size="86px" backgroundImage={gradient} />
         <Stack spacing="6px">
-          {/* <Text
-            variant={{ initial: 'Heading035', '@bp1': 'Heading022' } as ResponsiveVariant}
-            color={v1 ? '$text-error' : '$text'}
-          >
-            {name}
-          </Text> */}
-          <StyledName
-            // variant={{ initial: 'Heading035', '@bp1': 'Heading022' } as ResponsiveVariant}
-            variant="Heading035"
-            color={v1 ? '$text-error' : '$text'}
-          >
+          <StyledName variant="Heading035" color={v1 ? '$text-error' : '$text'}>
             {name}
           </StyledName>
 
@@ -104,19 +94,19 @@ export const ProfileRow: React.FC<{
           )}
           {!v1 && (
             <Stack isInline height="20px" spacing="27px">
-              <Link
+              <LinkText
                 href={`https://explorer.stacks.co/address/${stxAddress ?? ''}`}
                 target="_blank"
                 variant="Body02"
                 color={'$onSurface-text-subdued'}
               >
                 {truncateMiddle(stxAddress || '')}
-              </Link>
+              </LinkText>
               {primaryName?.combined === name && (
                 <StyledPrimary
                   variant="Body02"
                   // display={{ '@bp1': 'none', initial: 'block' }}
-                  color="$onSurface-icon-subdued"
+                  color="$light-onSurface-icon-subdued"
                 >
                   Primary name
                 </StyledPrimary>

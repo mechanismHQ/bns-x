@@ -132,6 +132,17 @@ export const tokens = {
         },
       },
     },
+    'text-very-dim': {
+      description: '',
+      type: 'color',
+      value: '#4D4D4D',
+      extensions: {
+        'org.lukasoppermann.figmaDesignTokens': {
+          styleId: 'S:52d024983b3bbdae7b99e5f0bc1db1f274c4021b,',
+          exportKey: 'color',
+        },
+      },
+    },
   },
   gradient: {
     foil: {

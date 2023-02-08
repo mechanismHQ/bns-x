@@ -27,37 +27,6 @@ export const TokenBalance: React.FC = () => {
   return <Menu />;
 };
 
-const HeaderLinkBox = styled(Box, {
-  pl: '12px',
-  pr: '12px',
-  '@bp1': {
-    pl: '0',
-  },
-});
-
-export const HeaderLink: React.FC<
-  LinkProps & {
-    children?: React.ReactNode;
-    href: string;
-    target?: string;
-  }
-> = ({ children, href, target, ...rest }) => {
-  return (
-    <HeaderLinkBox py="10px">
-      <Link
-        variant="Label01"
-        textDecoration="none"
-        color="$onSurface-text"
-        href={href}
-        target={target}
-        {...rest}
-      >
-        {children}
-      </Link>
-    </HeaderLinkBox>
-  );
-};
-
 export const Header: React.FC<{ children?: React.ReactNode }> = () => {
   const isSSR = useIsSSR();
   const router = useRouter();

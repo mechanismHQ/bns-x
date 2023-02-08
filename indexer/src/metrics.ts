@@ -17,8 +17,6 @@ export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, options
     labelNames: ['route', 'method', 'status_code'] as const,
   });
 
-  console.log('in metrics plugin');
-
   const db = server.stacksPrisma;
   if (typeof db !== 'undefined') {
     new Gauge({

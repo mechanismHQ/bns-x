@@ -1,5 +1,4 @@
 import { useAuth } from '@micro-stacks/react';
-import { Link, LinkText } from './link';
 import { Button } from '@components/button';
 
 export const WalletConnectButton = () => {

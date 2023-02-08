@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React, { Suspense, useMemo } from 'react';
-import { SpaceBetween, Stack } from '@nelson-ui/react';
+import { SpaceBetween, Box } from '@nelson-ui/react';
 import { Text } from '../text';
-import { useAuth } from '@micro-stacks/react';
-import { HeaderLink } from '@components/layout/header';
+import type { LinkProps } from '@components/link';
+import { Link } from '@components/link';
 import { styled } from '@common/theme';
 import { useAtomValue } from 'jotai';
 import { isMainnetState } from '@store/index';
@@ -30,6 +30,44 @@ const FooterContainer = styled(SpaceBetween, {
   },
 });
 
+const HeaderLinkBox = styled(Box, {
+  pl: '12px',
+  pr: '12px',
+  '@bp1': {
+    pl: '0',
+  },
+});
+
+export const HeaderLink: React.FC<
+  LinkProps & {
+    children?: React.ReactNode;
+    href: string;
+    target?: string;
+  }
+> = ({ children, href, target, ...rest }) => {
+  return (
+    <HeaderLinkBox
+      py="10px"
+      px="10px"
+      borderRadius="10px"
+      _hover={{
+        backgroundColor: '$surface-surface--hovered',
+      }}
+    >
+      <Link
+        variant="Label01"
+        textDecoration="none"
+        color="$onSurface-text"
+        href={href}
+        target={target}
+        {...rest}
+      >
+        {children}
+      </Link>
+    </HeaderLinkBox>
+  );
+};
+
 export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
   const year = useMemo(() => {
     return new Date().getFullYear();
@@ -51,10 +89,15 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
         <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
           Discord
         </HeaderLink>
-        <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
+        <HeaderLink href="#" color="$onSurface-text-subdued">
           Twitter
         </HeaderLink>
-        <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
+        <HeaderLink
+          onClick={() => {}}
+          href="https://docs.bns.xyz"
+          target="_blank"
+          color="$onSurface-text-subdued"
+        >
           Docs
         </HeaderLink>
         {/* <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">

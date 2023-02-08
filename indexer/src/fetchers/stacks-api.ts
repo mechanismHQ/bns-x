@@ -29,7 +29,7 @@ export async function getAssetIds(address: string): Promise<number[]> {
     unanchored: 'true',
     asset_identifiers: registryContractAsset(),
   });
-  const url = `${urlBase}/extended/v1/tokens/nft/holdings?${params}`;
+  const url = `${urlBase}/extended/v1/tokens/nft/holdings?${params.toString()}`;
   const res = await fetch(url);
   const data = (await res.json()) as NonFungibleTokenHoldingsList;
   return data.results

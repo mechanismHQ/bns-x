@@ -2,8 +2,11 @@ import React from 'react';
 import NextLink from 'next/link';
 // import { getTxUrl } from '../common/utils';
 import type { BoxProps } from '@nelson-ui/react';
+import { Box } from '@nelson-ui/react';
+import { Stack } from '@nelson-ui/react';
 import { Text } from '@nelson-ui/react';
 import { Button } from './button';
+import { styled } from '@common/theme';
 
 export interface LinkProps extends BoxProps {
   href: string;
@@ -52,21 +55,56 @@ export const Link: React.FC<LinkProps> = ({ href, prefetch, children, plain, ...
         },
       };
   return (
+    // <Stack height="24px">
     <NextLink href={href} passHref>
-      <LinkText {...{ ...props, ...extra }} as="a">
+      <LinkInner {...{ ...props, ...extra }} as="a">
         {children}
-      </LinkText>
+      </LinkInner>
     </NextLink>
+    //   {plain !== false && <Box width="100%" height="2px" backgroundColor="$text-very-dim" />}
+    // </Stack>
   );
 };
 
-export const LinkText: React.FC<BoxProps & { children: React.ReactNode }> = React.forwardRef(
+const StyledLinkContainer = styled(Stack, {
+  height: '24px',
+  '&:hover': {
+    '& .link-underline': {
+      display: 'none',
+    },
+  },
+});
+
+export const LinkText: React.FC<LinkProps> = ({ href, prefetch, children, ...props }) => {
+  return (
+    <StyledLinkContainer spacing="0">
+      <NextLink href={href} passHref>
+        <LinkInner textDecoration="none" {...props} as="a">
+          {children}
+        </LinkInner>
+      </NextLink>
+      <Box
+        width="100%"
+        className="link-underline"
+        height="1px"
+        backgroundColor="$text-very-dim"
+        // border="1px solid $text-very-dim"
+        position="relative"
+        top="-2px"
+        // boxSizing={""}
+      />
+    </StyledLinkContainer>
+  );
+};
+
+export const LinkInner: React.FC<BoxProps & { children: React.ReactNode }> = React.forwardRef(
   ({ children, ...props }, ref) => {
     return (
       <Text
         textDecoration="underline"
         cursor="pointer"
         color="$text-subdued"
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         ref={ref as any}
         {...props}
       >
@@ -75,7 +113,7 @@ export const LinkText: React.FC<BoxProps & { children: React.ReactNode }> = Reac
     );
   }
 );
-LinkText.displayName = 'LinkText';
+LinkInner.displayName = 'LinkInner';
 
 export const LinkButton: React.FC<{
   children: React.ReactNode;
