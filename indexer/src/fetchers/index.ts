@@ -42,6 +42,8 @@ const getAddressNamesSummary = new Summary({
   name: 'fetch_address_names_seconds_summary',
   help: 'Summary for how long it takes to fetch names owned by an address',
   labelNames: ['hasBnsx', 'hasLegacy'] as const,
+  maxAgeSeconds: 600,
+  ageBuckets: 5,
 });
 
 export async function getAddressNames(

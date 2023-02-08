@@ -29,4 +29,3 @@ export const prismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
     });
   }
 });
-// });

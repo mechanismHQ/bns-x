@@ -72,5 +72,5 @@ export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, options
 
     requestCount.labels(labels).inc();
   });
-  return;
+  return await Promise.resolve();
 });
