@@ -1,6 +1,6 @@
 import type { IntegerType } from 'micro-stacks/common';
 import { asciiToBytes, intToBigInt } from 'micro-stacks/common';
-import { clarigenProvider, queryHelperContract } from '../contracts/index';
+import { clarigenProvider, queryHelperContract, registryContract } from '../contracts/index';
 import { QueryHelperName, QueryHelperLegacyName } from '../contracts/types';
 import { convertLegacyDetailsJson, convertNameBuff } from '../contracts/utils';
 
@@ -72,4 +72,11 @@ export async function getLegacyName(address: string) {
     json: true,
   });
   return props;
+}
+
+export async function getPrimaryName(address: string) {
+  const registry = registryContract();
+  const clarigen = clarigenProvider();
+  const name = await clarigen.ro(registry.getPrimaryName(address), { json: true, latest: true });
+  return name;
 }

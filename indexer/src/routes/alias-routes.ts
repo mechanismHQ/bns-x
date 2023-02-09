@@ -6,8 +6,10 @@ import { createContext } from './trpc/context';
 import { TRPCError } from '@trpc/server';
 import { getContractParts } from '../utils';
 import type { FastifyPlugin } from './api-types';
+import { simpleOrExtraNamesByAddress } from './api-types';
 import { namesByAddressBnsxSchema, NamesByAddressResponse } from './api-types';
 import { z } from 'zod';
+import { fetchDisplayName } from '../fetchers/stacks-api';
 
 const errorSchema = z.object({
   error: z.object({
@@ -48,15 +50,22 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
           principal: z.string(),
         }),
         response: {
-          200: namesByAddressBnsxSchema,
+          200: simpleOrExtraNamesByAddress,
           404: errorSchema,
           500: errorSchema,
         },
       },
     },
     async (req, res) => {
-      const caller = queryHelperRouter.createCaller(createContext({ req, res }));
       const { principal } = req.params;
+      const { extra } = req.query as { extra?: string };
+      if (!extra) {
+        const name = await fetchDisplayName(principal);
+        const names: string[] = [];
+        if (name !== null) names.push(name);
+        return res.status(200).send({ names });
+      }
+      const caller = queryHelperRouter.createCaller(createContext({ req, res }));
       try {
         const names = await caller.getAddressNames(principal);
         return res.status(200).send(names);

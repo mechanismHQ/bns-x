@@ -67,6 +67,10 @@ export const bnsxNameSchema = z.object({
   // legacy: z.nullable(legacyPropsSchema),
 });
 
+export const simpleNamesForAddressSchema = z.object({
+  names: z.array(z.string()),
+});
+
 export const namesByAddressBaseSchema = z.object({
   names: z.array(z.string()),
   displayName: z.nullable(z.string()),
@@ -78,5 +82,10 @@ export const namesByAddressBnsxSchema = namesByAddressBaseSchema.extend({
   primaryProperties: z.nullable(bnsxNameSchema),
   nameProperties: z.array(bnsxNameSchema),
 });
+
+export const simpleOrExtraNamesByAddress = z.union([
+  simpleNamesForAddressSchema,
+  namesByAddressBnsxSchema,
+]);
 
 export type NamesByAddressResponse = z.infer<typeof namesByAddressBnsxSchema>;

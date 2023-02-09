@@ -13,7 +13,7 @@ import { deserializeCV } from 'micro-stacks/clarity';
 import { convertNameBuff, convertLegacyDetailsJson } from '../contracts/utils';
 import type { NamesByAddressResponse } from '../routes/api-types';
 import type { NamePropertiesJson } from '../contracts/types';
-import { getLegacyName } from './query-helper';
+import { getLegacyName, getPrimaryName } from './query-helper';
 
 export async function getNameDetailsApi(name: string, namespace: string) {
   const fqn = `${name}.${namespace}`;
@@ -101,4 +101,23 @@ export async function getAddressNamesApi(address: string): Promise<NamesByAddres
     displayName,
     primaryName: primaryProperties?.combined ?? null,
   };
+}
+
+export async function fetchDisplayName(address: string) {
+  const [legacyStrings, bnsxName] = await Promise.all([
+    fetchNamesByAddress({
+      url: getNodeUrl(),
+      blockchain: 'stacks',
+      address: address,
+    }),
+    getPrimaryName(address),
+  ]);
+
+  if (bnsxName) {
+    return convertNameBuff(bnsxName).combined;
+  }
+  if ('names' in legacyStrings) {
+    return legacyStrings.names[0] ?? null;
+  }
+  return null;
 }
