@@ -20,6 +20,13 @@ view NftCustody {
   @@map("nft_custody_unanchored")
 }
 
+view ChainTip {
+  blockHeight Int @map("block_height")
+
+  @@id([blockHeight])
+  @@map("chain_tip")
+}
+
 model blocks {
   index_block_hash            Bytes   @id
   block_hash                  Bytes

@@ -1,5 +1,5 @@
-import { registryContract, registryContractAsset } from '../contracts';
-import type { StacksPrisma } from '../stacks-api-db/client';
+import { registryContract, registryContractAsset } from '../../contracts';
+import type { StacksPrisma } from '../../stacks-api-db/client';
 import { decodeClarityValue } from 'stacks-encoding-native-js';
 import {
   deserializeCV,
@@ -11,10 +11,10 @@ import {
 } from 'micro-stacks/clarity';
 import { cvToJSON, cvToValue } from '@clarigen/core';
 import { bytesToHex } from 'micro-stacks/common';
-import { convertLegacyDetailsJson, convertNameBuff } from '../contracts/utils';
-import type { NamesByAddressResponse } from '../routes/api-types';
-import { getLegacyName } from './query-helper';
-import { fetchPrimaryId } from './stacks-api';
+import { convertLegacyDetailsJson, convertNameBuff } from '../../contracts/utils';
+import type { NamesByAddressResponse } from '../../routes/api-types';
+import { getLegacyName } from '../query-helper';
+import { fetchPrimaryId } from '../stacks-api';
 
 export async function getAssetIds(address: string, db: StacksPrisma) {
   const custodies = await db.nftCustody.findMany({
