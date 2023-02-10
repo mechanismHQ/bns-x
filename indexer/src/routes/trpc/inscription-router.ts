@@ -55,14 +55,14 @@ export const inscriptionRouter = router({
           outputValue: inscription.outputValue,
         };
         console.log(dbData);
-        // const model = await db.inscriptionZonefiles.upsert({
-        //   where: {
-        //     inscriptionId: inscription.id,
-        //   },
-        //   create: dbData,
-        //   update: dbData,
-        // });
-        // console.log('New zonefile inscription!', model);
+        const model = await db.inscriptionZonefiles.upsert({
+          where: {
+            inscriptionId: inscription.id,
+          },
+          create: dbData,
+          update: dbData,
+        });
+        console.log('New zonefile inscription!', model);
         return {
           success: true,
           inscriptionId,
