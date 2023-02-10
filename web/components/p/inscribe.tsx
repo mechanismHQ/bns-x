@@ -127,7 +127,7 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
             <Input placeholder="Your BTC address" {...btcAddress.props} />
           </Stack>
           <Stack spacing="$4">
-            <Text variant="Body01">Here&apos;s what your zonefile looks like:</Text>
+            <Text variant="Body01">Here&apos;s your zonefile:</Text>
             <Box
               backgroundColor="$primary-action-subdued"
               // maxWidth="500px"
