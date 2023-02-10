@@ -19,11 +19,20 @@ export async function getNameDetails(
     ]);
     const zonefile = inscribedZf ? inscribedZf.zonefileRaw : api.zonefile;
     const inscriptionId = inscribedZf?.inscriptionId;
+    const inscriptionMeta = inscribedZf
+      ? {
+          blockHeight: inscribedZf.genesisHeight,
+          txid: inscribedZf.genesisTransaction,
+          timestamp: new Date(Number(inscribedZf.timestamp)).toString(),
+          sat: inscribedZf.sat,
+        }
+      : undefined;
     if (query === null) {
       return {
         ...api,
         zonefile,
         inscriptionId,
+        inscription: inscriptionMeta,
         isBnsx: false,
       };
     }
@@ -33,6 +42,7 @@ export async function getNameDetails(
       ...query,
       zonefile,
       inscriptionId,
+      inscription: inscriptionMeta,
       address: query.owner,
       isBnsx: true,
     };

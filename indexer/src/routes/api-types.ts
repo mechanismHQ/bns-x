@@ -43,9 +43,17 @@ export interface NameInfoResponseBnsx extends BnsGetNameInfoResponse {
   legacy: LegacyDetails | null;
 }
 
-export type NameInfoResponse = (NameInfoResponseLegacy | NameInfoResponseBnsx) & {
+export interface InscriptionMeta {
   inscriptionId?: string;
-};
+  inscription?: {
+    blockHeight: number;
+    timestamp: string;
+    txid: string;
+    sat: string;
+  };
+}
+
+export type NameInfoResponse = (NameInfoResponseLegacy | NameInfoResponseBnsx) & InscriptionMeta;
 
 // export interface NamesByAddressResponse extends BnsNamesOwnByAddressResponse {
 //   primaryName: string;
