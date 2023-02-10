@@ -123,7 +123,7 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
         )}
       </FooterContainer>
       <Text variant="Body01" color="$onSurface-text-dim">
-        © {year} dots.so
+        {ONLY_INSCRIPTIONS ? '' : '© {year} dots.so'}
       </Text>
     </FooterContainer>
   );
