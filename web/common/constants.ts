@@ -76,3 +76,5 @@ export function testUtilsContract() {
   }
   return projectFactory(project, networkKey).testUtils;
 }
+
+export const ONLY_INSCRIPTIONS = process.env.NEXT_PUBLIC_INSCRIPTIONS === 'true';

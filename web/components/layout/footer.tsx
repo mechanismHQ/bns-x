@@ -7,6 +7,7 @@ import { Link } from '@components/link';
 import { styled } from '@common/theme';
 import { useAtomValue } from 'jotai';
 import { isMainnetState } from '@store/index';
+import { ONLY_INSCRIPTIONS } from '@common/constants';
 
 const FooterContainer = styled(SpaceBetween, {
   flexDirection: 'row',
@@ -86,23 +87,35 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
       outer
     >
       <FooterContainer spacing="8px">
-        <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
-          Discord
-        </HeaderLink>
-        <HeaderLink href="#" color="$onSurface-text-subdued">
-          Twitter
-        </HeaderLink>
+        {!ONLY_INSCRIPTIONS && (
+          <>
+            <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
+              Discord
+            </HeaderLink>
+            <HeaderLink href="#" color="$onSurface-text-subdued">
+              Twitter
+            </HeaderLink>
+            <HeaderLink
+              onClick={() => {}}
+              href="https://docs.bns.xyz"
+              target="_blank"
+              color="$onSurface-text-subdued"
+            >
+              Docs
+            </HeaderLink>
+          </>
+        )}
+
         <HeaderLink
-          onClick={() => {}}
-          href="https://docs.bns.xyz"
+          onClick={() => {
+            window.open('https://btc.us', '_blank');
+          }}
+          href="https://btc.us"
           target="_blank"
           color="$onSurface-text-subdued"
         >
-          Docs
+          Mint BNS names
         </HeaderLink>
-        {/* <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
-            Mint BNS names
-          </HeaderLink> */}
         {!isMainnet && (
           <HeaderLink href="/faucet" color="$onSurface-text-subdued">
             Testnet faucet

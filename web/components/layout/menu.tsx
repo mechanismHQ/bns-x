@@ -17,6 +17,7 @@ import { useSpring, animated } from 'react-spring';
 import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
 import { useSwitchAccounts } from '@hooks/use-switch-accounts';
+import { ONLY_INSCRIPTIONS } from '@common/constants';
 
 const StyledMenu = styled(Stack, {
   '&:hover': {
@@ -127,18 +128,21 @@ const MenuDropdown: React.FC = () => {
           {/* <PopoverOption>
             <Text variant="Body02">Profile</Text>
           </PopoverOption> */}
-          <PopoverOption
-            onClick={async () => {
-              await router.push({
-                pathname: '/profile',
-                query: {
-                  redirect: 'false',
-                },
-              });
-            }}
-          >
-            <Text variant="Body02">View all names</Text>
-          </PopoverOption>
+          {!ONLY_INSCRIPTIONS && (
+            <PopoverOption
+              onClick={async () => {
+                await router.push({
+                  pathname: '/profile',
+                  query: {
+                    redirect: 'false',
+                  },
+                });
+              }}
+            >
+              <Text variant="Body02">View all names</Text>
+            </PopoverOption>
+          )}
+
           <PopoverOption onClick={async () => await switchAccounts()}>
             <Text variant="Body02">Switch accounts</Text>
           </PopoverOption>

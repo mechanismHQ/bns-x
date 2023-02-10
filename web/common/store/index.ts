@@ -9,7 +9,7 @@ import { createAssetInfo } from 'micro-stacks/transactions';
 import { ClarigenClient } from '@clarigen/web';
 import { atomFamily } from 'jotai/utils';
 import { atomsWithQuery } from 'jotai-tanstack-query';
-import { getNetworkKey } from '@common/constants';
+import { getNetworkKey, ONLY_INSCRIPTIONS } from '@common/constants';
 import isEqual from 'lodash-es/isEqual';
 import { BnsxContractsClient } from '@bns-x/client';
 
@@ -127,7 +127,8 @@ export const txReceiptState = atomFamily((txid: string | undefined) => {
 export const pageTitleState = atom(get => {
   const title = get(docTitleState);
   const suffix = title ? `- ${title}` : '';
-  return `Dots ${suffix}`;
+  const prefix = ONLY_INSCRIPTIONS ? 'BNS' : 'Dots';
+  return `${prefix} ${suffix}`;
 });
 
 export const docTitleState = atom('');
