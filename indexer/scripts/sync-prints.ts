@@ -1,4 +1,4 @@
-import { StacksPrisma, ContractL } from '../src/stacks-api-db/client';
+import { StacksPrisma } from '../src/stacks-api-db/client';
 import type { Prisma } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { deserializeCV, cvToTrueValue, cvToHex } from 'micro-stacks/clarity';
