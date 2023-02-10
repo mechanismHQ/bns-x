@@ -12,7 +12,7 @@ import {
 } from '@store/names';
 import { Button } from '@components/button';
 import { useSignZonefile } from '@common/hooks/use-sign-zonefile';
-import { LinkText } from '@components/link';
+import { Link, LinkText } from '@components/link';
 import { Input } from '@components/form';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { useAtomCallback } from 'jotai/utils';
@@ -86,9 +86,26 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
   if (!isSignedIn) {
     return (
       <Stack spacing="$10" px="29px">
-        <Text variant="Heading02">Inscribe your .btc name</Text>
-        <Text variant="Body01">You&apos;ll need to login to inscribe your name</Text>
-        <Button onClick={signIn}>Connect Wallet</Button>
+        <Text variant="Heading02">Inscribe your .btc name on Ordinals</Text>
+        <Text variant="Body01">
+          Establish the provenance of your BNS name by writing a copy of your zonefile to Bitcoin
+          using ordinals
+        </Text>
+        <Stack spacing="$4">
+          <Text variant="Heading04">What is BNS?</Text>
+          <Text variant="Body01">
+            The Bitcoin Naming System is a protocol established in 2015. It started as an experiment
+            on Namecoin and quickly branched into it&apos;s own protocol. To date, there are over
+            250,000 names registered using BNS.
+          </Text>
+          <Box>
+            <Link href="https://docs.stacks.co/docs/stacks-academy/bns" target="_blank">
+              Learn more about BNS
+            </Link>
+          </Box>
+        </Stack>
+        {/* <Text variant="Body01">Connect your wallet to inscribe your BNS name</Text> */}
+        {/* <Button onClick={signIn}>Connect Wallet</Button> */}
       </Stack>
     );
   }
@@ -114,8 +131,8 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
     <Stack spacing="$8" px="29px">
       <Text variant="Heading02">Inscribe your .btc name on Ordinals</Text>
       <Text variant="Body01">
-        Establish the provenance of your BNS name by inscribing your zonefile on the Bitcoin
-        blockchain.
+        Establish the provenance of your BNS name by writing a copy of your zonefile to Bitcoin
+        using ordinals
       </Text>
       {signedInscription === null && (
         <>
