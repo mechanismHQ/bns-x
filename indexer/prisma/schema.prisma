@@ -44,7 +44,7 @@ model InscriptionZonefiles {
   output                 String
   location               String
   zonefileRaw            String
-  timestamp              Int
+  timestamp              BigInt
   genesisHeight          Int
   outputValue            Int
   genesisTransaction     String

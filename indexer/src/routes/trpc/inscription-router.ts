@@ -89,7 +89,7 @@ export const inscriptionRouter = router({
       const inscription = await fetchInscription(inscriptionId);
       const content = await verifyInscriptionZonefile(inscription.content);
       return {
-        success: true,
+        success: content.verified,
         inscriptionId,
         inscription,
         zonefile: content,

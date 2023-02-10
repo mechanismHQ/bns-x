@@ -17,8 +17,13 @@ export const uploadInscriptionMutation = atomsWithMutation<
   mutationKey: ['upload-inscription', get(inscriptionIdAtom)],
   mutationFn: async () => {
     const inscriptionId = get(inscriptionIdAtom);
+    const validation = await trpc.inscriptions.fetchZonefile.query({ inscriptionId });
     console.log('inscriptionId', inscriptionId);
-    const result = await trpc.inscriptions.create.mutate({ inscriptionId });
-    return result;
+    console.log('validation', validation);
+    if (validation.success) {
+      const result = await trpc.inscriptions.create.mutate({ inscriptionId });
+      return result;
+    }
+    throw new Error('Invalid inscription.');
   },
 }));
