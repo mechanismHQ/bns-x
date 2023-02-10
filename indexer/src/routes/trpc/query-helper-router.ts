@@ -21,7 +21,7 @@ export const queryHelperRouter = router({
       })
     )
     .query(async ({ ctx, input: { name, namespace } }) => {
-      const details = await getNameDetails(name, namespace);
+      const details = await getNameDetails(name, namespace, ctx.bnsxDb);
       if (details === null) {
         throw new TRPCError({
           message: `Unable to fetch details for ${name}.${namespace}`,

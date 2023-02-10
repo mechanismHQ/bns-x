@@ -4,25 +4,32 @@ import type { NameInfoResponse, NamesByAddressResponse } from '../routes/api-typ
 import type { StacksPrisma } from '../stacks-api-db/client';
 import { getAddressNamesDb } from './stacks-db';
 import { Histogram, Summary } from 'prom-client';
+import type { PrismaClient } from '@prisma/client';
 
 export async function getNameDetails(
   name: string,
-  namespace: string
+  namespace: string,
+  db?: PrismaClient
 ): Promise<NameInfoResponse | null> {
   try {
-    const [api, query] = await Promise.all([
+    const [api, query, inscribedZf] = await Promise.all([
       getNameDetailsApi(name, namespace),
       getNameDetailsQuery(name, namespace),
+      db ? getInscribedZonefile(name, namespace, db) : Promise.resolve(null),
     ]);
+    const zonefile = inscribedZf ? inscribedZf.zonefileRaw : api.zonefile;
     if (query === null) {
       return {
         ...api,
+        zonefile,
         isBnsx: false,
       };
     }
+
     return {
       ...api,
       ...query,
+      zonefile,
       address: query.owner,
       isBnsx: true,
     };
@@ -30,6 +37,19 @@ export async function getNameDetails(
     console.warn(`Error fetching name details for ${name}.${namespace}:`, error);
     return null;
   }
+}
+
+export async function getInscribedZonefile(name: string, namespace: string, db: PrismaClient) {
+  const zf = await db.inscriptionZonefiles.findFirst({
+    where: {
+      name,
+      namespace,
+    },
+    orderBy: {
+      timestamp: 'desc',
+    },
+  });
+  return zf;
 }
 
 const getAddressNamesHist = new Histogram({
