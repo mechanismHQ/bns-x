@@ -60,8 +60,9 @@ export const MenuName: React.FC = () => {
       alignItems={'center'}
       pr="50px"
       onClick={async () => {
+        const pathname = ONLY_INSCRIPTIONS ? '/' : '/profile';
         await router.push({
-          pathname: '/profile',
+          pathname,
           query: {
             redirect: 'false',
           },
