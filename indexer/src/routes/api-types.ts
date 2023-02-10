@@ -43,7 +43,9 @@ export interface NameInfoResponseBnsx extends BnsGetNameInfoResponse {
   legacy: LegacyDetails | null;
 }
 
-export type NameInfoResponse = NameInfoResponseLegacy | NameInfoResponseBnsx;
+export type NameInfoResponse = (NameInfoResponseLegacy | NameInfoResponseBnsx) & {
+  inscriptionId?: string;
+};
 
 // export interface NamesByAddressResponse extends BnsNamesOwnByAddressResponse {
 //   primaryName: string;

@@ -18,10 +18,12 @@ export async function getNameDetails(
       db ? getInscribedZonefile(name, namespace, db) : Promise.resolve(null),
     ]);
     const zonefile = inscribedZf ? inscribedZf.zonefileRaw : api.zonefile;
+    const inscriptionId = inscribedZf?.inscriptionId;
     if (query === null) {
       return {
         ...api,
         zonefile,
+        inscriptionId,
         isBnsx: false,
       };
     }
@@ -30,6 +32,7 @@ export async function getNameDetails(
       ...api,
       ...query,
       zonefile,
+      inscriptionId,
       address: query.owner,
       isBnsx: true,
     };
