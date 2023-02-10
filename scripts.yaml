@@ -54,6 +54,8 @@ scripts:
 
   web: pnpm --filter web dev
 
+  tunnel-prod: NEXT_PUBLIC_APP_URL="https://dots.loca.lt" pnpm --filter web dev
+
   lt-app:
     cmd: NEXT_PUBLIC_APP_URL="https://dots.loca.lt" NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev
     # cmd: NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev

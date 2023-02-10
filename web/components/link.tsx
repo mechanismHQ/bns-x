@@ -1,7 +1,7 @@
 import React from 'react';
 import NextLink from 'next/link';
 // import { getTxUrl } from '../common/utils';
-import type { BoxProps } from '@nelson-ui/react';
+import type { BoxProps, StackProps } from '@nelson-ui/react';
 import { Box } from '@nelson-ui/react';
 import { Stack } from '@nelson-ui/react';
 import { Text } from '@nelson-ui/react';
@@ -77,8 +77,8 @@ const StyledLinkContainer = styled(Stack, {
 
 export const LinkText: React.FC<LinkProps> = ({ href, prefetch, children, ...props }) => {
   return (
-    <StyledLinkContainer spacing="0">
-      <NextLink href={href} passHref>
+    <StyledLinkContainer as="div" spacing="0" display={props?.display ?? 'block'}>
+      <NextLink href={href} passHref prefetch>
         <LinkInner textDecoration="none" {...props} as="a">
           {children}
         </LinkInner>
