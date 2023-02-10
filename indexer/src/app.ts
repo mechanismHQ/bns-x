@@ -16,6 +16,8 @@ import { join } from 'path';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { validatorCompiler, serializerCompiler } from 'fastify-type-provider-zod';
 import { serverMetricsPlugin } from './metrics';
+import { TRPCError } from '@trpc/server';
+import { getHTTPStatusCodeFromError } from '@trpc/server/http';
 
 const options: FastifyServerOptions = {};
 if (process.env.NODE_ENV === 'test') {
@@ -35,6 +37,15 @@ export async function makeApp() {
   if (process.env.STACKS_API_POSTGRES) {
     await app.register(prismaPlugin);
   }
+
+  app.setErrorHandler(function (error, request, reply) {
+    console.error(error);
+    if (error instanceof TRPCError) {
+      const status = getHTTPStatusCodeFromError(error);
+      return reply.status(status).send({ error: error.message, code: error.code });
+    }
+    return reply.status(500).send({ error: 'Internal server error' });
+  });
 
   await app.register(metricsPlugin);
 

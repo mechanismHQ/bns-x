@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("BNSX_DB_URL")
 }
 
 model PrintEvent {
@@ -29,6 +29,25 @@ model PrintEvent {
 
   @@id([blockHeight, microblockSequence, txIndex, eventIndex])
   @@index([blockHeight(sort: Desc), microblockSequence(sort: Desc), txIndex(sort: Desc), eventIndex(sort: Desc)])
+}
+
+model InscriptionZonefiles {
+  inscriptionId          String  @id
+  name                   String
+  namespace              String
+  inscriptionContent     String
+  inscriptionContentType String
+  stxAddress             String?
+  btcAddress             String?
+  inscriptionOwner       String
+  sat                    String
+  output                 String
+  location               String
+  zonefileRaw            String
+  timestamp              Int
+  genesisHeight          Int
+  outputValue            Int
+  genesisTransaction     String
 }
 
 // OLD:

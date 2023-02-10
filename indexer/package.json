@@ -53,13 +53,15 @@
     "graphql-scalars": "1.20.1",
     "graphql-yoga": "3.1.1",
     "micro-stacks": "1.1.4",
+    "node-html-parser": "^6.1.4",
     "p-queue": "6.6.2",
     "prisma": "4.10.0",
     "prom-client": "^14.1.1",
     "stacks-encoding-native-js": "1.0.0",
     "tsup": "^6.5.0",
     "typescript": "4.8.4",
-    "zod": "3.20.0"
+    "zod": "3.20.0",
+    "@fungible-systems/zone-file": "^2.0.0"
   },
   "devDependencies": {
     "@pnpm/make-dedicated-lockfile": "^0.4.9",

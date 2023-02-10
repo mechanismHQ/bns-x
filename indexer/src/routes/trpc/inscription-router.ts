@@ -1,0 +1,104 @@
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+// import { getAddressNames } from "../fetchers/query-helper";
+import { getNameDetails, getAddressNames } from '../../fetchers';
+import { fetchInscription, verifyInscriptionZonefile } from '../../fetchers/inscriptions';
+import { namesByAddressBnsxSchema } from '../api-types';
+import { router, procedure } from './base';
+
+export const createInscriptionInput = z.object({
+  inscriptionId: z.string(),
+});
+
+export const inscriptionRouter = router({
+  create: procedure
+    .input(createInscriptionInput)
+    .output(
+      z.object({
+        success: z.boolean(),
+        inscriptionId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { inscriptionId } = input;
+      const db = ctx.bnsxDb;
+      if (typeof db === 'undefined') {
+        throw new TRPCError({
+          message: ``,
+          code: 'INTERNAL_SERVER_ERROR',
+        });
+      }
+      try {
+        const inscription = await fetchInscription(inscriptionId);
+        const content = await verifyInscriptionZonefile(inscription.content);
+        if (!content.verified) {
+          throw new TRPCError({
+            message: 'The zonefile inscription provided is not valid',
+            code: 'BAD_REQUEST',
+          });
+        }
+        const dbData = {
+          inscriptionContent: inscription.content,
+          inscriptionContentType: inscription.contentType,
+          sat: inscription.sat,
+          inscriptionId: inscription.id,
+          inscriptionOwner: inscription.address,
+          output: inscription.output,
+          location: inscription.location,
+          name: content.zonefileInfo.name,
+          namespace: content.zonefileInfo.namespace,
+          stxAddress: content.zonefileInfo.owner,
+          zonefileRaw: content.zonefileInfo.zonefile,
+          timestamp: inscription.timestamp,
+          genesisHeight: inscription.genesisHeight,
+          genesisTransaction: inscription.genesisTransaction,
+          outputValue: inscription.outputValue,
+        };
+        console.log(dbData);
+        // const model = await db.inscriptionZonefiles.upsert({
+        //   where: {
+        //     inscriptionId: inscription.id,
+        //   },
+        //   create: dbData,
+        //   update: dbData,
+        // });
+        // console.log('New zonefile inscription!', model);
+        return {
+          success: true,
+          inscriptionId,
+        };
+      } catch (error) {
+        console.error(error);
+        throw new TRPCError({
+          message: `Unable to fetch details for ${inscriptionId}`,
+          code: 'NOT_FOUND',
+        });
+      }
+    }),
+
+  fetchZonefile: procedure.input(createInscriptionInput).query(async ({ ctx, input }) => {
+    const { inscriptionId } = input;
+    const db = ctx.bnsxDb;
+    if (typeof db === 'undefined') {
+      throw new TRPCError({
+        message: ``,
+        code: 'INTERNAL_SERVER_ERROR',
+      });
+    }
+    try {
+      const inscription = await fetchInscription(inscriptionId);
+      const content = await verifyInscriptionZonefile(inscription.content);
+      return {
+        success: true,
+        inscriptionId,
+        inscription,
+        zonefile: content,
+      };
+    } catch (error) {
+      throw new TRPCError({
+        message: `Unable to fetch details for ${inscriptionId}`,
+        code: 'NOT_FOUND',
+      });
+    }
+  }),
+});
