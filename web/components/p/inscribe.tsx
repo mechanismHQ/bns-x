@@ -186,13 +186,14 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
             <Button onClick={copyToClipboard}>Copy to clipboard</Button>
             <Button onClick={downloadInscription}>Download file</Button>
           </Stack>
-          <Text variant="Heading05">Step 3: broadcast your zonefile to the BNS API</Text>
+          <Text variant="Heading05">Step 3 (optional): broadcast your zonefile to the BNS API</Text>
           <Text variant="Body01">
-            This step is temporarily required until the BNS API automatically resolves inscribed
-            zonefiles.
+            If you want to expose your zonefile through apps that use the BNS API, broadcast your
+            inscription. This step is temporarily required until the BNS API automatically resolves
+            inscribed zonefiles.
           </Text>
           <Stack spacing="$4">
-            <Text variant="Body01">
+            <Text variant="Body02">
               Paste in your inscription&apos;s ID. This can be found on your inscription&apos;s page
               on ordinals.com
             </Text>
