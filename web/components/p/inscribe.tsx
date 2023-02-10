@@ -193,7 +193,7 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
           </Text>
           <Stack spacing="$4">
             <Text variant="Body01">
-              Paste in your inscription&aposs ID. This can be found on your inscription&apos;s page
+              Paste in your inscription&apos;s ID. This can be found on your inscription&apos;s page
               on ordinals.com
             </Text>
             <Box>

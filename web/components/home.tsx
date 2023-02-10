@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Box, Flex, Stack } from '@nelson-ui/react';
 import { Text } from './text';
 import { Button } from '@components/button';
@@ -6,6 +6,8 @@ import { Link } from '@components/link';
 import { useAuth } from '@micro-stacks/react';
 import { useRouter } from 'next/router';
 import { Profile } from '@components/profile';
+import { ONLY_INSCRIPTIONS } from '@common/constants';
+import { Inscribe } from '@components/p/inscribe';
 
 export const Home: React.FC<{ children?: React.ReactNode }> = () => {
   const { openAuthRequest, isSignedIn } = useAuth();
@@ -14,6 +16,10 @@ export const Home: React.FC<{ children?: React.ReactNode }> = () => {
   const getStarted = useCallback(() => {
     void openAuthRequest({});
   }, [router]);
+
+  if (ONLY_INSCRIPTIONS) {
+    return <Inscribe />;
+  }
 
   if (isSignedIn) {
     return <Profile />;
