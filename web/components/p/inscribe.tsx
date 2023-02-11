@@ -179,8 +179,8 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
                 Gamma
               </LinkText>
               <Text variant="Body01">and</Text>
-              <LinkText variant="Body01" href="https://gamma.io/ordinals" target="_blank">
-                SatoshiBot
+              <LinkText variant="Body01" href="https://ordinalsbot.com" target="_blank">
+                OrdinalsBot
               </LinkText>
               <Text variant="Body01">.</Text>
             </Stack>
