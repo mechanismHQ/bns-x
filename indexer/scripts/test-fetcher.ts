@@ -1,10 +1,10 @@
-import { StacksPrisma } from '../src/stacks-api-db/client';
+import { StacksDb } from '@db';
 import { getNamesForAddress, getPrimaryNameId, getTotalNames } from '../src/fetchers/stacks-db';
 import { registryContract } from '../src/contracts';
 import { getContractParts } from '../src/utils';
 
 async function run() {
-  const db = new StacksPrisma();
+  const db = new StacksDb();
 
   await db.$connect();
 

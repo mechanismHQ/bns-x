@@ -1,14 +1,13 @@
-import { StacksPrisma } from '../src/stacks-api-db/client';
-import type { Prisma } from '@prisma/client';
-import { PrismaClient } from '@prisma/client';
-import { deserializeCV, cvToTrueValue, cvToHex } from 'micro-stacks/clarity';
-import { bytesToHex, hexToBytes } from 'micro-stacks/common';
+import type { BnsDbTypes } from '@db';
+import { StacksDb, BnsDb } from '@db';
+import { deserializeCV } from 'micro-stacks/clarity';
+import { hexToBytes } from 'micro-stacks/common';
 import { decodeClarityValue } from 'stacks-encoding-native-js';
 import type { ContractLogs } from '../prisma/generated/stacks-api-schema';
 import { cvToJSON } from '@clarigen/core';
 
-let prisma: PrismaClient;
-let stacksPrisma: StacksPrisma;
+let prisma: BnsDb;
+let stacksPrisma: StacksDb;
 
 type LogKeys = ['block_height', 'microblock_sequence', 'tx_index', 'event_index'][number];
 
@@ -61,13 +60,13 @@ async function getLogs(lastLog?: ContractLogs) {
 
 // Create or update "printEvent" table based on raw logs
 async function processLogs(logs: ContractLogs[]) {
-  const mappedLogs: (ContractLogs & { json: any; hex: Uint8Array })[] = [];
+  const mappedLogs: (ContractLogs & { json: BnsDbTypes.InputJsonValue; hex: Uint8Array })[] = [];
 
   logs.forEach(log => {
     const hex = log.value;
     const dec = decodeClarityValue(hex);
     const cv = deserializeCV(dec.hex);
-    const value = cvToJSON(cv);
+    const value: BnsDbTypes.InputJsonValue = cvToJSON(cv);
     console.log('value', value);
     console.log(log.contract_identifier);
     mappedLogs.push({
@@ -78,7 +77,7 @@ async function processLogs(logs: ContractLogs[]) {
   });
 
   const syncs = mappedLogs.map(async log => {
-    const baseProps: Prisma.PrintEventCreateInput = {
+    const baseProps: BnsDbTypes.PrintEventCreateInput = {
       stacksApiId: log.id,
       microblockCanonical: log.microblock_canonical,
       canonical: log.canonical,
@@ -115,8 +114,8 @@ async function processLogs(logs: ContractLogs[]) {
 }
 
 async function run() {
-  stacksPrisma = new StacksPrisma();
-  prisma = new PrismaClient();
+  stacksPrisma = new StacksDb();
+  prisma = new BnsDb();
 
   await Promise.all([prisma.$connect(), stacksPrisma.$connect()]);
 

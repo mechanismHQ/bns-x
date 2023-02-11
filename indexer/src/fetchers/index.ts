@@ -1,7 +1,7 @@
 import { getLegacyName, getNameDetails as getNameDetailsQuery } from './query-helper';
 import { getAddressNamesApi, getNameDetailsApi } from './stacks-api';
 import type { NameInfoResponse, NamesByAddressResponse } from '../routes/api-types';
-import type { StacksPrisma } from '../stacks-api-db/client';
+import type { StacksDb } from '@db';
 import { getAddressNamesDb } from './stacks-db';
 import { Histogram, Summary } from 'prom-client';
 import type { PrismaClient } from '@prisma/client';
@@ -81,7 +81,7 @@ const getAddressNamesSummary = new Summary({
 
 export async function getAddressNames(
   address: string,
-  db?: StacksPrisma
+  db?: StacksDb
 ): Promise<NamesByAddressResponse> {
   const end = getAddressNamesHist.startTimer();
   const endSum = getAddressNamesSummary.startTimer();

@@ -47,7 +47,6 @@ export async function fetchInscription(inscriptionId: string): Promise<Inscripti
 
   const html = parse(body);
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const dl = html.querySelector('main dl')!;
   const meta = parseMeta(dl.childNodes);
   const content = await fetchInscriptionContent(inscriptionId);
@@ -70,7 +69,7 @@ export function convertInscriptionMeta(meta: InscriptionMeta): Inscription {
 
 function toCamel(key: string) {
   const parts = key.split(' ');
-  let final = parts[0] as string;
+  let final = parts[0] ?? '';
   parts.slice(1).forEach(part => {
     final += part[0]?.toUpperCase();
     final += part.slice(1);

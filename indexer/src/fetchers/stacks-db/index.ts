@@ -1,5 +1,5 @@
 import { registryContract, registryContractAsset } from '../../contracts';
-import type { StacksPrisma } from '../../stacks-api-db/client';
+import type { StacksDb } from '@db';
 import { decodeClarityValue } from 'stacks-encoding-native-js';
 import {
   deserializeCV,
@@ -16,7 +16,7 @@ import type { NamesByAddressResponse } from '../../routes/api-types';
 import { getLegacyName } from '../query-helper';
 import { fetchPrimaryId } from '../stacks-api';
 
-export async function getAssetIds(address: string, db: StacksPrisma) {
+export async function getAssetIds(address: string, db: StacksDb) {
   const custodies = await db.nftCustody.findMany({
     where: {
       recipient: address,
@@ -37,7 +37,7 @@ function deserializeTuple<T>(row: { value: Buffer }): T {
   return cvToJSON<T>(deserializeCV(decodeClarityValue(row.value).hex));
 }
 
-export async function getPrimaryNameId(address: string, db: StacksPrisma) {
+export async function getPrimaryNameId(address: string, db: StacksDb) {
   const principalCV = address.includes('.')
     ? contractPrincipalCV(address)
     : standardPrincipalCV(address);
@@ -73,7 +73,7 @@ export async function getPrimaryNameId(address: string, db: StacksPrisma) {
   return print;
 }
 
-export async function getNamesForAddress(address: string, db: StacksPrisma) {
+export async function getNamesForAddress(address: string, db: StacksDb) {
   const asset = registryContractAsset();
   const registry = registryContract().identifier;
 
@@ -116,7 +116,7 @@ export async function getNamesForAddress(address: string, db: StacksPrisma) {
 
 export async function getAddressNamesDb(
   address: string,
-  db: StacksPrisma
+  db: StacksDb
 ): Promise<NamesByAddressResponse> {
   const [_legacy, _names, primaryId] = await Promise.all([
     getLegacyName(address),
@@ -146,7 +146,7 @@ export async function getAddressNamesDb(
   };
 }
 
-export async function getTotalNames(db: StacksPrisma) {
+export async function getTotalNames(db: StacksDb) {
   const count = db.nftCustody.count({
     where: {
       assetIdentifier: registryContractAsset(),

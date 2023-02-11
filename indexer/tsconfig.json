@@ -1,8 +1,8 @@
 {
   // "extends": "@tsconfig/node18",
   "compilerOptions": {
-    "lib": ["es2022"],
-    "module": "commonjs",
+    "lib": ["ESNext"],
+    "module": "ESNext",
     "target": "es2022",
 
     "strict": true,
@@ -16,15 +16,23 @@
     "allowUnreachableCode": false,
     // "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
     // "noImplicitOverride": true,
     // "noImplicitReturns": true,
     // "noPropertyAccessFromIndexSignature": true,
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
     // "importsNotUsedAsValues": "error",
-    "checkJs": true
+    "checkJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@db": ["./src/db/index"],
+      "@fetchers/*": ["./src/fetchers/*"],
+      "@fetchers": ["./src/fetchers"],
+      "@routes/*": ["./src/routes/*"]
+    }
   },
   "$schema": "https://json.schemastore.org/tsconfig",
-  "include": ["src", "scripts"],
+  "include": ["**/*.ts", "**/*.tsx", ".eslintrc.js"],
   "exclude": ["node_modules"]
 }

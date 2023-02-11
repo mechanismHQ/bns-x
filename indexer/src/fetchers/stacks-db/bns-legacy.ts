@@ -1,4 +1,4 @@
-import type { StacksPrisma } from '../../stacks-api-db/client';
+import type { StacksDb } from '@db';
 
 export async function getSubdomainForAddress({
   address,
@@ -7,7 +7,7 @@ export async function getSubdomainForAddress({
 }: {
   address: string;
   maxHeight: number;
-  db: StacksPrisma;
+  db: StacksDb;
 }) {
   const rows = await db.$queryRaw`
     WITH addr_subdomains AS (
@@ -34,6 +34,6 @@ export async function getSubdomainForAddress({
   `;
 }
 
-// export async function getImportedNameForAddress(address: string, db: StacksPrisma) {
+// export async function getImportedNameForAddress(address: string, db: StacksDb) {
 
 // }
