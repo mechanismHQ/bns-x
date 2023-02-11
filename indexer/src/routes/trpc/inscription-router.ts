@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { expectDb } from '../../db/db-utils';
 // import { getAddressNames } from "../fetchers/query-helper";
 import { getNameDetails, getAddressNames } from '../../fetchers';
 import { fetchInscription, verifyInscriptionZonefile } from '../../fetchers/inscriptions';
@@ -101,4 +102,28 @@ export const inscriptionRouter = router({
       });
     }
   }),
+
+  fetchAll: procedure
+    .input(z.object({ skip: z.optional(z.number().positive()) }))
+    .query(async ({ ctx, input }) => {
+      const db = expectDb(ctx.bnsxDb);
+      const zonefiles = await db.inscriptionZonefiles.findMany({
+        distinct: ['name', 'namespace'],
+        orderBy: {
+          timestamp: 'desc',
+        },
+        skip: input.skip ?? 0,
+      });
+
+      return zonefiles.map(z => {
+        const { name, namespace, inscriptionId, genesisHeight, timestamp } = z;
+        return {
+          name,
+          namespace,
+          inscriptionId,
+          genesisHeight,
+          timestamp,
+        };
+      });
+    }),
 });
