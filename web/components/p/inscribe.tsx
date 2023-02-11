@@ -136,7 +136,7 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
       </Text>
       {signedInscription === null && (
         <>
-          <Text variant="Heading05">Step 1: prove ownership by signing your zonefile</Text>
+          <Text variant="Heading035">Step 1: prove ownership by signing your zonefile</Text>
           <Stack spacing="$4">
             <Text variant="Body01">
               Add your BTC address to enable BTC transfers to your BNS name:
@@ -163,7 +163,7 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
 
       {signedInscription !== null && (
         <>
-          <Text variant="Heading05">Step 2: publish your inscription</Text>
+          <Text variant="Heading035">Step 2: publish your inscription</Text>
           <Stack spacing="$4">
             <Stack isInline spacing="5px">
               <Text variant="Body01">You can upload an inscription using </Text>
@@ -203,17 +203,27 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
             <Button onClick={copyToClipboard}>Copy to clipboard</Button>
             <Button onClick={downloadInscription}>Download file</Button>
           </Stack>
-          <Text variant="Heading05">Step 3 (optional): broadcast your zonefile to the BNS API</Text>
-          <Text variant="Body01">
-            If you want to expose your zonefile through apps that use the BNS API, broadcast your
-            inscription. This step is temporarily required until the BNS API automatically resolves
-            inscribed zonefiles.
+          <Text variant="Heading035">
+            Step 3 (optional): broadcast your zonefile to the BNS API
           </Text>
+
           <Stack spacing="$4">
-            <Text variant="Body02">
-              Paste in your inscription&apos;s ID. This can be found on your inscription&apos;s page
-              on ordinals.com
+            <Text variant="Body01">
+              If you want apps that use the BNS API to see your zonefile, enter your{' '}
+              <span style={{ fontWeight: '500' }}>inscription ID</span> below and click submit.
             </Text>
+            <Stack isInline spacing="5px">
+              <Text variant="Body01">This can be found on your inscription&apos;s page on </Text>
+              <LinkText variant="Body01" href="https://ordinals.com" target="_blank">
+                ordinals.com
+              </LinkText>
+              <Text variant="Body01">or </Text>
+              <LinkText variant="Body01" href="https://gamma.io" target="_blank">
+                gamma.io
+              </LinkText>
+              <Text variant="Body01">.</Text>
+            </Stack>
+
             <Box>
               <Input placeholder="Inscription ID or URL" {...inscriptionId.props} />
             </Box>
