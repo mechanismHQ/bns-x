@@ -185,20 +185,24 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
               <Text variant="Body01">.</Text>
             </Stack>
             <Text variant="Body01">
-              Use the &quot;plain text&quot; inscription type and use this as the content:
+              Use the &quot;plain text&quot; inscription type if you&apos;re using Gamma, or make
+              sure the file&apos;s type is `.txt` if using the Ordinals CLI.
             </Text>
           </Stack>
-          <Box
-            backgroundColor="$primary-action-subdued"
-            // maxWidth="500px"
-            borderRadius="5px"
-            px="12px"
-            overflowX="scroll"
-          >
-            <Text variant="Body01">
-              <pre>{inscriptionZonefile}</pre>
-            </Text>
-          </Box>
+          <Stack spacing="$4">
+            <Text variant="Body01">Use this as the inscription&apos;s content:</Text>
+            <Box
+              backgroundColor="$primary-action-subdued"
+              // maxWidth="500px"
+              borderRadius="5px"
+              px="12px"
+              overflowX="scroll"
+            >
+              <Text variant="Body01">
+                <pre>{inscriptionZonefile}</pre>
+              </Text>
+            </Box>
+          </Stack>
           <Stack isInline>
             <Button onClick={copyToClipboard}>Copy to clipboard</Button>
             <Button onClick={downloadInscription}>Download file</Button>
