@@ -165,32 +165,32 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
         <>
           <Text variant="Heading035">Step 2: publish your inscription</Text>
           <Stack spacing="$4">
-            <Stack isInline spacing="5px">
-              <Text variant="Body01">You can upload an inscription using </Text>
-              <LinkText
+            <Text variant="Body01">
+              You can upload an inscription using{' '}
+              <Link
                 variant="Body01"
                 href="https://docs.ordinals.com/guides/inscriptions.html"
                 target="_blank"
               >
                 ord
-              </LinkText>
-              <Text variant="Body01">or through a service like</Text>
-              <LinkText variant="Body01" href="https://gamma.io/ordinals" target="_blank">
+              </Link>{' '}
+              or through a service like{' '}
+              <Link variant="Body01" href="https://gamma.io/ordinals" target="_blank">
                 Gamma
-              </LinkText>
-              <Text variant="Body01">and</Text>
-              <LinkText variant="Body01" href="https://ordinalsbot.com" target="_blank">
+              </Link>{' '}
+              and{' '}
+              <Link variant="Body01" href="https://ordinalsbot.com" target="_blank">
                 OrdinalsBot
-              </LinkText>
-              <Text variant="Body01">.</Text>
-            </Stack>
+              </Link>
+              .
+            </Text>
             <Text variant="Body01">
               Use the &quot;plain text&quot; inscription type if you&apos;re using Gamma, or make
               sure the file&apos;s type is `.txt` if using the Ordinals CLI.
             </Text>
           </Stack>
           <Stack spacing="$4">
-            <Text variant="Body01">Use this as the inscription&apos;s content:</Text>
+            <Text variant="Heading04">Inscription content:</Text>
             <Box
               backgroundColor="$primary-action-subdued"
               // maxWidth="500px"
@@ -216,17 +216,17 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
               If you want apps that use the BNS API to see your zonefile, enter your{' '}
               <span style={{ fontWeight: '500' }}>inscription ID</span> below and click submit.
             </Text>
-            <Stack isInline spacing="5px">
-              <Text variant="Body01">This can be found on your inscription&apos;s page on </Text>
-              <LinkText variant="Body01" href="https://ordinals.com" target="_blank">
+            <Text variant="Body01">
+              This can be found on your inscription&apos;s page on{' '}
+              <Link variant="Body01" href="https://ordinals.com" target="_blank">
                 ordinals.com
-              </LinkText>
-              <Text variant="Body01">or </Text>
-              <LinkText variant="Body01" href="https://gamma.io" target="_blank">
+              </Link>{' '}
+              or{' '}
+              <Link variant="Body01" href="https://gamma.io" target="_blank">
                 gamma.io
-              </LinkText>
-              <Text variant="Body01">.</Text>
-            </Stack>
+              </Link>
+              .
+            </Text>
 
             <Box>
               <Input placeholder="Inscription ID or URL" {...inscriptionId.props} />
