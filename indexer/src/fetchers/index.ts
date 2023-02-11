@@ -23,7 +23,7 @@ export async function getNameDetails(
       ? {
           blockHeight: inscribedZf.genesisHeight,
           txid: inscribedZf.genesisTransaction,
-          timestamp: new Date(Number(inscribedZf.timestamp)).toString(),
+          timestamp: new Date(Number(inscribedZf.timestamp)).toISOString(),
           sat: inscribedZf.sat,
         }
       : undefined;
