@@ -23,6 +23,7 @@ export const uploadInscriptionMutation = atomsWithMutation<
     if (validation.success) {
       const result = await trpc.inscriptions.create.mutate({ inscriptionId });
       return result;
+      // return { inscriptionId, success: true };
     }
     throw new Error('Invalid inscription.');
   },

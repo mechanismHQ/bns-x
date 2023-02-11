@@ -96,6 +96,7 @@ export const inscriptionRouter = router({
         zonefile: content,
       };
     } catch (error) {
+      console.error(error);
       throw new TRPCError({
         message: `Unable to fetch details for ${inscriptionId}`,
         code: 'NOT_FOUND',
