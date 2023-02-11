@@ -70,7 +70,7 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
 
   const downloadInscription = useAtomCallback(
     useCallback(get => {
-      const zonefile = get(combinedZonefileState);
+      const zonefile = get(inscriptionZonefileState);
       if (zonefile === null) return;
       const lines = zonefile.replace(/\n/g, '\r\n');
       const file = new Blob([lines], { type: 'text/plain' });
