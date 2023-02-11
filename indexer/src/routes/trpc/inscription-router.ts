@@ -122,7 +122,7 @@ export const inscriptionRouter = router({
           namespace,
           inscriptionId,
           genesisHeight,
-          timestamp,
+          timestamp: new Date(timestamp).toString(),
         };
       });
     }),
