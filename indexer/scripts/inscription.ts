@@ -10,7 +10,7 @@ import { inspect } from 'util';
 const inscriptionId = '0060f118cab1c3380b5a8edbbbb9fb9abaed548cf8de95e37f35cd69b3a159f9i0';
 
 const zf = `
-hank.btc - Bitcoin Naming System
+hank.btc - Bitcoin Name System
 ----------
 $ORIGIN hank.btc.
 $TTL 3600

@@ -94,7 +94,7 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
         <Stack spacing="$4">
           <Text variant="Heading04">What is BNS?</Text>
           <Text variant="Body01">
-            The Bitcoin Naming System is a protocol established in 2015. It started as an experiment
+            The Bitcoin Name System is a protocol established in 2014. It started as an experiment
             on Namecoin and quickly branched into it&apos;s own protocol. To date, there are over
             250,000 names registered using BNS.
           </Text>

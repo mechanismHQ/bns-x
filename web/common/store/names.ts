@@ -158,7 +158,7 @@ export const inscriptionZonefileState = atom(get => {
   if (name === null || zonefile === null) {
     return null;
   }
-  let zfPayload = `${name} - Bitcoin Naming System
+  let zfPayload = `${name} - Bitcoin Name System
 ----------
 ${zonefile}
 ----------`;
