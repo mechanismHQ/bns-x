@@ -17,7 +17,7 @@ export function getAppUrl() {
 export function getApiUrl() {
   const url = process.env.NEXT_PUBLIC_API_URL;
   if (url) return url;
-  return 'http://localhost:3002';
+  return 'http://127.0.0.1:3002';
 }
 
 type NetworkKey = typeof DEPLOYMENT_NETWORKS[number];

@@ -11,8 +11,20 @@ import type { AppProps } from 'next/app';
 import type { ClientConfig } from '@micro-stacks/client';
 import { useRouter } from 'next/router';
 import { getNetwork, getAppUrl, ONLY_INSCRIPTIONS } from '@common/constants';
+import type { Atom } from 'jotai';
+import { docTitleState, pageDescriptionState } from '@store/index';
 
-function MyApp({ Component, pageProps }: AppProps) {
+export interface PageProps {
+  dehydratedState: string;
+  meta?: {
+    title: string;
+    description?: string;
+  };
+}
+
+type AtomPair<T = unknown> = [Atom<T>, T];
+
+function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppProps, 'pageProps'>) {
   const router = useRouter();
   const onPersistState: ClientConfig['onPersistState'] = useCallback(
     async (dehydratedState: string) => {
@@ -24,11 +36,20 @@ function MyApp({ Component, pageProps }: AppProps) {
   const onSignOut: ClientConfig['onSignOut'] = useCallback(async () => {
     await destroySession();
     await router.push({ pathname: '/' });
-  }, []);
+  }, [router]);
 
   const appUrl = useMemo(() => {
     return getAppUrl();
   }, []);
+
+  const hydratedAtoms: AtomPair[] = [[queryClientAtom, queryClient]];
+
+  if (pageProps?.meta) {
+    hydratedAtoms.push([docTitleState, pageProps.meta.title]);
+    if (pageProps.meta.description) {
+      hydratedAtoms.push([pageDescriptionState, pageProps.meta.description]);
+    }
+  }
 
   return (
     <ClientProvider
@@ -39,8 +60,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       onSignOut={onSignOut}
       network={getNetwork()}
     >
-      <JotaiClientProvider initialValues={[[queryClientAtom, queryClient]]}>
-        <Component {...pageProps} />
+      <JotaiClientProvider initialValues={hydratedAtoms}>
+        <Component {...(pageProps as any)} />
       </JotaiClientProvider>
     </ClientProvider>
   );

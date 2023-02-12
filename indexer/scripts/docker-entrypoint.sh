@@ -10,4 +10,4 @@ if [ "${DATABASE_URL}" ]; then
   
 fi
 
-exec pnpm tsx scripts/server.ts
+exec npx tsx scripts/server.ts

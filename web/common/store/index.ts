@@ -131,4 +131,6 @@ export const pageTitleState = atom(get => {
   return `${prefix} ${suffix}`;
 });
 
+export const pageDescriptionState = atom('');
+
 export const docTitleState = atom('');

@@ -29,7 +29,7 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
   const { signMessage } = useSignZonefile();
   const signedInscription = useAtomValue(signedInscriptionZonefileAtom);
   const [_, copy] = useCopyToClipboard();
-  const { isSignedIn, openAuthRequest } = useAuthState();
+  const { isSignedIn } = useAuthState();
   const inscriptionId = useInput(useAtom(inscriptionIdAtom));
   const btcAddress = useInput(useAtom(zonefileBtcAddressAtom));
   const setTitle = useSetAtom(docTitleState);
@@ -49,10 +49,6 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
       [copy]
     )
   );
-
-  const signIn = useCallback(() => {
-    void openAuthRequest();
-  }, [openAuthRequest]);
 
   const [uploadResult, uploadMutation] = useAtom(uploadInscriptionMutation[1]);
 

@@ -15,7 +15,11 @@ export const namesForAddressState = atomFamily((address: string) => {
   }))[0];
 }, Object.is);
 
-export const allNostrNamesState = atomsWithQuery(() => ({
+export type NostrName = Awaited<
+  ReturnType<typeof trpc['zonefiles']['allNostr']['query']>
+>['results'][number];
+
+export const allNostrNamesState = atomsWithQuery<NostrName[]>(() => ({
   queryKey: ['all-nostr'],
   refetchInterval: false,
   queryFn: async () => {
