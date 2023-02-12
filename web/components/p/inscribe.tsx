@@ -20,6 +20,7 @@ import { useAuthState } from '@store/micro-stacks';
 import { inscriptionIdAtom, uploadInscriptionMutation } from '@store/inscriptions';
 import { useInput } from '@common/hooks/use-input';
 import { docTitleState } from '@store/index';
+import { CodeBlock } from '@components/code';
 
 export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
   const name = useAtomValue(userNameState);
@@ -145,17 +146,7 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
           </Stack>
           <Stack spacing="$4">
             <Text variant="Body01">Here&apos;s your zonefile:</Text>
-            <Box
-              backgroundColor="$primary-action-subdued"
-              // maxWidth="500px"
-              borderRadius="5px"
-              px="12px"
-              overflowX="scroll"
-            >
-              <Text variant="Body01">
-                <pre>{zonefile}</pre>
-              </Text>
-            </Box>
+            <CodeBlock>{zonefile}</CodeBlock>
           </Stack>
           <Button onClick={signMessage}>Sign your zonefile</Button>
         </>
@@ -191,17 +182,7 @@ export const Inscribe: React.FC<{ children?: React.ReactNode }> = () => {
           </Stack>
           <Stack spacing="$4">
             <Text variant="Heading04">Inscription content:</Text>
-            <Box
-              backgroundColor="$primary-action-subdued"
-              // maxWidth="500px"
-              borderRadius="5px"
-              px="12px"
-              overflowX="scroll"
-            >
-              <Text variant="Body01">
-                <pre>{inscriptionZonefile}</pre>
-              </Text>
-            </Box>
+            <CodeBlock>{inscriptionZonefile}</CodeBlock>
           </Stack>
           <Stack isInline>
             <Button onClick={copyToClipboard}>Copy to clipboard</Button>

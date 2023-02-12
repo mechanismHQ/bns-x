@@ -26,10 +26,11 @@
     "checkJs": true,
     "baseUrl": ".",
     "paths": {
-      "@db": ["./src/db/index"],
+      "@db": ["./src/db"],
       "@fetchers/*": ["./src/fetchers/*"],
       "@fetchers": ["./src/fetchers"],
-      "@routes/*": ["./src/routes/*"]
+      "@routes/*": ["./src/routes/*"],
+      "@db/*": ["./src/db/*"]
     }
   },
   "$schema": "https://json.schemastore.org/tsconfig",

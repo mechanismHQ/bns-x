@@ -11,9 +11,11 @@
   ],
   "private": true,
   "scripts": {
-    "r": "NODE_ENV=development node -r @swc-node/register -r dotenv-flow/config",
-    "rp": "NODE_ENV=production node -r @swc-node/register -r dotenv-flow/config",
-    "dev:mainnet": "pnpm rp scripts/server.ts",
+    "r": "NODE_ENV=development tsx -r dotenv-flow/config",
+    "rw": "NODE_ENV=development tsx -r dotenv-flow/config",
+    "rp": "NODE_ENV=production tsx watch -r dotenv-flow/config",
+    "rpw": "NODE_ENV=production tsx watch -r dotenv-flow/config",
+    "dev:mainnet": "pnpm rpw scripts/server.ts",
     "dev": "pnpm r scripts/server.ts",
     "start": "node -r @swc-node/register scripts/server.ts",
     "test:migrate": "dotenv -e .env.test -- prisma migrate dev --name test-init",
@@ -32,6 +34,7 @@
     "@fastify/cors": "^8.2.0",
     "@fastify/http-proxy": "8.4.0",
     "@fastify/static": "^6.6.1",
+    "@fungible-systems/zone-file": "^2.0.0",
     "@hirosystems/chainhook-types": "1.1.2",
     "@pothos/core": "3.23.1",
     "@pothos/plugin-prisma": "3.37.0",
@@ -57,11 +60,12 @@
     "p-queue": "6.6.2",
     "prisma": "4.10.0",
     "prom-client": "^14.1.1",
+    "punycode": "^2.1.1",
     "stacks-encoding-native-js": "1.0.0",
     "tsup": "^6.5.0",
+    "tsx": "^3.12.3",
     "typescript": "4.8.4",
-    "zod": "3.20.0",
-    "@fungible-systems/zone-file": "^2.0.0"
+    "zod": "3.20.0"
   },
   "devDependencies": {
     "@pnpm/make-dedicated-lockfile": "^0.4.9",

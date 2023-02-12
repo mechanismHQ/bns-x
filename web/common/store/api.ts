@@ -14,3 +14,12 @@ export const namesForAddressState = atomFamily((address: string) => {
     },
   }))[0];
 }, Object.is);
+
+export const allNostrNamesState = atomsWithQuery(() => ({
+  queryKey: ['all-nostr'],
+  refetchInterval: false,
+  queryFn: async () => {
+    const all = await trpc.zonefiles.allNostr.query();
+    return all.results;
+  },
+}))[0];

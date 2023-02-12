@@ -1,10 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { expectDb } from '../../db/db-utils';
-// import { getAddressNames } from "../fetchers/query-helper";
-import { getNameDetails, getAddressNames } from '../../fetchers';
 import { fetchInscription, verifyInscriptionZonefile } from '../../fetchers/inscriptions';
-import { namesByAddressBnsxSchema } from '../api-types';
 import { router, procedure } from './base';
 
 export const createInscriptionInput = z.object({
@@ -107,7 +104,8 @@ export const inscriptionRouter = router({
   fetchAll: procedure
     .input(z.object({ skip: z.optional(z.number().positive()) }))
     .query(async ({ ctx, input }) => {
-      const db = expectDb(ctx.bnsxDb);
+      expectDb(ctx.bnsxDb);
+      const db = ctx.bnsxDb;
       const zonefiles = await db.inscriptionZonefiles.findMany({
         distinct: ['name', 'namespace'],
         orderBy: {
