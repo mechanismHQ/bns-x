@@ -10,4 +10,4 @@ if [ "${DATABASE_URL}" ]; then
   
 fi
 
-exec node -r @swc-node/register scripts/server.ts
+exec pnpm tsx scripts/server.ts
