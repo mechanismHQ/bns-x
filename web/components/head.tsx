@@ -23,6 +23,8 @@ export const Head: React.FC<{ children?: React.ReactNode }> = ({ children }) => 
       <link rel="icon" href={icon} type="image/svg+xml"></link>
       <meta property="og:title" content={titleText} />
       <meta property="og:description" content={description} />
+      <meta property="twitter:title" content={titleText} />
+      <meta property="twitter:description" content={description} />
       {children}
     </NextHead>
   );
