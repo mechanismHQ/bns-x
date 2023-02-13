@@ -1,8 +1,9 @@
+import { fetchDisplayName } from '@fetchers/stacks-api';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 // import { getAddressNames } from "../fetchers/query-helper";
 import { getNameDetails, getAddressNames } from '../../fetchers';
-import { namesByAddressBnsxSchema } from '../api-types';
+import { displayNameResponseSchema, namesByAddressBnsxSchema } from '../api-types';
 import { router, procedure } from './base';
 
 export const queryHelperRouter = router({
@@ -29,6 +30,16 @@ export const queryHelperRouter = router({
         });
       }
       return details;
+    }),
+
+  getDisplayName: procedure
+    .input(z.string())
+    .output(displayNameResponseSchema)
+    .query(async ({ input }) => {
+      const displayName = await fetchDisplayName(input);
+      return {
+        name: displayName,
+      };
     }),
 });
 

@@ -77,6 +77,8 @@ export const bnsxNameSchema = z.object({
   // legacy: z.nullable(legacyPropsSchema),
 });
 
+export const displayNameResponseSchema = z.object({ name: z.nullable(z.string()) });
+
 export const simpleNamesForAddressSchema = z.object({
   names: z.array(z.string()),
 });

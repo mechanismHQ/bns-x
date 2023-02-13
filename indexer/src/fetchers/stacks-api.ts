@@ -103,7 +103,7 @@ export async function getAddressNamesApi(address: string): Promise<NamesByAddres
   };
 }
 
-export async function fetchDisplayName(address: string) {
+export async function fetchDisplayName(address: string): Promise<string | null> {
   const [legacyStrings, bnsxName] = await Promise.all([
     fetchNamesByAddress({
       url: getNodeUrl(),

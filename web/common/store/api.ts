@@ -1,5 +1,5 @@
 import { trpcClient } from '@bns-x/client';
-import { getApiUrl, getAppUrl } from '@common/constants';
+import { getApiUrl } from '@common/constants';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { atomFamily } from 'jotai/utils';
 

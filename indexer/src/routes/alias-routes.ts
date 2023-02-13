@@ -59,13 +59,13 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
     async (req, res) => {
       const { principal } = req.params;
       const { extra } = req.query as { extra?: string };
+      const caller = queryHelperRouter.createCaller(createContext({ req, res }));
       if (!extra) {
-        const name = await fetchDisplayName(principal);
+        const { name } = await caller.getDisplayName(principal);
         const names: string[] = [];
         if (name !== null) names.push(name);
         return res.status(200).send({ names });
       }
-      const caller = queryHelperRouter.createCaller(createContext({ req, res }));
       try {
         const names = await caller.getAddressNames(principal);
         return res.status(200).send(names);
