@@ -7,20 +7,18 @@ import type { NostrName } from '@store/api';
 import { allNostrNamesState } from '@store/api';
 import { trpc } from '@store/api';
 import { useHydrateAtoms } from 'jotai/utils';
+import { withSSRProps } from '@common/page-utils';
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+export const getServerSideProps = withSSRProps(async () => {
   const { results } = await trpc.zonefiles.allNostr.query();
   return {
-    props: {
-      dehydratedState: await getDehydratedStateFromSession(ctx),
-      names: results,
-      meta: {
-        title: 'Nostr directory',
-        description: 'A directory of BNS users with Nostr profiles linked to their names.',
-      },
+    names: results,
+    meta: {
+      title: 'Nostr directory',
+      description: 'A directory of BNS users with Nostr profiles linked to their names.',
     },
   };
-}
+});
 
 const NostrPage: NextPage<{ names: NostrName[] }> = ({ names }) => {
   useHydrateAtoms([[allNostrNamesState, names]]);

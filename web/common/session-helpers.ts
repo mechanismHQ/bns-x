@@ -1,10 +1,12 @@
 import * as Iron from 'iron-session';
-import { cleanDehydratedState } from '@micro-stacks/client';
+import type { ClientConfig } from '@micro-stacks/client';
+import { cleanDehydratedState, createClient } from '@micro-stacks/client';
 import { sessionOptions } from './session';
 
 import type { NextPageContext } from 'next';
 import type { GetServerSidePropsContext } from 'next/types';
 import type { IncomingMessage, ServerResponse } from 'http';
+import { getAppUrl, getNetwork, ONLY_INSCRIPTIONS } from '@common/constants';
 
 export const getIronSession = (req: NextPageContext['req'], res: NextPageContext['res']) => {
   return Iron.getIronSession(req as IncomingMessage, res as ServerResponse, sessionOptions);
@@ -22,3 +24,12 @@ export const getDehydratedStateFromSession = async (ctx: GetServerSidePropsConte
    */
   return dehydratedState ? cleanDehydratedState(dehydratedState) : null;
 };
+
+export function getSessionAccount(dehydratedState?: string) {
+  const config: ClientConfig = {
+    dehydratedState: dehydratedState,
+    network: getNetwork(),
+  };
+  const client = createClient({ config });
+  return client.selectStxAddress(client.getState());
+}

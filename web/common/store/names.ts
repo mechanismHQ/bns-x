@@ -3,12 +3,11 @@ import { atom } from 'jotai';
 import { currentAccountAtom, networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { convertNameBuff, getContractParts } from '../utils';
 import type { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
-import type { NameProperties, WithCombined } from '../types';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { cvToValue } from '@clarigen/core';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { atomFamily } from 'jotai/utils';
-import { namesForAddressState } from './api';
+import { addressDisplayNameState, namesForAddressState } from './api';
 import isEqual from 'lodash-es/isEqual';
 import { trpcClient } from '@bns-x/client';
 import { getApiUrl } from '@common/constants';
@@ -47,9 +46,10 @@ export const userPrimaryNameState = atom(get => {
   return names.primaryProperties;
 });
 
-export const userNameState = atom(get => {
-  const names = get(currentUserNamesState);
-  return names?.names[0] ?? null;
+export const userNameState = atom<string | null>(get => {
+  const address = get(stxAddressAtom);
+  if (!address) return null;
+  return get(addressDisplayNameState(address));
 });
 
 export const currentUserNameIdsState = atom<number[]>(get => {

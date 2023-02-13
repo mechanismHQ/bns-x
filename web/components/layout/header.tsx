@@ -1,20 +1,11 @@
-import React, { Suspense, useMemo } from 'react';
-import { Flex, Box, SpaceBetween, Stack, BoxProps } from '@nelson-ui/react';
-import { Text } from '../text';
-import { useAtom, useAtomValue } from 'jotai';
+import React, { Suspense } from 'react';
+import { SpaceBetween, Stack } from '@nelson-ui/react';
+import { useAtomValue } from 'jotai';
 import { useIsSSR } from '../../common/hooks/use-is-ssr';
-import { SafeSuspense } from '../safe-suspense';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { WalletConnectButton } from '../wallet-connect-button';
-import { userNameState, userPrimaryNameState } from '../../common/store/names';
-import type { LinkProps } from '@components/link';
-import { Link } from '@components/link';
-import { truncateMiddle } from '@common/utils';
-import { useGradient } from '@common/hooks/use-gradient';
-import { useAuth } from '@micro-stacks/react';
 import { LogoIcon } from '@components/icons/logo';
 import { useRouter } from 'next/router';
-import { styled } from '@common/theme';
 import { Menu } from '@components/layout/menu';
 
 export const TokenBalance: React.FC = () => {

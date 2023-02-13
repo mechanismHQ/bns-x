@@ -3,14 +3,16 @@ import { getDehydratedStateFromSession } from '../common/session-helpers';
 import type { NextPage, GetServerSidePropsContext } from 'next';
 import { Layout } from '../components/layout';
 import { Inscribe } from '@components/p/inscribe';
+import { withSSRProps } from '@common/page-utils';
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+export const getServerSideProps = withSSRProps(() => {
   return {
-    props: {
-      dehydratedState: await getDehydratedStateFromSession(ctx),
+    meta: {
+      title: 'Inscribe your zonefile',
+      description: 'Add permanence and provenance to your name by inscribing your zonefile.',
     },
   };
-}
+});
 
 const InscribePage: NextPage = () => {
   return (
