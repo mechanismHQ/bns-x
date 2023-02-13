@@ -28,11 +28,16 @@ export type NameBuff = {
   id?: string | number;
 };
 
-export type NameExtended = NameBase & { combined: string };
+export type ExtraNameProps = {
+  combined: string;
+  decoded: string;
+};
+
+export type NameExtended = NameBase & ExtraNameProps;
 
 export type WithCombined<T extends NameBase | NameBuff> = T extends NameBuff
-  ? Omit<T, 'name' | 'namespace'> & NameBase & { combined: string }
-  : T & { combined: string };
+  ? Omit<T, 'name' | 'namespace'> & NameBase & ExtraNameProps
+  : T & ExtraNameProps;
 
 export type LegacyJson = NonNullable<QueryHelperName['legacy']>;
 

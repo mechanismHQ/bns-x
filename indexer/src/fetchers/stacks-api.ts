@@ -14,6 +14,7 @@ import { convertNameBuff, convertLegacyDetailsJson } from '../contracts/utils';
 import type { NamesByAddressResponse } from '../routes/api-types';
 import type { NamePropertiesJson } from '../contracts/types';
 import { getLegacyName, getPrimaryName } from './query-helper';
+import { toUnicode } from 'punycode';
 
 export async function getNameDetailsApi(name: string, namespace: string) {
   const fqn = `${name}.${namespace}`;
@@ -114,10 +115,11 @@ export async function fetchDisplayName(address: string): Promise<string | null> 
   ]);
 
   if (bnsxName) {
-    return convertNameBuff(bnsxName).combined;
+    return convertNameBuff(bnsxName).decoded;
   }
   if ('names' in legacyStrings) {
-    return legacyStrings.names[0] ?? null;
+    const [name] = legacyStrings.names;
+    return typeof name !== 'undefined' ? toUnicode(name) : null;
   }
   return null;
 }

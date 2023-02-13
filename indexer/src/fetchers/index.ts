@@ -5,6 +5,7 @@ import type { StacksDb } from '@db';
 import { getAddressNamesDb } from './stacks-db';
 import { Histogram, Summary } from 'prom-client';
 import type { PrismaClient } from '@prisma/client';
+import { toUnicode } from 'punycode';
 
 export async function getNameDetails(
   name: string,
@@ -19,6 +20,7 @@ export async function getNameDetails(
     ]);
     const zonefile = inscribedZf ? inscribedZf.zonefileRaw : api.zonefile;
     const inscriptionId = inscribedZf?.inscriptionId;
+    const decoded = toUnicode(`${name}.${namespace}`);
     const inscriptionMeta = inscribedZf
       ? {
           blockHeight: inscribedZf.genesisHeight,
@@ -27,22 +29,24 @@ export async function getNameDetails(
           sat: inscribedZf.sat,
         }
       : undefined;
+    const base = {
+      ...api,
+      zonefile,
+      inscriptionId,
+      inscription: inscriptionMeta,
+      decoded,
+    };
     if (query === null) {
       return {
-        ...api,
-        zonefile,
-        inscriptionId,
-        inscription: inscriptionMeta,
+        ...base,
         isBnsx: false,
       };
     }
 
     return {
-      ...api,
+      ...base,
       ...query,
       zonefile,
-      inscriptionId,
-      inscription: inscriptionMeta,
       address: query.owner,
       isBnsx: true,
     };

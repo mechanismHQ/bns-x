@@ -1,5 +1,6 @@
 import { bytesToAscii, hexToBytes, intToBigInt } from 'micro-stacks/common';
 import type { WithCombined, NameBuff, NameBase, LegacyDetails, LegacyJson } from './types';
+import { toUnicode } from 'punycode';
 
 export function bytesToName(input: string | Uint8Array) {
   if (typeof input === 'string') {
@@ -12,10 +13,12 @@ export function convertNameBuff<T extends NameBuff | NameBase>(nameObj: T): With
   const { name: nameB, namespace: ns, ...rest } = nameObj;
   const name = bytesToName(nameB);
   const namespace = bytesToName(ns);
+  const combined = `${name}.${namespace}`;
   return {
     name,
     namespace,
-    combined: `${name}.${namespace}`,
+    combined,
+    decoded: toUnicode(combined),
     ...rest,
   } as WithCombined<T>;
 }

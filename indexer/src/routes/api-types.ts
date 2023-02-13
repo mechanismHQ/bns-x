@@ -53,7 +53,8 @@ export interface InscriptionMeta {
   };
 }
 
-export type NameInfoResponse = (NameInfoResponseLegacy | NameInfoResponseBnsx) & InscriptionMeta;
+export type NameInfoResponse = (NameInfoResponseLegacy | NameInfoResponseBnsx) &
+  InscriptionMeta & { decoded: string };
 
 // export interface NamesByAddressResponse extends BnsNamesOwnByAddressResponse {
 //   primaryName: string;
@@ -65,6 +66,7 @@ export const legacyPropsSchema = z.object({
   leaseStartedAt: z.number(),
   owner: z.string(),
   combined: z.string(),
+  decoded: z.string(),
   name: z.string(),
   namespace: z.string(),
 });
@@ -72,6 +74,7 @@ export const legacyPropsSchema = z.object({
 export const bnsxNameSchema = z.object({
   id: z.number().int(),
   combined: z.string(),
+  decoded: z.string(),
   name: z.string(),
   namespace: z.string(),
   // legacy: z.nullable(legacyPropsSchema),
