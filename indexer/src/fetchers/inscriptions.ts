@@ -5,7 +5,7 @@ import { inspect } from 'util';
 import { toCamelCase } from '@clarigen/core';
 import { parseZoneFile } from '@fungible-systems/zone-file';
 import { getZonefileInfo } from './zonefile';
-import { verifyMessageSignature } from 'micro-stacks/connect';
+import { verifyMessageSignature, hashMessage } from 'micro-stacks/connect';
 import { publicKeyToStxAddress } from 'micro-stacks/crypto';
 
 export interface InscriptionMeta {
@@ -111,12 +111,12 @@ export async function verifyInscriptionZonefile(content: string) {
   const zonefile = zonefileRaw;
   const zonefileInfo = await getZonefileInfo(zonefile);
 
-  const [signature, pubKey] = sigParts.split(/\r*\n/).map(c => c.replaceAll(/\W*/g, ''));
+  const [signature, _pubKey] = sigParts.split(/\r*\n/).map(c => c.replaceAll(/\W*/g, ''));
   const verified = verifyMessageSignature({
     message: zonefile.replaceAll(/\r\n/g, '\n'),
     signature: signature ?? '',
     stxAddress: zonefileInfo.owner,
-    publicKey: pubKey,
+    // publicKey: pubKey,
   });
 
   return {

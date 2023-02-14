@@ -14,7 +14,8 @@
     "web": "pnpm run --filter web dev",
     "web:prod": "pnpm --filter web start",
     "build": "turbo run build",
-    "lint:fix": "eslint --fix packages/**/*.ts indexer/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}"
+    "lint:fix": "eslint --fix packages/**/*.ts indexer/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",
+    "typecheck": "turbo run typecheck"
   },
   "author": "Hank Stoever",
   "license": "ISC",

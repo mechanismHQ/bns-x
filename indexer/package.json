@@ -12,8 +12,8 @@
   "private": true,
   "scripts": {
     "r": "NODE_ENV=development tsx -r dotenv-flow/config",
-    "rw": "NODE_ENV=development tsx -r dotenv-flow/config",
-    "rp": "NODE_ENV=production tsx watch -r dotenv-flow/config",
+    "rw": "NODE_ENV=development tsx watch -r dotenv-flow/config",
+    "rp": "NODE_ENV=production tsx -r dotenv-flow/config",
     "rpw": "NODE_ENV=production tsx watch -r dotenv-flow/config",
     "dev:mainnet": "pnpm rpw scripts/server.ts",
     "dev": "pnpm r scripts/server.ts",
