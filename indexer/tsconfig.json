@@ -30,7 +30,8 @@
       "@fetchers/*": ["./src/fetchers/*"],
       "@fetchers": ["./src/fetchers"],
       "@routes/*": ["./src/routes/*"],
-      "@db/*": ["./src/db/*"]
+      "@db/*": ["./src/db/*"],
+      "~/*": ["./src/*"]
     }
   },
   "$schema": "https://json.schemastore.org/tsconfig",

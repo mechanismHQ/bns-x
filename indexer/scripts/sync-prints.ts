@@ -5,6 +5,7 @@ import { hexToBytes } from 'micro-stacks/common';
 import { decodeClarityValue } from 'stacks-encoding-native-js';
 import type { ContractLogs } from '../prisma/generated/stacks-api-schema';
 import { cvToJSON } from '@clarigen/core';
+import { logger } from '~/logger';
 
 let prisma: BnsDb;
 let stacksPrisma: StacksDb;
@@ -12,6 +13,10 @@ let stacksPrisma: StacksDb;
 type LogKeys = ['block_height', 'microblock_sequence', 'tx_index', 'event_index'][number];
 
 type WhereInput = Partial<Record<LogKeys, { gt: number } | { gte: number }>>;
+
+const log = logger.child({
+  topic: 'sync-prints',
+});
 
 // For initial run - we start 12 blocks prior to the last sync.
 // After the initial run, we paginate based on a "cursor" of our sync.
@@ -26,6 +31,7 @@ async function getLogs(lastLog?: ContractLogs) {
     });
     const lastHeight = existing?.blockHeight ?? 0;
     const syncHeight = Math.max(lastHeight - 12, 0);
+    log.info({ lastHeight, syncHeight }, 'Starting log sync');
     whereInput = { block_height: { gte: syncHeight } };
   } else {
     // paginating
@@ -45,13 +51,23 @@ async function getLogs(lastLog?: ContractLogs) {
       ...whereInput,
     },
     orderBy: [
-      { block_height: 'asc', microblock_sequence: 'asc', tx_index: 'asc', event_index: 'asc' },
+      { block_height: 'asc' },
+      { microblock_sequence: 'asc' },
+      { tx_index: 'asc' },
+      { event_index: 'asc' },
     ],
     take: 100,
   });
+  log.info(
+    {
+      newLogs: logs.length,
+    },
+    `Syncing ${logs.length} logs`
+  );
 
   const lastSynced = await processLogs(logs);
   if (typeof lastSynced === 'undefined') {
+    log.info('Finished print syncs');
     // we are done
     return;
   }
@@ -67,8 +83,6 @@ async function processLogs(logs: ContractLogs[]) {
     const dec = decodeClarityValue(hex);
     const cv = deserializeCV(dec.hex);
     const value: BnsDbTypes.InputJsonValue = cvToJSON(cv);
-    console.log('value', value);
-    console.log(log.contract_identifier);
     mappedLogs.push({
       ...log,
       json: value,
@@ -76,30 +90,36 @@ async function processLogs(logs: ContractLogs[]) {
     });
   });
 
-  const syncs = mappedLogs.map(async log => {
+  const syncs = mappedLogs.map(async contractLog => {
     const baseProps: BnsDbTypes.PrintEventCreateInput = {
-      stacksApiId: log.id,
-      microblockCanonical: log.microblock_canonical,
-      canonical: log.canonical,
-      microblockSequence: log.microblock_sequence,
-      contractId: log.contract_identifier,
-      value: log.json,
-      hex: Buffer.from(log.hex),
-      topic: log.topic ?? '',
-      txIndex: log.tx_index,
-      eventIndex: log.event_index,
-      blockHeight: log.block_height,
-      indexBlockHash: log.index_block_hash,
-      microblockHash: log.microblock_hash,
-      txid: log.tx_id,
+      stacksApiId: contractLog.id,
+      microblockCanonical: contractLog.microblock_canonical,
+      canonical: contractLog.canonical,
+      microblockSequence: contractLog.microblock_sequence,
+      contractId: contractLog.contract_identifier,
+      value: contractLog.json,
+      hex: Buffer.from(contractLog.hex),
+      topic: contractLog.topic ?? '',
+      txIndex: contractLog.tx_index,
+      eventIndex: contractLog.event_index,
+      blockHeight: contractLog.block_height,
+      indexBlockHash: contractLog.index_block_hash,
+      microblockHash: contractLog.microblock_hash,
+      txid: contractLog.tx_id,
     };
+    log.info(
+      {
+        print: contractLog.json,
+      },
+      'New contract log'
+    );
     await prisma.printEvent.upsert({
       where: {
         blockHeight_microblockSequence_txIndex_eventIndex: {
-          blockHeight: log.block_height,
-          microblockSequence: log.microblock_sequence,
-          txIndex: log.tx_index,
-          eventIndex: log.event_index,
+          blockHeight: contractLog.block_height,
+          microblockSequence: contractLog.microblock_sequence,
+          txIndex: contractLog.tx_index,
+          eventIndex: contractLog.event_index,
         },
       },
       create: baseProps,

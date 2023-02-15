@@ -18,14 +18,11 @@ import { validatorCompiler, serializerCompiler } from 'fastify-type-provider-zod
 import { serverMetricsPlugin } from './metrics';
 import { TRPCError } from '@trpc/server';
 import { getHTTPStatusCodeFromError } from '@trpc/server/http';
+import { logger } from '~/logger';
 
-const options: FastifyServerOptions = {};
-if (process.env.NODE_ENV === 'test') {
-  options.logger = {
-    level: 'debug',
-    file: './tmp/log.txt',
-  };
-}
+const options: FastifyServerOptions = {
+  logger,
+};
 
 export async function makeApp() {
   const app = fastify(options).withTypeProvider<ZodTypeProvider>();
@@ -73,8 +70,6 @@ export async function makeApp() {
   const networkKey = getNetworkKey();
   console.log(`NETWORK_KEY=${networkKey}`);
   console.log(`STACKS_API=${getNodeUrl()}`);
-
-  const contracts = getContracts();
 
   await app.register(aliasRoutes, {
     prefix: '/v1',

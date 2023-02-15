@@ -15,6 +15,6 @@ if (networkKeyEnv === 'testnet') {
   network = new StacksMainnet();
 }
 
-export const contracts = projectFactory(project, networkKey);
+export const contracts = projectFactory(project, networkKey as unknown as 'devnet');
 
 export const bns = contractFactory(_contracts.bnsV1, 'ST000000000000000000002AMW42H.bns');
