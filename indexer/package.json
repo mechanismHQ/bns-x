@@ -29,8 +29,8 @@
   "author": "Hank Stoever",
   "license": "ISC",
   "dependencies": {
-    "@clarigen/core": "1.0.10",
-    "@clarigen/node": "1.0.10",
+    "@clarigen/core": "1.0.12",
+    "@clarigen/node": "1.0.12",
     "@fastify/cors": "^8.2.0",
     "@fastify/http-proxy": "8.4.0",
     "@fastify/static": "^6.6.1",
@@ -80,5 +80,6 @@
     "jest-mock-extended": "^3.0.1",
     "ts-jest": "^29.0.3",
     "typedoc": "^0.23.25"
-  }
+  },
+  "sideEffects": false
 }

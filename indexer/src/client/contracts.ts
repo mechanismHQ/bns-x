@@ -1,6 +1,7 @@
 import type { DeploymentNetwork, ProjectFactory } from '@clarigen/core';
-import { contractFactory } from '@clarigen/core';
-import { projectFactory } from '@clarigen/core';
+import { contractFactory, projectFactory, ClarigenClient } from '@clarigen/core';
+import { asciiToBytes } from 'micro-stacks/common';
+import { convertNameBuff } from '~/contracts/utils';
 import { getContractParts } from '../utils';
 import { project, contracts } from './clarigen';
 export { project } from './clarigen';
@@ -12,10 +13,15 @@ export type BnsxContracts = ProjectFactory<typeof project, DeploymentNetwork>;
 export class BnsxContractsClient {
   readonly contracts: BnsxContracts;
   readonly networkKey: DeploymentNetwork;
+  readonly client: ClarigenClient;
 
-  constructor(network: DeploymentNetwork = 'mainnet') {
+  constructor(
+    network: DeploymentNetwork = 'mainnet',
+    coreApiUrl = 'https://stacks-node-api.mainnet.stacks.co'
+  ) {
     this.networkKey = network;
     this.contracts = projectFactory(project, network);
+    this.client = new ClarigenClient(coreApiUrl);
   }
 
   get isMainnet() {
@@ -66,5 +72,37 @@ export class BnsxContractsClient {
   nameWrapper(contractId: string) {
     const wrapper = contracts.nameWrapper;
     return contractFactory(wrapper, contractId);
+  }
+
+  /**
+   * resolve the owner of an address for a given name
+   */
+  async resolveName(fqn: string) {
+    const [name, namespace] = getContractParts(fqn).map(asciiToBytes) as [Uint8Array, Uint8Array];
+    const tx = this.registry.getNameProperties({
+      name: name,
+      namespace: namespace,
+    });
+    const properties = await this.client.ro(tx, {
+      tip: 'latest',
+      json: true,
+    });
+    if (!properties) return null;
+    const { id, owner, ..._rest } = properties;
+    return {
+      id: Number(id),
+      owner,
+    };
+  }
+
+  /**
+   * Fetch the name properties of the primary name for a given address
+   */
+  async reverseResolve(address: string) {
+    const primary = await this.client.ro(this.registry.getPrimaryName(address), {
+      latest: true,
+    });
+    if (primary === null) return null;
+    return convertNameBuff(primary);
   }
 }

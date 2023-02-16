@@ -13,8 +13,8 @@ importers:
 
   .:
     specifiers:
-      '@clarigen/core': 1.0.10
-      '@clarigen/node': 1.0.10
+      '@clarigen/core': 1.0.12
+      '@clarigen/node': 1.0.12
       '@stacks/eslint-config': 1.2.0
       '@stacks/prettier-config': 0.0.10
       '@swc-node/register': ^1.3.7
@@ -41,7 +41,7 @@ importers:
       turbo: ^1.7.0
       typescript: ^4.8.4
     dependencies:
-      '@clarigen/core': 1.0.10
+      '@clarigen/core': 1.0.12
       '@swc-node/register': 1.5.4_ldaqumno46ke76prz5kcgkjhhy
       '@swc/cli': 0.1.57_@swc+core@1.3.14
       '@swc/core': 1.3.14
@@ -55,7 +55,7 @@ importers:
       turbo: 1.7.0
       typescript: 4.8.4
     devDependencies:
-      '@clarigen/node': 1.0.10
+      '@clarigen/node': 1.0.12
       '@stacks/eslint-config': 1.2.0_kj7qlb4q5hmrgdzs3xi7r3snqu
       '@stacks/prettier-config': 0.0.10
       '@types/localtunnel': 2.0.1
@@ -72,8 +72,8 @@ importers:
 
   indexer:
     specifiers:
-      '@clarigen/core': 1.0.10
-      '@clarigen/node': 1.0.10
+      '@clarigen/core': 1.0.12
+      '@clarigen/node': 1.0.12
       '@fastify/cors': ^8.2.0
       '@fastify/http-proxy': 8.4.0
       '@fastify/static': ^6.6.1
@@ -122,8 +122,8 @@ importers:
       typescript: 4.8.4
       zod: 3.20.0
     dependencies:
-      '@clarigen/core': 1.0.10
-      '@clarigen/node': 1.0.10
+      '@clarigen/core': 1.0.12
+      '@clarigen/node': 1.0.12
       '@fastify/cors': 8.2.0
       '@fastify/http-proxy': 8.4.0
       '@fastify/static': 6.6.1
@@ -176,9 +176,9 @@ importers:
   web:
     specifiers:
       '@bns-x/client': workspace:*
-      '@clarigen/core': 1.0.10
-      '@clarigen/node': 1.0.10
-      '@clarigen/web': 1.0.10
+      '@clarigen/core': 1.0.12
+      '@clarigen/node': 1.0.12
+      '@clarigen/web': 1.0.12
       '@fungible-systems/zone-file': ^2.0.0
       '@micro-stacks/client': 1.1.2
       '@micro-stacks/jotai': ^1.0.6
@@ -234,9 +234,9 @@ importers:
       usehooks-ts: ^2.9.1
     dependencies:
       '@bns-x/client': link:../indexer
-      '@clarigen/core': 1.0.10
-      '@clarigen/node': 1.0.10
-      '@clarigen/web': 1.0.10_react@18.2.0
+      '@clarigen/core': 1.0.12
+      '@clarigen/node': 1.0.12
+      '@clarigen/web': 1.0.12_react@18.2.0
       '@fungible-systems/zone-file': 2.0.0
       '@micro-stacks/client': 1.1.2_react@18.2.0
       '@micro-stacks/jotai': 1.0.6_5hegripkw2pwstpbdvgaz5vrvm
@@ -2010,8 +2010,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@clarigen/core/1.0.10:
-    resolution: {integrity: sha512-8eaOl0V4taxcZSZE36/zTHwIoBhJh5YuPNFZnTZtQZy2AFQnCvCZ25IGt+l/E3fBWig8k0zAg0i6ZKSeG6u2uQ==}
+  /@clarigen/core/1.0.12:
+    resolution: {integrity: sha512-bS63a3tivR4ucvgFfXSxbSBLA9lmkZjJtSnhvNFab2dl9oI9D7dAtxOoQnciPAvcUD984FpAeCUzUd7sG18jJw==}
     engines: {node: '>=10'}
     dependencies:
       micro-stacks: 1.1.4
@@ -2019,21 +2019,21 @@ packages:
       - '@scure/bip32'
       - '@scure/bip39'
 
-  /@clarigen/node/1.0.10:
-    resolution: {integrity: sha512-qNe+XTTS/qxw3y54eVFB1BNSFTyBQBUE+C9s833GT6qNC367HfSZNVkHhSNMsY5VDSuQXRBn15J5dSWIdqr5Hg==}
+  /@clarigen/node/1.0.12:
+    resolution: {integrity: sha512-P9QXlC9PUFE4D/U2rDmx9nTyCt6alVRrGwxcgWDBxdqACKHpsHkk+ZTFX3Y/qqOdhiYVoPNPDSwYmD5L6VhLQA==}
     engines: {node: '>=10'}
     dependencies:
-      '@clarigen/core': 1.0.10
+      '@clarigen/core': 1.0.12
       micro-stacks: 1.1.4
     transitivePeerDependencies:
       - '@scure/bip32'
       - '@scure/bip39'
 
-  /@clarigen/web/1.0.10_react@18.2.0:
-    resolution: {integrity: sha512-m8M6q/1z0y81kXgxAuYrp7Fc9ZPWwEeO9k+qq2HbaLKoNjpJvYfcEr4vaY3lKjZDzb8npYr4xnLodsrtxcVsjQ==}
+  /@clarigen/web/1.0.12_react@18.2.0:
+    resolution: {integrity: sha512-LLgVS9J60Z2lEipNndQTNxqowyEamNRhVjYFfdQ4Cjc7vu+lWMLAMrfMUHHtMu/rMMWxRLAn7/q6LR+nwUo4FQ==}
     engines: {node: '>=10'}
     dependencies:
-      '@clarigen/core': 1.0.10
+      '@clarigen/core': 1.0.12
       '@micro-stacks/client': 1.1.2_react@18.2.0
       micro-stacks: 1.1.4
     transitivePeerDependencies:
@@ -5468,7 +5468,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
     transitivePeerDependencies:
       - debug
     dev: true
@@ -5476,7 +5476,7 @@ packages:
   /axios/0.25.0_debug@4.3.4:
     resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -5484,7 +5484,7 @@ packages:
   /axios/0.27.2_debug@4.3.4:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -5493,7 +5493,7 @@ packages:
   /axios/1.3.3:
     resolution: {integrity: sha512-eYq77dYIFS77AQlhzEL937yUBSepBfPIe8FcgEDN35vMNZKMrs81pgnyrQpwfy4NF4b4XWX1Zgx7yX+25w8QJA==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -8049,7 +8049,7 @@ packages:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
     dev: true
 
-  /follow-redirects/1.15.2_debug@4.3.4:
+  /follow-redirects/1.15.2:
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
     engines: {node: '>=4.0'}
     peerDependencies:
@@ -8057,8 +8057,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dependencies:
-      debug: 4.3.4
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}

@@ -1,7 +1,6 @@
 import { DEFAULT_API_URL } from './constants';
 import type { TrpcClient } from './trpc';
 import { trpcClient } from './trpc';
-import type { DeploymentNetwork } from '@clarigen/core';
 import type { NameInfoResponse, NamesByAddressResponse } from '../routes/api-types';
 import { getContractParts } from '../utils';
 

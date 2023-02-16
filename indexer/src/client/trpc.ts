@@ -1,6 +1,7 @@
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import { DEFAULT_API_URL } from './constants';
-import type { AppRouter } from '../routes/trpc';
+import type { AppRouter } from '@routes/trpc';
+export type { AppRouter } from '@routes/trpc';
 
 export function trpcClient(baseUrl = DEFAULT_API_URL) {
   return createTRPCProxyClient<AppRouter>({

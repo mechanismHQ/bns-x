@@ -62,7 +62,7 @@ export function getClarigenNodeClient() {
 }
 
 export function getContractsClient() {
-  return new BnsxContractsClient(getNetworkKey());
+  return new BnsxContractsClient(getNetworkKey(), getApiUrl());
 }
 
 export function getContracts() {
