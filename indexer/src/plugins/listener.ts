@@ -1,4 +1,5 @@
 import type { BnsDb, StacksDb } from '@db';
+import { refreshMaterializedViews } from '@db';
 import { io } from 'socket.io-client';
 import type { StacksApiSocket } from '@stacks/blockchain-api-client';
 import { StacksApiSocketClient } from '@stacks/blockchain-api-client';
@@ -30,13 +31,15 @@ export function makeSocket() {
 
 export function listenAndSyncPrints(bnsDb: BnsDb, stacksDb: StacksDb) {
   const client = makeSocket();
-  client.socket.on('microblock', () => {
+  client.socket.on('microblock', async () => {
     log.info('New microblock');
-    void syncPrints({ bnsDb, stacksDb });
+    await syncPrints({ bnsDb, stacksDb });
+    await refreshMaterializedViews(bnsDb);
   });
-  client.socket.on('block', () => {
+  client.socket.on('block', async () => {
     log.info('New block');
-    void syncPrints({ bnsDb, stacksDb });
+    await syncPrints({ bnsDb, stacksDb });
+    await refreshMaterializedViews(bnsDb);
   });
   client.socket.on('connect', () => {
     log.debug('Connected to websocket');
