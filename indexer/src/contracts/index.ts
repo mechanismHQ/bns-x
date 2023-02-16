@@ -2,6 +2,7 @@ import { project } from './clarigen';
 import { projectFactory } from '@clarigen/core';
 import { ClarigenNodeClient } from '@clarigen/node';
 import { getNetwork, getNetworkKey } from '../constants';
+import { getContractParts } from '~/utils';
 
 export function getContracts() {
   return projectFactory(project, getNetworkKey() as unknown as 'devnet');
@@ -25,4 +26,9 @@ export function clarigenProvider() {
   const network = getNetwork();
   const clarigen = new ClarigenNodeClient(network);
   return clarigen;
+}
+
+export function getDeployer() {
+  const registryId = registryContract().identifier;
+  return getContractParts(registryId)[0];
 }

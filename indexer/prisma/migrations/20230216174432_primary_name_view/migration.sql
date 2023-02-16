@@ -9,7 +9,7 @@ CREATE MATERIALIZED VIEW "primary_names" as
       , "eventIndex"
       , "microblockSequence"
     FROM "PrintEvent"
-    where "contractId" like '%registry%'
+    where "contractId" like '%.bnsx-registry'
       and value->>'topic' = 'primary-update'
       and value->'prev' = 'null'
       and value->'id' != 'null'
@@ -32,7 +32,7 @@ CREATE MATERIALIZED VIEW "primary_names" as
     from "PrintEvent" p1
     inner join "PrintEvent" p2
       on p1.txid = p2.txid
-    where p1."contractId" like '%registry%'
+    where p1."contractId" like '%.bnsx-registry'
       and p1.value->>'topic' = 'primary-update'
       and p1.txid = p2.txid
       and p2.value->>'topic' = 'remove'
@@ -54,7 +54,7 @@ CREATE MATERIALIZED VIEW "primary_names" as
       , "eventIndex"
       , "microblockSequence"
     FROM "PrintEvent"
-    where "contractId" like '%registry%'
+    where "contractId" like '%.bnsx-registry'
       and value->>'topic' = 'primary-update'
       and value->'id' = 'null'
       and "microblockCanonical" = true

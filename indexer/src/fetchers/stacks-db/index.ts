@@ -43,7 +43,7 @@ export async function getPrimaryNameId(address: string, db: StacksDb) {
     : standardPrincipalCV(address);
   const registry = registryContract().identifier;
   const principalHex = `${bytesToHex(serializeCV(principalCV))}`;
-  const results = (await db.$queryRaw`
+  const results = await db.$queryRaw<{ value: Buffer }[]>`
     select value
     from contract_logs
     where
@@ -58,7 +58,7 @@ export async function getPrimaryNameId(address: string, db: StacksDb) {
       tx_index desc,
       event_index desc
     limit 10
-  `) as { value: Buffer }[];
+  `;
   const [result] = results;
 
   if (typeof result === 'undefined') return null;
@@ -77,7 +77,7 @@ export async function getNamesForAddress(address: string, db: StacksDb) {
   const asset = registryContractAsset();
   const registry = registryContract().identifier;
 
-  const results = (await db.$queryRaw`
+  const results = await db.$queryRaw<{ value: Buffer }[]>`
   with ids as (
     select value
     from nft_custody_unanchored
@@ -91,7 +91,7 @@ export async function getNamesForAddress(address: string, db: StacksDb) {
     and position(bytea '\\x6e65772d6e616d65' in contract_logs.value) > 0
     and position(ids.value in "contract_logs"."value") > 0
     and microblock_canonical = true;
-  `) as { value: Buffer }[];
+  `;
 
   const prints = results.map(row => {
     const { topic, owner, ...print } = deserializeTuple<{

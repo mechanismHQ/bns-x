@@ -6,6 +6,7 @@ import { decodeClarityValue } from 'stacks-encoding-native-js';
 import type { ContractLogs } from '../prisma/generated/stacks-api-schema';
 import { cvToJSON } from '@clarigen/core';
 import { logger } from '~/logger';
+import { getDeployer } from '~/contracts';
 
 let prisma: BnsDb;
 let stacksPrisma: StacksDb;
@@ -46,7 +47,7 @@ async function getLogs(lastLog?: ContractLogs) {
   const logs = await stacksPrisma.contractLogs.findMany({
     where: {
       contract_identifier: {
-        startsWith: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+        startsWith: getDeployer(),
       },
       ...whereInput,
     },

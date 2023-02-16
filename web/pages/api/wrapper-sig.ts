@@ -5,14 +5,18 @@ import { bytesToHex } from 'micro-stacks/common';
 import { makeClarityHash } from 'micro-stacks/connect';
 import { signatureVrsToRsv } from '../../common/utils';
 import { fetchTransaction, txEndpoint } from 'micro-stacks/api';
-import { getNetwork, getClarigenNodeClient, getContracts } from '../../common/constants';
+import {
+  getNetwork,
+  getClarigenNodeClient,
+  getContracts,
+  getContractsClient,
+} from '../../common/constants';
 import type {
   Transaction,
   MempoolTransaction,
   SmartContractTransaction,
 } from '@stacks/stacks-blockchain-api-types';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
-import { makeNameWrapper } from '@common/wrapper';
 
 async function fetchDeploy(txid: string): Promise<SmartContractTransaction | null> {
   const network = getNetwork();
@@ -44,7 +48,7 @@ export async function wrapperSignatureApi(req: NextApiRequest, res: NextApiRespo
   // verify source code
   const contractId = tx.smart_contract.contract_id;
   const code = tx.smart_contract.source_code;
-  const expected = makeNameWrapper();
+  const expected = getContractsClient().nameWrapperCode;
   if (code !== expected) {
     console.warn('Attempted invalid name wrapper:', contractId);
     return res.status(429).send({ error: 'Invalid source code' });

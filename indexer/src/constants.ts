@@ -2,10 +2,6 @@ import { DEPLOYMENT_NETWORKS } from '@clarigen/core';
 import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMainnet, StacksMocknet, StacksTestnet } from 'micro-stacks/network';
 
-export function getDeployerAddr() {
-  return 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
-}
-
 type NetworkKey = typeof DEPLOYMENT_NETWORKS[number];
 export function getNetworkKey(): NetworkKey {
   const key = process.env.NETWORK_KEY;

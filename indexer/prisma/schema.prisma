@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -48,6 +49,22 @@ model InscriptionZonefiles {
   genesisHeight          Int
   outputValue            Int
   genesisTransaction     String
+}
+
+view Names {
+  id        BigInt @id
+  name      String
+  namespace String
+
+  @@unique([name, namespace])
+  @@map("names")
+}
+
+view PrimaryNames {
+  primaryId BigInt @id @map("primary_id")
+  account   String
+
+  @@map("primary_names")
 }
 
 // OLD:

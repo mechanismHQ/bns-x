@@ -1,5 +1,4 @@
 {
-  // "extends": "@tsconfig/node18",
   "compilerOptions": {
     "lib": ["ESNext"],
     "module": "ESNext",
@@ -12,17 +11,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    // "allowUnusedLabels": false,
     "allowUnreachableCode": false,
-    // "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
     "allowJs": true,
-    // "noImplicitOverride": true,
-    // "noImplicitReturns": true,
-    // "noPropertyAccessFromIndexSignature": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "importsNotUsedAsValues": "error",
     "checkJs": true,
     "baseUrl": ".",
     "paths": {

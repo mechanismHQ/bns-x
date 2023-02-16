@@ -8,6 +8,7 @@ CREATE MATERIALIZED VIEW "names" as
   FROM "PrintEvent"
   WHERE
     value->>'topic' = 'new-name'
+    and "contractId" like '%.bnsx-registry'
     and "microblockCanonical" = true
     and "canonical" = true
   ORDER BY
