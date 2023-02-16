@@ -9,8 +9,11 @@ import {
   PostConditionMode,
 } from 'micro-stacks/transactions';
 import { network, contracts } from '../script-utils';
+import { ClarigenNodeClient } from '@clarigen/node';
 
 const testUtils = contracts.testUtils;
+const registry = contracts.bnsxRegistry;
+const clarigen = new ClarigenNodeClient(network);
 
 const privateKey = process.env.DEPLOYER_KEY!;
 
@@ -21,13 +24,16 @@ if (!addr) {
   addr = privateKeyToStxAddress(priv.data);
 }
 
+const recipient = privateKeyToStxAddress(makeRandomPrivKey().data);
+
 async function run() {
   const name = Math.ceil(Math.random() * 1000).toFixed(0);
+  const primaryId = (await clarigen.ro(registry.getPrimaryNameProperties(addr)))!;
+  console.log('Sending', primaryId);
   const tx = await makeContractCall({
-    ...testUtils.nameRegister({
-      name: asciiToBytes(name),
-      namespace: asciiToBytes('testable'),
-      owner: addr,
+    ...registry.mngTransfer({
+      id: primaryId.id,
+      recipient,
     }),
     senderKey: privateKey,
     anchorMode: AnchorMode.Any,

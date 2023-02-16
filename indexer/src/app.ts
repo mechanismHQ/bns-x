@@ -19,6 +19,7 @@ import { serverMetricsPlugin } from './metrics';
 import { TRPCError } from '@trpc/server';
 import { getHTTPStatusCodeFromError } from '@trpc/server/http';
 import { logger } from '~/logger';
+import { listenerPlugin } from '~/plugins/listener';
 
 const options: FastifyServerOptions = {
   logger,
@@ -34,6 +35,8 @@ export async function makeApp() {
   if (process.env.STACKS_API_POSTGRES) {
     await app.register(prismaPlugin);
   }
+
+  await app.register(listenerPlugin);
 
   app.setErrorHandler(function (error, request, reply) {
     console.error(error);
