@@ -1,5 +1,5 @@
 import { registryContract, registryContractAsset } from '../../contracts';
-import type { StacksDb } from '@db';
+import type { BnsDb, StacksDb } from '@db';
 import { decodeClarityValue } from 'stacks-encoding-native-js';
 import {
   deserializeCV,
@@ -15,6 +15,9 @@ import { convertLegacyDetailsJson, convertNameBuff } from '../../contracts/utils
 import type { NamesByAddressResponse } from '../../routes/api-types';
 import { getLegacyName } from '../query-helper';
 import { fetchPrimaryId } from '../stacks-api';
+import { fetchNamesByAddress } from 'micro-stacks/api';
+import { getNodeUrl } from '~/constants';
+import { fetchBnsxNamesByAddress } from '@db/names';
 
 export async function getAssetIds(address: string, db: StacksDb) {
   const custodies = await db.nftCustody.findMany({
@@ -112,6 +115,18 @@ export async function getNamesForAddress(address: string, db: StacksDb) {
   });
 
   return prints;
+}
+
+// TODO: replace current fn
+export async function getAddressNamesDbV2(address: string, db: BnsDb) {
+  const [_legacyStrings, _bnsxNames] = await Promise.all([
+    fetchNamesByAddress({
+      url: getNodeUrl(),
+      blockchain: 'stacks',
+      address: address,
+    }),
+    fetchBnsxNamesByAddress(address, db),
+  ]);
 }
 
 export async function getAddressNamesDb(

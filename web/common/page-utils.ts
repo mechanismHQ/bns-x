@@ -14,8 +14,8 @@ export function withSSRProps(cb?: GetProps) {
     };
     if (dehydratedState !== null) {
       const address = getSessionAccount(dehydratedState)!;
-      const { name: displayName } = await trpc.getDisplayName.query(address);
-      baseProps.displayName = displayName;
+      // const { name: displayName } = await trpc.getDisplayName.query(address);
+      // baseProps.displayName = displayName;
       baseProps.stxAddress = address;
     }
     if (typeof cb !== 'undefined') {
