@@ -1,8 +1,6 @@
-import { fetchDisplayName } from '@fetchers/stacks-api';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-// import { getAddressNames } from "../fetchers/query-helper";
-import { getNameDetails, getAddressNames } from '../../fetchers';
+import { getNameDetails, getAddressNames, getDisplayName } from '../../fetchers';
 import { displayNameResponseSchema, namesByAddressBnsxSchema } from '../api-types';
 import { router, procedure } from './base';
 
@@ -35,8 +33,8 @@ export const queryHelperRouter = router({
   getDisplayName: procedure
     .input(z.string())
     .output(displayNameResponseSchema)
-    .query(async ({ input }) => {
-      const displayName = await fetchDisplayName(input);
+    .query(async ({ input, ctx }) => {
+      const displayName = await getDisplayName(input, ctx.bnsxDb);
       return {
         name: displayName,
       };

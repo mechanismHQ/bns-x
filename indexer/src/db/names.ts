@@ -1,29 +1,63 @@
-import type { BnsDb, StacksDb } from '@db';
-import { bytesToHex, asciiToBytes } from 'micro-stacks/common';
-import { registryContractAsset } from '~/contracts';
-import { decodeClarityValue } from 'stacks-encoding-native-js';
-import { cvToHex, serializeCV, uintCV } from 'micro-stacks/clarity';
+import type { BnsDb } from '@db';
+import { convertNameBuff } from '~/contracts/utils';
+import { getNameParts, hexToAscii, nameObjectToHex } from '~/utils';
 
-export async function queryNameId(prisma: BnsDb, name: string, namespace: string) {
-  const nameHex = bytesToHex(asciiToBytes(name));
-  const namespaceHex = bytesToHex(asciiToBytes(namespace));
-  const row = await prisma.names.findFirst({
+export async function fetchBnsxName(name: string, namespace: string, db: BnsDb) {
+  const nameRow = await db.name.findUnique({
     where: {
-      name: nameHex,
-      namespace: namespaceHex,
+      name_namespace: nameObjectToHex({ name, namespace }),
+    },
+    include: {
+      NameOwnership: true,
     },
   });
+  if (nameRow) {
+    const { NameOwnership, id, ...rest } = nameRow;
+    const owner = NameOwnership[0]?.account ?? '';
+    return convertNameBuff({
+      ...convertNameBuff({ ...rest, id: Number(id) }),
+      owner,
+    });
+  }
+  return null;
 }
 
-export async function getNameOwnerById(id: bigint, db: StacksDb) {
-  const assetId = registryContractAsset();
-  const idCv = uintCV(id);
-  const hex = serializeCV(idCv);
-  const custodyRow = await db.nftCustody.findFirst({
+export async function fetchBnsxNameOwner(name: string, namespace: string, db: BnsDb) {
+  const nameRow = await fetchBnsxName(name, namespace, db);
+  return nameRow?.owner ?? null;
+}
+
+export async function fetchBnsxNamesByAddress(account: string, db: BnsDb) {
+  const names = await db.nameOwnership.findMany({
     where: {
-      assetIdentifier: assetId,
-      value: Buffer.from(hex),
+      account,
+    },
+    include: {
+      name: true,
     },
   });
-  return custodyRow?.recipient ?? null;
+  return names;
+}
+
+export async function fetchBnsxPrimaryName(account: string, db: BnsDb) {
+  const name = await db.primaryName.findUnique({
+    where: {
+      account,
+    },
+    include: {
+      name: true,
+    },
+  });
+  return name;
+}
+
+export async function fetchBnsxDisplayName(account: string, db: BnsDb) {
+  const primary = await fetchBnsxPrimaryName(account, db);
+  if (primary === null || primary.name === null) return null;
+  const { name, namespace } = primary.name;
+  const full = convertNameBuff({
+    name: hexToAscii(name),
+    namespace: hexToAscii(namespace),
+  });
+  return full.decoded;
 }

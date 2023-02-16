@@ -65,6 +65,11 @@ export async function getNameDetails(name: string, namespace: string) {
   };
 }
 
+export async function getNameOwnerQuery(name: string, namespace: string) {
+  const details = await getNameDetails(name, namespace);
+  return details?.owner ?? null;
+}
+
 export async function getLegacyName(address: string) {
   const helper = queryHelperContract();
   const clarigen = clarigenProvider();

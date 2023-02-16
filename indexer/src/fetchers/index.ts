@@ -1,11 +1,18 @@
-import { getLegacyName, getNameDetails as getNameDetailsQuery } from './query-helper';
+import {
+  getLegacyName,
+  getNameDetails as getNameDetailsQuery,
+  getNameOwnerQuery,
+  getPrimaryName,
+} from './query-helper';
 import { getAddressNamesApi, getNameDetailsApi } from './stacks-api';
 import type { NameInfoResponse, NamesByAddressResponse } from '../routes/api-types';
-import type { StacksDb } from '@db';
+import type { BnsDb, StacksDb } from '@db';
 import { getAddressNamesDb } from './stacks-db';
 import { Histogram, Summary } from 'prom-client';
 import type { PrismaClient } from '@prisma/client';
 import { toUnicode } from 'punycode';
+import { fetchBnsxDisplayName, fetchBnsxName, fetchBnsxNameOwner } from '@db/names';
+import { convertNameBuff } from '~/contracts/utils';
 
 export async function getNameDetails(
   name: string,
@@ -15,7 +22,7 @@ export async function getNameDetails(
   try {
     const [api, query, inscribedZf] = await Promise.all([
       getNameDetailsApi(name, namespace),
-      getNameDetailsQuery(name, namespace),
+      db ? fetchBnsxName(name, namespace, db) : getNameDetailsQuery(name, namespace),
       db ? getInscribedZonefile(name, namespace, db) : Promise.resolve(null),
     ]);
     const zonefile = inscribedZf ? inscribedZf.zonefileRaw : api.zonefile;
@@ -46,7 +53,6 @@ export async function getNameDetails(
     return {
       ...base,
       ...query,
-      zonefile,
       address: query.owner,
       isBnsx: true,
     };
@@ -101,4 +107,12 @@ export async function getAddressNames(
   end(labels);
   endSum(labels);
   return names;
+}
+
+export async function getDisplayName(address: string, db?: BnsDb) {
+  if (typeof db !== 'undefined') {
+    return fetchBnsxDisplayName(address, db);
+  }
+  const primary = await getPrimaryName(address);
+  return primary ? convertNameBuff(primary).decoded : null;
 }

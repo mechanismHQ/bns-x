@@ -40,7 +40,6 @@ export interface NameInfoResponseLegacy extends BnsGetNameInfoResponse {
 export interface NameInfoResponseBnsx extends BnsGetNameInfoResponse {
   isBnsx: true;
   id: number;
-  legacy: LegacyDetails | null;
 }
 
 export interface InscriptionMeta {

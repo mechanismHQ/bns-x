@@ -51,20 +51,31 @@ model InscriptionZonefiles {
   genesisTransaction     String
 }
 
-view Names {
-  id        BigInt @id
-  name      String
-  namespace String
+view Name {
+  id            BigInt          @id @unique
+  name          String
+  namespace     String
+  NameOwnership NameOwnership[]
+  PrimaryName   PrimaryName[]
 
   @@unique([name, namespace])
   @@map("names")
 }
 
-view PrimaryNames {
+view PrimaryName {
   primaryId BigInt @id @map("primary_id")
-  account   String
+  account   String @unique
+  name      Name?  @relation(fields: [primaryId], references: [id])
 
   @@map("primary_names")
+}
+
+view NameOwnership {
+  id      BigInt @id @unique
+  account String
+  name    Name?  @relation(fields: [id], references: [id])
+
+  @@map("name_ownership")
 }
 
 // OLD:
