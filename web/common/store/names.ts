@@ -13,6 +13,7 @@ import { trpcClient } from '@bns-x/client';
 import { getApiUrl } from '@common/constants';
 import type { ZoneFile } from '@fungible-systems/zone-file';
 import { parseZoneFile, makeZoneFile } from '@fungible-systems/zone-file';
+import { nameUpgradingAtom } from '@store/migration';
 
 export const currentUserNamesState = atom(get => {
   const address = get(stxAddressAtom);
@@ -82,6 +83,19 @@ export const currentUserNameIdsState2 = atomsWithQuery<number[]>(get => ({
       .filter(n => !Number.isNaN(n));
   },
 }));
+
+export const currentUserUpgradedState = atom(get => {
+  const toUpgrade = get(nameUpgradingAtom);
+  const allNames = get(currentUserNamesState);
+
+  let isUpgraded = false;
+  allNames?.nameProperties.forEach(n => {
+    if (n.combined === toUpgrade) {
+      isUpgraded = true;
+    }
+  });
+  return isUpgraded;
+});
 
 export const userZonefileState = atomsWithQuery(get => ({
   queryKey: ['cur-user-zonefile', get(stxAddressAtom)],

@@ -6,6 +6,7 @@ import { CenterBox } from '../layout';
 import {
   migrateTxidAtom,
   migrateTxState,
+  nameUpgradingAtom,
   validRecipientState,
   wrapperDeployTxidAtom,
 } from '@store/migration';
@@ -14,7 +15,7 @@ import { Button } from '@components/button';
 import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
 import { stxAddressAtom } from '@store/micro-stacks';
-import { useSwitchAccounts } from '@common/hooks/use-switch-accounts';
+import { currentUserUpgradedState } from '@store/names';
 
 export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
   const recipient = useAtomValue(validRecipientState);
@@ -32,9 +33,8 @@ export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
 
 export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
   const migrateTxid = useAtomValue(migrateTxidAtom);
-  const migrateTx = useAtomValue(migrateTxState);
   const router = useRouter();
-  const { switchAccounts } = useSwitchAccounts();
+  const isUpgraded = useAtomValue(currentUserUpgradedState);
 
   const done = useCallback(() => {
     void router.push({
@@ -47,7 +47,7 @@ export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
   return (
     <UpgradeBox
       bottom={
-        migrateTx?.tx_status === 'success' ? (
+        isUpgraded ? (
           <Stack spacing="25px">
             <Flex width="100%" justifyContent="center">
               <Button type="big" onClick={done}>
@@ -61,7 +61,7 @@ export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
       <Stack spacing="0">
         <DoneRow txidAtom={wrapperDeployTxidAtom}>Name wrapper created</DoneRow>
         <Divider />
-        {migrateTx?.tx_status === 'success' ? (
+        {isUpgraded ? (
           <>
             <DoneRow txidAtom={migrateTxidAtom}>BNSx name created</DoneRow>
             <TransferredRow />
