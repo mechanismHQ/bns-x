@@ -54,11 +54,6 @@ export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
                 Done
               </Button>
             </Flex>
-            <Flex width="100%" justifyContent="center">
-              <Button type="big" secondary onClick={switchAccounts}>
-                Switch accounts
-              </Button>
-            </Flex>
           </Stack>
         ) : null
       }
