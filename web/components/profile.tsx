@@ -146,7 +146,9 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
         return (
           <Box key={`name-${name.id}`}>
             {index === 0 && v1Name !== null ? null : (
-              <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
+              <Box width="100%" px="29px">
+                <Box height="1px" borderTop="1px solid $onSurface-border-subdued" width="100%" />
+              </Box>
             )}
             <ProfileRow name={name.combined} />
             {/* <LoadableProfileRow id={name} /> */}
