@@ -34,6 +34,7 @@ export const Header: React.FC<{ children?: React.ReactNode }> = () => {
     >
       <LogoIcon
         cursor="pointer"
+        size="32px"
         onClick={async () => {
           await router.push({ pathname: '/' });
         }}
