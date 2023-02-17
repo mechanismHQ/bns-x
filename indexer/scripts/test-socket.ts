@@ -29,7 +29,7 @@ export function makeSocket() {
   return sc;
 }
 
-async function run() {
+function run() {
   const client = makeSocket();
   client.socket.on('mempool', () => {
     console.log('connected');
@@ -49,8 +49,4 @@ async function run() {
   });
 }
 
-run()
-  .catch(console.error)
-  .finally(() => {
-    // process.exit();
-  });
+run();
