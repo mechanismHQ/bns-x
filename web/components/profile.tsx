@@ -37,6 +37,19 @@ const StyledPrimary = styled(Text, {
   },
 });
 
+const StyledEditBox = styled(Box, {
+  display: 'block',
+  '@bp1': {
+    display: 'none',
+  },
+});
+
+// const StyledAvatar = styled(Box, {
+//   '@bp1': {
+//     width:
+//   }
+// })
+
 export const ProfileRow: React.FC<{
   children?: React.ReactNode;
   v1?: boolean;
@@ -73,11 +86,18 @@ export const ProfileRow: React.FC<{
       alignItems={'center'}
       width="100%"
       height="136px"
-      px="27px"
+      px="29px"
       {...v1OuterProps}
     >
       <Stack alignItems={'center'} isInline>
-        <Box borderRadius="50%" size="86px" backgroundImage={gradient} />
+        <Box
+          borderRadius="50%"
+          aspectRatio="1"
+          maxWidth="86px"
+          maxHeight="86px"
+          size="86px"
+          backgroundImage={gradient}
+        />
         <Stack spacing="6px">
           <StyledName variant="Heading035" color={v1 ? '$text-error' : '$text'}>
             {name}
@@ -115,10 +135,10 @@ export const ProfileRow: React.FC<{
           )}
         </Stack>
       </Stack>
-      <Box>
+      <StyledEditBox>
         <Button onClick={manage}>{v1 ? 'Upgrade' : 'Edit'}</Button>
         {/* {v1 ? <Button onClick={upgrade}>Upgrade</Button> : <Button disabled>Edit</Button>} */}
-      </Box>
+      </StyledEditBox>
     </SpaceBetween>
   );
 };
