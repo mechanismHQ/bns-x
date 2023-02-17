@@ -10,6 +10,7 @@ import { Spinner } from '@components/spinner';
 import { migrateNameAtom, nameUpgradingAtom } from '@store/migration';
 import { CenterBox } from '@components/layout';
 import { atom } from 'jotai';
+import { styled } from '@common/theme';
 
 interface BaseRowProps extends BoxProps {
   children?: React.ReactNode;
@@ -70,7 +71,7 @@ export const UpgradeBox: React.FC<{
   return (
     <>
       <Box flexGrow={1} />
-      <Stack spacing="0" alignItems={'center'} width="100%" pb="50px">
+      <Stack spacing="0" alignItems={'center'} width="100%" pb="50px" px="29px">
         <NameHeading />
         <CenterBox mt="20px" mb="30px">
           <Stack spacing="0">{children}</Stack>
