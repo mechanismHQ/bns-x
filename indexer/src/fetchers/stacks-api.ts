@@ -51,6 +51,22 @@ export async function fetchPrimaryId(address: string): Promise<number | null> {
   return Number(idOpt);
 }
 
+export async function fetchLegacyDisplayName(address: string) {
+  try {
+    const namesRes = await fetchNamesByAddress({
+      url: getNodeUrl(),
+      blockchain: 'stacks',
+      address: address,
+    });
+    if ('names' in namesRes) {
+      return namesRes.names[0] ?? null;
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function getAddressNamesApi(address: string): Promise<NamesByAddressResponse> {
   const [_legacy, assetIds, primaryId, legacyStrings] = await Promise.all([
     getLegacyName(address),

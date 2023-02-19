@@ -4,7 +4,7 @@ import {
   getNameOwnerQuery,
   getPrimaryName,
 } from './query-helper';
-import { getAddressNamesApi, getNameDetailsApi } from './stacks-api';
+import { fetchLegacyDisplayName, getAddressNamesApi, getNameDetailsApi } from './stacks-api';
 import type { NameInfoResponse, NamesByAddressResponse } from '../routes/api-types';
 import type { BnsDb, StacksDb } from '@db';
 import { getAddressNamesDb } from './stacks-db';
@@ -96,6 +96,7 @@ export async function getAddressNames(
   const end = getAddressNamesHist.startTimer();
   const endSum = getAddressNamesSummary.startTimer();
   const useDb = typeof db !== 'undefined' && process.env.USE_DB === '1';
+  console.log('useDb', useDb);
   const names: NamesByAddressResponse = useDb
     ? await getAddressNamesDb(address, db)
     : await getAddressNamesApi(address);
@@ -110,9 +111,14 @@ export async function getAddressNames(
 }
 
 export async function getDisplayName(address: string, db?: BnsDb) {
-  if (typeof db !== 'undefined') {
-    return fetchBnsxDisplayName(address, db);
-  }
-  const primary = await getPrimaryName(address);
-  return primary ? convertNameBuff(primary).decoded : null;
+  const [bnsxName, legacyName] = await Promise.all([
+    fetchLegacyDisplayName(address),
+    typeof db === 'undefined'
+      ? (async () => {
+          const primary = await getPrimaryName(address);
+          return primary ? convertNameBuff(primary).decoded : null;
+        })()
+      : fetchBnsxDisplayName(address, db),
+  ]);
+  return bnsxName ?? legacyName;
 }
