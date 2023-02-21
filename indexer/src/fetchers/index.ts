@@ -13,6 +13,7 @@ import type { PrismaClient } from '@prisma/client';
 import { toUnicode } from 'punycode';
 import { fetchBnsxDisplayName, fetchBnsxName, fetchBnsxNameOwner } from '@db/names';
 import { convertNameBuff } from '~/contracts/utils';
+import { getZonefileProperties } from '@fetchers/zonefile';
 
 export async function getNameDetails(
   name: string,
@@ -43,10 +44,12 @@ export async function getNameDetails(
       inscription: inscriptionMeta,
       decoded,
     };
+    const zonefileRecords = getZonefileProperties(zonefile);
     if (query === null) {
       return {
         ...base,
         isBnsx: false,
+        zonefileRecords,
       };
     }
 
@@ -55,6 +58,7 @@ export async function getNameDetails(
       ...query,
       address: query.owner,
       isBnsx: true,
+      zonefileRecords,
     };
   } catch (error) {
     console.warn(`Error fetching name details for ${name}.${namespace}:`, error);

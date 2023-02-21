@@ -52,8 +52,19 @@ export interface InscriptionMeta {
   };
 }
 
+export interface ZonefileRecords {
+  btcAddress?: string;
+  nostr?: string;
+  [key: string]: string | undefined;
+}
+
+export interface ZonefileInfo {
+  zonefileRecords: ZonefileRecords;
+}
+
 export type NameInfoResponse = (NameInfoResponseLegacy | NameInfoResponseBnsx) &
-  InscriptionMeta & { decoded: string };
+  InscriptionMeta &
+  ZonefileInfo & { decoded: string };
 
 // export interface NamesByAddressResponse extends BnsNamesOwnByAddressResponse {
 //   primaryName: string;
