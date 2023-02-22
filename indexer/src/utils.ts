@@ -34,3 +34,29 @@ export function getNameParts(fqn: string) {
 
   return parts as [string, string];
 }
+
+export interface ParsedName {
+  subdomain?: string;
+  name: string;
+  namespace: string;
+}
+
+export function parseFqn(fqn: string): ParsedName {
+  const parts = fqn.split('.');
+  if (parts.length === 3) {
+    const [subdomain, name, namespace] = parts as [string, string, string];
+    return {
+      subdomain,
+      name,
+      namespace,
+    };
+  }
+  if (parts.length === 2) {
+    const [name, namespace] = parts as [string, string];
+    return {
+      name,
+      namespace,
+    };
+  }
+  throw new Error(`Invalid name: ${fqn}`);
+}

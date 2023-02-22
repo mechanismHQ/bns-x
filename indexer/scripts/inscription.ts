@@ -1,6 +1,5 @@
 import { fetchInscription, verifyInscriptionZonefile } from '../src/fetchers/inscriptions';
 import { parseZoneFile } from '@fungible-systems/zone-file';
-import { getNameDetails } from '../src/fetchers';
 import { getContractParts } from '../src/utils';
 import { getZonefileInfo } from '../src/fetchers/zonefile';
 import { bytesToHex, utf8ToBytes } from 'micro-stacks/common';

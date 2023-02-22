@@ -23,21 +23,20 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
       fqn: string;
     };
   }>('/names/:fqn', async (req, res) => {
-    console.log('req.params', req.params);
     const caller = queryHelperRouter.createCaller(createContext({ req, res }));
-    const [name, namespace] = getContractParts(req.params.fqn);
+    const { fqn } = req.params;
     try {
-      const details = await caller.getNameDetails({ name, namespace });
+      const details = await caller.getNameDetails({ fqn });
       return res.status(200).send(details);
     } catch (error) {
       if (error instanceof TRPCError) {
         const status = getHTTPStatusCodeFromError(error);
         if (status !== 404) {
-          console.error(`Error fetching details for ${name}.${namespace}:`, error);
+          console.error(`Error fetching details for ${fqn}:`, error);
         }
         return res.status(status).send({ error: { message: error.message } });
       }
-      console.error(`Unexpected error fetching details for ${name}.${namespace}:`, error);
+      console.error(`Unexpected error fetching details for ${fqn}:`, error);
       return res.status(500).send({ error: { message: 'Unexpected error' } });
     }
   });

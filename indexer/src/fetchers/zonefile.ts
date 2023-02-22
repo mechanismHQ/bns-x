@@ -1,6 +1,6 @@
+import { ApiFetcher } from '@fetchers/adapters/api-fetcher';
 import { parseZoneFile } from '@fungible-systems/zone-file';
 import type { ZonefileRecords } from '@routes/api-types';
-import { getNameDetails } from '.';
 import { getContractParts } from '../utils';
 
 export async function getZonefileInfo(zonefile: string) {
@@ -8,7 +8,7 @@ export async function getZonefileInfo(zonefile: string) {
   const origin = parsed.$origin?.replace(/\.$/, '');
 
   const [name, namespace] = getContractParts(origin ?? '');
-  const nameDetails = await getNameDetails(name, namespace);
+  const nameDetails = await new ApiFetcher().getNameDetails(`${name}.${namespace}`);
 
   if (nameDetails === null) {
     throw new Error('Unable to get name details');

@@ -1,6 +1,5 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { getNameDetails, getAddressNames, getDisplayName } from '../../fetchers';
 import { displayNameResponseSchema, namesByAddressBnsxSchema } from '../api-types';
 import { router, procedure } from './base';
 
@@ -9,21 +8,32 @@ export const queryHelperRouter = router({
     .input(z.string())
     .output(namesByAddressBnsxSchema)
     .query(async ({ ctx, input }) => {
-      return await getAddressNames(input, ctx.prisma);
+      return await ctx.fetcher.getAddressNames(input);
     }),
 
   getNameDetails: procedure
     .input(
-      z.object({
-        name: z.string(),
-        namespace: z.string(),
-      })
+      z.union([
+        z.object({
+          name: z.string(),
+          namespace: z.string(),
+        }),
+        z.object({
+          fqn: z.string(),
+        }),
+      ])
     )
-    .query(async ({ ctx, input: { name, namespace } }) => {
-      const details = await getNameDetails(name, namespace, ctx.bnsxDb);
+    .query(async ({ ctx, input }) => {
+      let fqn: string;
+      if ('fqn' in input) {
+        fqn = input.fqn;
+      } else {
+        fqn = `${input.name}.${input.namespace}`;
+      }
+      const details = await ctx.fetcher.getNameDetails(fqn);
       if (details === null) {
         throw new TRPCError({
-          message: `Unable to fetch details for ${name}.${namespace}`,
+          message: `Unable to fetch details for ${fqn}`,
           code: 'NOT_FOUND',
         });
       }
@@ -34,7 +44,7 @@ export const queryHelperRouter = router({
     .input(z.string())
     .output(displayNameResponseSchema)
     .query(async ({ input, ctx }) => {
-      const displayName = await getDisplayName(input, ctx.bnsxDb);
+      const displayName = await ctx.fetcher.getDisplayName(input);
       return {
         name: displayName,
       };
