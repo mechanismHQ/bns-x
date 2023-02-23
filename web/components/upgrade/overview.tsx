@@ -9,6 +9,7 @@ import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { useEffect } from 'react';
 import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
 import { nameUpgradingAtom } from '@store/migration';
+import { Link, LinkText } from '@components/link';
 // import { styled } from '@stitches/react';
 
 export const RespGrid = styled(Grid, {
@@ -35,17 +36,17 @@ export const UpgradeOverview: React.FC = () => {
             <Box
               width="100%"
               borderRadius="18px"
-              border="1px solid $surface-error-border-subdued"
-              backgroundColor="$color-surface-error"
-              color="$color-alert-red"
+              border="1px solid $onSurface-border-subdued"
+              // backgroundColor="$dark-warning-surface-warning"
+              // color="$warning-surface-warning"
             >
               <SpaceBetween height="90px" alignItems="center" px="32px" isInline>
-                <Text variant="Body01" color="$color-alert-red">
+                <Text variant="Body01" color="$icon-subdued">
                   {v1Name}
                 </Text>
-                <Box padding="3px 10px" borderRadius="5px" backgroundColor="#301211">
-                  <Text variant="Label01" color="$color-alert-red">
-                    BNS
+                <Box padding="3px 10px" borderRadius="5px" backgroundColor="$grey-800">
+                  <Text variant="Label01" color="$warning-surface-warning">
+                    BNS Core
                   </Text>
                 </Box>
               </SpaceBetween>
@@ -53,24 +54,27 @@ export const UpgradeOverview: React.FC = () => {
                 px="32px"
                 spacing="10px"
                 py="26px"
-                borderTop="1px solid $surface-error-border-subdued"
+                borderTop="1px solid $onSurface-border-subdued"
               >
-                <Text variant="Heading06" color="$color-alert-red">
-                  On BNS legacy
+                <Text variant="Heading06" color="$icon-subdued">
+                  On BNS Core
                 </Text>
                 <Stack spacing="1px">
-                  <Text variant="Body01" color="$color-alert-red">
-                    • One name per address
+                  <Text variant="Body01" color="$icon-subdued">
+                    ❌ One name per address
                   </Text>
-                  <Text variant="Body01" color="$color-alert-red">
-                    • No NFT compatibility
+                  <Text variant="Body01" color="$icon-subdued">
+                    ❌ No NFT compatibility
                   </Text>
-                  <Text variant="Body01" color="$color-alert-red">
+                  <Text variant="Body01" color="$icon-subdued">
+                    ✅ Ability to update your zonefile
+                  </Text>
+                  {/* <Text variant="Body01" color="$icon-subdued">
                     • No dev team
-                  </Text>
-                  <Text variant="Body01" color="$color-alert-red">
+                  </Text> */}
+                  {/* <Text variant="Body01" color="$icon-subdued">
                     • Sadness forever
-                  </Text>
+                  </Text> */}
                 </Stack>
               </Stack>
             </Box>
@@ -91,10 +95,12 @@ export const UpgradeOverview: React.FC = () => {
               >
                 <Text variant="Heading06">On BNSx</Text>
                 <Stack spacing="1px" pb="18px">
-                  <Text variant="Body01">• Many names per address</Text>
-                  <Text variant="Body01">• NFT compatibility in apps & wallets</Text>
-                  <Text variant="Body01">• Dedicated dev team</Text>
-                  <Text variant="Body01">• New features every week</Text>
+                  <Text variant="Body01">✅ Many names per address</Text>
+                  <Text variant="Body01">✅ NFT compatibility in apps & wallets</Text>
+                  <Text variant="Body01">✅ Always convertable back to BNS Core</Text>
+                  <Text variant="Body01">❌ Can&apos;t update your zonefile</Text>
+                  {/* <Text variant="Body01">• Dedicated dev team</Text> */}
+                  {/* <Text variant="Body01">• New features every week</Text> */}
                 </Stack>
                 <Box>
                   <Button onClick={deploy}>
@@ -113,7 +119,9 @@ export const UpgradeOverview: React.FC = () => {
               Please be careful: BNSx is advanced, experimental, and unaudited software. Bugs could
               result in complete loss of tokens.
             </Text>
-            <Text
+            <Link
+              plain
+              href="https://docs.bns.xyz"
               variant="Caption01"
               color="$onSurface-text-dim"
               fontWeight="300"
@@ -121,7 +129,7 @@ export const UpgradeOverview: React.FC = () => {
               letterSpacing={'-1%'}
             >
               Learn more about BNSx
-            </Text>
+            </Link>
           </Stack>
         </RespGrid>
       </Stack>

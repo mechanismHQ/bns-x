@@ -89,12 +89,12 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
       <FooterContainer spacing="8px">
         {!ONLY_INSCRIPTIONS && (
           <>
-            <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
+            {/* <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
               Discord
             </HeaderLink>
             <HeaderLink href="#" color="$onSurface-text-subdued">
               Twitter
-            </HeaderLink>
+            </HeaderLink> */}
             <HeaderLink
               onClick={() => {}}
               href="https://docs.bns.xyz"
@@ -123,7 +123,7 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
         )}
       </FooterContainer>
       <Text variant="Body01" color="$onSurface-text-dim">
-        {ONLY_INSCRIPTIONS ? '' : '© {year} dots.so'}
+        {ONLY_INSCRIPTIONS ? '' : `© ${year} dots.so`}
       </Text>
     </FooterContainer>
   );

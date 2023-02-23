@@ -30,13 +30,6 @@ const StyledName = styled(Text, {
   },
 });
 
-const StyledPrimary = styled(Text, {
-  display: 'block',
-  '@bp1': {
-    display: 'none',
-  },
-});
-
 const StyledEditBox = styled(Box, {
   display: 'block',
   '@bp1': {
@@ -57,38 +50,23 @@ export const ProfileRow: React.FC<{
 }> = ({ v1 = false, name }) => {
   const router = useRouter();
   const gradient = useGradient(name);
-  const primaryName = useAtomValue(userPrimaryNameState);
-  const v1OuterProps: BoxProps = v1
-    ? {
-        backgroundColor: '$color-surface-error',
-        border: '1px solid $border-error',
-        borderRadius: '8px',
-      }
-    : {};
+
+  const upgrade = useCallback(async () => {
+    await router.push({
+      pathname: '/upgrade',
+    });
+  }, [router]);
 
   const manage = useCallback(async () => {
-    if (v1) {
-      await router.push({
-        pathname: '/upgrade',
-      });
-    } else {
-      await router.push({
-        pathname: '/names/[name]',
-        query: { name },
-      });
-    }
-  }, [router, v1, name]);
+    await router.push({
+      pathname: '/names/[name]',
+      query: { name },
+    });
+  }, [router, name]);
   const stxAddress = useAtomValue(stxAddressAtom);
 
   return (
-    <SpaceBetween
-      isInline
-      alignItems={'center'}
-      width="100%"
-      height="136px"
-      px="29px"
-      {...v1OuterProps}
-    >
+    <SpaceBetween isInline alignItems={'center'} width="100%" height="136px" px="29px">
       <Stack alignItems={'center'} isInline>
         <Box
           borderRadius="50%"
@@ -99,49 +77,48 @@ export const ProfileRow: React.FC<{
           backgroundImage={gradient}
         />
         <Stack spacing="6px">
-          <StyledName variant="Heading035" color={v1 ? '$text-error' : '$text'}>
+          <StyledName variant="Heading035" color={'$text'}>
             {name}
           </StyledName>
 
-          {v1 && (
-            <Text
+          <Stack isInline height="20px" spacing="27px">
+            <LinkText
+              href={`https://explorer.stacks.co/address/${stxAddress ?? ''}`}
+              target="_blank"
               variant="Body02"
-              height="20px"
-              color={v1 ? '$text-error-subdued' : '$onSurface-text-subdued'}
+              color={'$onSurface-text-subdued'}
             >
-              Legacy BNS: Upgrade to BNSx
+              {truncateMiddle(stxAddress || '')}
+            </LinkText>
+            <Text variant="Body02" height="20px" color={'$onSurface-text-subdued'}>
+              {v1 ? 'BNS Core' : 'BNSx'}
             </Text>
-          )}
-          {!v1 && (
-            <Stack isInline height="20px" spacing="27px">
-              <LinkText
-                href={`https://explorer.stacks.co/address/${stxAddress ?? ''}`}
-                target="_blank"
-                variant="Body02"
-                color={'$onSurface-text-subdued'}
-              >
-                {truncateMiddle(stxAddress || '')}
-              </LinkText>
-              {primaryName?.combined === name && (
-                <StyledPrimary
-                  variant="Body02"
-                  // display={{ '@bp1': 'none', initial: 'block' }}
-                  color="$light-onSurface-icon-subdued"
-                >
-                  Primary name
-                </StyledPrimary>
-              )}
-            </Stack>
-          )}
+          </Stack>
         </Stack>
       </Stack>
       <StyledEditBox>
-        <Button onClick={manage}>{v1 ? 'Upgrade' : 'Edit'}</Button>
+        <Stack isInline>
+          <Button onClick={manage} secondary={v1}>
+            Edit
+          </Button>
+          {v1 && (
+            <Button
+              onClick={upgrade}
+              // secondary
+              // backgroundColor="$dark-primary-action-primary"
+              // color="$text-onPrimary"
+            >
+              Upgrade
+            </Button>
+          )}
+        </Stack>
         {/* {v1 ? <Button onClick={upgrade}>Upgrade</Button> : <Button disabled>Edit</Button>} */}
       </StyledEditBox>
     </SpaceBetween>
   );
 };
+
+const everRedirect = false; // dev: change to enable auto-redirect to 'upgrade'
 
 export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
@@ -153,7 +130,8 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
   const shouldRedirect = useMemo(() => {
     const noBnsx = holdings.length === 0;
     const canRedirect = router.query.redirect !== 'false';
-    return hasV1 && noBnsx && canRedirect;
+    return everRedirect && hasV1 && noBnsx && canRedirect;
+    // return false;
   }, [hasV1, holdings.length, router.query.redirect]);
 
   useEffect(() => {

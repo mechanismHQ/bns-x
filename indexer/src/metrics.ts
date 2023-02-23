@@ -10,7 +10,7 @@ type RequestMetrics = {
   summaryRolling: (labels?: LabelValues<'route' | 'method' | 'status_code'>) => void;
 };
 
-export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, options) => {
+export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, _options) => {
   const requestCount = new Counter({
     name: 'http_request_count',
     help: 'Total number of requests made',

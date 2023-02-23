@@ -11,11 +11,11 @@ import { Inscribe } from '@components/p/inscribe';
 
 export const Home: React.FC<{ children?: React.ReactNode }> = () => {
   const { openAuthRequest, isSignedIn } = useAuth();
-  const router = useRouter();
+  // const router = useRouter();
 
   const getStarted = useCallback(() => {
     void openAuthRequest({});
-  }, [router]);
+  }, [openAuthRequest]);
 
   if (ONLY_INSCRIPTIONS) {
     return <Inscribe />;

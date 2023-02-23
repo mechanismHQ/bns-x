@@ -44,7 +44,7 @@ export const Link: React.FC<LinkProps> = ({ href, prefetch, children, plain, ...
   const extra = plain
     ? {
         textDecoration: 'none',
-        color: '$text',
+        color: props.color ?? '$text',
         _hover: {
           textDecoration: 'underline',
         },
