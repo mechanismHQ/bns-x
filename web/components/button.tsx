@@ -6,7 +6,7 @@ import { styled } from '@stitches/react';
 import { keyframes } from '@nelson-ui/core';
 import { useCallback, useState } from 'react';
 
-const move = keyframes({
+export const btnShiftAnimation = keyframes({
   from: {
     top: '0px',
   },
@@ -14,6 +14,11 @@ const move = keyframes({
     top: '3px',
   },
 });
+
+export const btnShiftActiveProps = {
+  animation: `${btnShiftAnimation()} 50ms ease`,
+  animationFillMode: 'forwards',
+};
 
 export const ButtonComp = styled(Box, {
   padding: '14px 24px',
@@ -27,10 +32,7 @@ export const ButtonComp = styled(Box, {
     backgroundColor: '$slate-300',
     // top: '3px',
   },
-  '&:active': {
-    animation: `${move()} 50ms ease`,
-    animationFillMode: 'forwards',
-  },
+  '&:active': btnShiftActiveProps,
   // animation: `top 50ms ease`,
   // '&.btn-clicked': {
   //   // top: '3px',

@@ -7,6 +7,8 @@ import { WalletConnectButton } from '../wallet-connect-button';
 import { LogoIcon } from '@components/icons/logo';
 import { useRouter } from 'next/router';
 import { Menu } from '@components/layout/menu';
+import { btnShiftActiveProps, btnShiftAnimation } from '@components/button';
+import Link from 'next/link';
 
 export const TokenBalance: React.FC = () => {
   const stxAddress = useAtomValue(stxAddressAtom);
@@ -32,13 +34,19 @@ export const Header: React.FC<{ children?: React.ReactNode }> = () => {
       maxWidth="1120px"
       alignItems={'center'}
     >
-      <LogoIcon
-        cursor="pointer"
-        size="32px"
-        onClick={async () => {
-          await router.push({ pathname: '/' });
-        }}
-      />
+      <Link href="/" passHref>
+        <LogoIcon
+          as="a"
+          position="relative"
+          cursor="pointer"
+          size="32px"
+          _active={btnShiftActiveProps}
+          onClick={async () => {
+            await router.push({ pathname: '/' });
+          }}
+        />
+      </Link>
+
       <Stack isInline spacing="8px">
         {isSSR ? null : (
           <Suspense fallback={<></>}>

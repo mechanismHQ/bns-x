@@ -8,6 +8,7 @@ import { styled } from '@common/theme';
 import { useAtomValue } from 'jotai';
 import { isMainnetState } from '@store/index';
 import { ONLY_INSCRIPTIONS } from '@common/constants';
+import { btnShiftActiveProps } from '@components/button';
 
 const FooterContainer = styled(SpaceBetween, {
   flexDirection: 'row',
@@ -50,7 +51,9 @@ export const HeaderLink: React.FC<
     <HeaderLinkBox
       py="10px"
       px="10px"
+      position="relative"
       borderRadius="10px"
+      _active={btnShiftActiveProps}
       _hover={{
         backgroundColor: '$surface-surface--hovered',
       }}
