@@ -26,19 +26,19 @@ export function makeTheme() {
     Brand,
     Slate,
     fontFamilies,
-    lineHeights,
-    fontSize,
-    letterSpacing,
-    paragraphSpacing,
+    // lineHeights,
+    // fontSize,
+    // letterSpacing,
+    // paragraphSpacing,
     Label,
     Caption,
     Body,
     Display,
     Heading,
-    textCase,
-    textDecoration,
+    // textCase,
+    // textDecoration,
     fontWeights,
-    Annotate,
+    // Annotate,
     ...BaseColors
   } = figma;
   const colors: Record<string, string> = {};
@@ -114,14 +114,14 @@ export function newFsColors() {
 }
 
 export function makeNewTheme() {
-  const { color } = tokens;
-  const colors: Record<string, string> = {};
+  // const { color } = tokens;
+  // const colors: Record<string, string> = {};
 
   // let key: keyof typeof color;
   // for (key in color) {
   //   colors[key] = color[key].value;
   // }
-  const { label, caption, body, display, heading, ...fonts } = tokens.font;
+  const { label, caption, body, display, heading, ..._fonts } = tokens.font;
   const textStyles: Record<string, CSSTypes> = {};
   [label, caption, body, display, heading].forEach(group => {
     Object.entries(group).forEach(([key, val]) => {
@@ -196,7 +196,9 @@ export const baseTheme = {
   fontSizes: generatedTheme.fontSizes,
   fonts: {
     ...fonts,
+
     ...transformProps(figma.fontFamilies),
+    headlines: 'Open Sauce One',
   },
   fontFamilies: generatedTheme.fontFamilies,
   fontWeights: {

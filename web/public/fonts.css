@@ -12,3 +12,18 @@
   font-weight: 500;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'Open Sauce';
+  src: url('/fonts/OpenSauce/OpenSauceSans-Regular.ttf');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Open Sauce';
+  src: url('/fonts/OpenSauce/OpenSauceSans-Medium.ttf');
+  font-style: medium;
+  font-weight: 500;
+  font-display: swap;
+}
