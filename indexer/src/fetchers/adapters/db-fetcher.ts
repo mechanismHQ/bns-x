@@ -49,7 +49,7 @@ export class DbFetcher implements BaseFetcher {
         : undefined;
       const base = {
         ...api,
-        zonefile,
+        zonefile: zonefile ?? '',
         inscriptionId,
         inscription: inscriptionMeta,
         decoded,

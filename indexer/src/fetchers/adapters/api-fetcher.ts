@@ -33,6 +33,7 @@ export class ApiFetcher implements BaseFetcher {
       const decoded = toUnicode(`${name}.${namespace}`);
       const base = {
         ...api,
+        zonefile: api.zonefile ?? '',
         decoded,
       };
       const zonefileRecords = getZonefileProperties(api.zonefile);
