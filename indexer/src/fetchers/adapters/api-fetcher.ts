@@ -13,7 +13,7 @@ import { convertNameBuff } from '~/contracts/utils';
 
 export class ApiFetcher implements BaseFetcher {
   async getDisplayName(address: string): Promise<string | null> {
-    const [bnsxName, legacyName] = await Promise.all([
+    const [legacyName, bnsxName] = await Promise.all([
       fetchLegacyDisplayName(address),
       (async () => {
         const primary = await getPrimaryName(address);

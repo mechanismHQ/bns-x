@@ -21,7 +21,7 @@ export class DbFetcher implements BaseFetcher {
   }
 
   async getDisplayName(address: string): Promise<string | null> {
-    const [bnsxName, legacyName] = await Promise.all([
+    const [legacyName, bnsxName] = await Promise.all([
       fetchLegacyDisplayName(address),
       fetchBnsxDisplayName(address, this.bnsDb),
     ]);
