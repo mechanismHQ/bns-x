@@ -20,15 +20,25 @@ import { TRPCError } from '@trpc/server';
 import { getHTTPStatusCodeFromError } from '@trpc/server/http';
 import { logger } from '~/logger';
 import { listenerPlugin } from '~/plugins/listener';
+import FastifySwagger from '@fastify/swagger';
+import { OpenApiOptions } from '~/swagger';
+import SwaggerUi from '@fastify/swagger-ui';
 
 const options: FastifyServerOptions = {
   logger,
 };
 
-export async function makeApp() {
+export async function makeApp({
+  withSwagger: _withSwagger = false,
+}: { withSwagger?: boolean } = {}) {
   const app = fastify(options).withTypeProvider<ZodTypeProvider>();
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
+
+  await app.register(FastifySwagger, OpenApiOptions);
+  await app.register(SwaggerUi, {
+    routePrefix: '/documentation',
+  });
 
   await app.register(cors);
 

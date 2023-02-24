@@ -24,7 +24,8 @@
     "sync": "pnpm r scripts/sync-prints.ts",
     "db:reset": "prisma migrate reset",
     "typecheck": "tsc --noEmit",
-    "build": "tsup"
+    "build": "tsup",
+    "build:openapi": "pnpm r scripts/openapi-generator.ts"
   },
   "author": "Hank Stoever",
   "license": "ISC",
@@ -34,6 +35,8 @@
     "@fastify/cors": "^8.2.0",
     "@fastify/http-proxy": "8.4.0",
     "@fastify/static": "^6.6.1",
+    "@fastify/swagger": "^8.3.1",
+    "@fastify/swagger-ui": "^1.4.0",
     "@fungible-systems/zone-file": "^2.0.0",
     "@hirosystems/chainhook-types": "1.1.2",
     "@pothos/core": "3.23.1",
@@ -52,7 +55,7 @@
     "fastify": "4.10.2",
     "fastify-metrics": "^10.0.2",
     "fastify-plugin": "4.4.0",
-    "fastify-type-provider-zod": "^1.1.8",
+    "fastify-type-provider-zod": "^1.1.9",
     "graphql": "16.5.0",
     "graphql-scalars": "1.20.1",
     "graphql-yoga": "3.1.1",
