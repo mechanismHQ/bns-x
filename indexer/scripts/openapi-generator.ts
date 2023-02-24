@@ -8,6 +8,8 @@ import FastifySwagger from '@fastify/swagger';
 import { mkdir, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { Server } from 'http';
+import { appRouter } from '../src/routes/trpc';
+import { generateOpenApiDocument } from 'trpc-openapi-fork-fastify-pr-177';
 
 /**
  * Generates `openapi.yaml` based on current Swagger definitions.
@@ -18,6 +20,13 @@ export const ApiGenerator: FastifyPluginAsync = async (fastify, _options) => {
   if (!existsSync('./tmp')) {
     await mkdir('./tmp');
   }
+  const tRPC = generateOpenApiDocument(appRouter, {
+    title: 'BNS tRPC API',
+    description: 'tRPC-enabled endpoints',
+    version: '3.0.3',
+    baseUrl: 'https://api.bns.xyz',
+  });
+  await writeFile('./tmp/trpc.json', JSON.stringify(tRPC, null, 2), { encoding: 'utf-8' });
   await writeFile('./tmp/openapi.yaml', fastify.swagger({ yaml: true }));
 };
 

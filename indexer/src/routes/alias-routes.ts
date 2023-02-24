@@ -24,7 +24,12 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
     '/names/:fqn',
     {
       schema: {
-        description: 'Fetch details for a given BNS Name',
+        description: `
+Fetch information about a specific name
+
+[example with BNSx](https://api.bns.xyz/v1/names/hello-bnsx.btc) [example without bnsx](https://api.bns.xyz/v1/names/muneeb.btc)
+        `,
+        summary: 'Fetch name details',
         tags: ['bns'],
         params: z.object({
           fqn: z.string().describe('Fully qualified name, like `muneeb.btc`'),
@@ -72,6 +77,8 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
         description: `
 Fetch a list of names owned by an address.
 
+[example with BNSx](https://api.bns.xyz/v1/addresses/stacks/SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60) [example without BNSx](https://api.bns.xyz/v1/addresses/stacks/SP132QXWFJ11WWXPW4JBTM9FP6XE8MZWB8AF206FX)
+
 The logic for determining name order is:
 
 - If they own a BNS core name, return that first
@@ -100,7 +107,7 @@ The logic for determining name order is:
         return res.status(200).send({ names });
       }
       try {
-        const names = await caller.getAddressNames(principal);
+        const names = await caller.getAddressNames({ address: principal });
         return res.status(200).send(names);
       } catch (error) {
         if (error instanceof TRPCError) {

@@ -23,6 +23,7 @@ import { listenerPlugin } from '~/plugins/listener';
 import FastifySwagger from '@fastify/swagger';
 import { OpenApiOptions } from '~/swagger';
 import SwaggerUi from '@fastify/swagger-ui';
+import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi-fork-fastify-pr-177';
 
 const options: FastifyServerOptions = {
   logger,
@@ -65,6 +66,12 @@ export async function makeApp({
       router: appRouter,
       createContext,
     },
+  });
+
+  await app.register(fastifyTRPCOpenApiPlugin, {
+    router: appRouter,
+    createContext,
+    basePath: '/trpc-flat',
   });
 
   const staticRoot = join(__dirname, '..', 'static');

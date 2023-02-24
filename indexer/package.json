@@ -71,6 +71,8 @@
     "punycode": "^2.1.1",
     "socket.io-client": "^4.4.1",
     "stacks-encoding-native-js": "1.0.0",
+    "trpc-openapi": "^1.1.2",
+    "trpc-openapi-fork-fastify-pr-177": "^1.1.2",
     "tsup": "^6.5.0",
     "tsx": "^3.12.3",
     "typescript": "4.8.4",

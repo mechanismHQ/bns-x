@@ -5,10 +5,21 @@ import { router, procedure } from './base';
 
 export const queryHelperRouter = router({
   getAddressNames: procedure
-    .input(z.string())
+    .input(
+      z.object({
+        address: z.string().describe('A Stacks address to fetch names for'),
+      })
+    )
+    .meta({
+      openapi: {
+        method: 'GET',
+        path: '/get-address-names',
+        tags: ['bns', 'trpc'],
+      },
+    })
     .output(namesByAddressBnsxSchema)
     .query(async ({ ctx, input }) => {
-      return await ctx.fetcher.getAddressNames(input);
+      return await ctx.fetcher.getAddressNames(input.address);
     }),
 
   getNameDetails: procedure
