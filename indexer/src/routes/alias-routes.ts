@@ -54,7 +54,7 @@ export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
         if (error instanceof TRPCError) {
           const status = getHTTPStatusCodeFromError(error);
           if (status !== 404) {
-            console.error(`Error fetching details for ${fqn}:`, error);
+            console.error(`Unable to find details for ${fqn}`);
           }
           return res.status(status).send({ error: { message: error.message } });
         }

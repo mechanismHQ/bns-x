@@ -14,7 +14,7 @@ declare module 'fastify' {
 
 export const prismaPlugin: FastifyPluginAsync = fp(async server => {
   const dbEnv = process.env.STACKS_API_POSTGRES;
-  if (typeof dbEnv === 'undefined') {
+  if (typeof dbEnv === 'undefined' || dbEnv === '') {
     const fetcher = new ApiFetcher();
     server.decorate('fetcher', fetcher);
     return;

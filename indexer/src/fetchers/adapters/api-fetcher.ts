@@ -30,6 +30,9 @@ export class ApiFetcher implements BaseFetcher {
         getNameDetailsApi(name, namespace),
         subdomain ? Promise.resolve(null) : getNameDetailsQuery(name, namespace),
       ]);
+      if ('error' in api) {
+        return null;
+      }
       const decoded = toUnicode(`${name}.${namespace}`);
       const base = {
         ...api,

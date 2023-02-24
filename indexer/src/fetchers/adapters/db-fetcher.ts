@@ -36,6 +36,9 @@ export class DbFetcher implements BaseFetcher {
         subdomain ? Promise.resolve(null) : fetchBnsxName(name, namespace, this.bnsDb),
         this.getInscribedZonefile(name, namespace),
       ]);
+      if ('error' in api) {
+        return null;
+      }
       const zonefile = inscribedZf ? inscribedZf.zonefileRaw : api.zonefile;
       const inscriptionId = inscribedZf?.inscriptionId;
       const decoded = toUnicode(`${name}.${namespace}`);

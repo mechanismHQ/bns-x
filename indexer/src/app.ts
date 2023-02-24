@@ -42,9 +42,7 @@ export async function makeApp({
 
   await app.register(cors);
 
-  if (process.env.STACKS_API_POSTGRES) {
-    await app.register(prismaPlugin);
-  }
+  await app.register(prismaPlugin);
 
   await app.register(listenerPlugin);
 

@@ -16,6 +16,7 @@
     "rp": "NODE_ENV=production tsx -r dotenv-flow/config",
     "rpw": "NODE_ENV=production tsx watch -r dotenv-flow/config",
     "dev:mainnet": "pnpm rpw scripts/server.ts",
+    "dev:testnet": "NODE_ENV=staging pnpm tsx watch -r dotenv-flow/config scripts/server.ts",
     "dev": "pnpm rw scripts/server.ts",
     "start": "node -r @swc-node/register scripts/server.ts",
     "test:migrate": "dotenv -e .env.test -- prisma migrate dev --name test-init",
