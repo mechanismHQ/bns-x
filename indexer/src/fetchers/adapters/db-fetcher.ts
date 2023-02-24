@@ -25,7 +25,7 @@ export class DbFetcher implements BaseFetcher {
       fetchLegacyDisplayName(address),
       fetchBnsxDisplayName(address, this.bnsDb),
     ]);
-    return bnsxName ?? legacyName;
+    return legacyName ?? bnsxName;
   }
 
   async getNameDetails(fqn: string): Promise<NameInfoResponse | null> {

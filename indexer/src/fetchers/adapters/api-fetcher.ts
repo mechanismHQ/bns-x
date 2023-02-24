@@ -20,7 +20,7 @@ export class ApiFetcher implements BaseFetcher {
         return primary ? convertNameBuff(primary).decoded : null;
       })(),
     ]);
-    return bnsxName ?? legacyName;
+    return legacyName ?? bnsxName;
   }
 
   async getNameDetails(fqn: string): Promise<NameInfoResponse | null> {
