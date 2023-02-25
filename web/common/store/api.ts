@@ -12,7 +12,7 @@ export const namesForAddressState = atomFamily((address: string) => {
     queryKey: ['apiNamesState', address],
     refetchInterval: 15000,
     queryFn: async () => {
-      return trpc.getAddressNames.query(address);
+      return trpc.getAddressNames.query({ address });
     },
   }))[0];
 }, Object.is);

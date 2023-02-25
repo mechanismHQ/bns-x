@@ -19,7 +19,7 @@ export class BnsxApiClient {
   }
 
   async getNamesOwnedByAddress(address: string): Promise<NamesByAddressResponse> {
-    return this.trpc.getAddressNames.query(address);
+    return this.trpc.getAddressNames.query({ address });
   }
 
   /**
