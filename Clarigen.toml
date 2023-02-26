@@ -24,4 +24,4 @@ after = "pnpm prettier --write web/common/clarigen.ts indexer/src/contracts/clar
 [docs]
 # `output` should be a folder
 output = "docs"
-exclude = ["bns-v1", "extension-trait", "test-utils", "nft-trait", "managed-namespaces", "proposal-trait"]
+exclude = ["bns-v1", "extension-trait", "test-utils", "nft-trait", "managed-namespaces", "proposal-trait", "proposal-2"]

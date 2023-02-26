@@ -10,7 +10,7 @@
 
 **Private functions:**
 
-- [`add-test-utils`](#add-test-utils)
+- [`add-bootstrap-utils`](#add-bootstrap-utils)
 
 **Maps**
 
@@ -34,21 +34,19 @@
 ```clarity
 (define-public (execute (sender principal))
   (begin
-    ;; Enable genesis extensions
-    ;; (try! (contract-call? .bnsx-extensions set-extensions
-    ;;   (list
-    ;;   )
-    ;; ))
-    ;; WORKAROUND PRE-2.1
-    ;; NOT IN PROD
-    (try! (add-test-utils))
-    ;; (and (not is-in-mainnet) (try! (add-test-utils)))
+    (try! (add-bootstrap-utils))
 
     (try! (contract-call? .bnsx-extensions set-extension-roles
       (list
         { extension: .wrapper-migrator, enabled: true, role: "registry" }
       )
     ))
+
+    ;; mainnet
+    ;; (try! (contract-call? .bnsx-registry mng-set-token-uri "https://api.bns.xyz/nft-metadata/{id}"))
+    ;; (try! (contract-call? .wrapper-migrator set-signers (list  
+    ;;   { signer: 0x65a660401398c30c63a9ffd69e933b87fd39ce0d, enabled: true }
+    ;; )))
 
     (ok true)
   )
@@ -63,23 +61,22 @@
 | ------ | --------- | ----------- |
 | sender | principal |             |
 
-### add-test-utils
+### add-bootstrap-utils
 
-[View in file](../contracts/proposals/proposal-bootstrap.clar#L27)
+[View in file](../contracts/proposals/proposal-bootstrap.clar#L25)
 
-`(define-private (add-test-utils () (response bool uint))`
+`(define-private (add-bootstrap-utils () (response bool uint))`
 
 <details>
   <summary>Source code:</summary>
 
 ```clarity
-(define-private (add-test-utils)
+(define-private (add-bootstrap-utils)
   (begin
-    ;; workaround for https://github.com/stacks-network/stacks-blockchain/pull/3440
-
     (try! (contract-call? .bnsx-extensions set-extensions 
       (list 
         { extension: DEPLOYER, enabled: true }
+        ;; { extension: 'SPRG2XNKCEV40EMASB8TG3B599ATHPRWRWSM4EB7.xsafe, enabled: true }
         { extension: .test-utils, enabled: true }
       )
     ))

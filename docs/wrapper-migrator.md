@@ -92,8 +92,7 @@ wrapper verifiers.
 
 ```clarity
 (define-public (is-dao-or-extension)
-  ;; (ok (asserts! (or (is-eq tx-sender .bnsx-extensions) (contract-call? .bnsx-extensions has-role-or-extension contract-caller ROLE)) ERR_UNAUTHORIZED))
-  (ok (asserts! (contract-call? .bnsx-extensions has-role-or-extension contract-caller ROLE) ERR_UNAUTHORIZED))
+  (ok (asserts! (or (is-eq tx-sender .bnsx-extensions) (contract-call? .bnsx-extensions has-role-or-extension contract-caller ROLE)) ERR_UNAUTHORIZED))
 )
 ```
 
@@ -101,7 +100,7 @@ wrapper verifiers.
 
 ### set-signers-iter
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L55)
+[View in file](../contracts/wrapper-migrator-v1.clar#L54)
 
 `(define-private (set-signers-iter ((item (tuple (enabled bool) (signer (buff 20))))) (buff 20))`
 
@@ -133,7 +132,7 @@ wrapper verifiers.
 
 ### set-signers
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L70)
+[View in file](../contracts/wrapper-migrator-v1.clar#L69)
 
 `(define-public (set-signers ((signers (list 50 (tuple (enabled bool) (signer (buff 20)))))) (response (list 50 (buff 20)) uint))`
 
@@ -161,7 +160,7 @@ Set valid wrapper verifiers
 
 ### migrate
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L91)
+[View in file](../contracts/wrapper-migrator-v1.clar#L90)
 
 `(define-public (migrate ((wrapper principal) (signature (buff 65)) (recipient principal)) (response (tuple (id uint) (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
 
@@ -221,7 +220,7 @@ This function has three main steps:
 
 ### register-wrapper
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L124)
+[View in file](../contracts/wrapper-migrator-v1.clar#L123)
 
 `(define-public (register-wrapper ((wrapper principal)) (response uint uint))`
 
@@ -256,7 +255,7 @@ can then be used to validate signatures
 
 ### verify-wrapper
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L150)
+[View in file](../contracts/wrapper-migrator-v1.clar#L149)
 
 `(define-read-only (verify-wrapper ((wrapper principal) (signature (buff 65))) (response bool uint))`
 
@@ -302,7 +301,7 @@ checked to ensure that pubkey hash is stored as a valid signer.
 
 ### hash-id
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L164)
+[View in file](../contracts/wrapper-migrator-v1.clar#L163)
 
 `(define-read-only (hash-id ((id uint)) (buff 32))`
 
@@ -325,7 +324,7 @@ checked to ensure that pubkey hash is stored as a valid signer.
 
 ### debug-signature
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L168)
+[View in file](../contracts/wrapper-migrator-v1.clar#L167)
 
 `(define-read-only (debug-signature ((wrapper principal) (signature (buff 65))) (response (tuple (pubkey-hash (buff 20)) (valid-signer bool)) uint))`
 
@@ -357,7 +356,7 @@ checked to ensure that pubkey hash is stored as a valid signer.
 
 ### recover-pubkey-hash
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L180)
+[View in file](../contracts/wrapper-migrator-v1.clar#L179)
 
 `(define-read-only (recover-pubkey-hash ((wrapper principal) (signature (buff 65))) (response (buff 20) uint))`
 
@@ -388,7 +387,7 @@ checked to ensure that pubkey hash is stored as a valid signer.
 
 ### is-valid-signer
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L192)
+[View in file](../contracts/wrapper-migrator-v1.clar#L191)
 
 `(define-read-only (is-valid-signer ((pubkey (buff 20))) bool)`
 
@@ -413,7 +412,7 @@ Helper method to check if a given principal is a valid verifier
 
 ### get-legacy-name
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L201)
+[View in file](../contracts/wrapper-migrator-v1.clar#L200)
 
 `(define-read-only (get-legacy-name ((account principal)) (response (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
 
@@ -450,7 +449,7 @@ Fetch the BNS legacy name and name properties owned by a given account.
 
 ### resolve-and-transfer
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L215)
+[View in file](../contracts/wrapper-migrator-v1.clar#L214)
 
 `(define-private (resolve-and-transfer ((wrapper principal)) (response (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))) uint))`
 
@@ -498,7 +497,7 @@ Transfer an account's BNS legacy name to a wrapper contract.
 
 ### get-next-wrapper-id
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L241)
+[View in file](../contracts/wrapper-migrator-v1.clar#L240)
 
 `(define-private (get-next-wrapper-id () uint)`
 
@@ -521,7 +520,7 @@ Transfer an account's BNS legacy name to a wrapper contract.
 
 ### get-wrapper-name
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L255)
+[View in file](../contracts/wrapper-migrator-v1.clar#L254)
 
 `(define-read-only (get-wrapper-name ((wrapper principal)) (optional uint))`
 
@@ -545,7 +544,7 @@ given wrapper contract.
 
 ### get-name-wrapper
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L261)
+[View in file](../contracts/wrapper-migrator-v1.clar#L260)
 
 `(define-read-only (get-name-wrapper ((name uint)) (optional principal))`
 
@@ -569,7 +568,7 @@ given name
 
 ### get-id-from-wrapper
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L263)
+[View in file](../contracts/wrapper-migrator-v1.clar#L262)
 
 `(define-read-only (get-id-from-wrapper ((wrapper principal)) (optional uint))`
 
@@ -592,7 +591,7 @@ given name
 
 ### get-wrapper-from-id
 
-[View in file](../contracts/wrapper-migrator-v1.clar#L267)
+[View in file](../contracts/wrapper-migrator-v1.clar#L266)
 
 `(define-read-only (get-wrapper-from-id ((id uint)) (optional principal))`
 

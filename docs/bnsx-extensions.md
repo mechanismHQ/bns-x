@@ -8,7 +8,6 @@ A modified version of the `.executor-dao` framework
 
 **Public functions:**
 
-- [`set-extension`](#set-extension)
 - [`set-extensions`](#set-extensions)
 - [`set-extension-roles`](#set-extension-roles)
 - [`execute`](#execute)
@@ -138,38 +137,9 @@ A modified version of the `.executor-dao` framework
 | extension | principal         |             |
 | role      | (string-ascii 10) |             |
 
-### set-extension
-
-[View in file](../contracts/bnsx-extensions.clar#L39)
-
-`(define-public (set-extension ((extension principal) (enabled bool)) (response bool uint))`
-
-<details>
-  <summary>Source code:</summary>
-
-```clarity
-(define-public (set-extension (extension principal) (enabled bool))
-  (begin
-    (try! (is-self-or-extension))
-    (asserts! (is-eq tx-sender (as-contract tx-sender)) (err u4))
-    (print {event: "extension", extension: extension, enabled: enabled})
-    (ok (map-set extensions extension enabled))
-  )
-)
-```
-
-</details>
-
-**Parameters:**
-
-| Name      | Type      | Description |
-| --------- | --------- | ----------- |
-| extension | principal |             |
-| enabled   | bool      |             |
-
 ### set-extensions-iter
 
-[View in file](../contracts/bnsx-extensions.clar#L48)
+[View in file](../contracts/bnsx-extensions.clar#L39)
 
 `(define-private (set-extensions-iter ((item (tuple (enabled bool) (extension principal)))) bool)`
 
@@ -196,7 +166,7 @@ A modified version of the `.executor-dao` framework
 
 ### set-extensions
 
-[View in file](../contracts/bnsx-extensions.clar#L56)
+[View in file](../contracts/bnsx-extensions.clar#L47)
 
 `(define-public (set-extensions ((extension-list (list 200 (tuple (enabled bool) (extension principal))))) (response (list 200 bool) uint))`
 
@@ -222,7 +192,7 @@ A modified version of the `.executor-dao` framework
 
 ### set-roles-iter
 
-[View in file](../contracts/bnsx-extensions.clar#L63)
+[View in file](../contracts/bnsx-extensions.clar#L54)
 
 `(define-private (set-roles-iter ((item (tuple (enabled bool) (extension principal) (role (string-ascii 10))))) bool)`
 
@@ -249,7 +219,7 @@ A modified version of the `.executor-dao` framework
 
 ### set-extension-roles
 
-[View in file](../contracts/bnsx-extensions.clar#L71)
+[View in file](../contracts/bnsx-extensions.clar#L62)
 
 `(define-public (set-extension-roles ((extension-list (list 200 (tuple (enabled bool) (extension principal) (role (string-ascii 10)))))) (response (list 200 bool) uint))`
 
@@ -275,7 +245,7 @@ A modified version of the `.executor-dao` framework
 
 ### executed-at
 
-[View in file](../contracts/bnsx-extensions.clar#L80)
+[View in file](../contracts/bnsx-extensions.clar#L71)
 
 `(define-read-only (executed-at ((proposal trait_reference)) (optional uint))`
 
@@ -298,7 +268,7 @@ A modified version of the `.executor-dao` framework
 
 ### execute
 
-[View in file](../contracts/bnsx-extensions.clar#L84)
+[View in file](../contracts/bnsx-extensions.clar#L75)
 
 `(define-public (execute ((proposal trait_reference) (sender principal)) (response bool uint))`
 
@@ -327,7 +297,7 @@ A modified version of the `.executor-dao` framework
 
 ### construct
 
-[View in file](../contracts/bnsx-extensions.clar#L95)
+[View in file](../contracts/bnsx-extensions.clar#L86)
 
 `(define-public (construct ((proposal trait_reference)) (response bool uint))`
 
@@ -354,7 +324,7 @@ A modified version of the `.executor-dao` framework
 
 ### request-extension-callback
 
-[View in file](../contracts/bnsx-extensions.clar#L105)
+[View in file](../contracts/bnsx-extensions.clar#L96)
 
 `(define-public (request-extension-callback ((extension trait_reference) (memo (buff 34))) (response bool uint))`
 
