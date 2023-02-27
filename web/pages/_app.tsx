@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import { getNetwork, getAppUrl, ONLY_INSCRIPTIONS } from '@common/constants';
 import type { Atom } from 'jotai';
 import { docTitleState, pageDescriptionState } from '@store/index';
-import { prefetchedDisplayNameState } from '@store/api';
+import { displayNameQueryKey, prefetchedDisplayNameState } from '@store/api';
 
 export interface PageProps {
   dehydratedState: string;
@@ -48,8 +48,7 @@ function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppPro
   const hydratedAtoms: AtomPair[] = [[queryClientAtom, queryClient]];
 
   if (pageProps?.displayName) {
-    const address = pageProps.stxAddress!;
-    hydratedAtoms.push([prefetchedDisplayNameState(address), pageProps.displayName]);
+    queryClient.setQueryData(displayNameQueryKey(pageProps.stxAddress!), pageProps.displayName);
   }
 
   if (pageProps?.meta) {

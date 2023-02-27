@@ -35,11 +35,16 @@ export const prefetchedDisplayNameState = atomFamily<string, PrimitiveAtom<strin
   Object.is
 );
 
+export function displayNameQueryKey(address: string) {
+  return ['apiDisplayNameState', address];
+}
+
 export const addressDisplayNameState = atomFamily((address: string) => {
   return atomsWithQuery(get => ({
-    queryKey: ['apiDisplayNameState', address],
+    queryKey: displayNameQueryKey(address),
     refetchInterval: 15000,
     queryFn: async () => {
+      console.log('fetching display name');
       return bnsApi.getDisplayName(address);
     },
   }))[0];

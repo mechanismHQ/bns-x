@@ -1,6 +1,6 @@
 import { getDehydratedStateFromSession, getSessionAccount } from '@common/session-helpers';
 import type { GetServerSidePropsContext } from 'next';
-import { trpc } from '@store/api';
+import { trpc, bnsApi } from '@store/api';
 
 type GetProps = (
   ctx: GetServerSidePropsContext
@@ -14,8 +14,8 @@ export function withSSRProps(cb?: GetProps) {
     };
     if (dehydratedState !== null) {
       const address = getSessionAccount(dehydratedState)!;
-      // const { name: displayName } = await trpc.getDisplayName.query(address);
-      // baseProps.displayName = displayName;
+      const displayName = await bnsApi.getDisplayName(address);
+      baseProps.displayName = displayName;
       baseProps.stxAddress = address;
     }
     if (typeof cb !== 'undefined') {
