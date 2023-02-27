@@ -17,7 +17,8 @@
     "build": "turbo run build",
     "lint": "eslint packages/**/*.ts api/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",
     "lint:fix": "eslint --fix packages/**/*.ts api/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "api:prod": "pnpm --filter @bns-x/api-types start"
   },
   "author": "Hank Stoever",
   "license": "ISC",

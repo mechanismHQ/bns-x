@@ -10,4 +10,9 @@ if [ "${DATABASE_URL}" ]; then
   
 fi
 
-exec pnpm --filter @bns-x/api-types exec tsx scripts/server.ts
+
+echo "Starting API"
+
+echo "PORT $PORT"
+
+exec pnpm api:prod

@@ -12,26 +12,16 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 # RUN pnpm fetch --prod
 
 COPY api/package.json api/
-# COPY web/package.json web/
+COPY web/package.json web/
 COPY packages/core/package.json packages/core/
 COPY packages/client/package.json packages/client/
-# COPY web/patches ./web/patches
+COPY web/patches ./web/patches
 
 COPY . .
 
 RUN pnpm install --frozen-lockfile
 
 RUN pnpm turbo run build --filter @bns-x/api-types
-
-# Production image, copy all the files and run
-FROM node:18-alpine AS runner
-WORKDIR /app
-
-ENV NODE_ENV production
-
-RUN npm install -g pnpm
-
-COPY --from=builder /app ./
 
 COPY api/scripts/docker-entrypoint.sh /docker-entrypoint.sh
 
@@ -40,3 +30,21 @@ RUN chmod 755 /docker-entrypoint.sh
 EXPOSE 8080
 
 CMD /docker-entrypoint.sh
+
+# Production image, copy all the files and run
+# FROM node:18-alpine AS runner
+# WORKDIR /app
+
+# ENV NODE_ENV production
+
+# RUN npm install -g pnpm
+
+# COPY --from=builder /app ./
+
+# # COPY api/scripts/docker-entrypoint.sh /docker-entrypoint.sh
+
+# RUN chmod 755 api/scripts/docker-entrypoint.sh
+
+# EXPOSE 8080
+
+# CMD api/scripts/docker-entrypoint.sh
