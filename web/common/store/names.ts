@@ -9,7 +9,7 @@ import { deserializeCV } from 'micro-stacks/clarity';
 import { atomFamily } from 'jotai/utils';
 import { addressDisplayNameState, namesForAddressState } from './api';
 import isEqual from 'lodash-es/isEqual';
-import { trpcClient } from '@bns-x/client';
+import { trpc } from './api';
 import { getApiUrl } from '@common/constants';
 import type { ZoneFile } from '@fungible-systems/zone-file';
 import { parseZoneFile, makeZoneFile } from '@fungible-systems/zone-file';
@@ -102,7 +102,6 @@ export const userZonefileState = atomsWithQuery(get => ({
   queryFn: async () => {
     const nameFull = get(userNameState);
     if (nameFull === null) return null;
-    const trpc = trpcClient(getApiUrl());
     const [name, namespace] = getContractParts(nameFull);
     const details = await trpc.getNameDetails.query({ name, namespace });
     return details.zonefile;

@@ -6,7 +6,7 @@ import { logger } from '~/logger';
 
 export const namesRoutes: FastifyPlugin = (fastify, _opts, done) => {
   fastify.get(
-    '/addresses/stacks/:address',
+    '/addresses/stacks/:principal',
     {
       schema: {
         summary: 'Fetch all names owned by an address',

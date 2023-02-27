@@ -1,12 +1,9 @@
 import { DEFAULT_API_URL } from './constants';
-import type { TrpcClient } from './trpc';
-import { trpcClient } from './trpc';
-import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/api-types';
-import { getContractParts } from '@bns-x/core';
+import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
+import { BNS } from './generated';
 
 export class BnsxApiClient {
-  /** @hidden */
-  public trpc: TrpcClient;
+  public openapi: BNS;
 
   /**
    * Create an API client
@@ -15,11 +12,13 @@ export class BnsxApiClient {
    * to `https://api.bns.xyz`
    */
   constructor(baseUrl = DEFAULT_API_URL) {
-    this.trpc = trpcClient(baseUrl);
+    this.openapi = new BNS({
+      BASE: baseUrl,
+    });
   }
 
   async getNamesOwnedByAddress(address: string): Promise<NamesByAddressResponse> {
-    return this.trpc.getAddressNames.query({ address });
+    return this.openapi.bns.getBnsAddressesStacks(address);
   }
 
   /**
@@ -35,8 +34,9 @@ export class BnsxApiClient {
    * @returns
    */
   async getDisplayName(address: string): Promise<string | null> {
-    const { name } = await this.trpc.getDisplayName.query(address);
-    return name;
+    // const { name } = await this.trpc.getDisplayName.query(address);
+    const { names } = await this.openapi.backwardsCompatible.getV1AddressesStacks(address);
+    return names[0] ?? null;
   }
 
   async getLegacyName(address: string): Promise<NamesByAddressResponse['legacy']> {
@@ -56,11 +56,7 @@ export class BnsxApiClient {
    * @returns
    */
   async getNameDetails(name: string, namespace: string): Promise<NameInfoResponse | null> {
-    try {
-      return this.trpc.getNameDetails.query({ name, namespace });
-    } catch (error) {
-      return null;
-    }
+    return this.getNameDetailsFromFqn(`${name}.${namespace}`);
   }
 
   /**
@@ -76,7 +72,11 @@ export class BnsxApiClient {
    * @returns
    */
   async getNameDetailsFromFqn(fqn: string) {
-    const [name, namespace] = getContractParts(fqn);
-    return this.getNameDetails(name, namespace);
+    try {
+      const details = await this.openapi.backwardsCompatible.getV1Names(fqn);
+      return details as unknown as NameInfoResponse;
+    } catch (error) {
+      return null;
+    }
   }
 }

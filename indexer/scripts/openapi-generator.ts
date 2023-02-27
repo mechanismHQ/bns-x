@@ -10,6 +10,9 @@ import { existsSync } from 'fs';
 import { Server } from 'http';
 import { appRouter } from '../src/routes/trpc';
 import { generateOpenApiDocument } from 'trpc-openapi-fork-fastify-pr-177';
+import { join } from 'path';
+
+export const clientDir = join(__dirname, '..', '..', 'packages', 'client', 'tmp');
 
 /**
  * Generates `openapi.yaml` based on current Swagger definitions.
@@ -17,8 +20,8 @@ import { generateOpenApiDocument } from 'trpc-openapi-fork-fastify-pr-177';
 export const ApiGenerator: FastifyPluginAsync = async (fastify, _options) => {
   // await fastify.register(FastifySwagger, OpenApiOptions);
   // await fastify.register(Api);
-  if (!existsSync('./tmp')) {
-    await mkdir('./tmp');
+  if (!existsSync(clientDir)) {
+    await mkdir(clientDir);
   }
   const tRPC = generateOpenApiDocument(appRouter, {
     title: 'BNS tRPC API',
@@ -26,8 +29,10 @@ export const ApiGenerator: FastifyPluginAsync = async (fastify, _options) => {
     version: '3.0.3',
     baseUrl: 'https://api.bns.xyz',
   });
-  await writeFile('./tmp/trpc.json', JSON.stringify(tRPC, null, 2), { encoding: 'utf-8' });
-  await writeFile('./tmp/openapi.yaml', fastify.swagger({ yaml: true }));
+  await writeFile(join(clientDir, 'trpc.json'), JSON.stringify(tRPC, null, 2), {
+    encoding: 'utf-8',
+  });
+  await writeFile(join(clientDir, 'openapi.yaml'), fastify.swagger({ yaml: true }));
 };
 
 async function run() {

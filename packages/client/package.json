@@ -11,15 +11,17 @@
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tsup"
+    "prebuild": "pnpm -r build:openapi && pnpm generate:openapi",
+    "build": "tsup",
+    "generate:openapi": "pnpm openapi -i ./tmp/openapi.yaml -o src/generated --name BNS --useUnionTypes"
   },
   "dependencies": {
-    "@bns-x/api-types": "workspace:*",
     "@bns-x/core": "workspace:*",
     "@clarigen/core": "1.0.12",
-    "@trpc/client": "^10.13.0"
+    "micro-stacks": "^1.1.4"
   },
   "devDependencies": {
+    "openapi-typescript-codegen": "^0.23.0",
     "tsup": "^6.5.0"
   }
 }

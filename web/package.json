@@ -13,6 +13,7 @@
   "dependencies": {
     "@bns-x/client": "workspace:*",
     "@bns-x/core": "workspace:*",
+    "@bns-x/api-types": "workspace:*",
     "@clarigen/core": "1.0.12",
     "@clarigen/node": "1.0.12",
     "@clarigen/web": "1.0.12",

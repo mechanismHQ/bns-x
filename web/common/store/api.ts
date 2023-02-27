@@ -1,18 +1,29 @@
-import { trpcClient } from '@bns-x/client';
+import { BnsxApiClient } from '@bns-x/client';
 import { getApiUrl } from '@common/constants';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { atomFamily } from 'jotai/utils';
 import type { PrimitiveAtom } from 'jotai';
 import { atom } from 'jotai';
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
+import type { AppRouter } from '@bns-x/api-types';
 
-export const trpc = trpcClient(getApiUrl());
+export const trpc = createTRPCProxyClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: `${getApiUrl()}/trpc`,
+    }),
+  ],
+});
+
+export const bnsApi = new BnsxApiClient(getApiUrl());
 
 export const namesForAddressState = atomFamily((address: string) => {
   return atomsWithQuery(() => ({
     queryKey: ['apiNamesState', address],
     refetchInterval: 15000,
     queryFn: async () => {
-      return trpc.getAddressNames.query({ address });
+      // return trpc.getAddressNames.query({ address });
+      return bnsApi.getNamesOwnedByAddress(address);
     },
   }))[0];
 }, Object.is);
@@ -29,10 +40,7 @@ export const addressDisplayNameState = atomFamily((address: string) => {
     queryKey: ['apiDisplayNameState', address],
     refetchInterval: 15000,
     queryFn: async () => {
-      const prefetched = get(prefetchedDisplayNameState(address));
-      if (prefetched) return prefetched;
-      const { name } = await trpc.getDisplayName.query(address);
-      return name;
+      return bnsApi.getDisplayName(address);
     },
   }))[0];
 }, Object.is);
