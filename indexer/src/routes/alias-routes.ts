@@ -6,18 +6,12 @@ import { createContext } from './trpc/context';
 import { TRPCError } from '@trpc/server';
 import { getContractParts } from '../utils';
 import type { FastifyPlugin } from './api-types';
-import { simpleNamesForAddressSchema } from './api-types';
+import { simpleNamesForAddressSchema, errorSchema } from './api-types';
 import { nameDetailsSchema } from './api-types';
 import { simpleOrExtraNamesByAddress } from './api-types';
 import { namesByAddressBnsxSchema, NamesByAddressResponse } from './api-types';
 import { z } from 'zod';
 import { fetchDisplayName } from '../fetchers/stacks-api';
-
-const errorSchema = z.object({
-  error: z.object({
-    message: z.string(),
-  }),
-});
 
 export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
   fastify.get(
@@ -30,7 +24,7 @@ Fetch information about a specific name
 [example with BNSx](https://api.bns.xyz/v1/names/hello-bnsx.btc) [example without bnsx](https://api.bns.xyz/v1/names/muneeb.btc)
         `,
         summary: 'Fetch name details',
-        tags: ['bns'],
+        tags: ['Backwards Compatible'],
         params: z.object({
           fqn: z.string().describe('Fully qualified name, like `muneeb.btc`'),
         }),
@@ -73,9 +67,12 @@ Fetch information about a specific name
     '/addresses/stacks/:principal',
     {
       schema: {
-        summary: 'Fetch names owned by an address',
+        summary: 'Fetch name owned by an address',
         description: `
 Fetch a list of names owned by an address.
+
+Note: for compatibility purposes, this API only returns a single name found for the address. For
+fetching all names an address owns, use the "fetch all names owned by an address" endpoint.
 
 [example with BNSx](https://api.bns.xyz/v1/addresses/stacks/SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60) [example without BNSx](https://api.bns.xyz/v1/addresses/stacks/SP132QXWFJ11WWXPW4JBTM9FP6XE8MZWB8AF206FX)
 
@@ -85,7 +82,7 @@ The logic for determining name order is:
 - If they have a BNS subdomain, return that
 - If they don't own a BNS core name, but they own a BNSx name, return that
         `,
-        tags: ['bns'],
+        tags: ['Backwards Compatible'],
         params: z.object({
           principal: z.string(),
         }),
@@ -98,26 +95,11 @@ The logic for determining name order is:
     },
     async (req, res) => {
       const { principal } = req.params;
-      const { extra } = req.query as { extra?: string };
       const caller = queryHelperRouter.createCaller(createContext({ req, res }));
-      if (!extra) {
-        const { name } = await caller.getDisplayName(principal);
-        const names: string[] = [];
-        if (name !== null) names.push(name);
-        return res.status(200).send({ names });
-      }
-      try {
-        const names = await caller.getAddressNames({ address: principal });
-        return res.status(200).send(names);
-      } catch (error) {
-        if (error instanceof TRPCError) {
-          const status = getHTTPStatusCodeFromError(error);
-          console.error(`Error fetching details for ${principal}:`, error);
-          return res.status(status).send({ error: { message: error.message } });
-        }
-        console.error(`Unexpected error fetching details for ${principal}:`, error);
-        return res.status(500).send({ error: { message: 'Unexpected error' } });
-      }
+      const { name } = await caller.getDisplayName(principal);
+      const names: string[] = [];
+      if (name !== null) names.push(name);
+      return res.status(200).send({ names });
     }
   );
 

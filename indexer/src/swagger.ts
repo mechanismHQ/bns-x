@@ -19,7 +19,10 @@ export const OpenApiOptions: SwaggerOptions = {
       url: 'https://github.com/mechanismHQ/bns-x',
       description: 'Source Repository',
     },
-    tags: [{ name: 'bns', description: 'BNS Endpoints' }],
+    tags: [
+      { name: 'BNS', description: 'BNS Endpoints' },
+      { name: 'Backwards Compatible', description: 'Stacks API compatible Endpoints' },
+    ],
   },
   hideUntagged: true,
   transform: jsonSchemaTransform,

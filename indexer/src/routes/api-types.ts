@@ -186,3 +186,9 @@ export const simpleOrExtraNamesByAddress = z.union([
 ]);
 
 export type NamesByAddressResponse = z.infer<typeof namesByAddressBnsxSchema>;
+
+export const errorSchema = z.object({
+  error: z.object({
+    message: z.string(),
+  }),
+});
