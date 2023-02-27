@@ -6,6 +6,7 @@
   "directories": {
     "test": "tests"
   },
+  "private": true,
   "scripts": {
     "r": "NODE_ENV=development dotenv -- node -r @swc-node/register",
     "test:server": "pnpm run --filter api test:server",

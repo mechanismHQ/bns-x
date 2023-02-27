@@ -1,6 +1,10 @@
 {
   "name": "@bns-x/core",
   "version": "0.1.0",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit"
