@@ -34,7 +34,6 @@ export class BnsxApiClient {
    * @returns
    */
   async getDisplayName(address: string): Promise<string | null> {
-    // const { name } = await this.trpc.getDisplayName.query(address);
     const { names } = await this.openapi.backwardsCompatible.getV1AddressesStacks(address);
     return names[0] ?? null;
   }
