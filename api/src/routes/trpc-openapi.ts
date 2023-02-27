@@ -4,7 +4,6 @@ import { getHTTPStatusCodeFromError } from '@trpc/server/http';
 import { logger } from '~/logger';
 import { appRouter } from '~/routes/trpc';
 import type { FastifyPlugin } from './api-types';
-import { errorSchema } from './api-types';
 
 const procedures = [
   ['getAddressNames', appRouter.getAddressNames],

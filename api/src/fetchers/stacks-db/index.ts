@@ -12,7 +12,7 @@ import {
 import { cvToJSON, cvToValue } from '@clarigen/core';
 import { bytesToHex } from 'micro-stacks/common';
 import { convertLegacyDetailsJson, convertNameBuff } from '../../contracts/utils';
-import type { NamesByAddressResponse } from '../../routes/api-types';
+import type { NamesByAddressResponse } from '@bns-x/core';
 import { getLegacyName } from '../query-helper';
 import { fetchPrimaryId } from '../stacks-api';
 import { fetchNamesByAddress } from 'micro-stacks/api';
@@ -153,6 +153,7 @@ export async function getAddressNamesDb(
 
   return {
     legacy,
+    coreName: legacy,
     names: nameStrings,
     nameProperties: _names,
     primaryProperties,

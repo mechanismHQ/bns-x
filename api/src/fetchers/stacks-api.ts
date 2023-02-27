@@ -11,7 +11,7 @@ import {
 } from '../contracts';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { convertNameBuff, convertLegacyDetailsJson } from '../contracts/utils';
-import type { NamesByAddressResponse } from '../routes/api-types';
+import type { NamesByAddressResponse } from '@bns-x/core';
 import type { NamePropertiesJson } from '../contracts/types';
 import { getLegacyName, getPrimaryName } from './query-helper';
 import { toUnicode } from 'punycode';
@@ -112,6 +112,7 @@ export async function getAddressNamesApi(address: string): Promise<NamesByAddres
 
   return {
     legacy,
+    coreName: legacy,
     names: nameStrings,
     nameProperties: names,
     primaryProperties,

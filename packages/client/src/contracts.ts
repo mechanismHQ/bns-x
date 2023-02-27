@@ -7,7 +7,7 @@ import { nameWrapperCode } from './wrapper-code';
 
 export type BnsxContracts = ProjectFactory<typeof project, DeploymentNetwork>;
 
-export class BnsxContractsClient {
+export class BnsContractsClient {
   readonly contracts: BnsxContracts;
   readonly networkKey: DeploymentNetwork;
   readonly client: ClarigenClient;
@@ -52,7 +52,14 @@ export class BnsxContractsClient {
     return code;
   }
 
+  /**
+   * @deprecated
+   */
   get legacyBns() {
+    return this.bnsCore;
+  }
+
+  get bnsCore() {
     const bns = contracts.bnsV1;
     return contractFactory(bns, `${getBnsDeployer(this.isMainnet)}.bns`);
   }

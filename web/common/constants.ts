@@ -1,4 +1,4 @@
-import { BnsxContractsClient } from '@bns-x/client';
+import { BnsContractsClient } from '@bns-x/client';
 import { project } from '@bns-x/core';
 import { DEPLOYMENT_NETWORKS, projectFactory } from '@clarigen/core';
 import { ClarigenNodeClient } from '@clarigen/node';
@@ -63,7 +63,7 @@ export function getClarigenNodeClient() {
 }
 
 export function getContractsClient() {
-  return new BnsxContractsClient(getNetworkKey(), getApiUrl());
+  return new BnsContractsClient(getNetworkKey(), getApiUrl());
 }
 
 export function getContracts() {

@@ -2,7 +2,7 @@ import { DEFAULT_API_URL } from './constants';
 import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
 import { BNS } from './generated';
 
-export class BnsxApiClient {
+export class BnsApiClient {
   public openapi: BNS;
 
   /**

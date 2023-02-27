@@ -1,6 +1,6 @@
 import type { FastifyPlugin } from './api-types';
 import { errorSchema } from './api-types';
-import { namesByAddressBnsxSchema } from './api-types';
+import { namesByAddressBnsxSchema } from '@bns-x/core';
 import { z } from 'zod';
 import { logger } from '~/logger';
 

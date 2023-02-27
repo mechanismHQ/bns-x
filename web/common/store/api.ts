@@ -1,4 +1,4 @@
-import { BnsxApiClient } from '@bns-x/client';
+import { BnsApiClient } from '@bns-x/client';
 import { getApiUrl } from '@common/constants';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { atomFamily } from 'jotai/utils';
@@ -15,7 +15,7 @@ export const trpc = createTRPCProxyClient<AppRouter>({
   ],
 });
 
-export const bnsApi = new BnsxApiClient(getApiUrl());
+export const bnsApi = new BnsApiClient(getApiUrl());
 
 export const namesForAddressState = atomFamily((address: string) => {
   return atomsWithQuery(() => ({

@@ -134,7 +134,6 @@ export const bnsxNameSchema = z.object({
   decoded: z.string(),
   name: z.string(),
   namespace: z.string(),
-  // legacy: z.nullable(legacyPropsSchema),
 });
 
 export const displayNameResponseSchema = z.object({ name: z.nullable(z.string()) });
@@ -144,15 +143,20 @@ export const simpleNamesForAddressSchema = z.object({
 });
 
 export const namesByAddressBaseSchema = z.object({
-  names: z.array(z.string()),
-  displayName: z.nullable(z.string()),
+  names: z.array(z.string()).describe('A list of names that the address owns'),
+  displayName: z
+    .nullable(z.string())
+    .describe('A single name that can be shown as the "display name" for the user'),
+  coreName: z.nullable(legacyPropsSchema).describe("The address's BNS Core name"),
   legacy: z.nullable(legacyPropsSchema),
 });
 
 export const namesByAddressBnsxSchema = namesByAddressBaseSchema.extend({
-  primaryName: z.nullable(z.string()),
-  primaryProperties: z.nullable(bnsxNameSchema),
-  nameProperties: z.array(bnsxNameSchema),
+  primaryName: z.nullable(z.string()).describe("The address's BNSx primary name"),
+  primaryProperties: z
+    .nullable(bnsxNameSchema)
+    .describe("The name properties of the address's BNSx name"),
+  nameProperties: z.array(bnsxNameSchema).describe('An array of BNSx name properties'),
 });
 
 export const simpleOrExtraNamesByAddress = z.union([

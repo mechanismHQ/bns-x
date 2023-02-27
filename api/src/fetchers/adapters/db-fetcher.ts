@@ -5,7 +5,7 @@ import {
   getAddressNamesApi,
   getNameDetailsApi,
 } from '@fetchers/stacks-api';
-import type { NameInfoResponse, NamesByAddressResponse } from '@routes/api-types';
+import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
 import { parseFqn } from '~/utils';
 import type { BaseFetcher } from './base';
 import { toUnicode } from 'punycode';
@@ -80,7 +80,7 @@ export class DbFetcher implements BaseFetcher {
   }
 
   async getAddressNames(address: string): Promise<NamesByAddressResponse> {
-    const names: NamesByAddressResponse = await getAddressNamesApi(address);
+    const names = await getAddressNamesApi(address);
     return names;
   }
 

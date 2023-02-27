@@ -1,4 +1,4 @@
-import type { NameInfoResponse, NamesByAddressResponse } from '@routes/api-types';
+import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
 
 export abstract class BaseFetcher {
   /**

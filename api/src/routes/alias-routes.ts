@@ -6,12 +6,9 @@ import { createContext } from './trpc/context';
 import { TRPCError } from '@trpc/server';
 import { getContractParts } from '../utils';
 import type { FastifyPlugin } from './api-types';
-import { simpleNamesForAddressSchema, errorSchema } from './api-types';
-import { nameDetailsSchema } from './api-types';
-import { simpleOrExtraNamesByAddress } from './api-types';
-import { namesByAddressBnsxSchema, NamesByAddressResponse } from './api-types';
+import { simpleNamesForAddressSchema, nameDetailsSchema } from '@bns-x/core';
+import { errorSchema } from '@routes/api-types';
 import { z } from 'zod';
-import { fetchDisplayName } from '../fetchers/stacks-api';
 
 export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
   fastify.get(

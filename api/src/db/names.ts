@@ -1,6 +1,5 @@
 import type { BnsDb } from '@db';
 import type { Name } from '@prisma/client';
-import { NamesByAddressResponse } from '@routes/api-types';
 import { convertNameBuff } from '~/contracts/utils';
 import { nameObjectToHex } from '~/utils';
 

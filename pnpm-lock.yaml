@@ -207,6 +207,8 @@ importers:
       openapi-typescript-codegen: ^0.23.0
       ts-jest: ^29.0.3
       tsup: ^6.5.0
+      tsx: ^3.12.3
+      zod: 3.20.0
     dependencies:
       '@bns-x/core': link:../core
       '@clarigen/core': 1.0.12
@@ -217,6 +219,8 @@ importers:
       openapi-typescript-codegen: 0.23.0
       ts-jest: 29.0.3_jest@29.3.1
       tsup: 6.5.0
+      tsx: 3.12.3
+      zod: 3.20.0
 
   packages/core:
     specifiers:
@@ -14698,7 +14702,6 @@ packages:
 
   /zod/3.20.0:
     resolution: {integrity: sha512-ZWxs7oM5ixoo1BMoxTNeDMYSih/F/FUnExsnRtHT04rG6q0Bd74TKS45RGXw07TOalOZyyzdKaYH38k8yTEv9A==}
-    dev: false
 
   /zustand/4.1.1_react@18.2.0:
     resolution: {integrity: sha512-h4F3WMqsZgvvaE0n3lThx4MM81Ls9xebjvrABNzf5+jb3/03YjNTSgZXeyrvXDArMeV9untvWXRw1tY+ntPYbA==}

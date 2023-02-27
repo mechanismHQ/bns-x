@@ -11,7 +11,7 @@ import { atomFamily } from 'jotai/utils';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { getNetworkKey, ONLY_INSCRIPTIONS } from '@common/constants';
 import isEqual from 'lodash-es/isEqual';
-import { BnsxContractsClient } from '@bns-x/client';
+import { BnsContractsClient } from '@bns-x/client';
 
 export const networkKeyAtom = atom<DeploymentNetwork>(() => {
   return getNetworkKey();
@@ -29,7 +29,7 @@ export const clarigenAtom = atom(get => {
 
 export const contractsClientState = atom(get => {
   const networkKey = get(networkKeyAtom);
-  return new BnsxContractsClient(networkKey);
+  return new BnsContractsClient(networkKey);
 });
 
 export const contractsState = atom(get => {

@@ -1,8 +1,8 @@
-import { BnsxContractsClient } from '../src/index';
+import { BnsContractsClient } from '../src/index';
 
 test('works for different environments', () => {
   process.env.NEXT_PUBLIC_NETWORK_KEY = '';
-  const code = new BnsxContractsClient('testnet').nameWrapperCode;
+  const code = new BnsContractsClient('testnet').nameWrapperCode;
 
   expect(code.includes('ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM')).toBeFalsy();
 });
@@ -10,7 +10,7 @@ test('works for different environments', () => {
 test('works on mainnet', () => {
   process.env.NEXT_PUBLIC_NETWORK_KEY = '';
 
-  const code = new BnsxContractsClient('mainnet').nameWrapperCode;
+  const code = new BnsContractsClient('mainnet').nameWrapperCode;
 
   expect(code.includes('ST000')).toBeFalsy();
   expect(code.includes('SP000000000000000000002Q6VF78.bns')).toBeTruthy();

@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { displayNameResponseSchema, namesByAddressBnsxSchema } from '../api-types';
+import { displayNameResponseSchema, namesByAddressBnsxSchema } from '@bns-x/core';
 import { router, procedure } from './base';
 
 export const queryHelperRouter = router({

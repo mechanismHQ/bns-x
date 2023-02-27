@@ -1,6 +1,6 @@
 import { ApiFetcher } from '@fetchers/adapters/api-fetcher';
 import { parseZoneFile } from '@fungible-systems/zone-file';
-import type { ZonefileRecords } from '@routes/api-types';
+import type { ZonefileRecords } from '@bns-x/core';
 import { getContractParts } from '../utils';
 
 export async function getZonefileInfo(zonefile: string) {
