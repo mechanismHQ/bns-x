@@ -9,5 +9,6 @@
   },
   "devDependencies": {
     "tsx": "^3.12.3"
-  }
+  },
+  "version": null
 }
