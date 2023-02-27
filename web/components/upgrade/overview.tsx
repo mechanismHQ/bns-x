@@ -116,8 +116,9 @@ export const UpgradeOverview: React.FC = () => {
               fontSize="14px"
               letterSpacing={'-1%'}
             >
-              Please be careful: BNSx is advanced, experimental, and unaudited software. Bugs could
-              result in complete loss of tokens.
+              Please be careful: BNSx is still in an experimental phase, and while thoroughly tested
+              we cannot guarantee the lack of any technical vulnerabilities or bugs that might lead
+              to mistakes or loss of funds.
             </Text>
             <Link
               plain
