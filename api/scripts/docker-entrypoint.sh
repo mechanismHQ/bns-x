@@ -10,4 +10,4 @@ if [ "${DATABASE_URL}" ]; then
   
 fi
 
-exec npx tsx scripts/server.ts
+exec pnpm --filter @bns-x/api-types exec tsx scripts/server.ts
