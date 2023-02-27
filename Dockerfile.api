@@ -23,13 +23,13 @@ RUN pnpm install --frozen-lockfile
 
 RUN pnpm turbo run build --filter @bns-x/api-types
 
-COPY api/scripts/docker-entrypoint.sh /docker-entrypoint.sh
+COPY api/scripts/docker-entrypoint.sh docker-entrypoint.sh
 
-RUN chmod 755 /docker-entrypoint.sh
+RUN chmod 755 docker-entrypoint.sh
 
 EXPOSE 8080
 
-CMD /docker-entrypoint.sh
+CMD ["/bin/sh", "docker-entrypoint.sh"]
 
 # Production image, copy all the files and run
 # FROM node:18-alpine AS runner

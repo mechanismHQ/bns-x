@@ -21,7 +21,7 @@
     "sync": "pnpm r scripts/sync-prints.ts",
     "db:reset": "prisma migrate reset",
     "typecheck": "tsc --noEmit",
-    "prebuild": "prisma generate --schema prisma/stacks-api-schema.prisma",
+    "prebuild": "prisma generate --schema prisma/stacks-api-schema.prisma && pnpm prisma generate",
     "build": "tsup",
     "build:openapi": "pnpm r scripts/openapi-generator.ts"
   },
