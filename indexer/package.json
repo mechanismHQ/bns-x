@@ -2,10 +2,6 @@
   "name": "@bns-x/client",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/index.mjs",
-  "import": "./dist/index.mjs",
   "files": [
     "dist"
   ],
@@ -18,19 +14,21 @@
     "dev:mainnet": "pnpm rpw scripts/server.ts",
     "dev:testnet": "NODE_ENV=staging pnpm tsx watch -r dotenv-flow/config scripts/server.ts",
     "dev": "pnpm rw scripts/server.ts",
-    "start": "node -r @swc-node/register scripts/server.ts",
+    "start": "tsx scripts/server.ts",
     "test:migrate": "dotenv -e .env.test -- prisma migrate dev --name test-init",
-    "test:server": "dotenv -e .env.test -- node -r @swc-node/register scripts/server.ts",
+    "test:server": "dotenv -e .env.test -- tsx scripts/server.ts",
     "test:run": "pnpm test:migrate && pnpm test:server",
     "sync": "pnpm r scripts/sync-prints.ts",
     "db:reset": "prisma migrate reset",
     "typecheck": "tsc --noEmit",
+    "prebuild": "shx rm -rf dist",
     "build": "tsup",
     "build:openapi": "pnpm r scripts/openapi-generator.ts"
   },
   "author": "Hank Stoever",
   "license": "ISC",
   "dependencies": {
+    "@bns-x/core": "workspace:*",
     "@clarigen/core": "1.0.12",
     "@clarigen/node": "1.0.12",
     "@fastify/cors": "^8.2.0",
@@ -45,9 +43,6 @@
     "@prisma/client": "4.10.0",
     "@stacks/blockchain-api-client": "^7.0.0",
     "@stacks/stacks-blockchain-api-types": "^6.1.1",
-    "@swc-node/register": "1.3.7",
-    "@swc/cli": "0.1.51",
-    "@swc/core": "1.2.105",
     "@trpc/client": "10.9.1",
     "@trpc/server": "10.9.1",
     "@types/node": "^18.11.9",
@@ -88,8 +83,33 @@
     "dotenv-cli": "^6.0.0",
     "jest": "^29.3.1",
     "jest-mock-extended": "^3.0.1",
+    "json": "^11.0.0",
+    "shx": "^0.3.4",
     "ts-jest": "^29.0.3",
     "typedoc": "^0.23.25"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.mjs",
+  "import": "./dist/index.mjs",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "module": "./dist/index.mjs",
+      "main": "./dist/index.mjs",
+      "import": "./dist/index.mjs",
+      "react-native": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./contracts": {
+      "types": "./dist/contracts.d.ts",
+      "module": "./dist/contracts.mjs",
+      "main": "./dist/contracts.mjs",
+      "import": "./dist/contracts.mjs",
+      "react-native": "./dist/contracts.js",
+      "default": "./dist/contracts.js"
+    }
+  }
 }

@@ -1,6 +1,6 @@
 import type { Options } from 'tsup';
 
-const modules = ['trpc', 'index', 'zero-width', 'clarigen', 'contracts'];
+const modules = ['trpc', 'index', 'zero-width', 'clarigen', 'contracts', 'export-types'];
 
 const external = modules.map(module => `micro-stacks/${module}`);
 
