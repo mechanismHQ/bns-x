@@ -1,4 +1,4 @@
-export type { AppRouter } from '@bns-x/client';
+export type { AppRouter } from '@bns-x/api-types';
 export { trpcClient } from './trpc';
 export * from './contracts';
 export * from './client';

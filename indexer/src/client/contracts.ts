@@ -4,7 +4,7 @@ import { asciiToBytes } from 'micro-stacks/common';
 import { convertNameBuff } from '~/contracts/utils';
 import { getContractParts } from '../utils';
 import { project, contracts } from './clarigen';
-export { project } from './clarigen';
+export { project, contracts } from './clarigen';
 import { getBnsDeployer } from './constants';
 import { nameWrapperCode } from './wrapper-code';
 

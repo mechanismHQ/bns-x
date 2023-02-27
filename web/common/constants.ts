@@ -1,4 +1,5 @@
-import { BnsxContractsClient, project } from '@bns-x/client';
+import { BnsxContractsClient } from '@bns-x/client';
+import { project } from '@bns-x/core';
 import { DEPLOYMENT_NETWORKS, projectFactory } from '@clarigen/core';
 import { ClarigenNodeClient } from '@clarigen/node';
 import type { StacksNetwork } from 'micro-stacks/network';

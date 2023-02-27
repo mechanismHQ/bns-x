@@ -191,13 +191,13 @@ importers:
 
   packages/client:
     specifiers:
-      '@bns-x/client': workspace:*
+      '@bns-x/api-types': workspace:*
       '@bns-x/core': workspace:*
       '@clarigen/core': 1.0.12
       '@trpc/client': ^10.13.0
       tsup: ^6.5.0
     dependencies:
-      '@bns-x/client': link:../../indexer
+      '@bns-x/api-types': link:../../indexer
       '@bns-x/core': link:../core
       '@clarigen/core': 1.0.12
       '@trpc/client': 10.13.0
@@ -222,6 +222,7 @@ importers:
   web:
     specifiers:
       '@bns-x/client': workspace:*
+      '@bns-x/core': workspace:*
       '@clarigen/core': 1.0.12
       '@clarigen/node': 1.0.12
       '@clarigen/web': 1.0.12
@@ -279,7 +280,8 @@ importers:
       unique-names-generator: ^4.7.1
       usehooks-ts: ^2.9.1
     dependencies:
-      '@bns-x/client': link:../indexer
+      '@bns-x/client': link:../packages/client
+      '@bns-x/core': link:../packages/core
       '@clarigen/core': 1.0.12
       '@clarigen/node': 1.0.12
       '@clarigen/web': 1.0.12_react@18.2.0

@@ -1,7 +1,7 @@
 import { DEFAULT_API_URL } from './constants';
 import type { TrpcClient } from './trpc';
 import { trpcClient } from './trpc';
-import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/client';
+import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/api-types';
 import { getContractParts } from '@bns-x/core';
 
 export class BnsxApiClient {
