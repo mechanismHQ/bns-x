@@ -19,7 +19,7 @@ COPY web/patches ./web/patches
 
 COPY . .
 
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # If using npm with a `package-lock.json` comment out above and use below instead
 # RUN npm ci
