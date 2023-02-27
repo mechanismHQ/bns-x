@@ -1,6 +1,6 @@
 import type { Jsonize, FunctionReturnType } from '@clarigen/core';
 import { OkType, TypedAbiFunction, TypedAbiArg } from '@clarigen/core';
-import type { contracts } from './clarigen';
+import type { contracts } from '@bns-x/core';
 
 export type Registry = typeof contracts['bnsxRegistry']['functions'];
 export type QueryHelper = typeof contracts['queryHelper']['functions'];

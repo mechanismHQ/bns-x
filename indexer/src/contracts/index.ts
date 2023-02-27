@@ -1,4 +1,4 @@
-import { project } from './clarigen';
+import { project } from '@bns-x/core';
 import { projectFactory } from '@clarigen/core';
 import { ClarigenNodeClient } from '@clarigen/node';
 import { getNetwork, getNetworkKey } from '../constants';

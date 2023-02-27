@@ -1,9 +1,4 @@
-import {
-  codeToString,
-  hasZeroWidth,
-  replaceZeroWidth,
-  ZERO_WIDTH_POINTS,
-} from '../src/client/zero-width';
+import { codeToString, hasZeroWidth, replaceZeroWidth, ZERO_WIDTH_POINTS } from '../src/zero-width';
 
 function codeToPoint(code: string) {
   const str = code.length % 2 !== 0 ? `0${code}` : code;

@@ -1,4 +1,4 @@
-import { BnsxContractsClient } from '../src/client/index';
+import { BnsxContractsClient } from '../src/index';
 
 test('works for different environments', () => {
   process.env.NEXT_PUBLIC_NETWORK_KEY = '';
