@@ -120,6 +120,14 @@ export const ProfileRow: React.FC<{
 
 const everRedirect = false; // dev: change to enable auto-redirect to 'upgrade'
 
+const Border: React.FC = () => {
+  return (
+    <Flex width="100%" px="29px" alignItems="center">
+      <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
+    </Flex>
+  );
+};
+
 export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
   const v1Name = useAtomValue(currentUserV1NameState);
@@ -143,17 +151,11 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
       allNames?.nameProperties.map((name, index) => {
         return (
           <Box key={`name-${name.id}`}>
-            {index === 0 && v1Name !== null ? null : (
-              <Box width="100%" px="29px">
-                <Box height="1px" borderTop="1px solid $onSurface-border-subdued" width="100%" />
-              </Box>
-            )}
+            {index === 0 && <Border />}
             <ProfileRow name={name.combined} />
             {/* <LoadableProfileRow id={name} /> */}
             {/* {index !== holdings.length - 1 ? ( */}
-            <Flex width="100%" px="29px" alignItems="center">
-              <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
-            </Flex>
+            <Border />
             {/* ) : null} */}
           </Box>
         );
@@ -190,7 +192,12 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
           </Stack>
         ) : (
           <>
-            {v1Name !== null ? <ProfileRow v1 name={v1Name.combined} /> : null}
+            {v1Name !== null ? (
+              <>
+                <Border />
+                <ProfileRow v1 name={v1Name.combined} />
+              </>
+            ) : null}
             {rows}
             <Flex py="25px" justifyContent="center">
               <Text variant="Caption01">You can send many BNSx names to this address</Text>
