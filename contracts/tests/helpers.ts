@@ -8,29 +8,29 @@ import {
   FullContract,
   Chain,
   crypto,
-} from "../deps.ts";
-import { simnet } from "./clarigen-types.ts";
-export * from "../deps.ts";
-export * from "./clarigen.ts";
-import { accounts } from "./clarigen.ts";
+} from '../deps.ts';
+import { simnet } from './clarigen-types.ts';
+export * from '../deps.ts';
+export * from './clarigen.ts';
+import { accounts } from './clarigen.ts';
 
-import { btcBytes, btcNamespace } from "./mocks.ts";
-import { registerAllNamespaces } from "./bns-helpers.ts";
+import { btcBytes, btcNamespace } from './mocks.ts';
+import { registerAllNamespaces } from './bns-helpers.ts';
 
 export const ASCII_ENCODING = new Uint8Array([0x61]);
 
-export const alice = accounts.addr("wallet_1");
-export const bob = accounts.addr("wallet_2");
-export const charlie = accounts.addr("wallet_3");
-export const deployer = accounts.addr("deployer");
+export const alice = accounts.addr('wallet_1');
+export const bob = accounts.addr('wallet_2');
+export const charlie = accounts.addr('wallet_3');
+export const deployer = accounts.addr('deployer');
 
 const baseContracts = contractsFactory(simnet);
 export const bns = contractFactory(
   {
     ...simnet.contracts.bnsV1,
-    contractName: "SP000000000000000000002Q6VF78.bns",
+    contractName: 'SP000000000000000000002Q6VF78.bns',
   },
-  "SP000000000000000000002Q6VF78.bns"
+  'SP000000000000000000002Q6VF78.bns'
 );
 
 export type NameWrapper = FullContract<typeof contracts.nameWrapper>;
@@ -50,7 +50,7 @@ export function deploy() {
   const { chain, accounts } = Chain.fromSimnet(simnet);
 
   afterAll(() => {
-    (Deno as any).core.opSync("api/v1/terminate_session", {
+    (Deno as any).core.opSync('api/v1/terminate_session', {
       sessionId: chain.sessionId,
     });
   });
@@ -65,8 +65,8 @@ export function deploy() {
 
 export function hash160(data: string) {
   const bytes = hexToBytes(data);
-  const sha = crypto.subtle.digestSync("SHA-256", bytes);
-  const ripe = crypto.subtle.digestSync("RIPEMD-160", sha);
+  const sha = crypto.subtle.digestSync('SHA-256', bytes);
+  const ripe = crypto.subtle.digestSync('RIPEMD-160', sha);
   return new Uint8Array(ripe);
 }
 
@@ -103,7 +103,7 @@ export function asciiToHex(str: string) {
 }
 
 export function bytesToAscii(bytes: Uint8Array) {
-  let str = "";
+  let str = '';
   for (let i = 0; i < bytes.length; i++) {
     str += String.fromCharCode(bytes[i]);
   }
@@ -117,13 +117,11 @@ export function signatureVrsToRsv(signature: string) {
 export function deployWithNamespace() {
   const deployment = deploy();
   const { chain, bns, accounts } = deployment;
-  const deployer = accounts.addr("deployer");
+  const deployer = accounts.addr('deployer');
 
   beforeAll(() => {
     chain.txOk(
-      contracts.bnsxExtensions.construct(
-        contracts.proposalBootstrap.identifier
-      ),
+      contracts.bnsxExtensions.construct(contracts.proposalBootstrap.identifier),
       deployer
     );
     registerAllNamespaces(chain);

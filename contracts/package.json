@@ -1,0 +1,13 @@
+{
+  "name": "contracts",
+  "private": true,
+  "scripts": {
+    "r": "NODE_ENV=development dotenv -- node -r @swc-node/register"
+  },
+  "dependencies": {
+    "@bns-x/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^3.12.3"
+  }
+}

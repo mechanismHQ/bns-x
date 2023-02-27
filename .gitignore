@@ -2,15 +2,16 @@
 **/settings/Mainnet.toml
 **/settings/Testnet.toml
 .cache/**
+contracts/.cache/**
 history.txt
 node_modules
 coverage.lcov
 coverage/
 .env
 tmp
-indexer/mocks/*.txt
-contracts/_deprecated
-indexer/prisma/generated
+api/mocks/*.txt
+contracts/contracts/_deprecated
+api/prisma/generated
 dep-tests/
 .DS_Store
 dist/
@@ -19,4 +20,4 @@ fly.toml
 # local .env* files
 .env.local
 .env.*.local
-indexer/docs
+api/docs

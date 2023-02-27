@@ -1,5 +1,5 @@
-import { assertArrayIncludes } from "https://deno.land/std@0.90.0/testing/asserts.ts";
-import { registerNameV1 } from "../tests/bns-helpers.ts";
+import { assertArrayIncludes } from 'https://deno.land/std@0.90.0/testing/asserts.ts';
+import { registerNameV1 } from './bns-helpers.ts';
 import {
   deployWithNamespace,
   describe,
@@ -14,11 +14,11 @@ import {
   signatureVrsToRsv,
   registry,
   bob,
-} from "../tests/helpers.ts";
-import { alicePubkeyHash, btcBytes, signedContracts } from "../tests/mocks.ts";
-import { Account, Name, Wrapper } from "../tests/prisma-types.ts";
+} from './helpers.ts';
+import { alicePubkeyHash, btcBytes, signedContracts } from './mocks.ts';
+import { Account, Name, Wrapper } from './prisma-types.ts';
 
-const server = "http://localhost:3003";
+const server = 'http://localhost:3003';
 async function apiFetch(path: string) {
   const res = await fetch(`${server}${path}`);
   return res.json();
@@ -64,19 +64,19 @@ function sleep(secs: number) {
   });
 }
 
-describe("chainhook tests", () => {
+describe('chainhook tests', () => {
   const { chain } = deployWithNamespace();
   const migrator = contracts.wrapperMigrator;
 
-  it("registers a name", () => {
+  it('registers a name', () => {
     utilsRegisterBtc({
-      name: "alice",
+      name: 'alice',
       owner: alice,
       chain,
     });
   });
 
-  it("is saved in db", async () => {
+  it('is saved in db', async () => {
     const { users } = await fetchAll();
     const [user] = users;
     assertEquals(user.principal, alice);
@@ -85,7 +85,7 @@ describe("chainhook tests", () => {
     console.log(users);
   });
 
-  it("works with wrapper migrations", async () => {
+  it('works with wrapper migrations', async () => {
     chain.txOk(
       migrator.setSigners([
         {
@@ -101,7 +101,7 @@ describe("chainhook tests", () => {
     registerNameV1({
       chain,
       owner: alice,
-      name: "alice2",
+      name: 'alice2',
     });
 
     chain.txOk(
@@ -115,19 +115,19 @@ describe("chainhook tests", () => {
 
     const { account } = await fetchAccount(alice);
     assertEquals(account.names.length, 2);
-    const ids = account.names.map((n) => n.nftId);
+    const ids = account.names.map(n => n.nftId);
     assertArrayIncludes(ids, [1, 0]);
     assertEquals(account.primaryNameId, 0);
     await sleep(5);
 
-    const { name } = await fetchName("alice2", "btc");
-    console.log("name", name);
+    const { name } = await fetchName('alice2', 'btc');
+    console.log('name', name);
     assertEquals(name.nftId, 1);
     assertEquals(name.primaryOwner, null);
     assertEquals(name.wrapper.principal, wrapper.id);
   });
 
-  it("works with transfers", async () => {
+  it('works with transfers', async () => {
     chain.txOk(
       registry.transfer({
         sender: alice,

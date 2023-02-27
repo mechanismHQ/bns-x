@@ -10,7 +10,7 @@ jobs:
       - name: Run contract tests
         uses: docker://hirosystems/clarinet:latest
         with:
-          args: test --coverage --manifest-path=./Clarinet.toml
+          args: test --coverage --manifest-path=./contracts/Clarinet.toml
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:

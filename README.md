@@ -12,5 +12,5 @@ This project is a monorepo, which includes a few packages:
   - This project uses Clarinet for testing and other Clarity development purposes.
 - Web app
   - A web app for interfacing with BNS X can be found under [`./web`](./web/)
-- Indexer
-  - A basic indexer for BNS X on-chain data is under [`./indexer/](./indexer/)
+- API
+  - A basic API for BNS X on-chain data is under [`./api/](./api/)

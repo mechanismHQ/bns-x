@@ -1,8 +1,4 @@
-import {
-  randomName,
-  allNamespacesRaw,
-  randomNamespace,
-} from "./bns-helpers.ts";
+import { randomName, allNamespacesRaw, randomNamespace } from './bns-helpers.ts';
 import {
   asciiToBytes,
   assertEquals,
@@ -10,14 +6,14 @@ import {
   deployWithNamespace,
   describe,
   it,
-} from "./helpers.ts";
+} from './helpers.ts';
 
-describe("price functions", () => {
+describe('price functions', () => {
   const { accounts, chain, contracts } = deployWithNamespace();
   const bns = contracts.bnsV1;
   const legacy = contracts.legacyNamespace;
 
-  describe("getting metadata for a name", () => {
+  describe('getting metadata for a name', () => {
     function testNameVsV1(nameStr: string) {
       const name = asciiToBytes(nameStr);
       const nameInfo = chain.rov(legacy.getNamePriceMeta(name));
@@ -38,7 +34,7 @@ describe("price functions", () => {
       );
     }
 
-    it("testing name validation vs v1 with random names", () => {
+    it('testing name validation vs v1 with random names', () => {
       const tests = 10;
       for (let i = 0; i < tests; i++) {
         const name = randomName();
@@ -46,7 +42,7 @@ describe("price functions", () => {
       }
     });
 
-    it("testing invalid names vs v1 with random names", () => {
+    it('testing invalid names vs v1 with random names', () => {
       const tests = 10;
       for (let i = 0; i < tests; i++) {
         const name = randomName({ allowInvalid: true });
@@ -54,8 +50,8 @@ describe("price functions", () => {
       }
     });
 
-    it("can get name info correctly", () => {
-      const name = asciiToBytes("flckr");
+    it('can get name info correctly', () => {
+      const name = asciiToBytes('flckr');
       const nameInfo = chain.rov(legacy.getNamePriceMeta(name));
       assertEquals(chain.rov(bns.hasNonalphaChars(name)), nameInfo.hasNonalpha);
       assertEquals(chain.rov(bns.hasVowelsChars(name)), nameInfo.hasVowels);
@@ -63,9 +59,9 @@ describe("price functions", () => {
     });
   });
 
-  describe("getting name prices for random names vs v1", () => {
-    it("has all namespaces on v1", () => {
-      allNamespacesRaw.forEach((ns) => {
+  describe('getting name prices for random names vs v1', () => {
+    it('has all namespaces on v1', () => {
+      allNamespacesRaw.forEach(ns => {
         const res = chain.rov(bns.getNamespaceProperties(ns.namespace));
         if (!res.isOk) {
           throw new Error(`No NS for ${bytesToAscii(ns.namespace)}`);
@@ -104,7 +100,7 @@ describe("price functions", () => {
         chain.rov(bns.getNamePrice(ns.namespace, nameBytes))
       );
     }
-    it("has the same price", () => {
+    it('has the same price', () => {
       const tests = 10;
       for (let i = 0; i < tests; i++) {
         testRandomNamePrice();

@@ -1,0 +1,61 @@
+scripts:
+  coverage:
+    cmd:
+      - clarinet test --coverage
+      - genhtml -o coverage/html coverage.lcov
+
+  chainhook-test:
+    cmd:
+      - vr integration-setup
+      - pnpm integration-test
+      - docker-compose down
+      # - docker-compose up -d
+      # - sleep 10
+      # - pnpm --filter indexer test:migrate
+      # - pnpm --filter indexer test:server & clarinet test --chainhooks chainhooks/testing.chainhook.yaml tests/chainhooks_test.ts
+
+  integration-setup:
+    cmd:
+      - docker-compose up -d
+      - sleep 3
+      - pnpm --filter indexer test:migrate
+      - echo -n > indexer/tmp/log.txt
+
+  check:
+    pll:
+      - deno check tests/*.ts
+      - deno check dscripts/*.ts
+      - deno check src/*.ts
+      - clarinet check
+
+  codegen:
+    cmd:
+      - deno run -A dscripts/testnet-contracts.ts
+      - deno run -A dscripts/wrapper-js.ts
+
+  integrate:
+    cmd:
+      - vr codegen
+      - mkdir -p tmp/devnet
+      - clarinet integrate -d
+
+  lt:
+    pll:
+      - NEXT_PUBLIC_APP_URL="https://dots.loca.lt" NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev
+      - pnpm r scripts/lt.ts
+
+  web: pnpm --filter web dev
+
+  tunnel-prod: NEXT_PUBLIC_APP_URL="https://dots.loca.lt" pnpm --filter web dev
+
+  lt-app:
+    cmd: NEXT_PUBLIC_APP_URL="https://dots.loca.lt" NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev
+    # cmd: NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev
+
+  tunnel: pnpm r scripts/lt.ts
+
+  bootstrap:
+    desc: Deploy contracts and run setup contract calls
+    cmd:
+      - clarinet deployments apply --devnet
+      - pnpm r scripts/bootstrap.ts

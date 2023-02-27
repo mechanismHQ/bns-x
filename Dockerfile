@@ -11,9 +11,11 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 
 # RUN pnpm fetch --prod
 
-COPY indexer/package.json indexer/
+COPY api/package.json api/
 COPY web/package.json web/
-COPY patches ./patches
+COPY packages/core/package.json packages/core/
+COPY packages/client/package.json packages/client/
+COPY web/patches ./web/patches
 
 COPY . .
 

@@ -1,2 +1,6 @@
 dscripts
 tests
+contracts/dscripts
+contracts/tests
+contracts/dep-tests
+dep-tests

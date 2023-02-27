@@ -1,5 +1,6 @@
 packages:
-  - "indexer"
+  - "api"
   - "web"
   - "packages/client"
   - "packages/core"
+  - "contracts"

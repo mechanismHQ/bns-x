@@ -4,12 +4,12 @@
       "singleQuote": true
     },
     "files": {
-      "include": ["contracts/tests/", "contracts/artifacts/", "contracts/dscripts", "contracts/src", "contracts/deps.ts"]
+      "include": ["tests/", "artifacts/", "dscripts", "src", "deps.ts"]
     }
   },
   "lint": {
     "files": {
-      "include": ["contracts/tests/", "contracts/artifacts/", "contracts/dscripts", "contracts/src", "contracts/deps.ts"]
+      "include": ["tests/", "artifacts/", "dscripts", "src", "deps.ts"]
     },
     "rules": {
       "tags": ["recommended"],

@@ -1,5 +1,5 @@
 import 'cross-fetch/polyfill';
-import { project, contracts as _contracts } from '../indexer/src/client/clarigen';
+import { project, contracts as _contracts } from '@bns-x/core';
 import { projectFactory, contractFactory } from '@clarigen/core';
 import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMainnet, StacksMocknet, StacksTestnet } from 'micro-stacks/network';

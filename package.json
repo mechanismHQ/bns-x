@@ -8,14 +8,14 @@
   },
   "scripts": {
     "r": "NODE_ENV=development dotenv -- node -r @swc-node/register",
-    "test:server": "pnpm run --filter indexer test:server",
+    "test:server": "pnpm run --filter api test:server",
     "chainhook-test": "clarinet test --chainhooks chainhooks/tests/testing.chainhook.yaml --chainhooks chainhooks/tests/wrapper.chainhook.yaml --chainhooks chainhooks/tests/nft.chainhook.yaml --mine-block-delay 2 --allow-net tests/chainhooks-test.ts",
     "integration-test": "start-server-and-test test:server http://localhost:3003 chainhook-test",
     "web": "pnpm run --filter web dev",
     "web:prod": "pnpm --filter web start",
     "build": "turbo run build",
-    "lint": "eslint packages/**/*.ts indexer/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",
-    "lint:fix": "eslint --fix packages/**/*.ts indexer/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",
+    "lint": "eslint packages/**/*.ts api/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",
+    "lint:fix": "eslint --fix packages/**/*.ts api/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",
     "typecheck": "turbo run typecheck"
   },
   "author": "Hank Stoever",
@@ -37,6 +37,8 @@
     "typescript": "^4.8.4"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.4.8",
+    "@changesets/cli": "^2.26.0",
     "@clarigen/node": "1.0.12",
     "@stacks/eslint-config": "1.2.0",
     "@stacks/prettier-config": "0.0.10",
@@ -46,9 +48,9 @@
     "@typescript-eslint/parser": "^5.49.0",
     "dotenv-cli": "^6.0.0",
     "eslint": "8.20.0",
-    "eslint-plugin-unused-imports": "^2.0.0",
     "eslint-plugin-jest": "^23.16.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "localtunnel": "^2.0.2",
     "punycode": "^2.1.1"
   },
@@ -56,9 +58,6 @@
     "overrides": {
       "json5@<1.0.2": ">=1.0.2",
       "json5@>=2.0.0 <2.2.2": ">=2.2.2"
-    },
-    "patchedDependencies": {
-      "@nelson-ui/core@0.1.5": "patches/@nelson-ui__core@0.1.5.patch"
     }
   }
 }

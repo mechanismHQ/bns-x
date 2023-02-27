@@ -13,6 +13,4 @@ await Deno.writeTextFile('./tests/mocks/wrapper.ts', file(code));
 //   "ST000000000000000000002AMW42H"
 // );
 const testnet = await Deno.readTextFile('./contracts/testnet/name-wrapper.clar');
-await Deno.writeTextFile('./web/common/wrapper-code.ts', file(testnet));
-
-await Deno.writeTextFile('./indexer/src/client/wrapper-code.ts', file(testnet));
+await Deno.writeTextFile('../packages/client/src/wrapper-code.ts', file(testnet));

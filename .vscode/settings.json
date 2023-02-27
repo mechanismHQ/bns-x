@@ -6,7 +6,11 @@
     "dscripts",
     "src",
     "dep-tests",
-    "deps.ts"
+    "deps.ts",
+    "contracts/dep-tests",
+    "contracts/deps.ts",
+    "contracts/dscripts",
+    "contracts/tests"
   ],
   "files.eol": "\n",
   "typescript.preferences.importModuleSpecifier": "non-relative",
