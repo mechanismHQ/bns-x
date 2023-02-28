@@ -16,9 +16,8 @@
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "prebuild": "pnpm -r build:openapi && pnpm generate:openapi",
     "build": "tsup",
-    "generate:openapi": "pnpm openapi -i ./tmp/openapi.yaml -o src/generated --name BNS --useUnionTypes"
+    "generate:openapi": "pnpm -r build:openapi && pnpm openapi -i ./tmp/openapi.yaml -o src/generated --name BNS --useUnionTypes"
   },
   "dependencies": {
     "@bns-x/core": "workspace:*",
