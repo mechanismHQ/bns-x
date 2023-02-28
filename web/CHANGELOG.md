@@ -1,5 +1,14 @@
 # web
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [5870578]
+- Updated dependencies [5870578]
+  - @bns-x/client@0.1.0
+  - @bns-x/api-types@0.0.3
+
 ## 0.1.1
 
 ### Patch Changes

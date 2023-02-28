@@ -1,5 +1,13 @@
 # @bns-x/api-types
 
+## 0.0.3
+
+### Patch Changes
+
+- 5870578: Fixes an issue where burnt names were not indexed correctly in the "names" materialized view.
+
+  Also adds "wrapper" property to the "name details" api for BNSx names.
+
 ## 0.0.2
 
 ### Patch Changes

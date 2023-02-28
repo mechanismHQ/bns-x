@@ -1,5 +1,11 @@
 # @bns-x/client
 
+## 0.1.0
+
+### Minor Changes
+
+- 5870578: Adds "wrapper" property to name details for BNSx names
+
 ## 0.0.2
 
 ### Patch Changes
