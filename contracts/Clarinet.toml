@@ -25,11 +25,6 @@ path = 'contracts/traits/extension-trait.clar'
 clarity_version = 1
 epoch = 2.0
 
-# [contracts.managed-namespaces]
-# path = 'contracts/core/managed-namespaces.clar'
-# clarity_version = 2
-# epoch = 2.1
-
 [contracts.bnsx-registry]
 path = 'contracts/core/name-registry.clar'
 clarity_version = 1
