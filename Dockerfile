@@ -7,7 +7,7 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json .npmrc ./
 
 # RUN pnpm fetch --prod
 
@@ -37,6 +37,8 @@ ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
 ENV NEXT_PUBLIC_NETWORK_KEY=${NEXT_PUBLIC_NETWORK_KEY}
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+RUN pnpm --filter @bns-x/api-types prebuild
 
 RUN pnpm build
 

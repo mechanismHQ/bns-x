@@ -7,7 +7,7 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json .npmrc ./
 
 # RUN pnpm fetch --prod
 
@@ -15,11 +15,13 @@ COPY api/package.json api/
 COPY web/package.json web/
 COPY packages/core/package.json packages/core/
 COPY packages/client/package.json packages/client/
-COPY web/patches ./web/patches
+COPY web/patches web/patches
 
 COPY . .
 
 RUN pnpm install --frozen-lockfile
+
+RUN pnpm --filter @bns-x/api-types prebuild
 
 RUN pnpm turbo run build --filter @bns-x/api-types
 
