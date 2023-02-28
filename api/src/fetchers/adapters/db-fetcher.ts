@@ -58,7 +58,7 @@ export class DbFetcher implements BaseFetcher {
         decoded,
       };
       const zonefileRecords = getZonefileProperties(zonefile);
-      if (query === null) {
+      if (query === null || !query.owner) {
         return {
           ...base,
           isBnsx: false,
