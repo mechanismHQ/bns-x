@@ -6,6 +6,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": "https://github.com/mechanismHQ/bns-x/tree/main/packages/client",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
