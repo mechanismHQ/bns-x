@@ -62,9 +62,6 @@ export const Text = React.forwardRef<HTMLElement, TextProps>(
         : variant;
     const stylesObj = Object.fromEntries(
       Object.entries(responsiveVariant).map(([bp, v]) => {
-        if (v === 'Display02') {
-          console.log(getVariantStyles(v));
-        }
         return [bp, getVariantStyles(v)];
       })
     ) as Record<BP, CSSTypes>;

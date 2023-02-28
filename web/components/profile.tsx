@@ -161,7 +161,7 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
         );
       }) ?? null
     );
-  }, [allNames?.nameProperties, v1Name]);
+  }, [allNames?.nameProperties]);
 
   useEffect(() => {
     if (shouldRedirect) {
@@ -196,6 +196,7 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
               <>
                 <Border />
                 <ProfileRow v1 name={v1Name.combined} />
+                {rows?.length === 0 && <Border />}
               </>
             ) : null}
             {rows}
