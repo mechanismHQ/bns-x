@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAtomCallback } from 'jotai/utils';
 import { useOpenContractCall } from '@micro-stacks/react';
-import { bnsAssetInfoState, bnsContractState, contractsState, tokenAssetInfoState } from '../store';
+import { bnsAssetInfoState, bnsContractState, contractsState } from '../store';
 import {
   migrateNameAssetIdState,
   migrateTxidAtom,

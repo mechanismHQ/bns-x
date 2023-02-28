@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js';
 import type { IntegerType } from 'micro-stacks/common';
+import { asciiToBytes } from 'micro-stacks/common';
 import { bytesToAscii, hexToBytes } from 'micro-stacks/common';
 import type { Name, NameBuff, WithCombined } from '@common/types';
 import type { StacksNetwork } from 'micro-stacks/network';
+import { bufferCV, tupleCV } from 'micro-stacks/clarity';
 
 export function intToString(int: IntegerType) {
   const str = typeof int === 'bigint' ? int.toString() : String(int);
@@ -83,4 +85,12 @@ export function getContractParts(identifier: string): [string, string] {
     throw new Error(`Invalid contract ID: ${identifier}`);
   }
   return [addr, name];
+}
+
+export function nameToTupleCV(fqn: string) {
+  const [name, namespace] = getContractParts(fqn);
+  return tupleCV({
+    name: bufferCV(asciiToBytes(name)),
+    namespace: bufferCV(asciiToBytes(namespace)),
+  });
 }

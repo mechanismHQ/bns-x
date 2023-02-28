@@ -7,7 +7,7 @@ import { atomsWithQuery } from 'jotai-tanstack-query';
 import { cvToValue } from '@clarigen/core';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { atomFamily } from 'jotai/utils';
-import { addressDisplayNameState, namesForAddressState } from './api';
+import { addressDisplayNameState, bnsApi, namesForAddressState } from './api';
 import isEqual from 'lodash-es/isEqual';
 import { trpc } from './api';
 import { getApiUrl } from '@common/constants';
@@ -97,14 +97,23 @@ export const currentUserUpgradedState = atom(get => {
   return isUpgraded;
 });
 
+export const nameDetailsAtom = atomFamily((name: string) => {
+  return atomsWithQuery(_get => ({
+    queryKey: ['name-details', name],
+    async queryFn() {
+      const details = await bnsApi.getNameDetailsFromFqn(name);
+      return details;
+    },
+  }))[0];
+}, isEqual);
+
 export const userZonefileState = atomsWithQuery(get => ({
   queryKey: ['cur-user-zonefile', get(stxAddressAtom)],
-  queryFn: async () => {
+  queryFn: () => {
     const nameFull = get(userNameState);
     if (nameFull === null) return null;
-    const [name, namespace] = getContractParts(nameFull);
-    const details = await trpc.getNameDetails.query({ name, namespace });
-    return details.zonefile;
+    const details = get(nameDetailsAtom(nameFull));
+    return details?.zonefile;
   },
 }));
 

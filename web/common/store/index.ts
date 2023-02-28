@@ -62,7 +62,7 @@ export const bnsContractState = atom(get => {
   return get(contractsClientState).legacyBns;
 });
 
-export const tokenAssetInfoState = atom(get => {
+export const bnsxAssetInfoState = atom(get => {
   const token = get(nameRegistryState);
   const [addr, name] = getContractParts(token.identifier);
   const asset = token.non_fungible_tokens[0].name;
