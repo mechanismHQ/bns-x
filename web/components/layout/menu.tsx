@@ -1,4 +1,4 @@
-import type { ReactNode, ReactElement } from 'react';
+import { useState } from 'react';
 import React, { useMemo } from 'react';
 import type { BoxProps } from '@nelson-ui/react';
 import { Stack, Box, Flex } from '@nelson-ui/react';
@@ -7,17 +7,13 @@ import { userNameState } from '@store/names';
 import { useGradient } from '@common/hooks/use-gradient';
 import { stxAddressAtom, useAuthState } from '@store/micro-stacks';
 import { Text } from '@components/text';
-import { keyframes } from '@nelson-ui/core';
 import { styled } from '@common/theme';
 import Tippy from '@tippyjs/react/headless';
-import type { Instance, Placement, Props } from 'tippy.js';
-import { followCursor } from 'tippy.js';
-// import 'tippy.js/dist/tippy.css';
 import { useSpring, animated } from 'react-spring';
 import { useRouter } from 'next/router';
-import { useAuth } from '@micro-stacks/react';
 import { useSwitchAccounts } from '@hooks/use-switch-accounts';
 import { ONLY_INSCRIPTIONS } from '@common/constants';
+import { btnShiftActiveProps } from '@components/button';
 
 const StyledMenu = styled(Stack, {
   '&:hover': {
@@ -58,6 +54,7 @@ export const MenuName: React.FC = () => {
       pt="0px"
       spacing="12px"
       alignItems={'center'}
+      _active={btnShiftActiveProps}
       pr="50px"
       onClick={async () => {
         const pathname = ONLY_INSCRIPTIONS ? '/' : '/profile';
@@ -85,8 +82,14 @@ const MenuContainerStyled = styled(Box, {
 });
 
 export const Menu: React.FC = () => {
+  const [mouseDown, setMouseDown] = useState(false);
+  const activeStyles = mouseDown ? btnShiftActiveProps : {};
   return (
-    <MenuContainerStyled>
+    <MenuContainerStyled
+      {...activeStyles}
+      onMouseDown={() => setMouseDown(true)}
+      onMouseUp={() => setMouseDown(false)}
+    >
       <MenuName />
       <MenuDropdown />
     </MenuContainerStyled>
