@@ -101,6 +101,7 @@ export const nameDetailsCoreSchema = nameDetailsBaseSchema.extend({
 export const nameDetailsBnsxSchema = nameDetailsBaseSchema.extend({
   isBnsx: z.literal(true),
   id: z.number(),
+  wrapper: z.string(),
 });
 
 export const nameDetailsSchema = z.union([nameDetailsCoreSchema, nameDetailsBnsxSchema]);

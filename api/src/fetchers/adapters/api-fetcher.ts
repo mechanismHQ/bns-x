@@ -52,6 +52,7 @@ export class ApiFetcher implements BaseFetcher {
         ...base,
         ...query,
         address: query.owner,
+        wrapper: api.address,
         isBnsx: true,
         zonefileRecords,
       };

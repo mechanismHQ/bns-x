@@ -128,6 +128,7 @@ export class BackwardsCompatibleService {
         });
         isBnsx: boolean;
         id: number;
+        wrapper: string;
     })> {
         return this.httpRequest.request({
             method: 'GET',

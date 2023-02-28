@@ -72,6 +72,7 @@ export class DbFetcher implements BaseFetcher {
         address: query.owner,
         isBnsx: true,
         zonefileRecords,
+        wrapper: api.address,
       };
     } catch (error) {
       console.warn(`Error fetching name details for ${name}.${namespace}:`, error);
