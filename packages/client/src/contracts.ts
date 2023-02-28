@@ -64,8 +64,15 @@ export class BnsContractsClient {
     return contractFactory(bns, `${getBnsDeployer(this.isMainnet)}.bns`);
   }
 
-  get upgrader() {
+  get migrator() {
     return this.contracts.wrapperMigrator;
+  }
+
+  /**
+   * @deprecated
+   */
+  get upgrader() {
+    return this.migrator;
   }
 
   /**
@@ -108,5 +115,29 @@ export class BnsContractsClient {
     });
     if (primary === null) return null;
     return convertNameBuff(primary);
+  }
+
+  /**
+   * Compute the price for a name on BNS Core.
+   *
+   * If the name is invalid, or the namespace doesn't exist, returns an error.
+   *
+   * @param name
+   * @param namespace
+   * @returns Price of name in uSTX
+   */
+  async computeNamePrice(name: string, namespace: string) {
+    const result = await this.client.ro(
+      this.bnsCore.getNamePrice({
+        name: asciiToBytes(name),
+        namespace: asciiToBytes(namespace),
+      })
+    );
+
+    if (!result.isOk) {
+      throw new Error(`Unable to get name price: received error ${result.value}`);
+    }
+
+    return result.value;
   }
 }

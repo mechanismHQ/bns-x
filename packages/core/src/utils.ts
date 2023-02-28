@@ -1,6 +1,7 @@
 import { bytesToAscii, hexToBytes, bytesToHex, asciiToBytes } from 'micro-stacks/common';
 import type { WithCombined, NameBuff, NameBase, LegacyDetails, LegacyJson } from './types';
 import { toUnicode } from 'punycode';
+import { hashRipemd160, getRandomBytes } from 'micro-stacks/crypto';
 
 export function getContractParts(identifier: string): [string, string] {
   const [addr, name] = identifier.split('.');
@@ -86,4 +87,15 @@ export function parseFqn(fqn: string): ParsedName {
     };
   }
   throw new Error(`Invalid name: ${fqn}`);
+}
+
+export function randomSalt() {
+  return getRandomBytes(20);
+}
+
+export function hashFqn(name: string, namespace: string, salt: string | Uint8Array) {
+  const saltHex = typeof salt === 'string' ? salt : bytesToHex(salt);
+  const nameBytes = asciiToHex(name);
+  const namespaceBytes = asciiToHex(namespace);
+  return hashRipemd160(hexToBytes(`${nameBytes}2e${namespaceBytes}${saltHex}`));
 }

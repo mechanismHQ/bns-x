@@ -29,8 +29,17 @@ export class BnsService {
     public getBnsAddressesStacks(
         principal: string,
     ): CancelablePromise<{
+        /**
+         * A list of names that the address owns
+         */
         names: Array<string>;
+        /**
+         * A single name that can be shown as the "display name" for the user
+         */
         displayName: string | null;
+        /**
+         * The address's BNS Core name
+         */
         coreName: {
             zonefileHash: string;
             leaseEndingAt: number | null;
@@ -51,7 +60,13 @@ export class BnsService {
             name: string;
             namespace: string;
         } | null;
+        /**
+         * The address's BNSx primary name
+         */
         primaryName: string | null;
+        /**
+         * The name properties of the address's BNSx name
+         */
         primaryProperties: {
             id: number;
             combined: string;
@@ -59,6 +74,9 @@ export class BnsService {
             name: string;
             namespace: string;
         } | null;
+        /**
+         * An array of BNSx name properties
+         */
         nameProperties: Array<{
             id: number;
             combined: string;

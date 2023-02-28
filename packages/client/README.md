@@ -19,6 +19,14 @@ This library has a few main components:
   - [The BnsContractsClient](#the-bnscontractsclient)
   - [Interacting with specific contracts](#interacting-with-specific-contracts)
   - [Usage with Clarigen](#usage-with-clarigen)
+  - [Examples of interacting with contracts:](#examples-of-interacting-with-contracts)
+    - [BNS Core](#bns-core)
+  - [Getting source code for a name wrapper contract](#getting-source-code-for-a-name-wrapper-contract)
+- [Utility functions](#utility-functions)
+  - [asciiToBytes and bytesToAscii](#asciitobytes-and-bytestoascii)
+  - [randomSalt](#randomsalt)
+  - [hashFqn](#hashfqn)
+  - [parseFqn](#parsefqn)
 
 <!-- /TOC -->
 
@@ -39,6 +47,8 @@ const bns = new BnsApiClient();
 
 ### Get the "display name" for an address
 
+Returns: `string | null`
+
 The logic for returning a user's "display name" is:
 
 1. If the user owns any BNS Core names, return that name
@@ -50,6 +60,8 @@ const name = await bns.getDisplayName();
 ```
 
 ### Get details about a name
+
+Returns: `NameInfoResponse`
 
 ```ts
 const details = await bns.getNameDetails('example', 'btc');
@@ -84,9 +96,9 @@ If the name has been migrated to BNSx, this response also includes:
 
 ### Fetch multiple names owned by an address
 
-If you want to fetch multiple names (both BNS and BNSx) owned by an address, you can use this function. Note that if you just want to show a name for an address, using `getDisplayName` will have better performance.
+Returns: `NamesByAddressResponse`
 
-Returns `NamesByAddressResponse`
+If you want to fetch multiple names (both BNS and BNSx) owned by an address, you can use this function. Note that if you just want to show a name for an address, using `getDisplayName` will have better performance.
 
 ```ts
 const allNames = await bns.getAddressNames(address);
@@ -112,12 +124,14 @@ This package includes [clarigen](https://clarigen.dev) generated types and funct
 
 Create a new client by specifying the network you're using. It can be one of `mainnet`, `testnet`, or `devnet`. This is used to automatically set the correct contract identifier for your network.
 
+For calling read-only functions, you can also specify a Stacks API endpoint as the second parameter.
+
 ```ts
 import { BnsContractsClient } from '@bns-x/client';
 // defaults to "mainnet"
 export const contracts = new BnsContractsClient();
 
-// new BnsContractsClient('testnet');
+// new BnsContractsClient('testnet', 'https://stacks-node-api.testnet.stacks.co');
 ```
 
 ### Interacting with specific contracts
@@ -147,9 +161,142 @@ export const clarigen = new Clarigen(microStacksClient);
 
 **Call read-only functions**
 
+[Learn more](https://clarigen.dev/docs/web/quick-start#call-read-only-functions)
+
 ```ts
 const primaryName = await clarigen.ro(contracts.registry.getPrimaryName(address));
 
 // `roOk` is a helper to automatically expect and scope to a function's `ok` type
 const price = await clarigen.roOk(contracts.legacyBns.getNamePrice(nameBuff, namespaceBuff));
+```
+
+**Make transactions**
+
+[Learn more](https://clarigen.dev/docs/web/quick-start#making-contract-call-transactions)
+
+```tsx
+import { useOpenContractCall } from '@micro-stacks/react';
+
+const registry = contracts.registry;
+
+export const TransferName = () => {
+  const { openContractCall } = useOpenContractCall();
+  const nameId = 1n;
+
+  const makeTransfer = async () => {
+    await openContractCall({
+      ...registry.transfer({
+        id: nameId,
+        sender: 'SP123...',
+        recipient: 'SP123...',
+      }),
+      // ... include other tx args
+      async onFinish(data) {
+        console.log('Broadcasted tx');
+      },
+    });
+  };
+
+  return <button onClick={() => makeTransfer()}>Transfer</button>;
+};
+```
+
+### Examples of interacting with contracts:
+
+#### BNS Core
+
+Generate a pre-order tx:
+
+```ts
+import { asciiToBytes, randomSalt, hashFqn } from '@bns-x/client';
+
+const name = 'example';
+const namespace = 'btc';
+const price = 2000000n;
+
+const salt = randomSalt();
+const hashedFqn = hashFqn(name, namespace, salt);
+
+const tx = contracts.bnsCore.namePreorder({
+  hashedSaltedFqn: hashedFqn,
+  stxToBurn: price,
+});
+```
+
+Later, register the name:
+
+```ts
+const register = contracts.bnsCore.nameRegister({
+  name: asciiToBytes(name),
+  namespace: asciiToBytes(namespace),
+  zonefileHash: new Uint8Array(),
+  salt,
+});
+```
+
+### Getting source code for a name wrapper contract
+
+If you need to deploy a name wrapper contract, you can get the source code from `nameWrapperCode`.
+
+```ts
+const code = contracts.nameWrapperCode();
+```
+
+## Utility functions
+
+This library exposes a few utility functions that come in handy when working with BNS.
+
+### `asciiToBytes` and `bytesToAscii`
+
+In BNS, all names are stored on-chain as ascii-converted bytes.
+
+```ts
+import { asciiToBytes, bytesToAscii } from '@bns-x/client';
+
+// the human-readable version of the name:
+const name = 'example';
+
+// the name stored on chain
+const nameBytes = asciiToBytes(name);
+
+// convert from on-chain:
+bytesToAscii(nameBytes) === name;
+```
+
+### `randomSalt`
+
+When preordering a name on BNS, you need to create a random salt.
+
+```ts
+import { randomSalt } from '@bns-x/client';
+const salt = randomSalt(); // Uint8Array
+```
+
+### `hashFqn`
+
+When preordering a name, you need to create a "hashed salted fully qualified name". This helper function generates that for you.
+
+```ts
+import { asciiToBytes, randomSalt, hashFqn } from '@bns-x/client';
+
+const name = 'example';
+const namespace = 'btc';
+
+const salt = randomSalt();
+const hashedFqn = hashFqn(name, namespace, salt);
+```
+
+### `parseFqn`
+
+If you have a string, you can parse it into individual parts:
+
+```ts
+import { parseFqn } from '@bns-x/client';
+const name = parseFqn('example.btc');
+name.name; // 'example'
+name.namespace; // 'btc'
+name.subdomain; // undefined
+
+parseFqn('sub.example.btc');
+// { name: 'example', namespace: 'btc', subdomain: 'sub' }
 ```
