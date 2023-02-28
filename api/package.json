@@ -48,7 +48,7 @@
     "@types/node": "^18.11.9",
     "cross-fetch": "^3.1.5",
     "dotenv-flow": "^3.2.0",
-    "fastify": "4.10.2",
+    "fastify": "4.13.0",
     "fastify-metrics": "^10.0.2",
     "fastify-plugin": "4.4.0",
     "fastify-type-provider-zod": "^1.1.9",
@@ -92,5 +92,10 @@
   "main": "./dist/export-types.js",
   "types": "./dist/export-types.d.ts",
   "module": "./dist/export-types.mjs",
-  "import": "./dist/export-types.mjs"
+  "import": "./dist/export-types.mjs",
+  "pnpm": {
+    "overrides": {
+      "fastify": "4.13.0"
+    }
+  }
 }

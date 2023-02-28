@@ -97,7 +97,7 @@ importers:
       cross-fetch: ^3.1.5
       dotenv-cli: ^6.0.0
       dotenv-flow: ^3.2.0
-      fastify: 4.10.2
+      fastify: 4.13.0
       fastify-metrics: ^10.0.2
       fastify-plugin: 4.4.0
       fastify-type-provider-zod: ^1.1.9
@@ -149,10 +149,10 @@ importers:
       '@types/node': 18.11.9
       cross-fetch: 3.1.5
       dotenv-flow: 3.2.0
-      fastify: 4.10.2
-      fastify-metrics: 10.0.2_fastify@4.10.2
+      fastify: 4.13.0
+      fastify-metrics: 10.0.2_fastify@4.13.0
       fastify-plugin: 4.4.0
-      fastify-type-provider-zod: 1.1.9_fastify@4.10.2+zod@3.20.0
+      fastify-type-provider-zod: 1.1.9_fastify@4.13.0+zod@3.20.0
       graphql: 16.5.0
       graphql-scalars: 1.20.1_graphql@16.5.0
       graphql-yoga: 3.1.1_r2zrkletd7s22o46bqosuoyrui
@@ -6538,6 +6538,7 @@ packages:
   /content-type/1.0.4:
     resolution: {integrity: sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==}
     engines: {node: '>= 0.6'}
+    dev: true
 
   /convert-source-map/1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
@@ -8156,6 +8157,10 @@ packages:
     engines: {'0': node >=0.6.0}
     dev: true
 
+  /fast-content-type-parse/1.0.0:
+    resolution: {integrity: sha512-Xbc4XcysUXcsP5aHUU7Nq3OwvHq97C+WnbkeIefpeYLX+ryzFJlU6OStFJhs6Ol0LkUGpcK+wL0JwfM+FCU5IA==}
+    dev: false
+
   /fast-copy/3.0.0:
     resolution: {integrity: sha512-4HzS+9pQ5Yxtv13Lhs1Z1unMXamBdn5nA4bEi1abYpDNSpSp7ODYQ1KPMF6nTatfEzgH6/zPvXKU1zvHiUjWlA==}
     dev: false
@@ -8241,12 +8246,12 @@ packages:
     engines: {node: '>= 4.9.1'}
     dev: true
 
-  /fastify-metrics/10.0.2_fastify@4.10.2:
+  /fastify-metrics/10.0.2_fastify@4.13.0:
     resolution: {integrity: sha512-j+NrJKRbHArM0Kr+PbQ0OGLIIjfH6JN/y+BviKKaETwKwwN16w8JB4fCpJSNIDneHOYXWJvIuqq7RCh6RNbehw==}
     peerDependencies:
       fastify: ^4.9.2
     dependencies:
-      fastify: 4.10.2
+      fastify: 4.13.0
       fastify-plugin: 4.4.0
       prom-client: 14.1.1
     dev: false
@@ -8255,26 +8260,26 @@ packages:
     resolution: {integrity: sha512-ovwFQG2qNy3jcCROiWpr94Hs0le+c7N/3t7m9aVwbFhkxcR/esp2xu25dP8e617HpQdmeDv+gFX4zagdUhDByw==}
     dev: false
 
-  /fastify-type-provider-zod/1.1.9_fastify@4.10.2+zod@3.20.0:
+  /fastify-type-provider-zod/1.1.9_fastify@4.13.0+zod@3.20.0:
     resolution: {integrity: sha512-Ztnu1ZWJEKJouZvdTyfgjuVqS+A4JLoCbWBvFqFhfnrg6YQvEvW+5cJvP98kNbuV5gjfpWmHSOTi3BpkidJPQg==}
     peerDependencies:
       fastify: ^4.0.0
       zod: ^3.14.2
     dependencies:
-      fastify: 4.10.2
+      fastify: 4.13.0
       zod: 3.20.0
       zod-to-json-schema: 3.20.4_zod@3.20.0
     dev: false
 
-  /fastify/4.10.2:
-    resolution: {integrity: sha512-0T+4zI6N3S8ex0LCZi3H4FasJR4AzWw834fUkPWvV8r6GBJkLmAOfFxH8f5V29Plef24IK0QSQD/tz1Nx+1UOA==}
+  /fastify/4.13.0:
+    resolution: {integrity: sha512-p9ibdFWH3pZ7KPgmfHPKGUy2W4EWU2TEpwlcu58w4CwGyU3ARFfh2kwq6zpZ5W2ZGVbufi4tZbqHIHAlX/9Z/A==}
     dependencies:
       '@fastify/ajv-compiler': 3.4.0
       '@fastify/error': 3.2.0
       '@fastify/fast-json-stringify-compiler': 4.1.0
       abstract-logging: 2.0.1
       avvio: 8.2.0
-      content-type: 1.0.4
+      fast-content-type-parse: 1.0.0
       find-my-way: 7.3.1
       light-my-request: 5.8.0
       pino: 8.10.0

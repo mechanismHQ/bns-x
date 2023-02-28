@@ -40,11 +40,10 @@ export function displayNameQueryKey(address: string) {
 }
 
 export const addressDisplayNameState = atomFamily((address: string) => {
-  return atomsWithQuery(get => ({
+  return atomsWithQuery(_get => ({
     queryKey: displayNameQueryKey(address),
     refetchInterval: 15000,
     queryFn: async () => {
-      console.log('fetching display name');
       return bnsApi.getDisplayName(address);
     },
   }))[0];
