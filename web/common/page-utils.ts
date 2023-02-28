@@ -8,6 +8,10 @@ type GetProps = (
 
 export function withSSRProps(cb?: GetProps) {
   return async (ctx: GetServerSidePropsContext) => {
+    const user = ctx.req.headers['x-auth-user'];
+    if (typeof user === 'string') {
+      console.log(`Auth: ${user}`);
+    }
     const dehydratedState = await getDehydratedStateFromSession(ctx);
     let baseProps: Record<string, any> = {
       dehydratedState,

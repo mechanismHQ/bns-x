@@ -37,3 +37,21 @@
     none
   )
 )
+
+;; Primary names:
+
+(define-map primary-names principal {
+  name: (buff 48),
+  namespace: (buff 20)
+})
+
+(define-public (set-primary-name (owner principal) (name { (buff 48), namespace: (buff 20) }))
+  (begin
+    (map-set primary-names owner name)
+    (ok true)
+  )
+)
+
+(define-read-only (get-primary-name (account principal))
+  (map-get? primary-names account)
+)
