@@ -19,7 +19,7 @@ COPY web/patches web/patches
 
 COPY . .
 
-RUN CI=true pnpm install --frozen-lockfile
+RUN CI=true pnpm install --frozen-lockfile --shamefully-hoist
 
 RUN pnpm --filter @bns-x/api-types prebuild
 

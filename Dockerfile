@@ -19,7 +19,7 @@ COPY web/patches ./web/patches
 
 COPY . .
 
-RUN pnpm install --frozen-lockfile
+RUN CI=true pnpm install --frozen-lockfile --shamefully-hoist
 
 # If using npm with a `package-lock.json` comment out above and use below instead
 # RUN npm ci
