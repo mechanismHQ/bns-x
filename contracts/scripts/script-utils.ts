@@ -3,6 +3,7 @@ import { project, contracts as _contracts } from '@bns-x/core';
 import { projectFactory, contractFactory } from '@clarigen/core';
 import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMainnet, StacksMocknet, StacksTestnet } from 'micro-stacks/network';
+import { privateKeyToStxAddress, StacksNetworkVersion } from 'micro-stacks/crypto';
 
 export let networkKey: 'devnet' | 'testnet' | 'mainnet' = 'devnet';
 export let network: StacksNetwork = new StacksMocknet();
@@ -18,3 +19,13 @@ if (networkKeyEnv === 'testnet') {
 export const contracts = projectFactory(project, networkKey as unknown as 'devnet');
 
 export const bns = contractFactory(_contracts.bnsV1, 'ST000000000000000000002AMW42H.bns');
+
+export function getControllerAddress(privateKey: string) {
+  const version = StacksNetworkVersion.mainnetP2PKH;
+  if (privateKey.length === 66) {
+    const key = privateKey.slice(0, 64);
+    const isCompressed = privateKey.slice(64) === '01';
+    return privateKeyToStxAddress(key, version, isCompressed);
+  }
+  return privateKeyToStxAddress(privateKey, version, false);
+}
