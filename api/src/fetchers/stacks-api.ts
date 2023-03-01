@@ -23,6 +23,12 @@ export async function getNameDetailsApi(name: string, namespace: string) {
   return res;
 }
 
+export async function getNameDetailsFqnApi(fqn: string) {
+  const res = await fetchName({ url: getNodeUrl(), name: fqn });
+
+  return res;
+}
+
 export async function getAssetIds(address: string): Promise<number[]> {
   const urlBase = getNodeUrl();
   const params = new URLSearchParams({
@@ -86,6 +92,7 @@ export async function getAddressNamesApi(address: string): Promise<NamesByAddres
       assetIds.map(async id => {
         const name = await clarigen.ro(registry.getNamePropertiesById(id), {
           json: true,
+          tip: 'latest',
         });
         return name;
       })
@@ -111,7 +118,6 @@ export async function getAddressNamesApi(address: string): Promise<NamesByAddres
   }
 
   return {
-    legacy,
     coreName: legacy,
     names: nameStrings,
     nameProperties: names,
@@ -121,22 +127,25 @@ export async function getAddressNamesApi(address: string): Promise<NamesByAddres
   };
 }
 
+export async function fetchCoreName(address: string): Promise<string | null> {
+  const coreResult = await fetchNamesByAddress({
+    url: getNodeUrl(),
+    blockchain: 'stacks',
+    address: address,
+  });
+  if ('names' in coreResult) {
+    return coreResult.names[0] ?? null;
+  }
+  return null;
+}
+
 export async function fetchDisplayName(address: string): Promise<string | null> {
-  const [legacyStrings, bnsxName] = await Promise.all([
-    fetchNamesByAddress({
-      url: getNodeUrl(),
-      blockchain: 'stacks',
-      address: address,
-    }),
-    getPrimaryName(address),
-  ]);
+  const [coreName, bnsxName] = await Promise.all([fetchCoreName(address), getPrimaryName(address)]);
+
+  if (coreName !== null) return coreName;
 
   if (bnsxName) {
     return convertNameBuff(bnsxName).decoded;
-  }
-  if ('names' in legacyStrings) {
-    const [name] = legacyStrings.names;
-    return typeof name !== 'undefined' ? toUnicode(name) : null;
   }
   return null;
 }

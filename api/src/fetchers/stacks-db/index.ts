@@ -152,7 +152,6 @@ export async function getAddressNamesDb(
   const primaryName = primaryProperties?.combined ?? null;
 
   return {
-    legacy,
     coreName: legacy,
     names: nameStrings,
     nameProperties: _names,

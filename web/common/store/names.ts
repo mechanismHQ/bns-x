@@ -23,7 +23,7 @@ export const currentUserNamesState = atom(get => {
 
 export const currentUserV1NameState = atom(get => {
   const names = get(currentUserNamesState);
-  return names?.legacy ?? null;
+  return names?.coreName ?? null;
 });
 
 export const addressPrimaryNameState2 = atomFamily((address: string) => {

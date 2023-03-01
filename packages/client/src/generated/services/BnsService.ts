@@ -43,17 +43,7 @@ export class BnsService {
         coreName: {
             zonefileHash: string;
             leaseEndingAt: number | null;
-            leaseStartedAt: number;
-            owner: string;
-            combined: string;
-            decoded: string;
-            name: string;
-            namespace: string;
-        } | null;
-        legacy: {
-            zonefileHash: string;
-            leaseEndingAt: number | null;
-            leaseStartedAt: number;
+            leaseStartedAt?: number;
             owner: string;
             combined: string;
             decoded: string;

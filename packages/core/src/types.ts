@@ -121,7 +121,7 @@ export interface InscriptionMeta {
 export const legacyPropsSchema = z.object({
   zonefileHash: z.string(),
   leaseEndingAt: z.nullable(z.number()),
-  leaseStartedAt: z.number(),
+  leaseStartedAt: z.optional(z.number()),
   owner: z.string(),
   combined: z.string(),
   decoded: z.string(),
@@ -149,7 +149,6 @@ export const namesByAddressBaseSchema = z.object({
     .nullable(z.string())
     .describe('A single name that can be shown as the "display name" for the user'),
   coreName: z.nullable(legacyPropsSchema).describe("The address's BNS Core name"),
-  legacy: z.nullable(legacyPropsSchema),
 });
 
 export const namesByAddressBnsxSchema = namesByAddressBaseSchema.extend({

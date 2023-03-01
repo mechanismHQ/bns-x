@@ -38,8 +38,8 @@ export class BnsApiClient {
     return names[0] ?? null;
   }
 
-  async getLegacyName(address: string): Promise<NamesByAddressResponse['legacy']> {
-    return (await this.getNamesOwnedByAddress(address)).legacy;
+  async getCoreName(address: string): Promise<NamesByAddressResponse['coreName']> {
+    return (await this.getNamesOwnedByAddress(address)).coreName;
   }
 
   /**
