@@ -11,9 +11,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "@bns-x/api-types": "workspace:*",
     "@bns-x/client": "workspace:*",
     "@bns-x/core": "workspace:*",
-    "@bns-x/api-types": "workspace:*",
     "@clarigen/core": "1.0.12",
     "@clarigen/node": "1.0.12",
     "@clarigen/web": "1.0.12",
@@ -42,6 +42,7 @@
     "@types/react-datepicker": "^4.8.0",
     "@types/react-dom": "18.0.6",
     "@types/tinycolor2": "^1.4.3",
+    "@vercel/analytics": "^0.1.11",
     "bignumber.js": "^9.1.0",
     "clsx": "^1.2.1",
     "iron-session": "6.1.3",

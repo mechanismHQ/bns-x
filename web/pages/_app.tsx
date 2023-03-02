@@ -14,6 +14,7 @@ import { getNetwork, getAppUrl, ONLY_INSCRIPTIONS } from '@common/constants';
 import type { Atom } from 'jotai';
 import { docTitleState, pageDescriptionState } from '@store/index';
 import { displayNameQueryKey, prefetchedDisplayNameState } from '@store/api';
+import { Analytics } from '@vercel/analytics/react';
 
 export interface PageProps {
   dehydratedState: string;
@@ -69,6 +70,7 @@ function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppPro
     >
       <JotaiClientProvider initialValues={hydratedAtoms}>
         <Component {...(pageProps as any)} />
+        <Analytics />
       </JotaiClientProvider>
     </ClientProvider>
   );
