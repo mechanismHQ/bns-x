@@ -65,7 +65,9 @@ export async function fetchLegacyDisplayName(address: string) {
       address: address,
     });
     if ('names' in namesRes) {
-      return namesRes.names[0] ?? null;
+      const [name] = namesRes.names;
+      if (name) return toUnicode(name);
+      return null;
     }
     return null;
   } catch (error) {
