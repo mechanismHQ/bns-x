@@ -3,6 +3,7 @@ import { errorSchema } from './api-types';
 import { namesByAddressBnsxSchema } from '@bns-x/core';
 import { z } from 'zod';
 import { logger } from '~/logger';
+import { DbFetcher } from '@fetchers/adapters/db-fetcher';
 
 export const namesRoutes: FastifyPlugin = (fastify, _opts, done) => {
   fastify.get(
@@ -44,6 +45,17 @@ The logic for determining name order in the \`names\` property is:
       }
     }
   );
+
+  fastify.get('/names/bnsx.csv', {}, async (req, res) => {
+    const { fetcher } = req.server;
+    if (DbFetcher.isDb(fetcher)) {
+      const names = await fetcher.fetchBnsxNames();
+      let str = '';
+      names.forEach(n => (str += `${[n.decoded].join(',')}\n`));
+      return res.status(200).send(str);
+    }
+    return res.status(500).send({ error: { message: 'Unable to iterate names' } });
+  });
 
   done();
 };

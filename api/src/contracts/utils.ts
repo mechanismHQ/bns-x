@@ -23,6 +23,15 @@ export function convertNameBuff<T extends NameBuff | NameBase>(nameObj: T): With
   } as WithCombined<T>;
 }
 
+export function convertDbName<T extends Omit<NameBase, 'id'> & { id: bigint }>(
+  nameObj: T
+): WithCombined<Omit<T, 'id'> & { id: number }> & { id: number } {
+  return convertNameBuff({
+    ...nameObj,
+    id: Number(nameObj.id),
+  });
+}
+
 export function convertLegacyDetailsJson<T extends LegacyJson>(
   details: T | null
 ): (T & LegacyDetails) | null {

@@ -15,7 +15,7 @@ import { toUnicode } from 'punycode';
 import { getZonefileProperties } from '@fetchers/zonefile';
 import { fetchNamesByAddress } from 'micro-stacks/api';
 import { getNodeUrl } from '~/constants';
-import { convertNameBuff } from '~/contracts/utils';
+import { convertDbName, convertNameBuff } from '~/contracts/utils';
 
 export class DbFetcher implements BaseFetcher {
   bnsDb: BnsDb;
@@ -24,6 +24,10 @@ export class DbFetcher implements BaseFetcher {
   constructor(bnsDb: BnsDb, stacksDb: StacksDb) {
     this.bnsDb = bnsDb;
     this.stacksDb = stacksDb;
+  }
+
+  static isDb(fetcher: BaseFetcher): fetcher is DbFetcher {
+    return 'bnsDb' in fetcher;
   }
 
   async getDisplayName(address: string): Promise<string | null> {
@@ -170,5 +174,18 @@ export class DbFetcher implements BaseFetcher {
       },
     });
     return zf;
+  }
+
+  async fetchBnsxNames(): Promise<NamesByAddressResponse['nameProperties'][number][]> {
+    const names = (
+      await this.bnsDb.name.findMany({
+        orderBy: {
+          id: 'desc',
+        },
+        take: 100,
+      })
+    ).map(convertDbName);
+
+    return names;
   }
 }
