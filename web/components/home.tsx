@@ -52,10 +52,8 @@ export const Home: React.FC<{ children?: React.ReactNode }> = () => {
             BNSx
           </Link>
           <Link
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            onClick={() => {}}
-            href="#"
-            // target="_blank"
+            href="https://discord.com/channels/1024525432403537982/1080863724451139624"
+            target="_blank"
             textDecoration="none"
             variant="Heading03"
             color="$text"
