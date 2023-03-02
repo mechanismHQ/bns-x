@@ -92,12 +92,20 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
       <FooterContainer spacing="8px">
         {!ONLY_INSCRIPTIONS && (
           <>
-            {/* <HeaderLink onClick={() => {}} href="#" color="$onSurface-text-subdued">
+            <HeaderLink
+              href="https://discord.com/channels/1024525432403537982/1080863724451139624"
+              color="$onSurface-text-subdued"
+              target="_blank"
+            >
               Discord
             </HeaderLink>
-            <HeaderLink href="#" color="$onSurface-text-subdued">
+            <HeaderLink
+              href="https://twitter.com/dotsbtc"
+              target="_blank"
+              color="$onSurface-text-subdued"
+            >
               Twitter
-            </HeaderLink> */}
+            </HeaderLink>
             <HeaderLink
               onClick={() => {}}
               href="https://docs.bns.xyz"

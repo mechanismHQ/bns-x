@@ -45,7 +45,7 @@ export const UpgradeOverview: React.FC = () => {
                   {v1Name}
                 </Text>
                 <Box padding="3px 10px" borderRadius="5px" backgroundColor="$grey-800">
-                  <Text variant="Label01" color="$warning-surface-warning">
+                  <Text variant="Label01" color="$text">
                     BNS Core
                   </Text>
                 </Box>
@@ -69,12 +69,6 @@ export const UpgradeOverview: React.FC = () => {
                   <Text variant="Body01" color="$icon-subdued">
                     ✅ Ability to update your zonefile
                   </Text>
-                  {/* <Text variant="Body01" color="$icon-subdued">
-                    • No dev team
-                  </Text> */}
-                  {/* <Text variant="Body01" color="$icon-subdued">
-                    • Sadness forever
-                  </Text> */}
                 </Stack>
               </Stack>
             </Box>
@@ -83,8 +77,10 @@ export const UpgradeOverview: React.FC = () => {
             <Box width="100%" borderRadius="18px" border="1px solid $onSurface-border-subdued">
               <SpaceBetween height="90px" alignItems="center" px="32px" isInline>
                 <Text variant="Body01">{v1Name}</Text>
-                <Box padding="3px 10px" borderRadius="5px" backgroundColor="$grey-800">
-                  <Text variant="Label01">BNSx</Text>
+                <Box padding="3px 10px" borderRadius="5px" backgroundColor="#ffffff">
+                  <Text variant="Label01" color="$light-surface-surface-contrast">
+                    BNSx
+                  </Text>
                 </Box>
               </SpaceBetween>
               <Stack
