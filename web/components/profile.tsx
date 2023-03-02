@@ -152,7 +152,7 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
         return (
           <Box key={`name-${name.id}`}>
             {index === 0 && <Border />}
-            <ProfileRow name={name.combined} />
+            <ProfileRow name={name.decoded} />
             {/* <LoadableProfileRow id={name} /> */}
             {/* {index !== holdings.length - 1 ? ( */}
             <Border />
@@ -195,7 +195,7 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
             {v1Name !== null ? (
               <>
                 <Border />
-                <ProfileRow v1 name={v1Name.combined} />
+                <ProfileRow v1 name={v1Name.decoded} />
                 {rows?.length === 0 && <Border />}
               </>
             ) : null}
