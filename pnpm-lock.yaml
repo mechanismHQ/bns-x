@@ -129,7 +129,7 @@ importers:
       tsx: ^3.12.3
       typedoc: ^0.23.25
       typescript: 4.9.5
-      zod: 3.20.0
+      zod: 3.20.6
     dependencies:
       '@bns-x/core': link:../packages/core
       '@clarigen/core': 1.0.12
@@ -154,7 +154,7 @@ importers:
       fastify: 4.13.0
       fastify-metrics: 10.0.2_fastify@4.13.0
       fastify-plugin: 4.4.0
-      fastify-type-provider-zod: 1.1.9_fastify@4.13.0+zod@3.20.0
+      fastify-type-provider-zod: 1.1.9_fastify@4.13.0+zod@3.20.6
       graphql: 16.5.0
       graphql-scalars: 1.20.1_graphql@16.5.0
       graphql-yoga: 3.1.1_r2zrkletd7s22o46bqosuoyrui
@@ -170,12 +170,12 @@ importers:
       punycode: 2.1.1
       socket.io-client: 4.6.0
       stacks-encoding-native-js: 1.0.0
-      trpc-openapi: 1.1.2_wkj6iudy6zsmhqwqtb3gvubkpi
-      trpc-openapi-fork-fastify-pr-177: 1.1.2_wkj6iudy6zsmhqwqtb3gvubkpi
+      trpc-openapi: 1.1.2_5fl3jfufksvbt2p3nmzm3cbz6y
+      trpc-openapi-fork-fastify-pr-177: 1.1.2_5fl3jfufksvbt2p3nmzm3cbz6y
       tsup: 6.6.3_typescript@4.9.5
       tsx: 3.12.3
       typescript: 4.9.5
-      zod: 3.20.0
+      zod: 3.20.6
     devDependencies:
       '@pnpm/make-dedicated-lockfile': 0.4.9
       '@tsconfig/node18': 1.0.1
@@ -212,7 +212,7 @@ importers:
       ts-jest: ^29.0.3
       tsup: ^6.5.0
       tsx: ^3.12.3
-      zod: 3.20.0
+      zod: 3.20.6
     dependencies:
       '@bns-x/core': link:../core
       '@clarigen/core': 1.0.12
@@ -226,7 +226,7 @@ importers:
       ts-jest: 29.0.3_jest@29.3.1
       tsup: 6.5.0
       tsx: 3.12.3
-      zod: 3.20.0
+      zod: 3.20.6
 
   packages/core:
     specifiers:
@@ -234,12 +234,12 @@ importers:
       micro-stacks: ^1.1.4
       punycode: ^2.1.1
       tsup: ^6.5.0
-      zod: 3.20.0
+      zod: 3.20.6
     dependencies:
       '@clarigen/core': 1.0.12
       micro-stacks: 1.1.4
       punycode: 2.1.1
-      zod: 3.20.0
+      zod: 3.20.6
     devDependencies:
       tsup: 6.5.0
 
@@ -8286,15 +8286,15 @@ packages:
     resolution: {integrity: sha512-ovwFQG2qNy3jcCROiWpr94Hs0le+c7N/3t7m9aVwbFhkxcR/esp2xu25dP8e617HpQdmeDv+gFX4zagdUhDByw==}
     dev: false
 
-  /fastify-type-provider-zod/1.1.9_fastify@4.13.0+zod@3.20.0:
+  /fastify-type-provider-zod/1.1.9_fastify@4.13.0+zod@3.20.6:
     resolution: {integrity: sha512-Ztnu1ZWJEKJouZvdTyfgjuVqS+A4JLoCbWBvFqFhfnrg6YQvEvW+5cJvP98kNbuV5gjfpWmHSOTi3BpkidJPQg==}
     peerDependencies:
       fastify: ^4.0.0
       zod: ^3.14.2
     dependencies:
       fastify: 4.13.0
-      zod: 3.20.0
-      zod-to-json-schema: 3.20.4_zod@3.20.0
+      zod: 3.20.6
+      zod-to-json-schema: 3.20.4_zod@3.20.6
     dev: false
 
   /fastify/4.13.0:
@@ -13594,7 +13594,7 @@ packages:
     resolution: {integrity: sha512-dagAKX7vaesNNAwOc9Np9C2mJ+7YopF4lk+jE2JML9ta4kZ91Y6UruJNH65bLRYoUROD8EY+Pmi44qQWwXR7sw==}
     dev: true
 
-  /trpc-openapi-fork-fastify-pr-177/1.1.2_wkj6iudy6zsmhqwqtb3gvubkpi:
+  /trpc-openapi-fork-fastify-pr-177/1.1.2_5fl3jfufksvbt2p3nmzm3cbz6y:
     resolution: {integrity: sha512-22FBTtCbyuuMNrglOvQs4Sj0lJyExP21Cs3yLGWvLtC6WU4pXqOPFPzIQwTCb4NFUwhH36ynW2B8oGFjbRSzTw==}
     peerDependencies:
       '@trpc/server': ^10.0.0
@@ -13605,11 +13605,11 @@ packages:
       lodash.clonedeep: 4.5.0
       node-mocks-http: 1.12.1
       openapi-types: 12.1.0
-      zod: 3.20.0
-      zod-to-json-schema: 3.20.4_zod@3.20.0
+      zod: 3.20.6
+      zod-to-json-schema: 3.20.4_zod@3.20.6
     dev: false
 
-  /trpc-openapi/1.1.2_wkj6iudy6zsmhqwqtb3gvubkpi:
+  /trpc-openapi/1.1.2_5fl3jfufksvbt2p3nmzm3cbz6y:
     resolution: {integrity: sha512-G2CT6q0nhhOGcYeAaK+volHNXRE8BFmNY+LwQA1cMXonh+iEUvl6T3OjF2HEGVvF0am9u9uo5hlMuXq5Wdweww==}
     peerDependencies:
       '@trpc/server': ^10.0.0
@@ -13620,8 +13620,8 @@ packages:
       lodash.clonedeep: 4.5.0
       node-mocks-http: 1.12.1
       openapi-types: 12.1.0
-      zod: 3.20.0
-      zod-to-json-schema: 3.20.4_zod@3.20.0
+      zod: 3.20.6
+      zod-to-json-schema: 3.20.4_zod@3.20.6
     dev: false
 
   /try-require/1.2.1:
@@ -13662,7 +13662,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.3.1_@types+node@18.0.6
+      jest: 29.3.1_@types+node@18.11.9
       jest-util: 29.3.1
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -14684,16 +14684,16 @@ packages:
       readable-stream: 3.6.0
     dev: true
 
-  /zod-to-json-schema/3.20.4_zod@3.20.0:
+  /zod-to-json-schema/3.20.4_zod@3.20.6:
     resolution: {integrity: sha512-Un9+kInJ2Zt63n6Z7mLqBifzzPcOyX+b+Exuzf7L1+xqck9Q2EPByyTRduV3kmSPaXaRer1JCsucubpgL1fipg==}
     peerDependencies:
       zod: ^3.20.0
     dependencies:
-      zod: 3.20.0
+      zod: 3.20.6
     dev: false
 
-  /zod/3.20.0:
-    resolution: {integrity: sha512-ZWxs7oM5ixoo1BMoxTNeDMYSih/F/FUnExsnRtHT04rG6q0Bd74TKS45RGXw07TOalOZyyzdKaYH38k8yTEv9A==}
+  /zod/3.20.6:
+    resolution: {integrity: sha512-oyu0m54SGCtzh6EClBVqDDlAYRz4jrVtKwQ7ZnsEmMI9HnzuZFj8QFwAY1M5uniIYACdGvv0PBWPF2kO0aNofA==}
 
   /zustand/4.1.1_react@18.2.0:
     resolution: {integrity: sha512-h4F3WMqsZgvvaE0n3lThx4MM81Ls9xebjvrABNzf5+jb3/03YjNTSgZXeyrvXDArMeV9untvWXRw1tY+ntPYbA==}
