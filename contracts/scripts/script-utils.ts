@@ -14,6 +14,11 @@ if (networkKeyEnv === 'testnet') {
 } else if (networkKeyEnv === 'mainnet') {
   networkKey = 'mainnet';
   network = new StacksMainnet();
+
+  if (typeof process.env.MAINNET === 'undefined') {
+    console.error('MAINNET not included, safe exit.');
+    throw 'Safe exit';
+  }
 }
 
 export const contracts = projectFactory(project, networkKey as unknown as 'devnet');

@@ -1,7 +1,11 @@
 import { fetch } from 'cross-fetch';
 import { getNetwork, getNodeUrl } from '../constants';
 import { fetchName, fetchNamesByAddress, fetchContractDataMapEntry } from 'micro-stacks/api';
-import type { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
+import type {
+  BnsError,
+  BnsNamesOwnByAddressResponse,
+  NonFungibleTokenHoldingsList,
+} from '@stacks/stacks-blockchain-api-types';
 import { cvToValue, fetchMapGet } from '@clarigen/core';
 import {
   clarigenProvider,
@@ -130,11 +134,9 @@ export async function getAddressNamesApi(address: string): Promise<NamesByAddres
 }
 
 export async function fetchCoreName(address: string): Promise<string | null> {
-  const coreResult = await fetchNamesByAddress({
-    url: getNodeUrl(),
-    blockchain: 'stacks',
-    address: address,
-  });
+  const url = `${getNodeUrl()}/v1/addresses/stacks/${address}?unanchored=true`;
+  const res = await fetch(url);
+  const coreResult = (await res.json()) as BnsError | BnsNamesOwnByAddressResponse;
   if ('names' in coreResult) {
     return coreResult.names[0] ?? null;
   }

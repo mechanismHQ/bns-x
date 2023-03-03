@@ -8,10 +8,6 @@ import { cvToJSON } from '@clarigen/core';
 import { logger } from '~/logger';
 import { getDeployer } from '~/contracts';
 
-type LogKeys = ['block_height', 'microblock_sequence', 'tx_index', 'event_index'][number];
-
-// type WhereInput = Partial<Record<LogKeys, { gt: number } | { gte: number }>>;
-
 type WhereInput = StacksDbTypes.ContractLogsWhereInput;
 
 const log = logger.child({
@@ -52,7 +48,7 @@ export async function syncPrints({
           block_height: { gt: block_height },
         },
         {
-          block_height: { gte: block_height },
+          block_height: block_height,
           microblock_sequence: { gte: microblock_sequence },
           tx_index: { gte: tx_index },
           event_index: { gt: event_index },

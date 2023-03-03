@@ -112,7 +112,7 @@ async function run() {
 
   if (networkKey === 'mainnet') {
     console.log('pubhash', bytesToHex(pubHash));
-    // throw new Error("safety check");
+    throw new Error('safety check');
   }
 
   await broadcast(

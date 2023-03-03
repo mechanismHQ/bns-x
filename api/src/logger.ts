@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'development') {
         colorize: true,
       },
     },
-    level: 'debug',
+    level: 'trace',
   });
 } else if (process.env.NODE_ENV === 'test') {
   logger = pino({

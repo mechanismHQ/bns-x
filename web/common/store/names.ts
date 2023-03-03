@@ -14,6 +14,7 @@ import { getApiUrl } from '@common/constants';
 import type { ZoneFile } from '@fungible-systems/zone-file';
 import { parseZoneFile, makeZoneFile } from '@fungible-systems/zone-file';
 import { nameUpgradingAtom } from '@store/migration';
+import type { NameInfoResponse } from '@bns-x/core';
 
 export const currentUserNamesState = atom(get => {
   const address = get(stxAddressAtom);
@@ -86,20 +87,22 @@ export const currentUserNameIdsState2 = atomsWithQuery<number[]>(get => ({
 
 export const currentUserUpgradedState = atom(get => {
   const toUpgrade = get(nameUpgradingAtom);
-  const allNames = get(currentUserNamesState);
-
-  let isUpgraded = false;
-  allNames?.nameProperties.forEach(n => {
-    if (n.combined === toUpgrade) {
-      isUpgraded = true;
-    }
-  });
-  return isUpgraded;
+  if (toUpgrade === null) return false;
+  const nameDetails = get(nameDetailsAtom(toUpgrade));
+  return nameDetails?.isBnsx ?? false;
 });
 
 export const nameDetailsAtom = atomFamily((name: string) => {
-  return atomsWithQuery(_get => ({
+  return atomsWithQuery<NameInfoResponse | null>(get => ({
     queryKey: ['name-details', name],
+    // If we're migrating this name, keep polling until the
+    // name is migrated.
+    refetchInterval(data) {
+      const toUpgrade = get(nameUpgradingAtom);
+      if (toUpgrade !== name) return false;
+      if (data?.isBnsx) return false;
+      return 5000;
+    },
     async queryFn() {
       const details = await bnsApi.getNameDetailsFromFqn(name);
       return details;
