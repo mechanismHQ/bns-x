@@ -1,4 +1,4 @@
-import type { BnsDbTypes } from '@db';
+import type { BnsDbTypes, StacksDbTypes } from '@db';
 import type { StacksDb, BnsDb } from '@db';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { hexToBytes } from 'micro-stacks/common';
@@ -10,7 +10,9 @@ import { getDeployer } from '~/contracts';
 
 type LogKeys = ['block_height', 'microblock_sequence', 'tx_index', 'event_index'][number];
 
-type WhereInput = Partial<Record<LogKeys, { gt: number } | { gte: number }>>;
+// type WhereInput = Partial<Record<LogKeys, { gt: number } | { gte: number }>>;
+
+type WhereInput = StacksDbTypes.ContractLogsWhereInput;
 
 const log = logger.child({
   topic: 'sync-prints',
@@ -22,10 +24,12 @@ export async function syncPrints({
   bnsDb,
   stacksDb,
   lastLog,
+  lookback = 12,
 }: {
   bnsDb: BnsDb;
   stacksDb: StacksDb;
   lastLog?: ContractLogs;
+  lookback?: number;
 }) {
   let whereInput: WhereInput;
   if (typeof lastLog === 'undefined') {
@@ -36,19 +40,32 @@ export async function syncPrints({
       },
     });
     const lastHeight = existing?.blockHeight ?? 0;
-    const syncHeight = Math.max(lastHeight - 12, 0);
+    const syncHeight = Math.max(lastHeight - lookback, 0);
     log.info({ lastHeight, syncHeight }, 'Starting log sync');
     whereInput = { block_height: { gte: syncHeight } };
   } else {
     // paginating
     const { block_height, microblock_sequence, tx_index, event_index } = lastLog;
     whereInput = {
-      block_height: { gte: block_height },
-      microblock_sequence: { gte: microblock_sequence },
-      tx_index: { gte: tx_index },
-      event_index: { gt: event_index },
+      OR: [
+        {
+          block_height: { gt: block_height },
+        },
+        {
+          block_height: { gte: block_height },
+          microblock_sequence: { gte: microblock_sequence },
+          tx_index: { gte: tx_index },
+          event_index: { gt: event_index },
+        },
+      ],
     };
   }
+  log.trace(
+    {
+      where: whereInput,
+    },
+    'fetching logs'
+  );
   const logs = await stacksDb.contractLogs.findMany({
     where: {
       contract_identifier: {
@@ -113,26 +130,57 @@ async function processLogs({ bnsDb, logs }: { bnsDb: BnsDb; logs: ContractLogs[]
       microblockHash: contractLog.microblock_hash,
       txid: contractLog.tx_id,
     };
-    log.info(
-      {
-        print: contractLog.json,
-      },
-      'New contract log'
-    );
-    await bnsDb.printEvent.upsert({
+    const existing = await bnsDb.printEvent.findFirst({
       where: {
-        blockHeight_microblockSequence_txIndex_eventIndex: {
-          blockHeight: contractLog.block_height,
-          microblockSequence: contractLog.microblock_sequence,
-          txIndex: contractLog.tx_index,
-          eventIndex: contractLog.event_index,
-        },
-      },
-      create: baseProps,
-      update: {
-        ...baseProps,
+        txid: contractLog.tx_id,
+        eventIndex: contractLog.event_index,
       },
     });
+    log.trace(
+      {
+        logBlockHeight: contractLog.block_height,
+      },
+      'Syncing log entry'
+    );
+    if (existing) {
+      log.trace(
+        {
+          blockHeight: contractLog.block_height,
+        },
+        'Updating existing'
+      );
+      await bnsDb.printEvent.updateMany({
+        where: {
+          txid: contractLog.tx_id,
+          eventIndex: contractLog.event_index,
+        },
+        data: {
+          canonical: contractLog.canonical,
+          microblockCanonical: contractLog.microblock_canonical,
+        },
+      });
+    } else {
+      log.trace(
+        {
+          print: contractLog.json,
+        },
+        'New contract log'
+      );
+      await bnsDb.printEvent.upsert({
+        where: {
+          blockHeight_microblockSequence_txIndex_eventIndex: {
+            blockHeight: contractLog.block_height,
+            microblockSequence: contractLog.microblock_sequence,
+            txIndex: contractLog.tx_index,
+            eventIndex: contractLog.event_index,
+          },
+        },
+        create: baseProps,
+        update: {
+          ...baseProps,
+        },
+      });
+    }
   });
 
   await Promise.all(syncs);
