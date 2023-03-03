@@ -29,7 +29,7 @@ export const WalletConnectButton = () => {
       };
       document.addEventListener('keydown', handleEsc);
     }
-  }, []);
+  }, [appDetails.appName, appDetails.appIconUrl, openAuthRequest]);
   return (
     <Button
       onClick={async () => {
