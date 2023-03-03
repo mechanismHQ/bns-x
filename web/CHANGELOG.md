@@ -1,5 +1,13 @@
 # web
 
+## 0.1.4
+
+### Patch Changes
+
+- a78746d: For mobile users, clicking the avatar will let you upgrade a name.
+
+  Also, the dropdown menu has been shifted to the left, to prevent page layout changes when the menu is open.
+
 ## 0.1.3
 
 ### Patch Changes
