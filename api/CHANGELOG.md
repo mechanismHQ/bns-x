@@ -1,5 +1,12 @@
 # @bns-x/api-types
 
+## 0.0.4
+
+### Patch Changes
+
+- b1c63fc: Return unicode version for BNS core display names
+- 88b937c: Expose simple endpoint to return recent BNSx names
+
 ## 0.0.3
 
 ### Patch Changes

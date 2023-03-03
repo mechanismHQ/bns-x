@@ -1,5 +1,11 @@
 # @bns-x/client
 
+## 0.1.1
+
+### Patch Changes
+
+- 267c15f: Updates documentation for interacting with contracts
+
 ## 0.1.0
 
 ### Minor Changes

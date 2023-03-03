@@ -1,5 +1,17 @@
 # web
 
+## 0.1.3
+
+### Patch Changes
+
+- b0affde: Fixed an issue where the confirmation screen could show 'pending' after sending a BNSx name to a different recipient.
+- 458b00d: When the user doesn't have a Stacks wallet installed, show the connect popup.
+- Updated dependencies [b1c63fc]
+- Updated dependencies [267c15f]
+- Updated dependencies [88b937c]
+  - @bns-x/api-types@0.0.4
+  - @bns-x/client@0.1.1
+
 ## 0.1.2
 
 ### Patch Changes
