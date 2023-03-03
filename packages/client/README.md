@@ -21,6 +21,8 @@ This library has a few main components:
   - [Usage with Clarigen](#usage-with-clarigen)
   - [Examples of interacting with contracts:](#examples-of-interacting-with-contracts)
     - [BNS Core](#bns-core)
+    - [Transfer a BNSx name](#transfer-a-bnsx-name)
+    - [Unwrap a BNSx name](#unwrap-a-bnsx-name)
   - [Getting source code for a name wrapper contract](#getting-source-code-for-a-name-wrapper-contract)
 - [Utility functions](#utility-functions)
   - [asciiToBytes and bytesToAscii](#asciitobytes-and-bytestoascii)
@@ -56,7 +58,8 @@ The logic for returning a user's "display name" is:
 3. If the user owns a BNSx name, return that name
 
 ```ts
-const name = await bns.getDisplayName();
+const address = 'SP123...';
+const name = await bns.getDisplayName(address);
 ```
 
 ### Get details about a name
@@ -91,8 +94,7 @@ If the owner of the name has [inscribed their zonefile](https://bns.xyz), it als
 If the name has been migrated to BNSx, this response also includes:
 
 - `id`: the NFT ID (integer)
-- `legacy`: information about the status of the "legacy" name
-  - `owner`: the wrapper contract holding this name
+- `wrapper`: the wrapper contract that owns this name
 
 ### Fetch multiple names owned by an address
 
@@ -131,6 +133,7 @@ import { BnsContractsClient } from '@bns-x/client';
 // defaults to "mainnet"
 export const contracts = new BnsContractsClient();
 
+// For other networks:
 // new BnsContractsClient('testnet', 'https://stacks-node-api.testnet.stacks.co');
 ```
 
@@ -140,7 +143,7 @@ The contracts client includes getters for various BNSx and BNS contracts:
 
 - `registry`: the main name registry contract for BNSx
 - `queryHelper`: a contract that exposes various query-related helpers
-- `legacyBns`: the BNS Core contract
+- `bnsCore`: the BNS Core contract
 - `upgrader`: the contract responsible for upgrading wrapped names to BNSx
 
 ### Usage with Clarigen
@@ -231,6 +234,50 @@ const register = contracts.bnsCore.nameRegister({
   namespace: asciiToBytes(namespace),
   zonefileHash: new Uint8Array(),
   salt,
+});
+```
+
+#### Transfer a BNSx name
+
+```ts
+contracts.registry.transfer({
+  id: 1,
+  sender: 'SP123..',
+  recipient: 'SP123..',
+});
+```
+
+#### Unwrap a BNSx name
+
+Because each wrapper contract is at a different address, the client exposes a helper function for creating a "wrapper instance" at a specific address.
+
+```ts
+const contractId = 'SP123...xyz.name-wrapper-200';
+const wrapperContract = contracts.nameWrapper(contractId);
+
+// now can interact with its functions
+// wrapperContract.unwrap(...)
+```
+
+This example uses both the API and contracts client.
+
+```ts
+const nameDetails = await bnsApi.getNameDetailsFromFqn('example.btc');
+
+if (!nameDetails.isBnsx) throw new Error('Cant unwrap name');
+
+const { wrapper } = nameDetails;
+
+const wrapperContract = contracts.nameWrapper(wrapper);
+
+// you can specify a different recipient for the unwrapped name.
+// If not specified, it defaults to the owner of the BNSx name.
+
+wrapperContract.unwrap(); // sends BNS name to current BNSx owner
+
+// send to different address:
+wrapperContract.unwrap({
+  recipient: 'SP123...asdf',
 });
 ```
 

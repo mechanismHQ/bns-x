@@ -29,4 +29,16 @@ test('code samples', async () => {
     salt: randomSalt(),
     zonefileHash: new Uint8Array(),
   });
+
+  client.registry.transfer({
+    id: 1n,
+    sender: '',
+    recipient: '',
+  });
+
+  const wrap = client.nameWrapper('asdf');
+
+  wrap.unwrap({
+    recipient: '',
+  });
 });
