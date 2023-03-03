@@ -37,11 +37,14 @@ const StyledEditBox = styled(Box, {
   },
 });
 
-// const StyledAvatar = styled(Box, {
-//   '@bp1': {
-//     width:
-//   }
-// })
+const StyledAvatar = styled(Box, {
+  width: '86px',
+  height: '86px',
+  // '@bp1': {
+  //   width: '40px',
+  //   height: '40px',
+  // },
+});
 
 export const ProfileRow: React.FC<{
   children?: React.ReactNode;
@@ -68,13 +71,19 @@ export const ProfileRow: React.FC<{
   return (
     <SpaceBetween isInline alignItems={'center'} width="100%" height="136px" px="29px">
       <Stack alignItems={'center'} isInline>
-        <Box
+        <StyledAvatar
           borderRadius="50%"
           aspectRatio="1"
           maxWidth="86px"
           maxHeight="86px"
-          size="86px"
           backgroundImage={gradient}
+          onClick={async () => {
+            if (v1) {
+              await upgrade();
+            } else {
+              await manage();
+            }
+          }}
         />
         <Stack spacing="6px">
           <StyledName variant="Heading035" color={'$text'}>
@@ -93,6 +102,11 @@ export const ProfileRow: React.FC<{
             <Text variant="Body02" height="20px" color={'$onSurface-text-subdued'}>
               {v1 ? 'BNS Core' : 'BNSx'}
             </Text>
+            {/* {v1 && (
+              <Text variant="Body02" height="20px" color={'$onSurface-text-subdued'}>
+                Upgrade to BNSx
+              </Text>
+            )} */}
           </Stack>
         </Stack>
       </Stack>

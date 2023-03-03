@@ -79,6 +79,9 @@ const MenuContainerStyled = styled(Box, {
   '.menu-name:hover ~ .dropdown-btn': {
     backgroundColor: '$surface-surface',
   },
+  '[data-tippy-root]': {
+    transform: 'translate3d(0px, 50px, 0)',
+  },
 });
 
 export const Menu: React.FC = () => {
@@ -115,7 +118,7 @@ const PopoverOption: React.FC<BoxProps> = ({ children, onClick }) => {
 
 const MenuDropdown: React.FC = () => {
   const config = { tension: 300, friction: 25 };
-  const initialStyles = { opacity: 0, transform: 'scale(0.3) translateY(-150px)' };
+  const initialStyles = { opacity: 0, transform: 'scale(0.3) translate3d(0, -150px, 0)' };
   const [props, setSpring] = useSpring(() => initialStyles);
   const { signOut } = useAuthState();
   const { switchAccounts } = useSwitchAccounts();
@@ -124,7 +127,7 @@ const MenuDropdown: React.FC = () => {
 
   return (
     <Tippy
-      placement="bottom"
+      placement="bottom-end"
       trigger="click"
       interactive
       render={() => (
@@ -160,9 +163,8 @@ const MenuDropdown: React.FC = () => {
       onMount={() => {
         setSpring({
           opacity: 1,
-          transform: 'scale(1) translateY(0)',
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          onRest: () => {},
+          transform: 'scale(1) translate3d(0, 0px, 0)',
+          // onRest: () => {},
           config: { ...config, clamp: false },
         });
       }}
