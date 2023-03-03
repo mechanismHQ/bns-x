@@ -17,7 +17,7 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
-    "types": ["jest"],
+    "types": ["jest", "@stacks/connect-ui"],
     "paths": {
       "@components/*": ["./components/*"],
       "@store/*": ["./common/store/*"],
