@@ -44,17 +44,28 @@ export function listenAndSyncPrints(bnsDb: BnsDb, stacksDb: StacksDb) {
         await refreshMaterializedViews(bnsDb);
         blocked = false;
       } catch (error) {
-        log.error('Error in listener handler');
+        log.error({ error }, 'Error in listener handler');
         blocked = false;
       }
     }
   }
-  client.socket.on('microblock', async () => {
-    log.info('New microblock');
+  client.socket.on('microblock', async mb => {
+    log.info(
+      {
+        microblockSequence: mb.microblock_sequence,
+        blockHeight: mb.block_height,
+      },
+      'New microblock'
+    );
     await handler();
   });
-  client.socket.on('block', async () => {
-    log.info('New block');
+  client.socket.on('block', async block => {
+    log.info(
+      {
+        blockHeight: block.height,
+      },
+      'New block'
+    );
     await handler();
   });
   client.socket.on('connect', () => {
