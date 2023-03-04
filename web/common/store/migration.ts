@@ -141,15 +141,28 @@ export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
     ]);
     if (xName !== null) {
       console.log(`Setting recipient from BNSx: ${xName.owner}`);
-      return xName.owner;
+      return standardPrincipalOnly(xName.owner);
     }
     if (v1Name.isOk) {
       console.log(`Setting name from v1 to addr`, v1Name.value.owner);
-      return v1Name.value.owner;
+      return standardPrincipalOnly(v1Name.value.owner);
     }
     return null;
   },
 }));
+
+// export const validRecipientState = atom(get => {
+//   const isBnsx = get(recipientIsBnsState);
+//   const recipientAddress = get(validRecipientQuery);
+
+// });
+
+function standardPrincipalOnly(address: string) {
+  if (address.includes('.')) {
+    return null;
+  }
+  return address;
+}
 
 export const recipientIsBnsState = atom(get => {
   const sendElsewhere = get(sendElsewhereAtom);
