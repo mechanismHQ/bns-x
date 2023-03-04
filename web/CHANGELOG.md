@@ -1,5 +1,11 @@
 # web
 
+## 0.1.5
+
+### Patch Changes
+
+- 84f04fb: Prevents transferrring to a contract address when upgrading
+
 ## 0.1.4
 
 ### Patch Changes
