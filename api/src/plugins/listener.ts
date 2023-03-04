@@ -29,17 +29,33 @@ export function makeSocket() {
   return sc;
 }
 
+let blocked = false;
+
 export function listenAndSyncPrints(bnsDb: BnsDb, stacksDb: StacksDb) {
   const client = makeSocket();
+
+  async function handler() {
+    if (blocked) {
+      log.info('aleady running');
+    } else {
+      try {
+        blocked = true;
+        await syncPrints({ bnsDb, stacksDb });
+        await refreshMaterializedViews(bnsDb);
+        blocked = false;
+      } catch (error) {
+        log.error('Error in listener handler');
+        blocked = false;
+      }
+    }
+  }
   client.socket.on('microblock', async () => {
     log.info('New microblock');
-    await syncPrints({ bnsDb, stacksDb });
-    await refreshMaterializedViews(bnsDb);
+    await handler();
   });
   client.socket.on('block', async () => {
     log.info('New block');
-    await syncPrints({ bnsDb, stacksDb });
-    await refreshMaterializedViews(bnsDb);
+    await handler();
   });
   client.socket.on('connect', () => {
     log.debug('Connected to websocket');
