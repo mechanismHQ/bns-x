@@ -50,19 +50,19 @@ export async function syncPrints({
         },
         {
           block_height: block_height,
-          microblock_sequence: { gte: microblock_sequence },
+          microblock_sequence: { gt: microblock_sequence },
         },
         {
           block_height: block_height,
           microblock_sequence,
-          tx_index: { gte: tx_index },
+          tx_index: { gt: tx_index },
         },
         {
           block_height: block_height,
           microblock_sequence,
           tx_index,
           event_index: {
-            gte: tx_index,
+            gt: event_index,
           },
         },
       ],
