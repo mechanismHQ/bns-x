@@ -47,10 +47,19 @@ export async function makeApp({
 
   await app.register(prismaPlugin);
 
-  await app.register(listenerPlugin);
+  if (process.env.WORKER === 'true') {
+    logger.info('Starting worker');
+    await app.register(listenerPlugin);
+  }
 
   app.setErrorHandler(function (error, request, reply) {
-    console.error(error);
+    logger.error(
+      {
+        error,
+        path: request.url,
+      },
+      'API Server Error'
+    );
     if (error instanceof TRPCError) {
       const status = getHTTPStatusCodeFromError(error);
       return reply.status(status).send({ error: error.message, code: error.code });
