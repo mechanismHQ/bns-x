@@ -37,3 +37,9 @@ yarn-error.log*
 .idea
 .yalc
 .swc
+
+# Sentry
+.sentryclirc
+
+# Sentry
+next.config.original.js
