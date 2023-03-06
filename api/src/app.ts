@@ -47,10 +47,7 @@ export async function makeApp({
 
   await app.register(prismaPlugin);
 
-  if (process.env.WORKER === 'true') {
-    logger.info('Starting worker');
-    await app.register(listenerPlugin);
-  }
+  await app.register(listenerPlugin);
 
   app.setErrorHandler(function (error, request, reply) {
     logger.error(

@@ -89,6 +89,7 @@ export function listenAndSyncPrints(bnsDb: BnsDb, stacksDb: StacksDb) {
 export const listenerPlugin: FastifyPluginAsync = fp(async server => {
   if (!server.prisma || !server.stacksPrisma) return;
   if (process.env.SKIP_SYNC === 'true') return;
+  logger.info('Starting worker');
 
   const socket = listenAndSyncPrints(server.prisma, server.stacksPrisma);
 
