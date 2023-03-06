@@ -295,6 +295,7 @@ importers:
       micro-stacks: ^1.1.4
       next: 12.2.2
       prettier: 2.7.1
+      punycode: ^2.1.1
       random-gradient: ^0.0.2
       react: 18.2.0
       react-datepicker: ^4.8.0
@@ -353,6 +354,7 @@ importers:
       lodash-es: 4.17.21
       micro-stacks: 1.1.4
       next: 12.2.2_biqbaboplfbrettd7655fr4n2y
+      punycode: 2.1.1
       random-gradient: 0.0.2
       react: 18.2.0
       react-datepicker: 4.8.0_biqbaboplfbrettd7655fr4n2y

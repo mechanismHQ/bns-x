@@ -149,7 +149,7 @@ export async function fetchDisplayName(address: string): Promise<string | null> 
   if (coreName !== null) return coreName;
 
   if (bnsxName) {
-    return convertNameBuff(bnsxName).decoded;
+    return convertNameBuff(bnsxName).combined;
   }
   return null;
 }

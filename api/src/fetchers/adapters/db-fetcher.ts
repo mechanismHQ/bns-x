@@ -1,20 +1,12 @@
 import { fetchBnsxDisplayName, fetchBnsxName } from '@db/names';
 import type { BnsDb, StacksDb } from '@db';
-import {
-  fetchCoreName,
-  fetchLegacyDisplayName,
-  getAddressNamesApi,
-  getNameDetailsApi,
-  getNameDetailsFqnApi,
-} from '@fetchers/stacks-api';
+import { fetchCoreName, getNameDetailsApi, getNameDetailsFqnApi } from '@fetchers/stacks-api';
 import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
 import { getNameParts } from '@bns-x/core';
 import { parseFqn } from '~/utils';
 import type { BaseFetcher } from './base';
 import { toUnicode } from 'punycode';
 import { getZonefileProperties } from '@fetchers/zonefile';
-import { fetchNamesByAddress } from 'micro-stacks/api';
-import { getNodeUrl } from '~/constants';
 import { convertDbName, convertNameBuff } from '~/contracts/utils';
 
 export class DbFetcher implements BaseFetcher {
@@ -32,7 +24,7 @@ export class DbFetcher implements BaseFetcher {
 
   async getDisplayName(address: string): Promise<string | null> {
     const [legacyName, bnsxName] = await Promise.all([
-      fetchLegacyDisplayName(address),
+      fetchCoreName(address),
       fetchBnsxDisplayName(address, this.bnsDb),
     ]);
     return legacyName ?? bnsxName;

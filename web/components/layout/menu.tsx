@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import { useSwitchAccounts } from '@hooks/use-switch-accounts';
 import { ONLY_INSCRIPTIONS } from '@common/constants';
 import { btnShiftActiveProps } from '@components/button';
+import { usePunycode } from '@common/hooks/use-punycode';
 
 const StyledMenu = styled(Stack, {
   '&:hover': {
@@ -30,18 +31,19 @@ const StyledName = styled(Text, {
 
 export const MenuName: React.FC = () => {
   const name = useAtomValue(userNameState);
+  const nameDisplay = usePunycode(name);
   const stxAddress = useAtomValue(stxAddressAtom);
   const gradient = useGradient(name || stxAddress || '');
   const router = useRouter();
 
   const display = useMemo(() => {
-    const show = name || stxAddress || '';
+    const show = nameDisplay || stxAddress || '';
     const MAX_NAME = 20;
     if (show.length > MAX_NAME) {
       return show.slice(0, MAX_NAME - 3) + '...';
     }
     return show;
-  }, [name, stxAddress]);
+  }, [nameDisplay, stxAddress]);
   return (
     <StyledMenu
       isInline

@@ -18,6 +18,7 @@ import { stxAddressAtom } from '@store/micro-stacks';
 import { truncateMiddle } from '@common/utils';
 import { Link, LinkText } from '@components/link';
 import { styled } from '@common/theme';
+import { usePunycode } from '@common/hooks/use-punycode';
 
 const StyledName = styled(Text, {
   // initial: {
@@ -51,6 +52,7 @@ export const ProfileRow: React.FC<{
   v1?: boolean;
   name: string;
 }> = ({ v1 = false, name }) => {
+  const nameString = usePunycode(name);
   const router = useRouter();
   const gradient = useGradient(name);
 
@@ -87,7 +89,7 @@ export const ProfileRow: React.FC<{
         />
         <Stack spacing="6px">
           <StyledName variant="Heading035" color={'$text'}>
-            {name}
+            {nameString}
           </StyledName>
 
           <Stack isInline height="20px" spacing="27px">
@@ -166,7 +168,7 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
         return (
           <Box key={`name-${name.id}`}>
             {index === 0 && <Border />}
-            <ProfileRow name={name.decoded} />
+            <ProfileRow name={name.combined} />
             {/* <LoadableProfileRow id={name} /> */}
             {/* {index !== holdings.length - 1 ? ( */}
             <Border />
@@ -209,7 +211,7 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
             {v1Name !== null ? (
               <>
                 <Border />
-                <ProfileRow v1 name={v1Name.decoded} />
+                <ProfileRow v1 name={v1Name.combined} />
                 {rows?.length === 0 && <Border />}
               </>
             ) : null}
