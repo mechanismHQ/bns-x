@@ -154,6 +154,9 @@ async function processLog(contractLog: MappedLog, bnsDb: BnsDb) {
     where: {
       txid: contractLog.tx_id,
       eventIndex: contractLog.event_index,
+      microblockSequence: contractLog.microblock_sequence,
+      txIndex: contractLog.tx_index,
+      blockHeight: contractLog.block_height,
     },
   });
   log.trace(
@@ -173,6 +176,9 @@ async function processLog(contractLog: MappedLog, bnsDb: BnsDb) {
       where: {
         txid: contractLog.tx_id,
         eventIndex: contractLog.event_index,
+        microblockSequence: contractLog.microblock_sequence,
+        txIndex: contractLog.tx_index,
+        blockHeight: contractLog.block_height,
       },
       data: {
         canonical: contractLog.canonical,
