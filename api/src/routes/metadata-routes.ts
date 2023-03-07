@@ -4,6 +4,7 @@ import type { FastifyPlugin } from './api-types';
 import { z } from 'zod';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { getNameById } from '../fetchers/query-helper';
+import { toUnicode } from 'punycode';
 
 export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
   fastify.get(
@@ -29,8 +30,9 @@ export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
       const properties: Record<string, NftProperty> = {
         id: name.id,
         namespace: name.namespace,
-        fullName: name.combined,
-        name: name.name,
+        fullName: name.decoded,
+        name: toUnicode(name.name),
+        nameAscii: name.combined,
         collection: 'BNSx Names',
         collection_image: 'https://api.bns.xyz/static/bnsx-image.png',
       };
@@ -46,7 +48,7 @@ export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
 
       await res.send({
         sip: 16,
-        name: name.combined,
+        name: name.decoded,
         image: 'https://api.bns.xyz/static/bnsx-image.png',
         properties: properties,
       });
