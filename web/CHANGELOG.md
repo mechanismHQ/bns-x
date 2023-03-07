@@ -1,5 +1,16 @@
 # web
 
+## 0.1.6
+
+### Patch Changes
+
+- 9c00da3: Updates the menu and upgrade overview page to show the unicode version of names
+- Updated dependencies [9c00da3]
+- Updated dependencies [9c00da3]
+- Updated dependencies [9c00da3]
+  - @bns-x/client@0.1.2
+  - @bns-x/api-types@0.0.5
+
 ## 0.1.5
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @bns-x/api-types
 
+## 0.0.5
+
+### Patch Changes
+
+- 9c00da3: Updates the logic for syncing BNSx events from a Stacks node to more consistently index events.
+- 9c00da3: Updates the NFT metadata endpoint to return the unicode version of a name for punycode names.
+
 ## 0.0.4
 
 ### Patch Changes

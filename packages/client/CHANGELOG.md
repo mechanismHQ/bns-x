@@ -1,5 +1,11 @@
 # @bns-x/client
 
+## 0.1.2
+
+### Patch Changes
+
+- 9c00da3: Includes a `ZoneFile` class exposed by the client package to easily interact with zonefiles.
+
 ## 0.1.1
 
 ### Patch Changes
