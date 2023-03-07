@@ -11,6 +11,7 @@ import { migrateNameAtom, nameUpgradingAtom } from '@store/migration';
 import { CenterBox } from '@components/layout';
 import { atom } from 'jotai';
 import { styled } from '@common/theme';
+import { usePunycode } from '@common/hooks/use-punycode';
 
 interface BaseRowProps extends BoxProps {
   children?: React.ReactNode;
@@ -56,7 +57,7 @@ export const Divider: React.FC<{ children?: React.ReactNode }> = () => {
 };
 
 export const NameHeading: React.FC<{ children?: React.ReactNode }> = () => {
-  const name = useAtomValue(nameUpgradingAtom);
+  const name = usePunycode(useAtomValue(nameUpgradingAtom));
   return (
     <Text variant="Heading06" color="$text-onsurface-very-dim">
       {name}

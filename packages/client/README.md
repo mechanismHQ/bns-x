@@ -24,6 +24,9 @@ This library has a few main components:
     - [Transfer a BNSx name](#transfer-a-bnsx-name)
     - [Unwrap a BNSx name](#unwrap-a-bnsx-name)
   - [Getting source code for a name wrapper contract](#getting-source-code-for-a-name-wrapper-contract)
+- [Zonefiles](#zonefiles)
+  - [Getting a BTC address](#getting-a-btc-address)
+  - [Get an arbitrary TXT record](#get-an-arbitrary-txt-record)
 - [Utility functions](#utility-functions)
   - [asciiToBytes and bytesToAscii](#asciitobytes-and-bytestoascii)
   - [randomSalt](#randomsalt)
@@ -287,6 +290,42 @@ If you need to deploy a name wrapper contract, you can get the source code from 
 
 ```ts
 const code = contracts.nameWrapperCode();
+```
+
+## Zonefiles
+
+This library exposes a few functions to make it easier to get records from a name's zonefile.
+
+The `ZoneFile` class can be constructed with a zonefile (`string`) and can be used to easily get information from the zonefile.
+
+### Getting a BTC address
+
+```ts
+import { ZoneFile, BnsApiClient } from '@bns-x/client';
+
+const client = new BnsApiClient();
+
+// Returns `string | null`;
+export async function getBtcAddress(name: string) {
+  const nameDetails = await client.getNameDetailsFromFqn(name);
+  if (nameDetails === null) {
+    // name not found
+    return null;
+  }
+  const zonefile = new ZoneFile(nameDetails.zonefile);
+
+  // Returns `null` if `_btc._addr` not found in zonefile
+  return zonefile.btcAddr;
+}
+```
+
+### Get an arbitrary TXT record
+
+If you want to get the TXT record for any specific key, you can use `getTxtRecord`.
+
+```ts
+const zonefile = new ZoneFile(nameDetails.zonefile);
+const txtValue = zonefile.getTxtRecord('_eth._addr'); // returns `string | null`
 ```
 
 ## Utility functions
