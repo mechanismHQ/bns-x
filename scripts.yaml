@@ -16,6 +16,10 @@ scripts:
     cmd:
       - pnpm --filter contracts exec vr integrate
 
+  clarigen:
+    cmd:
+      - pnpm --filter contracts exec clarigen
+
   lt:
     pll:
       - NEXT_PUBLIC_APP_URL="https://dots.loca.lt" NEXT_PUBLIC_NODE_URL="https://dotsnode.loca.lt" pnpm --filter web dev

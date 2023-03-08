@@ -5,15 +5,11 @@ import { useAtomValue } from 'jotai';
 import { useCallback } from 'react';
 import { getContractsClient } from '@common/constants';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
-import {
-  makeContractNonFungiblePostCondition,
-  makeStandardNonFungiblePostCondition,
-  NonFungibleConditionCode,
-} from 'micro-stacks/transactions';
-import { bnsAssetInfoState, bnsxAssetInfoState, nameRegistryState } from '@store/index';
-import { uintCV } from 'micro-stacks/clarity';
+import { NonFungibleConditionCode } from 'micro-stacks/transactions';
+import { bnsContractState, nameRegistryState } from '@store/index';
 import { unwrapTxidAtom } from '@store/profile';
-import { getContractParts, nameToTupleCV } from '@common/utils';
+import { nameToTupleBytes } from '@common/utils';
+import { makeNonFungiblePostCondition } from '@clarigen/core';
 
 export function useUnwrap(name: string) {
   const { openContractCall, isRequestPending } = useOpenContractCall();
@@ -29,29 +25,30 @@ export function useUnwrap(name: string) {
         }
         const wrapper = nameDetails.wrapper;
         const wrapperContract = getContractsClient().nameWrapper(wrapper);
-        const assetInfo = get(bnsxAssetInfoState);
         const network = get(networkAtom);
-        const bnsAsset = get(bnsAssetInfoState);
-        const bnsAssetId = nameToTupleCV(name);
+        const registry = get(nameRegistryState);
+        const bns = get(bnsContractState);
+        const bnsAssetId = nameToTupleBytes(name);
 
-        const postCondition = makeStandardNonFungiblePostCondition(
+        // Burn BNSx
+        const bnsxPostCondition = makeNonFungiblePostCondition(
+          registry,
           sender,
           NonFungibleConditionCode.DoesNotOwn,
-          assetInfo,
-          uintCV(nameDetails.id)
+          BigInt(nameDetails.id)
         );
-        const [wrapperAddr, wrapperName] = getContractParts(wrapper);
-        const bnsPostCondition = makeContractNonFungiblePostCondition(
-          wrapperAddr,
-          wrapperName,
+        // Send BNS from wrapper
+        const bnsPostCondition = makeNonFungiblePostCondition(
+          bns,
+          wrapper,
           NonFungibleConditionCode.DoesNotOwn,
-          bnsAsset,
           bnsAssetId
         );
-        const receiveBnsPostCondition = makeStandardNonFungiblePostCondition(
+        // User receives BNS
+        const receiveBnsPostCondition = makeNonFungiblePostCondition(
+          bns,
           sender,
           NonFungibleConditionCode.Owns,
-          bnsAsset,
           bnsAssetId
         );
 
@@ -59,7 +56,7 @@ export function useUnwrap(name: string) {
           ...wrapperContract.unwrap({
             recipient: sender,
           }),
-          postConditions: [postCondition, bnsPostCondition, receiveBnsPostCondition],
+          postConditions: [bnsxPostCondition, bnsPostCondition, receiveBnsPostCondition],
           onFinish(data) {
             set(unwrapTxidAtom, data.txId);
           },

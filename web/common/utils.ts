@@ -94,3 +94,11 @@ export function nameToTupleCV(fqn: string) {
     namespace: bufferCV(asciiToBytes(namespace)),
   });
 }
+
+export function nameToTupleBytes(fqn: string) {
+  const [name, namespace] = getContractParts(fqn);
+  return {
+    name: asciiToBytes(name),
+    namespace: asciiToBytes(namespace),
+  };
+}

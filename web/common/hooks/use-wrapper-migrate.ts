@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAtomCallback } from 'jotai/utils';
 import { useOpenContractCall } from '@micro-stacks/react';
-import { bnsAssetInfoState, bnsContractState, contractsState } from '../store';
+import { bnsContractState, contractsState } from '../store';
 import {
   migrateNameAssetIdState,
   migrateTxidAtom,
@@ -11,14 +11,8 @@ import {
 } from '../store/migration';
 import { hexToBytes } from 'micro-stacks/common';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
-import {
-  PostConditionMode,
-  makeStandardNonFungiblePostCondition,
-  PostConditionType,
-  NonFungibleConditionCode,
-  makeContractNonFungiblePostCondition,
-} from 'micro-stacks/transactions';
-import { getContractParts } from '@common/utils';
+import { PostConditionMode, NonFungibleConditionCode } from 'micro-stacks/transactions';
+import { makeNonFungiblePostCondition } from '@clarigen/core';
 
 export function useWrapperMigrate() {
   const { isRequestPending, openContractCall } = useOpenContractCall();
@@ -32,7 +26,7 @@ export function useWrapperMigrate() {
         const signature = get(wrapperSignatureState);
         const recipient = get(validRecipientState);
         const address = get(stxAddressAtom)!;
-        const bnsAsset = get(bnsAssetInfoState);
+        const bns = get(bnsContractState);
         const bnsTupleId = get(migrateNameAssetIdState);
         const network = get(networkAtom);
         if (!contractId || !signature) {
@@ -44,20 +38,12 @@ export function useWrapperMigrate() {
           return;
         }
 
-        const postCondition = makeStandardNonFungiblePostCondition(
+        const postCondition = makeNonFungiblePostCondition(
+          bns,
           address,
           NonFungibleConditionCode.DoesNotOwn,
-          bnsAsset,
           bnsTupleId
         );
-        // const [wrapperAddr, wrapperName] = getContractParts(contractId);
-        // const wrapperPC = makeContractNonFungiblePostCondition(
-        //   wrapperAddr,
-        //   wrapperName,
-        //   NonFungibleConditionCode.Owns,
-        //   bnsAsset,
-        //   bnsTupleId
-        // );
 
         await openContractCall({
           ...migrator.migrate({

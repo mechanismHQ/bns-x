@@ -90,6 +90,11 @@ epoch = 2.0
 # clarity_version = 1
 # epoch = 2.0
 
+# [contracts.fake-registry]
+# path = "contracts/fake-registry.clar"
+# clarity_version = 1
+# epoch = 2.0
+
 [repl.analysis]
 passes = ['check_checker']
 

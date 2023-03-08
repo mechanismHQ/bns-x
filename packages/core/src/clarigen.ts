@@ -84,9 +84,10 @@ export interface ClarityAbiTypeFungibleToken {
   name: string;
 }
 
-export interface ClarityAbiTypeNonFungibleToken {
+export interface ClarityAbiTypeNonFungibleToken<T = unknown> {
   name: string;
   type: ClarityAbiType;
+  _t?: T;
 }
 
 export interface ClarityAbi {
@@ -94,7 +95,7 @@ export interface ClarityAbi {
   variables: ClarityAbiVariable[];
   maps: ClarityAbiMap[];
   fungible_tokens: ClarityAbiTypeFungibleToken[];
-  non_fungible_tokens: ClarityAbiTypeNonFungibleToken[];
+  non_fungible_tokens: ClarityAbiTypeNonFungibleToken<unknown>[];
 }
 
 export type TypedAbi = Readonly<{
@@ -111,7 +112,7 @@ export type TypedAbi = Readonly<{
     [key: string]: unknown;
   };
   fungible_tokens: Readonly<ClarityAbiTypeFungibleToken[]>;
-  non_fungible_tokens: Readonly<ClarityAbiTypeNonFungibleToken[]>;
+  non_fungible_tokens: Readonly<ClarityAbiTypeNonFungibleToken<unknown>[]>;
   contractName: string;
   contractFile?: string;
 }>;
@@ -368,10 +369,7 @@ export const contracts = {
           { name: 'name', type: { buffer: { length: 48 } } },
           { name: 'stx-to-burn', type: 'uint128' },
           { name: 'new-owner', type: { optional: 'principal' } },
-          {
-            name: 'zonefile-hash',
-            type: { optional: { buffer: { length: 20 } } },
-          },
+          { name: 'zonefile-hash', type: { optional: { buffer: { length: 20 } } } },
         ],
         outputs: { type: { response: { ok: 'bool', error: 'int128' } } },
       } as TypedAbiFunction<
@@ -403,10 +401,7 @@ export const contracts = {
           { name: 'namespace', type: { buffer: { length: 20 } } },
           { name: 'name', type: { buffer: { length: 48 } } },
           { name: 'new-owner', type: 'principal' },
-          {
-            name: 'zonefile-hash',
-            type: { optional: { buffer: { length: 20 } } },
-          },
+          { name: 'zonefile-hash', type: { optional: { buffer: { length: 20 } } } },
         ],
         outputs: { type: { response: { ok: 'bool', error: 'int128' } } },
       } as TypedAbiFunction<
@@ -624,15 +619,9 @@ export const contracts = {
                     type: {
                       tuple: [
                         { name: 'imported-at', type: { optional: 'uint128' } },
-                        {
-                          name: 'registered-at',
-                          type: { optional: 'uint128' },
-                        },
+                        { name: 'registered-at', type: { optional: 'uint128' } },
                         { name: 'revoked-at', type: { optional: 'uint128' } },
-                        {
-                          name: 'zonefile-hash',
-                          type: { buffer: { length: 20 } },
-                        },
+                        { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
                       ],
                     },
                   },
@@ -649,10 +638,7 @@ export const contracts = {
                           type: {
                             tuple: [
                               { name: 'base', type: 'uint128' },
-                              {
-                                name: 'buckets',
-                                type: { list: { type: 'uint128', length: 16 } },
-                              },
+                              { name: 'buckets', type: { list: { type: 'uint128', length: 16 } } },
                               { name: 'coeff', type: 'uint128' },
                               { name: 'no-vowel-discount', type: 'uint128' },
                               { name: 'nonalpha-discount', type: 'uint128' },
@@ -709,10 +695,7 @@ export const contracts = {
             type: {
               tuple: [
                 { name: 'base', type: 'uint128' },
-                {
-                  name: 'buckets',
-                  type: { list: { type: 'uint128', length: 16 } },
-                },
+                { name: 'buckets', type: { list: { type: 'uint128', length: 16 } } },
                 { name: 'coeff', type: 'uint128' },
                 { name: 'no-vowel-discount', type: 'uint128' },
                 { name: 'nonalpha-discount', type: 'uint128' },
@@ -781,10 +764,7 @@ export const contracts = {
                           type: {
                             tuple: [
                               { name: 'base', type: 'uint128' },
-                              {
-                                name: 'buckets',
-                                type: { list: { type: 'uint128', length: 16 } },
-                              },
+                              { name: 'buckets', type: { list: { type: 'uint128', length: 16 } } },
                               { name: 'coeff', type: 'uint128' },
                               { name: 'no-vowel-discount', type: 'uint128' },
                               { name: 'nonalpha-discount', type: 'uint128' },
@@ -928,10 +908,7 @@ export const contracts = {
                       optional: {
                         tuple: [
                           { name: 'name', type: { buffer: { length: 48 } } },
-                          {
-                            name: 'namespace',
-                            type: { buffer: { length: 20 } },
-                          },
+                          { name: 'namespace', type: { buffer: { length: 20 } } },
                         ],
                       },
                     },
@@ -1018,10 +995,7 @@ export const contracts = {
         key: {
           tuple: [
             { name: 'buyer', type: 'principal' },
-            {
-              name: 'hashed-salted-namespace',
-              type: { buffer: { length: 20 } },
-            },
+            { name: 'hashed-salted-namespace', type: { buffer: { length: 20 } } },
           ],
         },
         value: {
@@ -1056,10 +1030,7 @@ export const contracts = {
               type: {
                 tuple: [
                   { name: 'base', type: 'uint128' },
-                  {
-                    name: 'buckets',
-                    type: { list: { type: 'uint128', length: 16 } },
-                  },
+                  { name: 'buckets', type: { list: { type: 'uint128', length: 16 } } },
                   { name: 'coeff', type: 'uint128' },
                   { name: 'no-vowel-discount', type: 'uint128' },
                   { name: 'nonalpha-discount', type: 'uint128' },
@@ -1418,9 +1389,13 @@ export const contracts = {
             { name: 'namespace', type: { buffer: { length: 20 } } },
           ],
         },
-      } as ClarityAbiTypeNonFungibleToken,
+      } as ClarityAbiTypeNonFungibleToken<{
+        name: Uint8Array;
+        namespace: Uint8Array;
+      }>,
     ],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'bns-v1',
   },
@@ -1539,12 +1514,7 @@ export const contracts = {
           },
         ],
         outputs: {
-          type: {
-            response: {
-              ok: { list: { type: 'bool', length: 200 } },
-              error: 'uint128',
-            },
-          },
+          type: { response: { ok: { list: { type: 'bool', length: 200 } }, error: 'uint128' } },
         },
       } as TypedAbiFunction<
         [
@@ -1579,12 +1549,7 @@ export const contracts = {
           },
         ],
         outputs: {
-          type: {
-            response: {
-              ok: { list: { type: 'bool', length: 200 } },
-              error: 'uint128',
-            },
-          },
+          type: { response: { ok: { list: { type: 'bool', length: 200 } }, error: 'uint128' } },
         },
       } as TypedAbiFunction<
         [
@@ -1657,11 +1622,10 @@ export const contracts = {
         },
         boolean
       >,
-      extensions: {
-        name: 'extensions',
-        key: 'principal',
-        value: 'bool',
-      } as TypedAbiMap<string, boolean>,
+      extensions: { name: 'extensions', key: 'principal', value: 'bool' } as TypedAbiMap<
+        string,
+        boolean
+      >,
     },
     variables: {
       errAlreadyExecuted: {
@@ -1717,6 +1681,7 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'bnsx-extensions',
   },
@@ -2111,11 +2076,7 @@ export const contracts = {
         name: 'get-namespace-for-id',
         access: 'read_only',
         args: [{ name: 'id', type: 'uint128' }],
-        outputs: {
-          type: {
-            response: { ok: { buffer: { length: 20 } }, error: 'uint128' },
-          },
-        },
+        outputs: { type: { response: { ok: { buffer: { length: 20 } }, error: 'uint128' } } },
       } as TypedAbiFunction<[id: TypedAbiArg<number | bigint, 'id'>], Response<Uint8Array, bigint>>,
       getNextNodeId: {
         name: 'get-next-node-id',
@@ -2127,9 +2088,7 @@ export const contracts = {
         name: 'get-owner',
         access: 'read_only',
         args: [{ name: 'id', type: 'uint128' }],
-        outputs: {
-          type: { response: { ok: { optional: 'principal' }, error: 'none' } },
-        },
+        outputs: { type: { response: { ok: { optional: 'principal' }, error: 'none' } } },
       } as TypedAbiFunction<
         [id: TypedAbiArg<number | bigint, 'id'>],
         Response<string | null, null>
@@ -2186,10 +2145,7 @@ export const contracts = {
         args: [{ name: 'id', type: 'uint128' }],
         outputs: {
           type: {
-            response: {
-              ok: { optional: { 'string-ascii': { length: 256 } } },
-              error: 'none',
-            },
+            response: { ok: { optional: { 'string-ascii': { length: 256 } } }, error: 'none' },
           },
         },
       } as TypedAbiFunction<
@@ -2279,11 +2235,10 @@ export const contracts = {
         },
         bigint
       >,
-      nameOwnerMap: {
-        name: 'name-owner-map',
-        key: 'uint128',
-        value: 'principal',
-      } as TypedAbiMap<number | bigint, string>,
+      nameOwnerMap: { name: 'name-owner-map', key: 'uint128', value: 'principal' } as TypedAbiMap<
+        number | bigint,
+        string
+      >,
       namespaceManagersMap: {
         name: 'namespace-managers-map',
         key: {
@@ -2465,9 +2420,10 @@ export const contracts = {
       tokenUriVar: '',
     },
     non_fungible_tokens: [
-      { name: 'BNSx-Names', type: 'uint128' } as ClarityAbiTypeNonFungibleToken,
+      { name: 'BNSx-Names', type: 'uint128' } as ClarityAbiTypeNonFungibleToken<bigint>,
     ],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'bnsx-registry',
   },
@@ -2478,6 +2434,7 @@ export const contracts = {
     constants: {},
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'extension-trait',
   },
@@ -2679,6 +2636,7 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'name-wrapper',
   },
@@ -2689,6 +2647,7 @@ export const contracts = {
     constants: {},
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'nft-trait',
   },
@@ -2714,6 +2673,7 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'proposal-2',
   },
@@ -2745,6 +2705,7 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'proposal-bootstrap',
   },
@@ -2755,6 +2716,7 @@ export const contracts = {
     constants: {},
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'proposal-trait',
   },
@@ -2781,25 +2743,16 @@ export const contracts = {
                             type: {
                               optional: {
                                 tuple: [
-                                  {
-                                    name: 'lease-ending-at',
-                                    type: { optional: 'uint128' },
-                                  },
+                                  { name: 'lease-ending-at', type: { optional: 'uint128' } },
                                   { name: 'lease-started-at', type: 'uint128' },
                                   { name: 'owner', type: 'principal' },
-                                  {
-                                    name: 'zonefile-hash',
-                                    type: { buffer: { length: 20 } },
-                                  },
+                                  { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
                                 ],
                               },
                             },
                           },
                           { name: 'name', type: { buffer: { length: 48 } } },
-                          {
-                            name: 'namespace',
-                            type: { buffer: { length: 48 } },
-                          },
+                          { name: 'namespace', type: { buffer: { length: 48 } } },
                           { name: 'owner', type: 'principal' },
                         ],
                       },
@@ -2827,16 +2780,10 @@ export const contracts = {
                           type: {
                             optional: {
                               tuple: [
-                                {
-                                  name: 'lease-ending-at',
-                                  type: { optional: 'uint128' },
-                                },
+                                { name: 'lease-ending-at', type: { optional: 'uint128' } },
                                 { name: 'lease-started-at', type: 'uint128' },
                                 { name: 'owner', type: 'principal' },
-                                {
-                                  name: 'zonefile-hash',
-                                  type: { buffer: { length: 20 } },
-                                },
+                                { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
                               ],
                             },
                           },
@@ -2911,16 +2858,10 @@ export const contracts = {
                           type: {
                             optional: {
                               tuple: [
-                                {
-                                  name: 'lease-ending-at',
-                                  type: { optional: 'uint128' },
-                                },
+                                { name: 'lease-ending-at', type: { optional: 'uint128' } },
                                 { name: 'lease-started-at', type: 'uint128' },
                                 { name: 'owner', type: 'principal' },
-                                {
-                                  name: 'zonefile-hash',
-                                  type: { buffer: { length: 20 } },
-                                },
+                                { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
                               ],
                             },
                           },
@@ -2975,16 +2916,10 @@ export const contracts = {
                           type: {
                             optional: {
                               tuple: [
-                                {
-                                  name: 'lease-ending-at',
-                                  type: { optional: 'uint128' },
-                                },
+                                { name: 'lease-ending-at', type: { optional: 'uint128' } },
                                 { name: 'lease-started-at', type: 'uint128' },
                                 { name: 'owner', type: 'principal' },
-                                {
-                                  name: 'zonefile-hash',
-                                  type: { buffer: { length: 20 } },
-                                },
+                                { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
                               ],
                             },
                           },
@@ -3044,16 +2979,10 @@ export const contracts = {
                   type: {
                     optional: {
                       tuple: [
-                        {
-                          name: 'lease-ending-at',
-                          type: { optional: 'uint128' },
-                        },
+                        { name: 'lease-ending-at', type: { optional: 'uint128' } },
                         { name: 'lease-started-at', type: 'uint128' },
                         { name: 'owner', type: 'principal' },
-                        {
-                          name: 'zonefile-hash',
-                          type: { buffer: { length: 20 } },
-                        },
+                        { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
                       ],
                     },
                   },
@@ -3102,16 +3031,10 @@ export const contracts = {
                   type: {
                     optional: {
                       tuple: [
-                        {
-                          name: 'lease-ending-at',
-                          type: { optional: 'uint128' },
-                        },
+                        { name: 'lease-ending-at', type: { optional: 'uint128' } },
                         { name: 'lease-started-at', type: 'uint128' },
                         { name: 'owner', type: 'principal' },
-                        {
-                          name: 'zonefile-hash',
-                          type: { buffer: { length: 20 } },
-                        },
+                        { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
                       ],
                     },
                   },
@@ -3179,18 +3102,12 @@ export const contracts = {
                 type: {
                   optional: {
                     tuple: [
-                      {
-                        name: 'lease-ending-at',
-                        type: { optional: 'uint128' },
-                      },
+                      { name: 'lease-ending-at', type: { optional: 'uint128' } },
                       { name: 'lease-started-at', type: 'uint128' },
                       { name: 'name', type: { buffer: { length: 48 } } },
                       { name: 'namespace', type: { buffer: { length: 20 } } },
                       { name: 'owner', type: 'principal' },
-                      {
-                        name: 'zonefile-hash',
-                        type: { buffer: { length: 20 } },
-                      },
+                      { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
                     ],
                   },
                 },
@@ -3207,16 +3124,10 @@ export const contracts = {
                           type: {
                             optional: {
                               tuple: [
-                                {
-                                  name: 'lease-ending-at',
-                                  type: { optional: 'uint128' },
-                                },
+                                { name: 'lease-ending-at', type: { optional: 'uint128' } },
                                 { name: 'lease-started-at', type: 'uint128' },
                                 { name: 'owner', type: 'principal' },
-                                {
-                                  name: 'zonefile-hash',
-                                  type: { buffer: { length: 20 } },
-                                },
+                                { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
                               ],
                             },
                           },
@@ -3328,6 +3239,7 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'query-helper',
   },
@@ -3413,6 +3325,7 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'test-utils',
   },
@@ -3690,11 +3603,7 @@ export const contracts = {
           { name: 'wrapper', type: 'principal' },
           { name: 'signature', type: { buffer: { length: 65 } } },
         ],
-        outputs: {
-          type: {
-            response: { ok: { buffer: { length: 20 } }, error: 'uint128' },
-          },
-        },
+        outputs: { type: { response: { ok: { buffer: { length: 20 } }, error: 'uint128' } } },
       } as TypedAbiFunction<
         [wrapper: TypedAbiArg<string, 'wrapper'>, signature: TypedAbiArg<Uint8Array, 'signature'>],
         Response<Uint8Array, bigint>
@@ -3713,11 +3622,10 @@ export const contracts = {
       >,
     },
     maps: {
-      idWrapperMap: {
-        name: 'id-wrapper-map',
-        key: 'uint128',
-        value: 'principal',
-      } as TypedAbiMap<number | bigint, string>,
+      idWrapperMap: { name: 'id-wrapper-map', key: 'uint128', value: 'principal' } as TypedAbiMap<
+        number | bigint,
+        string
+      >,
       migratorSignersMap: {
         name: 'migrator-signers-map',
         key: { buffer: { length: 20 } },
@@ -3728,11 +3636,10 @@ export const contracts = {
         key: 'uint128',
         value: 'principal',
       } as TypedAbiMap<number | bigint, string>,
-      wrapperIdMap: {
-        name: 'wrapper-id-map',
-        key: 'principal',
-        value: 'uint128',
-      } as TypedAbiMap<string, bigint>,
+      wrapperIdMap: { name: 'wrapper-id-map', key: 'principal', value: 'uint128' } as TypedAbiMap<
+        string,
+        bigint
+      >,
       wrapperNameMap: {
         name: 'wrapper-name-map',
         key: 'principal',
@@ -3873,6 +3780,7 @@ export const contracts = {
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
+    epoch: 'Epoch20',
     clarity_version: 'Clarity1',
     contractName: 'wrapper-migrator',
   },

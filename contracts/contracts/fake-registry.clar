@@ -45,7 +45,7 @@
   namespace: (buff 20)
 })
 
-(define-public (set-primary-name (owner principal) (name { (buff 48), namespace: (buff 20) }))
+(define-public (set-primary-name (owner principal) (name { name: (buff 48), namespace: (buff 20) }))
   (begin
     (map-set primary-names owner name)
     (ok true)

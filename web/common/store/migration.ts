@@ -10,7 +10,7 @@ import { fetchTransaction } from '@common/stacks-api';
 import { validateStacksAddress } from 'micro-stacks/crypto';
 import { bnsContractState, clarigenAtom, nameRegistryState } from '@store/index';
 import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
-import { getContractParts, nameToTupleCV } from '@common/utils';
+import { getContractParts, nameToTupleBytes } from '@common/utils';
 import { currentUserV1NameState } from '@store/names';
 
 export function hashAtom(name: string) {
@@ -39,7 +39,7 @@ export const recipientAddrAtom = atom<string | null>(null);
 export const migrateNameAssetIdState = atom(get => {
   const nameStr = get(migrateNameAtom);
   if (!nameStr) throw new Error('Cannot get BNS name asset - empty');
-  return nameToTupleCV(nameStr);
+  return nameToTupleBytes(nameStr);
 });
 
 export function txidQueryAtom(txidAtom: Atom<string | undefined>) {

@@ -86,9 +86,10 @@ export interface ClarityAbiTypeFungibleToken {
   name: string;
 }
 
-export interface ClarityAbiTypeNonFungibleToken {
+export interface ClarityAbiTypeNonFungibleToken<T = unknown> {
   name: string;
   type: ClarityAbiType;
+  _t?: T;
 }
 
 export interface ClarityAbi {
@@ -96,7 +97,7 @@ export interface ClarityAbi {
   variables: ClarityAbiVariable[];
   maps: ClarityAbiMap[];
   fungible_tokens: ClarityAbiTypeFungibleToken[];
-  non_fungible_tokens: ClarityAbiTypeNonFungibleToken[];
+  non_fungible_tokens: ClarityAbiTypeNonFungibleToken<unknown>[];
 }
 
 export type TypedAbi = Readonly<{
@@ -113,7 +114,7 @@ export type TypedAbi = Readonly<{
     [key: string]: unknown;
   };
   fungible_tokens: Readonly<ClarityAbiTypeFungibleToken[]>;
-  non_fungible_tokens: Readonly<ClarityAbiTypeNonFungibleToken[]>;
+  non_fungible_tokens: Readonly<ClarityAbiTypeNonFungibleToken<unknown>[]>;
   contractName: string;
   contractFile?: string;
 }>;
@@ -1514,9 +1515,13 @@ export const contracts = {
             { 'name': 'namespace', 'type': { 'buffer': { 'length': 20 } } },
           ],
         },
-      } as ClarityAbiTypeNonFungibleToken,
+      } as ClarityAbiTypeNonFungibleToken<{
+        'name': Uint8Array;
+        'namespace': Uint8Array;
+      }>,
     ],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'bns-v1',
   },
@@ -1811,6 +1816,7 @@ export const contracts = {
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'bnsx-extensions',
   },
@@ -2654,9 +2660,10 @@ export const contracts = {
       {
         'name': 'BNSx-Names',
         'type': 'uint128',
-      } as ClarityAbiTypeNonFungibleToken,
+      } as ClarityAbiTypeNonFungibleToken<bigint>,
     ],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'bnsx-registry',
   },
@@ -2667,6 +2674,7 @@ export const contracts = {
     constants: {},
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'extension-trait',
   },
@@ -2870,6 +2878,7 @@ export const contracts = {
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'name-wrapper',
   },
@@ -2880,6 +2889,7 @@ export const contracts = {
     constants: {},
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'nft-trait',
   },
@@ -2910,6 +2920,7 @@ export const contracts = {
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'proposal-2',
   },
@@ -2948,6 +2959,7 @@ export const contracts = {
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'proposal-bootstrap',
   },
@@ -2958,6 +2970,7 @@ export const contracts = {
     constants: {},
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'proposal-trait',
   },
@@ -3522,6 +3535,7 @@ export const contracts = {
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'query-helper',
   },
@@ -3616,6 +3630,7 @@ export const contracts = {
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'test-utils',
   },
@@ -4118,6 +4133,7 @@ export const contracts = {
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
+    'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'wrapper-migrator',
   },
