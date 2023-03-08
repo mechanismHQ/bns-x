@@ -21,6 +21,8 @@ import {
   TxType,
   StatusKeys,
   Status,
+  getAppDetails,
+  watchAppDetails,
 } from '@micro-stacks/client';
 import { ChainID } from 'micro-stacks/common';
 
@@ -113,6 +115,7 @@ export const identityAddressAtom = atomWithMicroStacks(getIdentityAddress, watch
 export const networkAtom = atomWithMicroStacks(getNetwork, watchNetwork);
 export const statusAtom = atomWithMicroStacks(getStatus, watchStatus);
 export const decentralizedIDAtom = atomWithMicroStacks(getDecentralizedID, watchDecentralizedID);
+export const appDetailsAtom = atomWithMicroStacks(getAppDetails, watchAppDetails);
 
 export const useStxAddressValue = () => useAtomValue(stxAddressAtom);
 export const useAccountsValue = () => useAtomValue(accountsAtom);
@@ -121,6 +124,7 @@ export const useIdentityAddressValue = () => useAtomValue(identityAddressAtom);
 export const useNetworkValue = () => useAtomValue(networkAtom);
 export const useStatusValue = () => useAtomValue(statusAtom);
 export const useDecentralizedIDValue = () => useAtomValue(decentralizedIDAtom);
+export const useAppDetails = () => useAtomValue(appDetailsAtom);
 
 /** ------------------------------------------------------------------------------------------------------------------
  *  Authentication (derived state)

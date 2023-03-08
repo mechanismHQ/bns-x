@@ -8,13 +8,13 @@ import { useRouter } from 'next/router';
 import { Profile } from '@components/profile';
 import { ONLY_INSCRIPTIONS } from '@common/constants';
 import { Inscribe } from '@components/p/inscribe';
+import { useConnect } from '@common/hooks/use-connect';
 
 export const Home: React.FC<{ children?: React.ReactNode }> = () => {
-  const { openAuthRequest, isSignedIn } = useAuth();
-  // const router = useRouter();
+  const { openAuthRequest, isSignedIn } = useConnect();
 
   const getStarted = useCallback(() => {
-    void openAuthRequest({});
+    void openAuthRequest();
   }, [openAuthRequest]);
 
   if (ONLY_INSCRIPTIONS) {
