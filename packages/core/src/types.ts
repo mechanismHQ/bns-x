@@ -1,5 +1,4 @@
 import type { Jsonize, FunctionReturnType } from '@clarigen/core';
-import { OkType, TypedAbiFunction, TypedAbiArg } from '@clarigen/core';
 import type { contracts } from './clarigen';
 import { z } from 'zod';
 
