@@ -13,19 +13,42 @@ import { c32addressDecode, hashRipemd160 } from 'micro-stacks/crypto';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { asciiToBytes, bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { fetchAccountNonces } from 'micro-stacks/api';
+import { ClarigenClient } from '@clarigen/core';
 
 config();
 
-import { contracts, bns, network, networkKey } from './script-utils';
+import { contracts, bns, network, networkKey, getControllerAddress } from './script-utils';
 
 const privateKey = process.env.DEPLOYER_KEY!;
+
+const clarigen = new ClarigenClient(network);
 
 async function broadcast(tx: StacksTransaction) {
   const res = await broadcastTransaction(tx, network);
   console.log('res', res);
 }
 
+const controller = getControllerAddress(privateKey);
+
+async function waitForConstruct(): Promise<void> {
+  return new Promise(function (resolve, reject) {
+    void (async function tryConstruct() {
+      try {
+        const isExtension = await clarigen.ro(contracts.bnsxExtensions.isExtension(controller));
+        console.log(`Is extension (${controller}): ${String(isExtension)}`);
+        if (isExtension) return resolve();
+      } catch (error) {
+        console.log(`Failed to check for bootstrap status`);
+        // console.error(error);
+      }
+      setTimeout(() => void tryConstruct(), 10000);
+    })();
+  });
+}
+
 async function run() {
+  console.log('Waiting until network setup.');
+  await waitForConstruct();
   const namespace = asciiToBytes('testable');
   const salt = hexToBytes('00');
   const salted = hashRipemd160(hashSha256(hexToBytes(bytesToHex(namespace) + '00')));

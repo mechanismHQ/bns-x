@@ -99,3 +99,20 @@ export function hashFqn(name: string, namespace: string, salt: string | Uint8Arr
   const namespaceBytes = asciiToHex(namespace);
   return hashRipemd160(hexToBytes(`${nameBytes}2e${namespaceBytes}${saltHex}`));
 }
+
+export const NO_EXPIRATION_NAMESPACES = new Set(
+  ...['stx', 'app', 'stacks', 'podcast', 'miner', 'mining', 'helloworld', 'stacking', 'blockstack']
+);
+
+/**
+ * Helper function to expose namespaces that do not expire.
+ *
+ * **Note**: This is a hard-coded list. If new namespaces are registered, they
+ * are not automatically added to this list.
+ *
+ * If you want to fetch on-chain data, use `BnsContractsClient#fetchNamespaceExpiration`.
+ *
+ */
+export function doesNamespaceExpire(namespace: string) {
+  return NO_EXPIRATION_NAMESPACES.has(namespace);
+}

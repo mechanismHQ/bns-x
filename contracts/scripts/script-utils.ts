@@ -16,7 +16,7 @@ if (networkKeyEnv === 'testnet') {
   network = new StacksMainnet();
 
   if (typeof process.env.MAINNET === 'undefined') {
-    console.error('MAINNET not included, safe exit.');
+    console.error('MAINNET env not included, safe exit.');
     throw 'Safe exit';
   }
 }
@@ -26,7 +26,10 @@ export const contracts = projectFactory(project, networkKey as unknown as 'devne
 export const bns = contractFactory(_contracts.bnsV1, 'ST000000000000000000002AMW42H.bns');
 
 export function getControllerAddress(privateKey: string) {
-  const version = StacksNetworkVersion.mainnetP2PKH;
+  const version =
+    networkKey === 'mainnet'
+      ? StacksNetworkVersion.mainnetP2PKH
+      : StacksNetworkVersion.testnetP2PKH;
   if (privateKey.length === 66) {
     const key = privateKey.slice(0, 64);
     const isCompressed = privateKey.slice(64) === '01';

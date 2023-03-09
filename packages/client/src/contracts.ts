@@ -140,4 +140,23 @@ export class BnsContractsClient {
 
     return result.value;
   }
+
+  /**
+   * Fetch namespace properties for a specific namespace.
+   */
+  async fetchNamespaceProperties(namespace: string) {
+    const nsBytes = asciiToBytes(namespace);
+    const propsResponse = await this.client.ro(this.bnsCore.getNamespaceProperties(nsBytes));
+    if (propsResponse.isOk) {
+      return propsResponse.value.properties;
+    }
+    throw new Error(
+      `\`fetchNamespaceProperties\`: ${namespace} does not exist, returned error ${propsResponse.value}`
+    );
+  }
+
+  async fetchNamespaceExpiration(namespace: string) {
+    const props = await this.fetchNamespaceProperties(namespace);
+    return props.lifetime;
+  }
 }

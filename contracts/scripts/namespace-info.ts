@@ -64,7 +64,7 @@ async function getPriceFn(ns: string) {
   // console.log(rest);
   console.log(ns, rest.lifetime);
   console.log(ns, Number(rest.lifetime) / (144 * 365));
-  const row: any[] = [
+  const row: (string | bigint)[] = [
     ns,
     pf.base,
     pf.coeff,
@@ -92,15 +92,20 @@ async function run() {
       })
     )
   ).filter(Boolean);
-  console.log(
-    inspect(allInfo, {
-      showHidden: false,
-      maxArrayLength: null,
-      maxStringLength: null,
-      depth: null,
-      colors: false,
-    })
-  );
+  for (const namespace of allInfo) {
+    if (namespace?.lifetime === 0n) {
+      console.log('No expiration:', namespace.ns);
+    }
+  }
+  // console.log(
+  //   inspect(allInfo, {
+  //     showHidden: false,
+  //     maxArrayLength: null,
+  //     maxStringLength: null,
+  //     depth: null,
+  //     colors: false,
+  //   })
+  // );
   // await Promise.all([
   //   getPriceFn("btc"),
   //   getPriceFn("id"),

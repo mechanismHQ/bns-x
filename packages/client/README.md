@@ -32,6 +32,7 @@ This library has a few main components:
   - [randomSalt](#randomsalt)
   - [hashFqn](#hashfqn)
   - [parseFqn](#parsefqn)
+  - [doesNamespaceExpire](#doesnamespaceexpire)
 
 <!-- /TOC -->
 
@@ -385,4 +386,21 @@ name.subdomain; // undefined
 
 parseFqn('sub.example.btc');
 // { name: 'example', namespace: 'btc', subdomain: 'sub' }
+```
+
+### `doesNamespaceExpire`
+
+Helper function to expose namespaces that do not expire.
+
+**Note**: This is a hard-coded list. If new namespaces are registered, they are not automatically added to this list.
+
+If you want to fetch on-chain data, use `BnsContractsClient#fetchNamespaceExpiration`.
+
+Also exposed is `NO_EXPIRATION_NAMESPACES`, which is a set of strings.
+
+```ts
+import { doesNamespaceExpire, NO_EXPIRATION_NAMESPACES } from '@bns-x/client';
+
+doesNamespaceExpire('stx'); // returns false
+NO_EXPIRATION_NAMESPACE.has('stx'); // returns true
 ```
