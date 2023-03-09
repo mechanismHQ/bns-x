@@ -6,6 +6,8 @@ import type { PrimitiveAtom } from 'jotai';
 import { atom } from 'jotai';
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import type { AppRouter } from '@bns-x/api-types';
+import { fetchCoreApiInfo } from 'micro-stacks/api';
+import { networkAtom } from '@store/micro-stacks';
 
 export const trpc = createTRPCProxyClient<AppRouter>({
   links: [
@@ -59,5 +61,15 @@ export const allNostrNamesState = atomsWithQuery<NostrName[]>(() => ({
   queryFn: async () => {
     const all = await trpc.zonefiles.allNostr.query();
     return all.results;
+  },
+}))[0];
+
+export const coreNodeInfoAtom = atomsWithQuery(get => ({
+  queryKey: ['stacks-node-info'],
+  async queryFn() {
+    const network = get(networkAtom);
+    const url = network.getCoreApiUrl();
+    const info = await fetchCoreApiInfo({ url });
+    return info;
   },
 }))[0];

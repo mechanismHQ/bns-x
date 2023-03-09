@@ -13,6 +13,10 @@ module.exports = nextConfig;
 
 module.exports = withSentryConfig(
   module.exports,
-  { silent: true, dryRun: typeof process.env.NEXT_PUBLIC_SENTRY_DSN === 'undefined' },
+  {
+    silent: true,
+    hideSourcemaps: true,
+    dryRun: typeof process.env.NEXT_PUBLIC_SENTRY_DSN === 'undefined',
+  },
   { hideSourcemaps: true, autoInstrumentServerFunctions: false, autoInstrumentMiddleware: false }
 );

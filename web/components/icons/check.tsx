@@ -29,3 +29,28 @@ export const CheckIcon: React.FC<BoxProps & { color?: string }> = ({
     </Box>
   );
 };
+
+export const CheckLightIcon: React.FC<BoxProps & { color?: string }> = ({
+  color = 'var(--colors-dark-onSurface-text-subdued)',
+  ...props
+}) => {
+  return (
+    <Box size={16} {...props}>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M13.6667 4L6.33333 11.3333L3 8"
+          stroke={color}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </Box>
+  );
+};

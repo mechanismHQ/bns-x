@@ -68,6 +68,15 @@ export const ButtonComp = styled(Box, {
         },
       },
     },
+    tertiary: {
+      true: {
+        background: '$primary-action-subdued',
+        color: '$text',
+        '&:hover': {
+          background: '#2c2c2c',
+        },
+      },
+    },
   },
 });
 
