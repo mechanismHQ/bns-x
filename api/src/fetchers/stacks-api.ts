@@ -1,18 +1,14 @@
 import { fetch } from 'cross-fetch';
 import { getNetwork, getNodeUrl } from '../constants';
-import { fetchName, fetchNamesByAddress, fetchContractDataMapEntry } from 'micro-stacks/api';
+import { fetchNamesByAddress } from 'micro-stacks/api';
 import type {
   BnsError,
+  BnsGetNameInfoResponse,
   BnsNamesOwnByAddressResponse,
   NonFungibleTokenHoldingsList,
 } from '@stacks/stacks-blockchain-api-types';
 import { cvToValue, fetchMapGet } from '@clarigen/core';
-import {
-  clarigenProvider,
-  getContracts,
-  registryContract,
-  registryContractAsset,
-} from '../contracts';
+import { clarigenProvider, registryContract, registryContractAsset } from '../contracts';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { convertNameBuff, convertLegacyDetailsJson } from '../contracts/utils';
 import type { NamesByAddressResponse } from '@bns-x/core';
@@ -21,16 +17,14 @@ import { getLegacyName, getPrimaryName } from './query-helper';
 import { toUnicode } from 'punycode';
 
 export async function getNameDetailsApi(name: string, namespace: string) {
-  const fqn = `${name}.${namespace}`;
-  const res = await fetchName({ url: getNodeUrl(), name: fqn });
-
-  return res;
+  return getNameDetailsFqnApi(`${name}.${namespace}`);
 }
 
 export async function getNameDetailsFqnApi(fqn: string) {
-  const res = await fetchName({ url: getNodeUrl(), name: fqn });
-
-  return res;
+  const url = `${getNodeUrl()}/v1/names/${fqn}?unanchored=true`;
+  const res = await fetch(url);
+  const coreResult = (await res.json()) as BnsGetNameInfoResponse;
+  return coreResult;
 }
 
 export async function getAssetIds(address: string): Promise<number[]> {
