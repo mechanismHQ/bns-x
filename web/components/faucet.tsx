@@ -76,7 +76,7 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
         <Text variant="Caption01" color="$text-dim">
           You&apos;ll get the name &quot;{name.value}.testable&quot;
         </Text>
-        <Input {...name.props} />
+        <Input autoFocus {...name.props} />
       </Stack>
       {submitting ? (
         <Box>
