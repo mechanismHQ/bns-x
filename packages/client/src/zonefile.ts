@@ -7,6 +7,10 @@ export enum ZonefileTxtKeys {
   NOSTR = '_._nostr',
 }
 
+export enum ZonefileUriKeys {
+  REDIRECT = '_redirect',
+}
+
 export class ZoneFile {
   zoneFileText: string;
   zoneFile: ZoneFileObject;
@@ -21,15 +25,25 @@ export class ZoneFile {
     }
   }
 
-  private txtRecordValue(val: string | string[]) {
-    return typeof val === 'string' ? val : val[0];
+  private txtRecordValue(val: string | string[]): string | null {
+    return (typeof val === 'string' ? val : val[0]) ?? null;
   }
 
-  getTxtRecord(key: string) {
+  getTxtRecord(key: string): string | null {
     let found: string | null = null;
     this.zoneFile.txt?.forEach(record => {
       if (record.name === key) {
         found = this.txtRecordValue(record.txt);
+      }
+    });
+    return found;
+  }
+
+  getUriRecord(key: string): string | null {
+    let found: string | null = null;
+    this.zoneFile.uri?.forEach(record => {
+      if (record.name === key) {
+        found = this.txtRecordValue(record.target);
       }
     });
     return found;
@@ -41,5 +55,9 @@ export class ZoneFile {
 
   get nostr() {
     return this.getTxtRecord(ZonefileTxtKeys.NOSTR);
+  }
+
+  get redirect() {
+    return this.getUriRecord(ZonefileUriKeys.REDIRECT);
   }
 }

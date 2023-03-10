@@ -5,10 +5,11 @@
     "r": "NODE_ENV=development dotenv -- node -r @swc-node/register"
   },
   "dependencies": {
-    "@bns-x/core": "workspace:*"
+    "@bns-x/core": "workspace:*",
+    "@bns-x/client": "workspace:*"
   },
   "devDependencies": {
     "tsx": "^3.12.3"
   },
-  "version": null
+  "version": "0.0.1"
 }
