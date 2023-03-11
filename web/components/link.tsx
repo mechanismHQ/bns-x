@@ -40,24 +40,11 @@ export interface LinkProps extends BoxProps {
 //   );
 // })
 
-export const Link: React.FC<LinkProps> = ({ href, prefetch, children, plain, ...props }) => {
-  const extra = plain
-    ? {
-        textDecoration: 'none',
-        color: props.color ?? '$text',
-        _hover: {
-          textDecoration: 'underline',
-        },
-      }
-    : {
-        _hover: {
-          textDecoration: 'none',
-        },
-      };
+export const Link: React.FC<LinkProps> = ({ href, prefetch, children, ...props }) => {
   return (
     // <Stack height="24px">
-    <NextLink href={href} passHref>
-      <LinkInner {...{ ...props, ...extra }} as="a">
+    <NextLink href={href} passHref prefetch={prefetch}>
+      <LinkInner {...props} as="a">
         {children}
       </LinkInner>
     </NextLink>
@@ -78,7 +65,7 @@ const StyledLinkContainer = styled(Stack, {
 export const LinkText: React.FC<LinkProps> = ({ href, prefetch, children, ...props }) => {
   return (
     <StyledLinkContainer as="div" spacing="0" display={props?.display ?? 'block'}>
-      <NextLink href={href} passHref prefetch>
+      <NextLink href={href} passHref prefetch={prefetch}>
         <LinkInner textDecoration="none" {...props} as="a">
           {children}
         </LinkInner>
@@ -97,8 +84,23 @@ export const LinkText: React.FC<LinkProps> = ({ href, prefetch, children, ...pro
   );
 };
 
-export const LinkInner: React.FC<BoxProps & { children: React.ReactNode }> = React.forwardRef(
-  ({ children, ...props }, ref) => {
+type InnerLinkProps = Omit<LinkProps, 'href' | 'prefetch'>;
+
+export const LinkInner: React.FC<InnerLinkProps> = React.forwardRef(
+  ({ children, plain, ...props }, ref) => {
+    const extra = plain
+      ? {
+          textDecoration: 'none',
+          color: props.color ?? '$text',
+          _hover: {
+            textDecoration: 'underline',
+          },
+        }
+      : {
+          _hover: {
+            textDecoration: 'none',
+          },
+        };
     return (
       <Text
         textDecoration="underline"
@@ -106,6 +108,7 @@ export const LinkInner: React.FC<BoxProps & { children: React.ReactNode }> = Rea
         color="$text-subdued"
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         ref={ref as any}
+        {...extra}
         {...props}
       >
         {children}

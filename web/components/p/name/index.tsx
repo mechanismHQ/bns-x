@@ -3,13 +3,20 @@ import { Box, Flex, SpaceBetween, Stack } from '@nelson-ui/react';
 import { Text } from '../../text';
 import { useRouter } from 'next/router';
 import { Button } from '@components/button';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { nameDetailsAtom } from '@store/names';
-import { useUnwrap } from '@common/hooks/use-unwrap';
 import { getTxUrl } from '@common/utils';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { loadable, useAtomCallback } from 'jotai/utils';
-import { nameExpirationAtom, unwrapTxidAtom } from '@store/profile';
+import {
+  nameExpirationAtom,
+  unwrapTxidAtom,
+  zonefileBtcAtom,
+  zonefileNostrAtom,
+  zonefileRedirectAtom,
+  isEditingProfileAtom,
+  profileFormValidAtom,
+} from '@store/profile';
 import { useGradient } from '@common/hooks/use-gradient';
 import { DuplicateIcon } from '@components/icons/duplicate';
 import {
@@ -17,6 +24,7 @@ import {
   AddressGroup,
   AddressHeader,
   Divider,
+  EditableAddressGroup,
   ElementGap,
   InputGroup,
   LeftBar,
@@ -25,22 +33,10 @@ import {
   Row,
   RowDescription,
   TitleBox,
+  useSetEditing,
 } from '@components/p/name/row';
-
-function useOpenUnwrap() {
-  const openUnwrap = useAtomCallback(
-    useCallback(get => {
-      const txid = get(unwrapTxidAtom);
-      const network = get(networkAtom);
-      if (!txid) return;
-      const txUrl = getTxUrl(txid, network);
-      window.open(txUrl, '_blank');
-    }, [])
-  );
-  return {
-    openUnwrap,
-  };
-}
+import { Link, LinkInner, LinkText } from '@components/link';
+import { ProfileActions } from '@components/p/name/actions';
 
 export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
@@ -49,6 +45,7 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   const gradient = useGradient(name);
   const expiration = useAtomValue(loadable(nameExpirationAtom(name)));
   const stxAddress = useAtomValue(stxAddressAtom);
+  const setEditing = useSetEditing();
 
   if (nameDetails === null) {
     return (
@@ -66,15 +63,7 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
 
   return (
     <>
-      {/* <Box flexGrow={1} /> */}
-      <PageContainer
-        width="100%"
-        spacing="0"
-        isInline
-        // mt="34px"
-        px="29px"
-        alignContent="center"
-      >
+      <PageContainer width="100%" isInline px="29px">
         <LeftBar spacing="32px">
           <Box size="120px" borderRadius="50%" backgroundImage={gradient} />
           <SpaceBetween height="73px" alignItems={'baseline'} flexDirection="column">
@@ -99,13 +88,13 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
           </SpaceBetween>
           <Stack pt="20px" spacing="14px" width="280px">
             <Button width="100%">Upgrade to BNSx</Button>
-            <Button tertiary width="100%">
+            <Button tertiary width="100%" onClick={() => setEditing()}>
               Edit
             </Button>
           </Stack>
         </LeftBar>
         <ElementGap />
-        <RightBar width="620px" flexGrow={1} alignItems="baseline" spacing="0px">
+        <RightBar spacing="0px">
           <Box height="65px">
             <Text variant="Heading035" position="relative" top="-10px">
               Customize your name
@@ -119,32 +108,36 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
                 Wallet currently holding this name on the Stacks Bitcoin layer.
               </RowDescription>
             </TitleBox>
-            <AddressGroup>{stxAddress ?? ''}</AddressGroup>
+            <AddressGroup editable={false}>{stxAddress ?? ''}</AddressGroup>
           </Row>
           <Divider />
           <Row>
             <TitleBox>
               <AddMeHeader>Bitcoin Address</AddMeHeader>
-              <RowDescription>
-                Wallet currently holding this name on the Stacks Bitcoin layer.
-              </RowDescription>
+              <RowDescription>Let others send Bitcoin to your BNS name</RowDescription>
             </TitleBox>
-            <AddressGroup>bc1qxy2kgdygjrsqtzq3p83kkfjhx0wlh</AddressGroup>
+            <EditableAddressGroup atom={zonefileBtcAtom} />
           </Row>
           <Divider />
           <Row>
             <TitleBox>
               <AddMeHeader>Nostr npub</AddMeHeader>
-              <RowDescription>
-                Wallet currently holding this name on the Stacks Bitcoin layer.
-              </RowDescription>
+              {/* <RowDescription></RowDescription> */}
             </TitleBox>
-            <InputGroup />
-            {/* <AddressGroup>{stxAddress ?? ''}</AddressGroup> */}
+            <EditableAddressGroup atom={zonefileNostrAtom} />
           </Row>
+          <Divider />
+          <Row>
+            <TitleBox>
+              <AddMeHeader>Website redirect</AddMeHeader>
+              <RowDescription>Apps can use this to redirect users to your website</RowDescription>
+            </TitleBox>
+            <EditableAddressGroup atom={zonefileRedirectAtom} />
+          </Row>
+          <Divider />
+          <ProfileActions />
         </RightBar>
       </PageContainer>
-      {/* <Box flexGrow={1} /> */}
     </>
   );
 };

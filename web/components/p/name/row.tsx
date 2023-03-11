@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Box, Stack } from '@nelson-ui/react';
 import { Text } from '@components/text';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { DuplicateIcon } from '@components/icons/duplicate';
 import { LockIcon } from '@components/icons/lock';
@@ -13,36 +13,39 @@ import { CheckIcon, CheckLightIcon } from '@components/icons/check';
 import { TooltipTippy } from '@components/tooltip';
 import { styled } from '@common/theme';
 import { truncateMiddle } from '@common/utils';
+import type { ZonefileFieldAtom } from '@store/profile';
+import { isEditingProfileAtom } from '@store/profile';
+import { useInput } from '@common/hooks/use-input';
+import { useAtomCallback, useUpdateAtom } from 'jotai/utils';
+
+export function useSetEditing() {
+  return useAtomCallback(
+    useCallback((get, set) => {
+      set(isEditingProfileAtom, true);
+    }, [])
+  );
+}
 
 export const LeftBar = styled(Stack, {
-  maxWidth: '388px',
-  '@bp1': {
-    maxWidth: 'none',
-    width: '100% !important',
-  },
+  flexBasis: '300px',
 });
 
 export const RightBar = styled(Stack, {
-  width: '620px',
-  '@bp1': {
-    width: '100% !important',
-  },
+  flexBasis: '450px',
+  flexGrow: 3,
+  maxWidth: '100%',
 });
 
 export const PageContainer = styled(Stack, {
-  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: '70px 30px !important',
   '@bp2': {
-    flexDirection: 'row',
-  },
-  '@bp1': {
     flexDirection: 'column !important',
   },
 });
 
 export const RecordValueMobile = styled(Box, {
-  '@bp2': {
-    display: 'none',
-  },
+  display: 'none',
   '@bp1': {
     display: 'block !important',
   },
@@ -59,32 +62,51 @@ export const RecordValueDesktop = styled(Box, {
 
 export const ElementGap = styled(Box, {
   flexGrow: 1,
-  '@bp1': {
-    flexGrow: 'unset',
-    height: '80px',
+  maxWidth: '50px',
+  '@bp2': {
+    display: 'none',
   },
 });
 
-export const AddressGroup: React.FC<{ children: string }> = ({ children }) => {
+export const EditableAddressGroup: React.FC<{ atom: ZonefileFieldAtom }> = ({ atom }) => {
+  const value = useAtomValue(atom.value);
+  const isEditing = useAtomValue(isEditingProfileAtom);
+
+  if (isEditing) {
+    return <InputGroup inputAtom={atom} />;
+  }
+
+  return <AddressGroup>{value}</AddressGroup>;
+};
+
+export const AddressGroup: React.FC<{ children: string; editable?: boolean }> = ({
+  children,
+  editable = true,
+}) => {
+  const setEditing = useSetEditing();
+  if (children.length === 0) return null;
   return (
     <Stack isInline spacing="17px" alignItems={'center'} py="6px" pb="4px">
       <RecordValueMobile>
-        <Text variant={'Label02'}>{truncateMiddle(children)}</Text>
+        <Text variant={'Label02'}>
+          {children.length < 40 ? children : truncateMiddle(children, 6)}
+          {/* {truncateMiddle(children, 6)} */}
+        </Text>
       </RecordValueMobile>
       <RecordValueDesktop>
         <Text variant={'Label02'}>{children}</Text>
       </RecordValueDesktop>
-
       <DuplicateIcon clipboardText={children} />
-      <LockedIcon />
-      <PencilIcon />
+      {editable && <PencilIcon onClick={setEditing} cursor="pointer" />}
+      {!editable && <LockedIcon />}
     </Stack>
   );
 };
 
 export const AddMeHeader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const setEditing = useSetEditing();
   return (
-    <Stack isInline alignItems={'center'} spacing="5px">
+    <Stack isInline alignItems={'center'} spacing="5px" cursor="pointer" onClick={setEditing}>
       <PlusIcon />
       <Text variant="Label01">{children}</Text>
     </Stack>
@@ -132,22 +154,35 @@ export const RowDescription: React.FC<{ children: React.ReactNode }> = ({ childr
   );
 };
 
-export const InputGroup: React.FC<{ children?: React.ReactNode }> = () => {
+export const InputGroup: React.FC<{
+  children?: React.ReactNode;
+  inputAtom: ZonefileFieldAtom;
+}> = ({ inputAtom }) => {
+  const input = useInput(useAtom(inputAtom.value));
+  const isValid = useAtomValue(inputAtom.valid);
+  const name = inputAtom.name;
   return (
     <Stack spacing="10px" pt="12px" alignItems={'baseline'} width="100%">
-      <Input placeholder="Enter a Bitcoin Address" width="100%" />
-      <Stack isInline spacing="$3" alignItems="center">
-        <ErrorIcon fill="var(--colors-light-critical-text-critical)" />
-        <Text variant="Label02" color="$light-critical-text-critical">
-          Invalid BNS name
-        </Text>
-      </Stack>
-      <Stack isInline spacing="$3" alignItems="center">
-        <CheckLightIcon />
-        <Text variant="Label02" color="$onSurface-text-subdued">
-          BNS Name looks good
-        </Text>
-      </Stack>
+      <Input placeholder={`Enter a ${name}`} width="100%" {...input.props} />
+      {input.value.length > 0 && (
+        <>
+          {isValid ? (
+            <Stack isInline spacing="$3" alignItems="center">
+              <CheckLightIcon />
+              <Text variant="Label02" color="$onSurface-text-subdued">
+                {name} looks good
+              </Text>
+            </Stack>
+          ) : (
+            <Stack isInline spacing="$3" alignItems="center">
+              <ErrorIcon fill="var(--colors-light-critical-text-critical)" />
+              <Text variant="Label02" color="$light-critical-text-critical">
+                Invalid {name}
+              </Text>
+            </Stack>
+          )}
+        </>
+      )}
     </Stack>
   );
 };

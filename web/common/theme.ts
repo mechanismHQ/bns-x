@@ -240,7 +240,7 @@ export const { styled, getCssText } = createStitches({
   theme: baseTheme,
   media: {
     bp1: '(max-width: 640px)',
-    bp2: '(min-width: 768px)',
+    bp2: '(max-width: 768px)',
     bp3: '(min-width: 1024px)',
     sm: '(max-width: 640px)',
     md: '(min-width: 768px)',

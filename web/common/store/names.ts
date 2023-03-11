@@ -11,10 +11,11 @@ import { addressDisplayNameState, bnsApi, namesForAddressState } from './api';
 import isEqual from 'lodash-es/isEqual';
 import { trpc } from './api';
 import { getApiUrl } from '@common/constants';
-import type { ZoneFile } from '@fungible-systems/zone-file';
 import { parseZoneFile, makeZoneFile } from '@fungible-systems/zone-file';
 import { nameUpgradingAtom } from '@store/migration';
 import type { NameInfoResponse } from '@bns-x/core';
+import type { ZoneFileObject } from '@bns-x/client';
+import { ZoneFile } from '@bns-x/client';
 
 export const currentUserNamesState = atom(get => {
   const address = get(stxAddressAtom);
@@ -122,10 +123,43 @@ export const userZonefileState = atomsWithQuery(get => ({
 
 export const zonefileBtcAddressAtom = atom('');
 
-type ZoneFileObject = ZoneFile['jsonZoneFile'];
-
 export const ZONEFILE_TEMPLATE =
   '{$origin}\n{$ttl}\n{uri}\n{a}\n{aaaa}\n{cname}\n{mx}\n{srv}\n{txt}\n';
+
+export const parsedUserZonefileState = atom<ZoneFile | null>(get => {
+  const baseZonefile = get(userZonefileState[0]);
+  if (typeof baseZonefile === 'string') {
+    try {
+      parseZoneFile(baseZonefile);
+      return new ZoneFile(baseZonefile);
+    } catch (error) {}
+  }
+  return get(defaultUserZonefileState);
+});
+
+export const defaultUserZonefileState = atom<ZoneFile | null>(get => {
+  const userData = get(currentAccountAtom);
+  const name = get(userNameState);
+  if (typeof userData === 'undefined') return null;
+  if (name === null) return null;
+  const gaia = userData?.profile_url;
+  const uri = gaia
+    ? [
+        {
+          name: '_http._tcp',
+          target: gaia,
+          priority: 10,
+          weight: 1,
+        },
+      ]
+    : undefined;
+  const zonefileString = makeZoneFile({
+    $origin: `${name}.`,
+    $ttl: 3600,
+    uri,
+  });
+  return new ZoneFile(zonefileString);
+});
 
 export const combinedZonefileState = atom(get => {
   const baseZonefile = get(userZonefileState[0]);
