@@ -100,6 +100,10 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
               placeholder="Enter a BNS name or Stacks address"
               {...recipientInput.props}
               autoFocus={true}
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck="false"
             />
             {recipientAddress.state === 'loading' ? (
               <Stack isInline spacing="$3" alignItems="center">
