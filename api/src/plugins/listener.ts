@@ -49,6 +49,9 @@ export function listenAndSyncPrints(bnsDb: BnsDb, stacksDb: StacksDb) {
       }
     }
   }
+  setTimeout(() => {
+    void handler();
+  }, 0);
   client.socket.on('microblock', async mb => {
     log.info(
       {
