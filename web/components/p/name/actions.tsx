@@ -9,13 +9,23 @@ import {
   isEditingProfileAtom,
   profileFormValidAtom,
   editedZonefileState,
+  nameUpdateTxAtom,
+  nameUpdateTxidAtom,
 } from '@store/profile';
 import { Button } from '@components/button';
 import { LinkInner } from '@components/link';
+import { useNameUpdate } from '@common/hooks/use-name-update';
+import { Spinner } from '@components/spinner';
+import { ExternalTx } from '@components/icons/external-tx';
+import { CheckIcon } from '@components/icons/check';
+import { ErrorIcon } from '@components/icons/error';
 
 export const ProfileActions: React.FC = () => {
   const isEditing = useAtomValue(isEditingProfileAtom);
   const formState = useAtomValue(profileFormValidAtom);
+  const updateTxid = useAtomValue(nameUpdateTxidAtom);
+  const updateTx = useAtomValue(nameUpdateTxAtom);
+  const { updateName, isRequestPending } = useNameUpdate();
 
   const cancelEdit = useAtomCallback(
     useCallback((get, set) => {
@@ -29,25 +39,60 @@ export const ProfileActions: React.FC = () => {
     }, [])
   );
 
-  const submit = useAtomCallback(
-    useCallback((get, set) => {
-      const formState = get(profileFormValidAtom);
-      if (!formState.canSubmit) return;
-      const editedZonefile = get(editedZonefileState);
-      console.log(editedZonefile);
-    }, [])
-  );
+  if (updateTx !== null || typeof updateTxid !== 'undefined') {
+    if (updateTx?.tx_status === 'pending' || updateTx === null) {
+      return (
+        <Stack spacing="7px" py="40px">
+          <Stack isInline spacing="21px" alignItems={'center'}>
+            <Spinner />
+            <Text variant="Label01" color="$text-dim">
+              Your updates are pending
+            </Text>
+            <ExternalTx txId={updateTxid} />
+          </Stack>
+          <Text variant="Label01" color="$text-dim">
+            Your zonefile will be updated after your transaction has at least one confirmation.
+          </Text>
+        </Stack>
+      );
+    }
+    if (updateTx.tx_status === 'success') {
+      return (
+        <Stack isInline spacing="21px" py="40px" alignItems={'center'}>
+          <CheckIcon />
+          <Text variant="Label01">Your name update was confirmed successfully.</Text>
+          <ExternalTx txId={updateTxid} />
+        </Stack>
+      );
+    }
+
+    return (
+      <Stack isInline spacing="21px" py="40px" alignItems={'center'}>
+        <ErrorIcon fill="var(--colors-light-critical-text-critical)" />
+        <Text variant="Label02" color="$light-critical-text-critical">
+          There was an error with your transaction: <pre>{updateTx.tx_status}</pre>
+        </Text>
+        <ExternalTx txId={updateTxid} />
+      </Stack>
+    );
+  }
 
   if (!isEditing) return null;
 
   return (
     <Stack isInline py="40px" spacing="30px" alignItems="center">
-      <Button disabled={formState.canSubmit} width="154px" onClick={submit}>
-        Save
+      <Button
+        disabled={!formState.canSubmit || isRequestPending}
+        width="154px"
+        onClick={updateName}
+      >
+        {isRequestPending ? 'Pending...' : 'Save'}
       </Button>
-      <LinkInner plain variant="Label01" onClick={cancelEdit} color="$text-subdued">
-        Cancel
-      </LinkInner>
+      {!isRequestPending && (
+        <LinkInner plain variant="Label01" onClick={cancelEdit} color="$text-subdued">
+          Cancel
+        </LinkInner>
+      )}
     </Stack>
   );
 };

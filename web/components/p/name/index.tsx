@@ -46,6 +46,7 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   const expiration = useAtomValue(loadable(nameExpirationAtom(name)));
   const stxAddress = useAtomValue(stxAddressAtom);
   const setEditing = useSetEditing();
+  const isEditing = useAtomValue(isEditingProfileAtom);
 
   if (nameDetails === null) {
     return (
@@ -88,9 +89,11 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
           </SpaceBetween>
           <Stack pt="20px" spacing="14px" width="280px">
             <Button width="100%">Upgrade to BNSx</Button>
-            <Button tertiary width="100%" onClick={() => setEditing()}>
-              Edit
-            </Button>
+            {!isEditing && (
+              <Button tertiary width="100%" onClick={() => setEditing()}>
+                Edit
+              </Button>
+            )}
           </Stack>
         </LeftBar>
         <ElementGap />

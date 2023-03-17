@@ -42,7 +42,7 @@ export const migrateNameAssetIdState = atom(get => {
   return nameToTupleBytes(nameStr);
 });
 
-export function txidQueryAtom(txidAtom: Atom<string | undefined>) {
+export function txidQueryAtom(txidAtom: Atom<string | undefined>, unanchored = true) {
   return atomsWithQuery<MempoolTransaction | Transaction | null>(get => ({
     queryKey: ['txid-query', get(txidAtom) || ''],
     refetchInterval: data => {
@@ -58,7 +58,7 @@ export function txidQueryAtom(txidAtom: Atom<string | undefined>) {
       try {
         const tx = await fetchTransaction({
           url: network.getCoreApiUrl(),
-          unanchored: true,
+          unanchored,
           txid,
         });
         return tx;

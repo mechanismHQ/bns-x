@@ -1,9 +1,9 @@
 import type { Atom, Getter, WritableAtom } from 'jotai';
 import { atom } from 'jotai';
-import { hashAtom } from './migration';
+import { hashAtom, txidQueryAtom } from './migration';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { atomFamily } from 'jotai/utils';
-import { parsedUserZonefileState } from '@store/names';
+import { parsedUserZonefileState, userNameState } from '@store/names';
 import { nameDetailsAtom } from '@store/names';
 import { coreNodeInfoAtom } from '@store/api';
 import type { ZoneFile, ZoneFileObject } from '@bns-x/client';
@@ -15,6 +15,10 @@ import type { TXTType, URIType } from '@fungible-systems/zone-file/dist/zoneFile
 export const unwrapTxidAtom = hashAtom('unwrapTxid');
 
 export const isEditingProfileAtom = atom(false);
+
+export const nameUpdateTxidAtom = hashAtom('nameUpdateTxid');
+
+export const [nameUpdateTxAtom] = txidQueryAtom(nameUpdateTxidAtom, false);
 
 export const nameExpirationAtom = atomFamily((name?: string) => {
   return atomsWithQuery(get => ({
@@ -191,10 +195,16 @@ export const editedZonefileState = atom(get => {
   const formState = get(profileFormValidAtom);
   const { btc, nostr, redirect } = formState;
   const currentZonefile = get(parsedUserZonefileState);
+  const name = get(userNameState);
+  if (name === null) {
+    throw new Error('Invalid state: no name');
+  }
   if (currentZonefile === null)
     throw new Error('Invalid state while getting edited zonefile: not logged in');
   const zonefile = { ...currentZonefile.zoneFile } as ZoneFileObject;
   const txt: TXTType[] = zonefile.txt ?? [];
+  zonefile.$origin ??= `${name}.`;
+  zonefile.$ttl ??= 3600;
   if (nostr.dirty) {
     setTxtKey(txt, ZonefileTxtKeys.NOSTR, nostr.value);
   }
