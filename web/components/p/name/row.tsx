@@ -14,15 +14,18 @@ import { TooltipTippy } from '@components/tooltip';
 import { styled } from '@common/theme';
 import { truncateMiddle } from '@common/utils';
 import type { ZonefileFieldAtom } from '@store/profile';
+import { pendingZonefileState } from '@store/profile';
 import { nameUpdateTxidConfirmedAtom } from '@store/profile';
 import { nameUpdateTxidAtom } from '@store/profile';
 import { isEditingProfileAtom } from '@store/profile';
 import { useInput } from '@common/hooks/use-input';
-import { useAtomCallback, useUpdateAtom } from 'jotai/utils';
+import { RESET, useAtomCallback, useUpdateAtom } from 'jotai/utils';
 
 export function useSetEditing() {
   return useAtomCallback(
     useCallback((get, set) => {
+      set(pendingZonefileState, RESET);
+      set(nameUpdateTxidConfirmedAtom, undefined);
       set(isEditingProfileAtom, true);
     }, [])
   );

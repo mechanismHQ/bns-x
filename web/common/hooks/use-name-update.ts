@@ -4,6 +4,7 @@ import { bnsContractState } from '@store/index';
 import { userNameState, ZONEFILE_TEMPLATE } from '@store/names';
 import {
   editedZonefileState,
+  isEditingProfileAtom,
   nameUpdateTxidAtom,
   pendingZonefileState,
   profileFormValidAtom,
@@ -39,12 +40,13 @@ export function useNameUpdate() {
         console.log(zonefileString);
         const zonefileBytes = utf8ToBytes(zonefileString);
         const zonefileHash = hashRipemd160(hashSha256(zonefileBytes));
-        console.log(bytesToHex(zonefileHash));
 
         const tx = bns.nameUpdate({
           ...nameBytes,
           zonefileHash,
         });
+
+        const attachment = Buffer.from(zonefileString, 'binary').toString('hex');
 
         await openContractCall({
           ...tx,
@@ -55,8 +57,9 @@ export function useNameUpdate() {
             coreApiUrl: network.getCoreApiUrl(),
           },
           postConditionMode: PostConditionMode.Deny,
-          attachment: zonefileString,
+          attachment,
           onFinish(payload) {
+            set(isEditingProfileAtom, false);
             void set(pendingZonefileState, {
               txid: payload.txId,
               zonefile: zonefileString,
