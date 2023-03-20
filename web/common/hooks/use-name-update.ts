@@ -2,7 +2,12 @@ import { nameToTupleBytes } from '@common/utils';
 import { useOpenContractCall } from '@micro-stacks/react';
 import { bnsContractState } from '@store/index';
 import { userNameState, ZONEFILE_TEMPLATE } from '@store/names';
-import { editedZonefileState, nameUpdateTxidAtom, profileFormValidAtom } from '@store/profile';
+import {
+  editedZonefileState,
+  nameUpdateTxidAtom,
+  pendingZonefileState,
+  profileFormValidAtom,
+} from '@store/profile';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
 import { makeZoneFile } from '@fungible-systems/zone-file';
@@ -51,10 +56,11 @@ export function useNameUpdate() {
           },
           postConditionMode: PostConditionMode.Deny,
           attachment: zonefileString,
-          // postConditions: [postCondition],
           onFinish(payload) {
-            set(nameUpdateTxidAtom, payload.txId);
-            // set(migrateTxidAtom, payload.txId);
+            void set(pendingZonefileState, {
+              txid: payload.txId,
+              zonefile: zonefileString,
+            });
           },
         });
       },

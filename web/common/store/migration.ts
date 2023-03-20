@@ -47,7 +47,11 @@ export function txidQueryAtom(txidAtom: Atom<string | undefined>, unanchored = t
     queryKey: ['txid-query', get(txidAtom) || ''],
     refetchInterval: data => {
       if (data) {
-        return data.tx_status === 'pending' ? 5000 : false;
+        if (data.tx_status === 'pending') return 5000;
+        if (data.tx_status === 'success') {
+          return data.is_unanchored ? 5000 : false;
+        }
+        return false;
       }
       return 5000;
     },

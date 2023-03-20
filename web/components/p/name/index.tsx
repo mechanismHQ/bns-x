@@ -37,8 +37,10 @@ import {
 } from '@components/p/name/row';
 import { Link, LinkInner, LinkText } from '@components/link';
 import { ProfileActions } from '@components/p/name/actions';
+import { useWatchPendingZonefile } from '@common/hooks/use-watch-pending-zonefile';
 
 export const Name: React.FC<{ children?: React.ReactNode }> = () => {
+  useWatchPendingZonefile();
   const router = useRouter();
   const name = router.query.name as string;
   const nameDetails = useAtomValue(nameDetailsAtom(name));

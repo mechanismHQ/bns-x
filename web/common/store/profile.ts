@@ -2,11 +2,12 @@ import type { Atom, Getter, WritableAtom } from 'jotai';
 import { atom } from 'jotai';
 import { hashAtom, txidQueryAtom } from './migration';
 import { atomsWithQuery } from 'jotai-tanstack-query';
-import { atomFamily } from 'jotai/utils';
-import { parsedUserZonefileState, userNameState } from '@store/names';
+import { atomFamily, atomWithStorage } from 'jotai/utils';
+import { parsedUserZonefileState, userNameState, userZonefileState } from '@store/names';
 import { nameDetailsAtom } from '@store/names';
 import { coreNodeInfoAtom } from '@store/api';
-import type { ZoneFile, ZoneFileObject } from '@bns-x/client';
+import type { ZoneFileObject } from '@bns-x/client';
+import { ZoneFile } from '@bns-x/client';
 import { doesNamespaceExpire, parseFqn, ZonefileTxtKeys, ZonefileUriKeys } from '@bns-x/client';
 import { Address as BtcAddress } from 'micro-btc-signer';
 import { nip19 } from 'nostr-tools';
@@ -16,9 +17,19 @@ export const unwrapTxidAtom = hashAtom('unwrapTxid');
 
 export const isEditingProfileAtom = atom(false);
 
-export const nameUpdateTxidAtom = hashAtom('nameUpdateTxid');
+export const nameUpdateTxidAtom = atom(get => {
+  const pending = get(pendingZonefileState);
+  if (typeof pending === 'undefined') return undefined;
+  return pending.txid;
+});
 
-export const [nameUpdateTxAtom] = txidQueryAtom(nameUpdateTxidAtom, false);
+export const nameUpdateTxAtom = atom(get => {
+  const pending = get(pendingZonefileState);
+  if (typeof pending === 'undefined') return null;
+  return get(txidQueryAtom(nameUpdateTxidAtom)[0]);
+});
+
+export const nameUpdateTxidConfirmedAtom = hashAtom('finishedTx');
 
 export const nameExpirationAtom = atomFamily((name?: string) => {
   return atomsWithQuery(get => ({
@@ -61,8 +72,10 @@ function zonefileFormAtoms(
 ): ZonefileFieldAtom {
   const editedAtom = atom('');
   const defaultAtom = atom(get => {
-    const zf = get(parsedUserZonefileState);
-    return getter(zf);
+    const pendingZf = get(pendingZonefileState);
+    const zonefile = pendingZf ? new ZoneFile(pendingZf.zonefile) : get(parsedUserZonefileState);
+    // const zf = get(parsedUserZonefileState);
+    return getter(zonefile);
   });
   const isDirtyAtom = atom(false);
   const comboAtom = atom(
@@ -191,6 +204,16 @@ function setTxtKey(txt: TXTType[], key: string, value: string) {
   }
 }
 
+export type PendingZonefileInfo = {
+  txid: string;
+  zonefile: string;
+};
+
+export const pendingZonefileState = atomWithStorage<PendingZonefileInfo | undefined>(
+  'pending-zonefile',
+  undefined
+);
+
 export const editedZonefileState = atom(get => {
   const formState = get(profileFormValidAtom);
   const { btc, nostr, redirect } = formState;
@@ -227,4 +250,12 @@ export const editedZonefileState = atom(get => {
   zonefile.uri = uri;
 
   return zonefile;
+});
+
+export const zonefileUpdateConfirmedState = atom<boolean | null>(get => {
+  const pendingZonefile = get(pendingZonefileState);
+  if (typeof pendingZonefile === 'undefined') return null;
+
+  const realZonefile = get(userZonefileState[0]);
+  return realZonefile === pendingZonefile.zonefile;
 });

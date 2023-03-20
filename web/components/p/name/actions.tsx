@@ -11,6 +11,8 @@ import {
   editedZonefileState,
   nameUpdateTxAtom,
   nameUpdateTxidAtom,
+  zonefileUpdateConfirmedState,
+  nameUpdateTxidConfirmedAtom,
 } from '@store/profile';
 import { Button } from '@components/button';
 import { LinkInner } from '@components/link';
@@ -25,6 +27,7 @@ export const ProfileActions: React.FC = () => {
   const formState = useAtomValue(profileFormValidAtom);
   const updateTxid = useAtomValue(nameUpdateTxidAtom);
   const updateTx = useAtomValue(nameUpdateTxAtom);
+  const updateConfirmedTxid = useAtomValue(nameUpdateTxidConfirmedAtom);
   const { updateName, isRequestPending } = useNameUpdate();
 
   const cancelEdit = useAtomCallback(
@@ -39,6 +42,16 @@ export const ProfileActions: React.FC = () => {
     }, [])
   );
 
+  if (typeof updateConfirmedTxid !== 'undefined') {
+    return (
+      <Stack isInline spacing="21px" py="40px" alignItems={'center'}>
+        <CheckIcon />
+        <Text variant="Label01">Your name update transaction was confirmed.</Text>
+        <ExternalTx txId={updateConfirmedTxid} />
+      </Stack>
+    );
+  }
+
   if (updateTx !== null || typeof updateTxid !== 'undefined') {
     if (updateTx?.tx_status === 'pending' || updateTx === null) {
       return (
@@ -52,6 +65,22 @@ export const ProfileActions: React.FC = () => {
           </Stack>
           <Text variant="Label01" color="$text-dim">
             Your zonefile will be updated after your transaction has at least one confirmation.
+          </Text>
+        </Stack>
+      );
+    }
+    if (updateTx.tx_status === 'success' && updateTx.is_unanchored === true) {
+      return (
+        <Stack spacing="7px" py="40px">
+          <Stack isInline spacing="21px" alignItems={'center'}>
+            <Spinner />
+            <Text variant="Label01" color="$text-dim">
+              Your transaction was confirmed in a microblock
+            </Text>
+            <ExternalTx txId={updateTxid} />
+          </Stack>
+          <Text variant="Label01" color="$text-dim">
+            Your zonefile will be updated after your transaction has at least one full confirmation.
           </Text>
         </Stack>
       );

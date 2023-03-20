@@ -14,6 +14,7 @@ import { TooltipTippy } from '@components/tooltip';
 import { styled } from '@common/theme';
 import { truncateMiddle } from '@common/utils';
 import type { ZonefileFieldAtom } from '@store/profile';
+import { nameUpdateTxidConfirmedAtom } from '@store/profile';
 import { nameUpdateTxidAtom } from '@store/profile';
 import { isEditingProfileAtom } from '@store/profile';
 import { useInput } from '@common/hooks/use-input';
@@ -72,9 +73,14 @@ export const ElementGap = styled(Box, {
 export const EditableAddressGroup: React.FC<{ atom: ZonefileFieldAtom }> = ({ atom }) => {
   const value = useAtomValue(atom.value);
   const nameUpdateTxid = useAtomValue(nameUpdateTxidAtom);
+  const updateFinishedTxid = useAtomValue(nameUpdateTxidConfirmedAtom);
   const isEditing = useAtomValue(isEditingProfileAtom);
 
-  if (isEditing && typeof nameUpdateTxid === 'undefined') {
+  if (
+    isEditing &&
+    typeof nameUpdateTxid === 'undefined' &&
+    typeof updateFinishedTxid === 'undefined'
+  ) {
     return <InputGroup inputAtom={atom} />;
   }
 
