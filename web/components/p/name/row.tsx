@@ -25,7 +25,7 @@ export function useSetEditing() {
   return useAtomCallback(
     useCallback((get, set) => {
       set(pendingZonefileState, RESET);
-      set(nameUpdateTxidConfirmedAtom, undefined);
+      set(nameUpdateTxidConfirmedAtom, RESET as unknown as string);
       set(isEditingProfileAtom, true);
     }, [])
   );
