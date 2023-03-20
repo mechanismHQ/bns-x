@@ -1,8 +1,4 @@
-import {
-  fetchLegacyDisplayName,
-  getAddressNamesApi,
-  getNameDetailsApi,
-} from '@fetchers/stacks-api';
+import { getAddressNamesApi, getNameDetailsApi, fetchCoreName } from '@fetchers/stacks-api';
 import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
 import { parseFqn } from '~/utils';
 import type { BaseFetcher } from './base';
@@ -14,7 +10,7 @@ import { convertNameBuff } from '~/contracts/utils';
 export class ApiFetcher implements BaseFetcher {
   async getDisplayName(address: string): Promise<string | null> {
     const [legacyName, bnsxName] = await Promise.all([
-      fetchLegacyDisplayName(address),
+      fetchCoreName(address),
       (async () => {
         const primary = await getPrimaryName(address);
         return primary ? convertNameBuff(primary).decoded : null;
