@@ -114,5 +114,5 @@ export const NO_EXPIRATION_NAMESPACES = new Set(
  *
  */
 export function doesNamespaceExpire(namespace: string) {
-  return NO_EXPIRATION_NAMESPACES.has(namespace);
+  return !NO_EXPIRATION_NAMESPACES.has(namespace);
 }
