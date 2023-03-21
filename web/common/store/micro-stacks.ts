@@ -1,5 +1,5 @@
 import type React from 'react';
-import { createElement, useMemo } from 'react';
+import { createElement, useCallback, useMemo } from 'react';
 import type { Atom } from 'jotai';
 import { atom, Provider, useAtomValue } from 'jotai';
 import { useMicroStacksClient } from '@micro-stacks/react';
@@ -352,3 +352,15 @@ export const useOpenSignStructuredMessageState = () => useAtomValue(openSignStru
 
 /** ------------------------------------------------------------------------------------------------------------------
  */
+
+// export const currentAccountIndexOverrideAtom = atom<number | null>(null);
+
+// export const currentAccountAtom = atom(get => {
+//   const state = get(clientState);
+//   const { accounts, currentAccountIndex } = state.getState();
+//   const indexOverride = get(currentAccountIndexOverrideAtom);
+//   if (indexOverride !== null) {
+//     return accounts[indexOverride];
+//   }
+//   return accounts.at(-1);
+// });
