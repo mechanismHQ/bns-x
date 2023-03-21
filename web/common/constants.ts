@@ -6,6 +6,9 @@ import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMocknet, StacksMainnet, StacksTestnet } from 'micro-stacks/network';
 
 export function getAppUrl() {
+  if (typeof location !== 'undefined') {
+    return location.origin;
+  }
   const url = process.env.NEXT_PUBLIC_APP_URL;
   if (url) return url;
   if (process.env.NEXT_PUBLIC_VERCEL_URL) {

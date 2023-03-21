@@ -50,6 +50,12 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   const setEditing = useSetEditing();
   const isEditing = useAtomValue(isEditingProfileAtom);
 
+  const upgrade = useCallback(async () => {
+    await router.push({
+      pathname: '/upgrade',
+    });
+  }, [router]);
+
   if (nameDetails === null) {
     return (
       <>
@@ -90,57 +96,90 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
             </Stack>
           </SpaceBetween>
           <Stack pt="20px" spacing="14px" width="280px">
-            <Button width="100%">Upgrade to BNSx</Button>
-            {!isEditing && (
-              <Button tertiary width="100%" onClick={() => setEditing()}>
-                Edit
-              </Button>
+            {!isBnsx && (
+              <>
+                <Button width="100%" onClick={upgrade}>
+                  Upgrade to BNSx
+                </Button>
+                {!isEditing && (
+                  <Button tertiary width="100%" onClick={() => setEditing()}>
+                    Edit
+                  </Button>
+                )}
+              </>
             )}
           </Stack>
         </LeftBar>
         <ElementGap />
         <RightBar spacing="0px">
-          <Box height="65px">
-            <Text variant="Heading035" position="relative" top="-10px">
-              Customize your name
-            </Text>
-          </Box>
-          <Divider />
-          <Row>
-            <TitleBox>
-              <AddressHeader>Stacks Address</AddressHeader>
-              <RowDescription>
-                Wallet currently holding this name on the Stacks Bitcoin layer.
-              </RowDescription>
-            </TitleBox>
-            <AddressGroup editable={false}>{stxAddress ?? ''}</AddressGroup>
-          </Row>
-          <Divider />
-          <Row>
-            <TitleBox>
-              <AddMeHeader>Bitcoin Address</AddMeHeader>
-              <RowDescription>Let others send Bitcoin to your BNS name</RowDescription>
-            </TitleBox>
-            <EditableAddressGroup atom={zonefileBtcAtom} />
-          </Row>
-          <Divider />
-          <Row>
-            <TitleBox>
-              <AddMeHeader>Nostr npub</AddMeHeader>
-              {/* <RowDescription></RowDescription> */}
-            </TitleBox>
-            <EditableAddressGroup atom={zonefileNostrAtom} />
-          </Row>
-          <Divider />
-          <Row>
-            <TitleBox>
-              <AddMeHeader>Website redirect</AddMeHeader>
-              <RowDescription>Apps can use this to redirect users to your website</RowDescription>
-            </TitleBox>
-            <EditableAddressGroup atom={zonefileRedirectAtom} />
-          </Row>
-          <Divider />
-          <ProfileActions />
+          {isBnsx ? (
+            <Stack spacing="10px">
+              <Box>
+                <Text variant="Heading035" position="relative" top="-10px">
+                  Customize your name
+                </Text>
+              </Box>
+              <Text variant="Body01">
+                Customizing your name is not yet available for BNSx names. Check back soon!
+              </Text>
+              <Box mt="20px">
+                <Button
+                  type="big"
+                  onClick={async () => {
+                    await router.push('/');
+                  }}
+                >
+                  Go back
+                </Button>
+              </Box>
+            </Stack>
+          ) : (
+            <>
+              <Box height="65px">
+                <Text variant="Heading035" position="relative" top="-10px">
+                  Customize your name
+                </Text>
+              </Box>
+              <Divider />
+              <Row>
+                <TitleBox>
+                  <AddressHeader>Stacks Address</AddressHeader>
+                  <RowDescription>
+                    Wallet currently holding this name on the Stacks Bitcoin layer.
+                  </RowDescription>
+                </TitleBox>
+                <AddressGroup editable={false}>{stxAddress ?? ''}</AddressGroup>
+              </Row>
+              <Divider />
+              <Row>
+                <TitleBox>
+                  <AddMeHeader>Bitcoin Address</AddMeHeader>
+                  <RowDescription>Let others send Bitcoin to your BNS name</RowDescription>
+                </TitleBox>
+                <EditableAddressGroup atom={zonefileBtcAtom} />
+              </Row>
+              <Divider />
+              <Row>
+                <TitleBox>
+                  <AddMeHeader>Nostr npub</AddMeHeader>
+                  {/* <RowDescription></RowDescription> */}
+                </TitleBox>
+                <EditableAddressGroup atom={zonefileNostrAtom} />
+              </Row>
+              <Divider />
+              <Row>
+                <TitleBox>
+                  <AddMeHeader>Website redirect</AddMeHeader>
+                  <RowDescription>
+                    Apps can use this to redirect users to your website
+                  </RowDescription>
+                </TitleBox>
+                <EditableAddressGroup atom={zonefileRedirectAtom} />
+              </Row>
+              <Divider />
+              <ProfileActions />
+            </>
+          )}
         </RightBar>
       </PageContainer>
     </>
