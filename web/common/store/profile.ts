@@ -114,6 +114,7 @@ export const zonefileBtcAtom = zonefileFormAtoms(
   },
   btcAddr => {
     try {
+      // example: bc1qglasydepy4ywn5g6ahy8ylp9mg74pn0hekj6e3
       const decoded = BtcAddress().decode(btcAddr);
       if (decoded.type === 'unknown') return false;
       return true;
@@ -130,6 +131,7 @@ export const zonefileNostrAtom = zonefileFormAtoms(
   },
   npub => {
     try {
+      // example: npub132w0sg64x08h2klxvytsamgcu63qqmk8d2yv8ltay8nvzwahk6wsyg2j8n
       nip19.decode(npub);
       return true;
     } catch (error) {
@@ -195,12 +197,17 @@ function setTxtKey(txt: TXTType[], key: string, value: string) {
     return record.name === key;
   });
   if (recordIndex === -1) {
+    if (!value) return;
     txt.push({
       name: key,
       txt: value,
     });
   } else {
-    txt[recordIndex]!.txt = value;
+    if (value) {
+      txt[recordIndex]!.txt = value;
+    } else {
+      txt.splice(recordIndex, 1);
+    }
   }
 }
 
@@ -232,7 +239,7 @@ export const editedZonefileState = atom(get => {
     setTxtKey(txt, ZonefileTxtKeys.NOSTR, nostr.value);
   }
   if (btc.dirty) {
-    setTxtKey(txt, ZonefileTxtKeys.BTC_ADDR, nostr.value);
+    setTxtKey(txt, ZonefileTxtKeys.BTC_ADDR, btc.value);
   }
   const uri: URIType[] = zonefile.uri ?? [];
   if (redirect.dirty) {
@@ -244,6 +251,12 @@ export const editedZonefileState = atom(get => {
         name: ZonefileUriKeys.REDIRECT,
         target: redirect.value,
       });
+    } else {
+      if (redirect.value) {
+        uri[index]!.target = redirect.value;
+      } else {
+        uri.splice(index, 1);
+      }
     }
   }
   zonefile.txt = txt;
