@@ -47,7 +47,8 @@ export async function fetchTransaction({
   event_limit?: number;
   unanchored?: boolean;
 }): Promise<MempoolTransaction | Transaction> {
-  const path = generateUrl(`${txEndpoint(url)}/${txid}`, {
+  const _txid = txid.startsWith('0x') ? txid : `0x${txid}`;
+  const path = generateUrl(`${txEndpoint(url)}/${_txid}`, {
     event_offset,
     event_limit,
     unanchored,
