@@ -12,7 +12,7 @@ export function useWatchPendingZonefile() {
   const updateTx = useAtomValue(nameUpdateTxAtom);
 
   const isTxFinished = useMemo(() => {
-    if (updateTx === null || updateTx?.tx_status === 'pending') return false;
+    if (updateTx === null || updateTx.tx_status === 'pending') return false;
     if ('canonical' in updateTx) {
       if (updateTx.canonical === false) return false;
     }

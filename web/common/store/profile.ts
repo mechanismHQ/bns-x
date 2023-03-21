@@ -45,8 +45,8 @@ export const nameExpirationAtom = atomFamily((name?: string) => {
       if (namespace === 'testable') return null; // testnet faucet namespace
       if (typeof details.expire_block === 'undefined') return null;
       const nodeInfo = get(coreNodeInfoAtom);
-      if (typeof nodeInfo.burn_block_height !== 'number') return null;
-      const blockDiff = details.expire_block - nodeInfo.burn_block_height;
+      if (typeof nodeInfo.stacks_tip_height !== 'number') return null;
+      const blockDiff = details.expire_block - nodeInfo.stacks_tip_height;
       const timeDiff = blockDiff * 10 * 60 * 1000;
       const expireDate = new Date(new Date().getTime() + timeDiff);
       return [expireDate.getFullYear(), expireDate.getMonth(), expireDate.getDate()].join('-');
