@@ -1,19 +1,16 @@
 import React, { useCallback } from 'react';
 import { Stack } from '@nelson-ui/react';
 import { Text } from '@components/text';
-import { useAtomCallback, useAtomValue, RESET } from 'jotai/utils';
+import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import {
   zonefileBtcAtom,
   zonefileNostrAtom,
   zonefileRedirectAtom,
   isEditingProfileAtom,
   profileFormValidAtom,
-  editedZonefileState,
   nameUpdateTxAtom,
   nameUpdateTxidAtom,
-  zonefileUpdateConfirmedState,
   nameUpdateTxidConfirmedAtom,
-  pendingZonefileState,
 } from '@store/profile';
 import { Button } from '@components/button';
 import { LinkInner } from '@components/link';
@@ -40,12 +37,6 @@ export const ProfileActions: React.FC = () => {
       set(zonefileNostrAtom.dirty, false);
       set(zonefileRedirectAtom.dirty, false);
       set(isEditingProfileAtom, false);
-    }, [])
-  );
-
-  const cancelPending = useAtomCallback(
-    useCallback((get, set) => {
-      set(pendingZonefileState, RESET);
     }, [])
   );
 

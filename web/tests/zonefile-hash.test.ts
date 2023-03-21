@@ -7,7 +7,27 @@ const zf =
 
 test('zonefile hashing is correct', () => {
   const zonefileBytes = utf8ToBytes(zf);
-  const hash = hashRipemd160(hashSha256(zonefileBytes));
+  const _hash = hashRipemd160(hashSha256(zonefileBytes));
 
-  console.log(bytesToHex(hash));
+  // console.log(bytesToHex(hash));
+});
+
+function binaryToBytes(input: string) {
+  const bytes = new Uint8Array(input.length);
+  for (let i = 0; i < input.length; ++i) {
+    bytes[i] = input.charCodeAt(i) & 0xff;
+  }
+  return bytes;
+}
+
+// testing how to serialize attachments
+test('binaryToBytes function', () => {
+  const buff = Buffer.from(zf, 'binary').toString('hex');
+  const bytes = bytesToHex(binaryToBytes(zf));
+
+  expect(buff).toEqual(bytes);
+
+  const utf8Bytes = bytesToHex(utf8ToBytes(zf));
+
+  expect(utf8Bytes).toEqual(bytes);
 });

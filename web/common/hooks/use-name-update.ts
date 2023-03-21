@@ -46,7 +46,7 @@ export function useNameUpdate() {
           zonefileHash,
         });
 
-        const attachment = Buffer.from(zonefileString, 'binary').toString('hex');
+        const attachment = bytesToHex(zonefileBytes);
 
         await openContractCall({
           ...tx,
