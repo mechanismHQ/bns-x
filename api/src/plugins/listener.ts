@@ -86,6 +86,7 @@ export function listenAndSyncPrints(bnsDb: BnsDb, stacksDb: StacksDb) {
   });
   client.subscribeBlocks();
   client.subscribeMicroblocks();
+
   return client;
 }
 
@@ -96,8 +97,15 @@ export const listenerPlugin: FastifyPluginAsync = fp(async server => {
 
   const socket = listenAndSyncPrints(server.prisma, server.stacksPrisma);
 
+  const pingInterval = setInterval(() => {
+    if (socket.socket.connected) {
+      socket.socket.send('ping');
+    }
+  }, 1000);
+
   server.addHook('onClose', () => {
     log.info('Server closing - restart');
+    clearInterval(pingInterval);
     socket.socket.close();
   });
   return Promise.resolve();

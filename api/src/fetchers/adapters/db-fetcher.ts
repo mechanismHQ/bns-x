@@ -41,25 +41,13 @@ export class DbFetcher implements BaseFetcher {
       if ('error' in api) {
         return null;
       }
-      const zonefile = inscribedZf ? inscribedZf.zonefileRaw : api.zonefile;
-      const inscriptionId = inscribedZf?.inscriptionId;
       const decoded = toUnicode(`${name}.${namespace}`);
-      const inscriptionMeta = inscribedZf
-        ? {
-            blockHeight: inscribedZf.genesisHeight,
-            txid: inscribedZf.genesisTransaction,
-            timestamp: new Date(Number(inscribedZf.timestamp)).toISOString(),
-            sat: inscribedZf.sat,
-          }
-        : undefined;
       const base = {
         ...api,
-        zonefile: zonefile ?? '',
-        inscriptionId,
-        inscription: inscriptionMeta,
+        zonefile: api.zonefile ?? '',
         decoded,
       };
-      const zonefileRecords = getZonefileProperties(zonefile);
+      const zonefileRecords = getZonefileProperties(base.zonefile);
       if (query === null) {
         return {
           ...base,
@@ -68,10 +56,24 @@ export class DbFetcher implements BaseFetcher {
         };
       }
 
+      const inscriptionId = inscribedZf?.inscriptionId;
+      const inscriptionMeta = inscribedZf
+        ? {
+            blockHeight: inscribedZf.genesisHeight,
+            txid: inscribedZf.genesisTransaction,
+            timestamp: new Date(Number(inscribedZf.timestamp)).toISOString(),
+            sat: inscribedZf.sat,
+          }
+        : undefined;
+      const zonefile = inscribedZf ? inscribedZf.zonefileRaw : base.zonefile;
+
       return {
         ...base,
         ...query,
+        zonefile,
         address: query.owner,
+        inscription: inscriptionMeta,
+        inscriptionId,
         isBnsx: true,
         zonefileRecords,
         wrapper: api.address,
