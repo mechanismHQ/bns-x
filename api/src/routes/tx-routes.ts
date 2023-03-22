@@ -16,10 +16,10 @@ export const mainnetBroadcastURLs = [
 
 async function tryBroadcast(txBytes: Uint8Array, baseUrl: string, attachment?: Uint8Array) {
   try {
-    const url = `${baseUrl}/v2/broadcast`;
+    const url = `${baseUrl}/v2/transactions`;
     await broadcastRawTransaction(txBytes, url, attachment);
   } catch (error) {
-    logger.debug(`Error broadcasting to URL ${baseUrl}`);
+    logger.debug({ error }, `Error broadcasting to URL ${baseUrl}`);
   }
 }
 
