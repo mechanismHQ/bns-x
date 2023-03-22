@@ -9,6 +9,7 @@ import { StacksMainnet } from 'micro-stacks/network';
 
 export const mainnetBroadcastURLs = [
   new StacksMainnet().getCoreApiUrl(),
+  'https://api.hiro.so',
   'http://seed.hiro.so:20443',
   'http://seed.mainnet.hiro.so:20443',
 ];
