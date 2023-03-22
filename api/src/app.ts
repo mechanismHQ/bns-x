@@ -2,8 +2,6 @@ import type { FastifyServerOptions } from 'fastify';
 import fastify from 'fastify';
 import { prismaPlugin } from './prisma-plugin';
 import { aliasRoutes } from './routes/alias-routes';
-import { proxyRoutes } from './routes/proxy-routes';
-import { getContracts } from './contracts';
 import { metadataRoutes } from './routes/metadata-routes';
 import { appRouter } from './routes/trpc';
 import cors from '@fastify/cors';
@@ -23,9 +21,10 @@ import { listenerPlugin } from '~/plugins/listener';
 import FastifySwagger from '@fastify/swagger';
 import { OpenApiOptions } from '~/swagger';
 import SwaggerUi from '@fastify/swagger-ui';
-import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi-fork-fastify-pr-177';
+// import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi-fork-fastify-pr-177';
 import { namesRoutes } from '@routes/names-routes';
-import { trpcOpenApiRouter } from '@routes/trpc-openapi';
+import { txRoutes } from '@routes/tx-routes';
+// import { trpcOpenApiRouter } from '@routes/trpc-openapi';
 
 const options: FastifyServerOptions = {
   logger,
@@ -78,6 +77,10 @@ export async function makeApp({
 
   await app.register(namesRoutes, {
     prefix: '/bns',
+  });
+
+  await app.register(txRoutes, {
+    prefix: '/tx',
   });
 
   const staticRoot = join(__dirname, '..', 'static');
