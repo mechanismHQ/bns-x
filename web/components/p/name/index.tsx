@@ -145,7 +145,7 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
                 <TitleBox>
                   <AddressHeader>Stacks Address</AddressHeader>
                   <RowDescription>
-                    Wallet currently holding this name on the Stacks Bitcoin layer.
+                    Wallet currently holding this name on the Stacks chain.
                   </RowDescription>
                 </TitleBox>
                 <AddressGroup editable={false}>{stxAddress ?? ''}</AddressGroup>
