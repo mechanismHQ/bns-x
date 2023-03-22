@@ -17,6 +17,7 @@ import { bytesToHex, utf8ToBytes } from 'micro-stacks/common';
 import { hashRipemd160 } from 'micro-stacks/crypto';
 import { networkAtom } from '@store/micro-stacks';
 import { PostConditionMode } from 'micro-stacks/transactions';
+import { bnsApi } from '@store/api';
 
 export function useNameUpdate() {
   const { openContractCall, isRequestPending } = useOpenContractCall();
@@ -58,12 +59,18 @@ export function useNameUpdate() {
           },
           postConditionMode: PostConditionMode.Deny,
           attachment,
-          onFinish(payload) {
+          async onFinish(payload) {
             set(isEditingProfileAtom, false);
             void set(pendingZonefileState, {
               txid: payload.txId,
               zonefile: zonefileString,
             });
+            try {
+              await bnsApi.openapi.utilities.postTxBroadcast({
+                txHex: payload.txRaw,
+                attachment,
+              });
+            } catch (error) {}
           },
         });
       },
