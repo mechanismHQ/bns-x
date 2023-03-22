@@ -42,7 +42,7 @@ export const txRoutes: FastifyPlugin = (fastify, _opts, done) => {
     },
     async (req, res) => {
       const { txHex, attachment } = req.body;
-      const txBytes = hexToBytes(txHex);
+      const txBytes = hexToBytes(txHex.replace('0x', ''));
       const broadcastUrl = getNetwork().getBroadcastApiUrl();
       const attachmentBytes =
         typeof attachment === 'undefined' ? undefined : hexToBytes(attachment);
