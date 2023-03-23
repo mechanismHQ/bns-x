@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { fetchNostrNames } from '@fetchers/stacks-db/zonefiles';
 import { fetchNostrNames as fetchNostrNamesBns } from '@fetchers/bns-db/zonefiles';
 import { parseZoneFile } from '@fungible-systems/zone-file';
-import { toUnicode } from 'punycode';
+import { toUnicode } from '@bns-x/punycode';
 
 export const nostrNames = z.object({
   name: z.string(),

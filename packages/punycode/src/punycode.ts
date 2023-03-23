@@ -1,5 +1,5 @@
 import { puny_decoded, puny_encoded } from '@adraffy/punycode';
-import { codeToString } from './zero-width';
+import { codeToString, hasInvalidExtraZwj } from './zero-width';
 
 export function toUnicode(punycode: string) {
   return punycode
@@ -14,4 +14,14 @@ export function toUnicode(punycode: string) {
 
 export function toPunycode(unicode: string) {
   return puny_encoded(unicode);
+}
+
+export function fullDisplayName(name: string) {
+  const puny = toUnicode(name);
+  let displayName = name;
+  if (puny !== name) {
+    const flagged = hasInvalidExtraZwj(puny) ? '🟥' : '';
+    displayName = `${name} (${puny}${flagged})`;
+  }
+  return displayName;
 }

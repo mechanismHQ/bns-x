@@ -19,6 +19,7 @@ export const nftProperty = z.union([
   }),
   z.string(),
   z.number(),
+  z.boolean(),
 ]);
 
 export type NftProperty = z.infer<typeof nftProperty>;

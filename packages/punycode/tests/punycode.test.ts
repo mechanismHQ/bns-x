@@ -1,5 +1,5 @@
 import { puny_decode, puny_decoded } from '@adraffy/punycode';
-import { toUnicode, toPunycode } from '../src/punycode';
+import { toUnicode, toPunycode, fullDisplayName } from '../src/punycode';
 import { debugCodePoints, hasInvalidExtraZwj } from '../src/zero-width';
 
 function expectInvalid(str: string) {
@@ -54,4 +54,16 @@ test('flags valid and invalid strings', () => {
 test('converting back and forth', () => {
   expect(toPunycode('hank.btc')).toEqual('hank.btc');
   expect(toPunycode(toUnicode('xn--1ug66vku9r8p9h'))).toEqual('xn--1ug66vku9r8p9h');
+});
+
+test('full display name', () => {
+  const name = 'xn--1ug2145p8xd.btc';
+
+  const display = fullDisplayName(name);
+
+  expect(display).toEqual('xn--1ug2145p8xd.btc (🧜🏻‍.btc🟥)');
+
+  expect(fullDisplayName('example.btc')).toEqual('example.btc');
+
+  expect(fullDisplayName('xn--1ug66vku9r8p9h.btc')).toEqual('xn--1ug66vku9r8p9h.btc (🧔‍♂️.btc)');
 });

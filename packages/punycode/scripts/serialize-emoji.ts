@@ -1,11 +1,6 @@
 import zwjSequences from '@unicode/unicode-15.0.0/Sequence_Property/RGI_Emoji_ZWJ_Sequence';
 import { writeFile } from 'fs/promises';
 import { resolve } from 'path';
-import regenerate from 'regenerate';
-
-// const converted = zwj.map(emoji )
-
-const set = regenerate();
 
 const regexPoints = zwjSequences
   .sort((a, b) => b.length - a.length)
@@ -25,8 +20,6 @@ const regexStr = zwjSequences
 // .forEach(r => set.add(r));
 // .join('|');
 
-console.log(regexStr.length);
-set.add(regexPoints);
 const fileContents = `export const validZwjEmojiRegex = new RegExp(\`${regexStr}\`, 'ug');`;
 
 async function run() {

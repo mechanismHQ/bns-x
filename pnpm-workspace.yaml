@@ -3,4 +3,5 @@ packages:
   - "web"
   - "packages/client"
   - "packages/core"
+  - "packages/punycode"
   - "contracts"

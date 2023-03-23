@@ -5,7 +5,7 @@ import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
 import { getNameParts } from '@bns-x/core';
 import { parseFqn } from '~/utils';
 import type { BaseFetcher } from './base';
-import { toUnicode } from 'punycode';
+import { toUnicode } from '@bns-x/punycode';
 import { getZonefileProperties } from '@fetchers/zonefile';
 import { convertDbName, convertNameBuff } from '~/contracts/utils';
 

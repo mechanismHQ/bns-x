@@ -1,6 +1,6 @@
 import { bytesToAscii, hexToBytes, bytesToHex, asciiToBytes } from 'micro-stacks/common';
 import type { WithCombined, NameBuff, NameBase, LegacyDetails, LegacyJson } from './types';
-import { toUnicode } from 'punycode';
+import { toUnicode } from '@bns-x/punycode';
 import { hashRipemd160, getRandomBytes } from 'micro-stacks/crypto';
 
 export function getContractParts(identifier: string): [string, string] {

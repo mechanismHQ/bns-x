@@ -1,6 +1,6 @@
 import { bytesToAscii, hexToBytes, intToBigInt } from 'micro-stacks/common';
 import type { WithCombined, NameBuff, NameBase, LegacyDetails, LegacyJson } from './types';
-import { toUnicode } from 'punycode';
+import { toUnicode } from '@bns-x/punycode';
 
 export function bytesToName(input: string | Uint8Array) {
   if (typeof input === 'string') {

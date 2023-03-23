@@ -4,7 +4,7 @@ import type { FastifyPlugin } from './api-types';
 import { z } from 'zod';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { getNameById } from '../fetchers/query-helper';
-import { toUnicode } from 'punycode';
+import { debugCodePoints, fullDisplayName, hasInvalidExtraZwj, toUnicode } from '@bns-x/punycode';
 
 export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
   fastify.get(
@@ -25,13 +25,15 @@ export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
         return res.status(404).send({ error: 'Not found' });
       }
 
-      // const { leaseEndingAt, ...legacy } =
+      const displayName = fullDisplayName(name.combined);
 
       const properties: Record<string, NftProperty> = {
         id: name.id,
         namespace: name.namespace,
         fullName: name.decoded,
-        name: toUnicode(name.name),
+        name: name.name,
+        hasInvalidExtraZwj: hasInvalidExtraZwj(toUnicode(name.combined)),
+        nameBytes: debugCodePoints(toUnicode(name.name)),
         nameAscii: name.combined,
         collection: 'BNSx Names',
         collection_image: 'https://api.bns.xyz/static/bnsx-image.png',
@@ -48,7 +50,7 @@ export const metadataRoutes: FastifyPlugin = (fastify, opts, done) => {
 
       await res.send({
         sip: 16,
-        name: name.decoded,
+        name: displayName,
         image: 'https://api.bns.xyz/static/bnsx-image.png',
         properties: properties,
       });

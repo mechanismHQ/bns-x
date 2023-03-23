@@ -3,7 +3,7 @@ import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
 import { parseFqn } from '~/utils';
 import type { BaseFetcher } from './base';
 import { getNameDetails as getNameDetailsQuery, getPrimaryName } from '~/fetchers/query-helper';
-import { toUnicode } from 'punycode';
+import { toUnicode } from '@bns-x/punycode';
 import { getZonefileProperties } from '@fetchers/zonefile';
 import { convertNameBuff } from '~/contracts/utils';
 

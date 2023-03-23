@@ -1,4 +1,4 @@
-import { toUnicode } from 'punycode';
+import { toUnicode } from '@bns-x/punycode';
 import { useMemo } from 'react';
 
 export function usePunycode(str: null): null;

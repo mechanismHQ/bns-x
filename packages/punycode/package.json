@@ -1,12 +1,12 @@
 {
-  "name": "@bns-x/client",
+  "name": "@bns-x/punycode",
   "version": "0.2.0",
   "license": "MIT",
   "private": false,
   "publishConfig": {
     "access": "public"
   },
-  "repository": "https://github.com/mechanismHQ/bns-x/tree/main/packages/client",
+  "repository": "https://github.com/mechanismHQ/bns-x/tree/main/packages/punycode",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -17,19 +17,11 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsup",
-    "generate:openapi": "pnpm -r build:openapi && pnpm openapi -i ./tmp/openapi.yaml -c axios -o src/generated --name BNS --useUnionTypes",
     "generate:zwj-regex": "pnpm tsx scripts/serialize-emoji.ts",
     "test": "jest"
   },
   "dependencies": {
-    "@adraffy/punycode": "^1.2.0",
-    "@bns-x/core": "workspace:*",
-    "@bns-x/punycode": "workspace:*",
-    "@clarigen/core": "1.0.13",
-    "@fungible-systems/zone-file": "^2.0.0",
-    "axios": "^1.3.4",
-    "form-data": "^4.0.0",
-    "micro-stacks": "^1.1.4"
+    "@adraffy/punycode": "^1.2.0"
   },
   "devDependencies": {
     "@types/jest": "^29.2.4",
@@ -37,8 +29,6 @@
     "@unicode/unicode-15.0.0": "^1.3.1",
     "emoji-regex": "^10.2.1",
     "jest": "^29.3.1",
-    "openapi-typescript-codegen": "^0.23.0",
-    "regenerate": "^1.4.2",
     "ts-jest": "^29.0.3",
     "tsup": "^6.5.0",
     "tsx": "^3.12.3",

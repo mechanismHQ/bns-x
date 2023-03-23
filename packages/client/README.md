@@ -37,6 +37,7 @@ This library has a few main components:
   - [toUnicode](#tounicode)
   - [toPunycode](#topunycode)
   - [Zero-width-join characters and modifiers](#zero-width-join-characters-and-modifiers)
+  - [fullDisplayName](#fulldisplayname)
 
 <!-- /TOC -->
 
@@ -411,7 +412,7 @@ NO_EXPIRATION_NAMESPACE.has('stx'); // returns true
 
 ## Punycode
 
-This package includes a few punycode-related functions and utilities.
+This package includes a few punycode-related functions and utilities. Note: if you only want the punycode functions, you can import them from `@bns-x/punycode`.
 
 Under the hood, the [`@adraffy/punycode`](https://github.com/adraffy/punycode.js) library is used.
 
@@ -451,4 +452,21 @@ hasInvalidExtraZwj(badString); // true
 const goodString = '🧔‍♂️'; // {1F9D4}{200D}{2642}{FE0F}
 
 hasInvalidExtraZwj(goodString); // false, even though there are ZWJ characters
+```
+
+### `fullDisplayName`
+
+For apps like marketplaces that want to show both a punycode and unicode name, as well as flag if there is an invalid ZWJ modifier, `fullDisplayName` creates a string that is appropriate for regular, punycode, and invalid punycode names.
+
+```ts
+import { fullDisplayName } from '@bns-x/client';
+
+// regular names:
+fullDisplayName('example.btc'); // "example.btc"
+
+// punycode names:
+fullDisplayName('xn--1ug66vku9r8p9h.btc'); // 'xn--1ug66vku9r8p9h.btc (🧔‍♂️.btc)'
+
+// punycode with extra ZWJ
+fullDisplayName('xn--1ug2145p8xd.btc'); // 'xn--1ug2145p8xd.btc (🧜🏻‍.btc🟥)'
 ```
