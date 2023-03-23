@@ -1,5 +1,14 @@
 # @bns-x/client
 
+## 0.2.1
+
+### Patch Changes
+
+- 08c807a: Moves punycode related functionality into `@bns-x/punycode` package
+- Updated dependencies [08c807a]
+  - @bns-x/punycode@0.2.1
+  - @bns-x/core@0.1.3
+
 ## 0.2.0
 
 ### Minor Changes

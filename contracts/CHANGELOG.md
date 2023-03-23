@@ -1,5 +1,13 @@
 # contracts
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [08c807a]
+  - @bns-x/client@0.2.1
+  - @bns-x/core@0.1.3
+
 ## 0.0.2
 
 ### Patch Changes

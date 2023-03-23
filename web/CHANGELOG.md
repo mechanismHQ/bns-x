@@ -1,5 +1,16 @@
 # web
 
+## 0.1.8
+
+### Patch Changes
+
+- Updated dependencies [08c807a]
+- Updated dependencies [08c807a]
+  - @bns-x/api-types@0.2.0
+  - @bns-x/client@0.2.1
+  - @bns-x/punycode@0.2.1
+  - @bns-x/core@0.1.3
+
 ## 0.1.7
 
 ### Patch Changes

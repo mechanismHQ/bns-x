@@ -1,5 +1,17 @@
 # @bns-x/api-types
 
+## 0.2.0
+
+### Minor Changes
+
+- 08c807a: Updates the NFT metadata route to use new punycode functionality. Also, the returned `name` of the NFT now includes both ascii and punycode versions of the name, along with a '🟥' if the name includes extra ZWJ modifiers.
+
+### Patch Changes
+
+- Updated dependencies [08c807a]
+  - @bns-x/punycode@0.2.1
+  - @bns-x/core@0.1.3
+
 ## 0.1.0
 
 ### Minor Changes
