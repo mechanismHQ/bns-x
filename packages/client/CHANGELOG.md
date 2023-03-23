@@ -1,5 +1,20 @@
 # @bns-x/client
 
+## 0.2.0
+
+### Minor Changes
+
+- f14a8fb: Adds punycode and ZWJ utilities to the package.
+
+### Patch Changes
+
+- d050746: - Exposes utility function `doesNamespaceExpire`, `NO_EXPIRATION_NAMESPACES`, and adds `fetchNamespaceProperties` to `BnsContractsClient`.
+  - Updates Clarigen types
+- 61ee366: New API endpoint to broadcast a transaction to multiple nodes. This can help ensure an attachment is propogated successfully.
+- 4f2105a: Fixes types in the `ZoneFile` class for fetching records. Also add s helpers for getting URI records.
+- Updated dependencies [d050746]
+  - @bns-x/core@0.1.2
+
 ## 0.1.2
 
 ### Patch Changes

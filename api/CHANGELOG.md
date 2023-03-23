@@ -1,5 +1,18 @@
 # @bns-x/api-types
 
+## 0.1.0
+
+### Minor Changes
+
+- 2798640: Fixes an issue with the `name_ownership` materialized view not basing state off of canonical events
+
+### Patch Changes
+
+- 69a8c03: Regenerates the `names` materialized view to properly handle burned and re-minted names
+- 61ee366: New API endpoint to broadcast a transaction to multiple nodes. This can help ensure an attachment is propogated successfully.
+- Updated dependencies [d050746]
+  - @bns-x/core@0.1.2
+
 ## 0.0.5
 
 ### Patch Changes

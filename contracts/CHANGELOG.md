@@ -1,5 +1,16 @@
 # contracts
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [f14a8fb]
+- Updated dependencies [d050746]
+- Updated dependencies [61ee366]
+- Updated dependencies [4f2105a]
+  - @bns-x/client@0.2.0
+  - @bns-x/core@0.1.2
+
 ## null
 
 ### Patch Changes

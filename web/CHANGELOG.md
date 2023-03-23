@@ -1,5 +1,21 @@
 # web
 
+## 0.1.7
+
+### Patch Changes
+
+- deb5f48: When users click 'get started' on the homepage without a Stacks wallet, show the 'connect' screen
+- bc07a70: Added a new "edit profile" page for BNS names, where you can update your zonefile.
+- Updated dependencies [69a8c03]
+- Updated dependencies [f14a8fb]
+- Updated dependencies [d050746]
+- Updated dependencies [61ee366]
+- Updated dependencies [2798640]
+- Updated dependencies [4f2105a]
+  - @bns-x/api-types@0.1.0
+  - @bns-x/client@0.2.0
+  - @bns-x/core@0.1.2
+
 ## 0.1.6
 
 ### Patch Changes
