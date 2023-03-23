@@ -1,3 +1,5 @@
+import { validZwjEmojiRegex } from './zero-width-regexp';
+
 export function codeToString(codePt: number) {
   if (codePt > 0xffff) {
     codePt -= 0x10000;
@@ -7,17 +9,28 @@ export function codeToString(codePt: number) {
   }
 }
 
+export function debugCodePoints(str: string) {
+  return Array.from(str)
+    .map(c => c.codePointAt(0)?.toString(16))
+    .join(' ');
+}
+
 export function zeroWidthRegex() {
   const groups = ZERO_WIDTH_POINTS.map(code => codeToString(code));
   return new RegExp(`[${groups.join('|')}]+`, 'ug');
 }
 
-export function replaceZeroWidth(str: string) {
-  return str.replaceAll(zeroWidthRegex(), '');
+export function replaceZeroWidth(str: string, replacer = '') {
+  return str.replaceAll(zeroWidthRegex(), replacer);
 }
 
 export function hasZeroWidth(str: string) {
   return zeroWidthRegex().test(str);
+}
+
+export function hasInvalidExtraZwj(str: string) {
+  const withoutValid = str.replaceAll(validZwjEmojiRegex, '');
+  return hasZeroWidth(withoutValid);
 }
 
 export const ZERO_WIDTH_POINTS = [

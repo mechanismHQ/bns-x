@@ -203,20 +203,26 @@ importers:
 
   packages/client:
     specifiers:
+      '@adraffy/punycode': ^1.2.0
       '@bns-x/core': workspace:*
       '@clarigen/core': 1.0.13
       '@fungible-systems/zone-file': ^2.0.0
       '@types/jest': ^29.2.4
+      '@types/regenerate': ^1.4.1
+      '@unicode/unicode-15.0.0': ^1.3.1
       axios: ^1.3.4
+      emoji-regex: ^10.2.1
       form-data: ^4.0.0
       jest: ^29.3.1
       micro-stacks: ^1.1.4
       openapi-typescript-codegen: ^0.23.0
+      regenerate: ^1.4.2
       ts-jest: ^29.0.3
       tsup: ^6.5.0
       tsx: ^3.12.3
       zod: 3.20.6
     dependencies:
+      '@adraffy/punycode': 1.2.0
       '@bns-x/core': link:../core
       '@clarigen/core': 1.0.13
       '@fungible-systems/zone-file': 2.0.0
@@ -225,8 +231,12 @@ importers:
       micro-stacks: 1.1.4
     devDependencies:
       '@types/jest': 29.2.4
+      '@types/regenerate': 1.4.1
+      '@unicode/unicode-15.0.0': 1.3.1
+      emoji-regex: 10.2.1
       jest: 29.3.1
       openapi-typescript-codegen: 0.23.0
+      regenerate: 1.4.2
       ts-jest: 29.0.3_jest@29.3.1
       tsup: 6.5.0
       tsx: 3.12.3
@@ -384,6 +394,10 @@ importers:
 
 packages:
 
+  /@adraffy/punycode/1.2.0:
+    resolution: {integrity: sha512-9NDtJIDRnT3Ct7damOyeG071MU/ZwCHe2q/2vbFeHMMAtFlfA99/GE0XbJtnRgXC5pHvJK4vd1YOiGpmXwwZmw==}
+    dev: false
+
   /@ampproject/remapping/2.2.0:
     resolution: {integrity: sha512-qRmjj8nj9qmLTQXXmaR1cck3UXSRMPrbsLJAasZpF+t3riI71BXed5ebIOYwQntykeZuhjsdweEc9BxH5Jc26w==}
     engines: {node: '>=6.0.0'}
@@ -415,8 +429,8 @@ packages:
       - supports-color
     dev: true
 
-  /@artilleryio/int-core/2.0.5:
-    resolution: {integrity: sha512-sqa/bMuoBCgRZgbbfREZWV8oqQdKLlKyikmcmMi+Q83eFU7rf91byLsu1Q7+PU5xx3wwATZJS7HtgTDjd9hQiA==}
+  /@artilleryio/int-core/2.0.6:
+    resolution: {integrity: sha512-ShcvHIcsArTzot+/cGvSTgdl7KgRMUxSfnPkDxY9OJpRAt0l6iEtf40qvF96hf9Is/PntD+reDOsC0GD1n2qKA==}
     dependencies:
       '@artilleryio/int-commons': 2.0.0
       '@artilleryio/sketches-js': 1.0.4
@@ -5031,6 +5045,10 @@ packages:
       csstype: 3.1.1
     dev: false
 
+  /@types/regenerate/1.4.1:
+    resolution: {integrity: sha512-BtBshkGkPu8MOTdqaGFGFX8netLOyqZu4bIYGy66f8RdfT+eJ8KWSziMqAvMycA/2aDsWs0z7MD202vIXKDOaA==}
+    dev: true
+
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
@@ -5417,6 +5435,10 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
+  /@unicode/unicode-15.0.0/1.3.1:
+    resolution: {integrity: sha512-zxm5Cx0v9vGxFOM8tVuArWHxxJTk+stiLA+ZHKt2mJO3HHmM6uN8OFcDGuvcix3MqguQ75am0XvpUgEz4P4vFw==}
+    dev: true
+
   /@vercel/analytics/0.1.11_react@18.2.0:
     resolution: {integrity: sha512-mj5CPR02y0BRs1tN3oZcBNAX9a8NxsIUl9vElDPcqxnMfP0RbRc9fI9Ud7+QDg/1Izvt5uMumsr+6YsmVHcyuw==}
     peerDependencies:
@@ -5801,7 +5823,7 @@ packages:
     hasBin: true
     dependencies:
       '@artilleryio/int-commons': 2.0.0
-      '@artilleryio/int-core': 2.0.5
+      '@artilleryio/int-core': 2.0.6
       '@aws-sdk/credential-providers': 3.264.0
       '@oclif/command': 1.8.22
       '@oclif/config': 1.18.8
@@ -7214,6 +7236,10 @@ packages:
   /emittery/0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
     engines: {node: '>=12'}
+    dev: true
+
+  /emoji-regex/10.2.1:
+    resolution: {integrity: sha512-97g6QgOk8zlDRdgq1WxwgTMgEWGVAQvB5Fdpgc1MkNy56la5SKP9GsMXKDOdqwn90/41a8yPwIGk1Y6WVbeMQA==}
     dev: true
 
   /emoji-regex/8.0.0:
@@ -12182,6 +12208,10 @@ packages:
       esprima: 4.0.1
     dev: true
 
+  /regenerate/1.4.2:
+    resolution: {integrity: sha512-zrceR/XhGYU/d/opr2EKO7aRHUeiBI8qjtfHqADTwZd6Szfy16la6kqD0MIUs5z5hx6AaKa+PixpPrR289+I0A==}
+    dev: true
+
   /regenerator-runtime/0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
 
@@ -13292,7 +13322,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.3.1_@types+node@18.0.6
+      jest: 29.3.1_@types+node@18.11.9
       jest-util: 29.3.1
       json5: 2.2.3
       lodash.memoize: 4.1.2

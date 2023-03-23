@@ -33,6 +33,10 @@ This library has a few main components:
   - [hashFqn](#hashfqn)
   - [parseFqn](#parsefqn)
   - [doesNamespaceExpire](#doesnamespaceexpire)
+- [Punycode](#punycode)
+  - [toUnicode](#tounicode)
+  - [toPunycode](#topunycode)
+  - [Zero-width-join characters and modifiers](#zero-width-join-characters-and-modifiers)
 
 <!-- /TOC -->
 
@@ -403,4 +407,48 @@ import { doesNamespaceExpire, NO_EXPIRATION_NAMESPACES } from '@bns-x/client';
 
 doesNamespaceExpire('stx'); // returns false
 NO_EXPIRATION_NAMESPACE.has('stx'); // returns true
+```
+
+## Punycode
+
+This package includes a few punycode-related functions and utilities.
+
+Under the hood, the [`@adraffy/punycode`](https://github.com/adraffy/punycode.js) library is used.
+
+### `toUnicode`
+
+Converts a punycode string to unicode.
+
+```ts
+import { toUnicode } from '@bns-x/client';
+
+toUnicode('xn--1ug66vku9r8p9h.btc'); // returns '🧔‍♂️.btc'
+```
+
+### `toPunycode`
+
+Convert a unicode string to punycode.
+
+```ts
+import { toPunycode } from '@bns-x/client';
+
+toPunycode('🧔‍♂️.btc'); // returns 'xn--1ug66vku9r8p9h.btc'
+```
+
+### Zero-width-join characters and modifiers
+
+In Emoji, there are various "zero-width" or invisible characters that are part of a valid "emoji sequence". However, some users add _invalid_ ZWJ characters to a name in order to try and trick other users into thinking that a name just a single emoji.
+
+This library exposes some functions for determining whether a string contains extra invalid ZWJ characters. It will _not_ flag valid ZWJ sequence emojis.
+
+```ts
+import { hasInvalidExtraZwj } from '@bns-x/client';
+
+const badString = '🧜🏻‍'; // {1F9DC}{1F3FB}{200D} - extra `200D` at end
+
+hasInvalidExtraZwj(badString); // true
+
+const goodString = '🧔‍♂️'; // {1F9D4}{200D}{2642}{FE0F}
+
+hasInvalidExtraZwj(goodString); // false, even though there are ZWJ characters
 ```

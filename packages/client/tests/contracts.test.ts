@@ -4,6 +4,8 @@ import { BnsContractsClient, hashFqn, randomSalt } from '../src';
 const client = new BnsContractsClient('devnet');
 const core = client.bnsCore;
 
+const [deployer] = client.registry.identifier.split('.');
+
 test('can get name wrapper code', () => {
   const wrapper = client.nameWrapperCode;
 
@@ -32,13 +34,13 @@ test('code samples', async () => {
 
   client.registry.transfer({
     id: 1n,
-    sender: '',
-    recipient: '',
+    sender: deployer,
+    recipient: deployer,
   });
 
   const wrap = client.nameWrapper('asdf');
 
   wrap.unwrap({
-    recipient: '',
+    recipient: deployer,
   });
 });
