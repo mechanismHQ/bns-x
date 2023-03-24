@@ -13,7 +13,10 @@ export function toUnicode(punycode: string) {
 }
 
 export function toPunycode(unicode: string) {
-  return puny_encoded(unicode);
+  return unicode
+    .split('.')
+    .map(part => puny_encoded(part))
+    .join('.');
 }
 
 export function fullDisplayName(name: string) {

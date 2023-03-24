@@ -93,10 +93,14 @@ The logic for determining name order is:
     async (req, res) => {
       const { principal } = req.params;
       const caller = queryHelperRouter.createCaller(createContext({ req, res }));
-      const { name } = await caller.getDisplayName(principal);
-      const names: string[] = [];
-      if (name !== null) names.push(name);
-      return res.status(200).send({ names });
+      try {
+        const { name } = await caller.getDisplayName(principal);
+        const names: string[] = [];
+        if (name !== null) names.push(name);
+        return res.status(200).send({ names });
+      } catch (error) {
+        return res.status(500).send({ error: { message: 'Unexpected error' } });
+      }
     }
   );
 

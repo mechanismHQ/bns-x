@@ -13,10 +13,10 @@ import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-
 import { getContractParts, nameToTupleBytes } from '@common/utils';
 import { currentUserV1NameState } from '@store/names';
 
-export function hashAtom(name: string) {
+export function hashAtom(name: string, defaultValue?: string) {
   return typeof window === 'undefined'
-    ? atom<string | undefined>(undefined)
-    : atomWithHash<string | undefined>(name, undefined);
+    ? atom<string | undefined>(defaultValue)
+    : atomWithHash<string | undefined>(name, defaultValue);
 }
 
 export const wrapperDeployTxidAtom = hashAtom('deployTx');
