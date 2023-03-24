@@ -29,10 +29,14 @@ export const Punycode: React.FC<{ children?: React.ReactNode }> = () => {
   }, [inputValue]);
 
   const output = useMemo(() => {
-    if (inputType === 'punycode') {
-      return toUnicode(inputValue);
+    try {
+      if (inputType === 'punycode') {
+        return toUnicode(inputValue);
+      }
+      return toPunycode(inputValue);
+    } catch (error) {
+      return 'error';
     }
-    return toPunycode(inputValue);
   }, [inputValue, inputType]);
 
   const unicode = useMemo(() => {
@@ -40,15 +44,30 @@ export const Punycode: React.FC<{ children?: React.ReactNode }> = () => {
   }, [inputValue, inputType, output]);
 
   const displayName = useMemo(() => {
-    if (inputType === 'punycode') {
-      return fullDisplayName(inputValue);
+    try {
+      if (inputType === 'punycode') {
+        return fullDisplayName(inputValue);
+      }
+      return fullDisplayName(output);
+    } catch (error) {
+      return '';
     }
-    return fullDisplayName(output);
   }, [inputType, output, inputValue]);
 
   const hasInvalidZwj = useMemo(() => {
     return hasInvalidExtraZwj(unicode);
   }, [unicode]);
+
+  const roundTripped = useMemo(() => {
+    try {
+      if (inputType === 'unicode') {
+        return toUnicode(output);
+      }
+      return toPunycode(output);
+    } catch (error) {
+      return '';
+    }
+  }, [inputType, output]);
 
   const bytes = useMemo(() => {
     // const value = inputType === 'unicode' ? input.value : output;
@@ -115,6 +134,21 @@ export const Punycode: React.FC<{ children?: React.ReactNode }> = () => {
       <Stack spacing="5px">
         <Text variant="Caption01">Invalid extra ZWJ?</Text>
         <Text variant="Body01">{hasInvalidZwj ? 'true' : 'false'}</Text>
+      </Stack>
+      <Stack spacing="5px">
+        <Text variant="Caption01">Reversed</Text>
+        <Text variant="Body01">
+          {roundTripped === inputValue ? (
+            'true'
+          ) : (
+            <>
+              <span color="#a24e4e">false</span>
+              {' - '}
+              {roundTripped} !== {inputValue}
+            </>
+          )}
+          {/* {roundTripped === inputValue ? 'true' : 'false'} */}
+        </Text>
       </Stack>
     </Stack>
   );
