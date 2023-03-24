@@ -1,5 +1,16 @@
 # web
 
+## 0.1.9
+
+### Patch Changes
+
+- 6193fb6: Adds `/punycode` page to debug punycode display
+- Updated dependencies [6193fb6]
+  - @bns-x/punycode@0.2.2
+  - @bns-x/api-types@0.2.1
+  - @bns-x/client@0.2.2
+  - @bns-x/core@0.1.4
+
 ## 0.1.8
 
 ### Patch Changes
