@@ -19,11 +19,13 @@ export function toPunycode(unicode: string) {
     .join('.');
 }
 
+export const INVALID_PUNY_ICON = '⚠️';
+
 export function fullDisplayName(name: string) {
   const puny = toUnicode(name);
   let displayName = name;
   if (puny !== name) {
-    const flagged = hasInvalidExtraZwj(puny) ? '🟥' : '';
+    const flagged = hasInvalidExtraZwj(puny) ? INVALID_PUNY_ICON : '';
     displayName = `${name} (${puny}${flagged})`;
   }
   return displayName;

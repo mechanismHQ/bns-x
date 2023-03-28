@@ -1,5 +1,5 @@
 import { puny_decode, puny_decoded } from '@adraffy/punycode';
-import { toUnicode, toPunycode, fullDisplayName } from '../src/punycode';
+import { toUnicode, toPunycode, fullDisplayName, INVALID_PUNY_ICON } from '../src/punycode';
 import { debugCodePoints, hasInvalidExtraZwj } from '../src/zero-width';
 
 function expectInvalid(str: string) {
@@ -61,7 +61,7 @@ test('full display name', () => {
 
   const display = fullDisplayName(name);
 
-  expect(display).toEqual('xn--1ug2145p8xd.btc (🧜🏻‍.btc🟥)');
+  expect(display).toEqual(`xn--1ug2145p8xd.btc (🧜🏻‍.btc${INVALID_PUNY_ICON})`);
 
   expect(fullDisplayName('example.btc')).toEqual('example.btc');
 

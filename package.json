@@ -20,7 +20,8 @@
     "typecheck": "turbo run typecheck --continue",
     "api:prod": "pnpm --filter @bns-x/api-types start",
     "build:packages": "turbo run build --filter @bns-x/client",
-    "publish-local": "pnpm build:packages && pnpm publish -r"
+    "publish-local": "pnpm build:packages && pnpm publish -r",
+    "test": "turbo run test"
   },
   "author": "Hank Stoever",
   "license": "ISC",
