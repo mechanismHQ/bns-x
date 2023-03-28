@@ -1,6 +1,6 @@
 {
   "name": "@bns-x/client",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "MIT",
   "private": false,
   "publishConfig": {

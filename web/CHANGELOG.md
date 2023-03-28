@@ -1,5 +1,15 @@
 # web
 
+## 0.1.10
+
+### Patch Changes
+
+- Updated dependencies [c389100]
+  - @bns-x/punycode@0.2.3
+  - @bns-x/api-types@0.2.2
+  - @bns-x/client@0.2.3
+  - @bns-x/core@0.1.5
+
 ## 0.1.9
 
 ### Patch Changes

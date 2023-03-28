@@ -1,5 +1,14 @@
 # @bns-x/api-types
 
+## 0.2.2
+
+### Patch Changes
+
+- c389100: Updates the icon shown for invalid (extra ZWJ) punycode names to be ⚠️ instead of 🟥
+- Updated dependencies [c389100]
+  - @bns-x/punycode@0.2.3
+  - @bns-x/core@0.1.5
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @bns-x/core
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [c389100]
+  - @bns-x/punycode@0.2.3
+
 ## 0.1.4
 
 ### Patch Changes

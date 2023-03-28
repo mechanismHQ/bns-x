@@ -1,5 +1,12 @@
 # contracts
 
+## 0.0.5
+
+### Patch Changes
+
+- @bns-x/client@0.2.3
+- @bns-x/core@0.1.5
+
 ## 0.0.4
 
 ### Patch Changes
