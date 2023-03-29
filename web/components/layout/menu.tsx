@@ -152,7 +152,16 @@ const MenuDropdown: React.FC = () => {
             </PopoverOption>
           )}
 
-          <PopoverOption onClick={async () => await switchAccounts()}>
+          <PopoverOption
+            onClick={async () => {
+              await switchAccounts(async () => {
+                const pathname = ONLY_INSCRIPTIONS ? '/' : '/profile';
+                await router.push({
+                  pathname,
+                });
+              });
+            }}
+          >
             <Text variant="Body02">Switch accounts</Text>
           </PopoverOption>
           <PopoverOption>

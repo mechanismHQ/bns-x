@@ -23,8 +23,9 @@ import {
   Status,
   getAppDetails,
   watchAppDetails,
+  getClient,
 } from '@micro-stacks/client';
-import { ChainID } from 'micro-stacks/common';
+import { ChainID, hexToBytes } from 'micro-stacks/common';
 
 import type {
   State,
@@ -32,10 +33,15 @@ import type {
   ContractCallParams,
   ContractDeployParams,
   StxTransferParams,
+  Account as MicroStackAccount,
 } from '@micro-stacks/client';
 import type { PropsWithChildren } from 'react';
 import type { SignedOptionsWithOnHandlers } from 'micro-stacks/connect';
 import type { ClarityValue } from 'micro-stacks/clarity';
+import type { Mutate, StoreApi } from 'zustand/vanilla';
+import { c32address, StacksNetworkVersion } from 'micro-stacks/crypto';
+import type { StacksNetwork } from 'micro-stacks/network';
+import isEqual from 'lodash-es/isEqual';
 
 /** ------------------------------------------------------------------------------------------------------------------
  *   Client
@@ -125,6 +131,50 @@ export const useNetworkValue = () => useAtomValue(networkAtom);
 export const useStatusValue = () => useAtomValue(statusAtom);
 export const useDecentralizedIDValue = () => useAtomValue(decentralizedIDAtom);
 export const useAppDetails = () => useAtomValue(appDetailsAtom);
+
+export type Account = MicroStackAccount & {
+  stxAddress: string;
+};
+
+function selectAccounts(accounts: MicroStackAccount[], network: StacksNetwork): Account[] {
+  return accounts.map(account => ({
+    stxAddress: c32address(
+      network.isMainnet() ? account.address[0] : StacksNetworkVersion.testnetP2PKH,
+      hexToBytes(account.address[1])
+    ),
+    ...account,
+  }));
+}
+
+// return de-duped accounts
+export function getCleanAccounts(options: { client: MicroStacksClient; state?: State }): Account[] {
+  const { client, state } = options;
+  const accounts = state?.accounts || client.getState().accounts;
+  const network = state?.network || client.getState().network;
+
+  const clean: Account[] = [];
+
+  accounts.forEach((account: MicroStackAccount) => {
+    const exists = clean.find(a => a.address[1] === account.address[1]);
+    if (exists) return;
+    clean.push({
+      stxAddress: c32address(
+        network.isMainnet() ? account.address[0] : StacksNetworkVersion.testnetP2PKH,
+        hexToBytes(account.address[1])
+      ),
+      ...account,
+    });
+  });
+  return clean;
+}
+
+export const cleanAccountsAtom = atomWithMicroStacks<Account[]>(
+  getCleanAccounts,
+  (callback: (payload: Account[]) => void, client: MicroStacksClient = getClient()) =>
+    client.subscribe((state: State) => selectAccounts(state.accounts, state.network), callback, {
+      equalityFn: isEqual,
+    })
+);
 
 /** ------------------------------------------------------------------------------------------------------------------
  *  Authentication (derived state)
@@ -353,9 +403,9 @@ export const useOpenSignStructuredMessageState = () => useAtomValue(openSignStru
 /** ------------------------------------------------------------------------------------------------------------------
  */
 
-// export const currentAccountIndexOverrideAtom = atom<number | null>(null);
+export const currentAccountIndexOverrideAtom = atom<number | null>(null);
 
-// export const currentAccountAtom = atom(get => {
+// export const currentAccountOverrideAtom = atom(get => {
 //   const state = get(clientState);
 //   const { accounts, currentAccountIndex } = state.getState();
 //   const indexOverride = get(currentAccountIndexOverrideAtom);
@@ -363,4 +413,30 @@ export const useOpenSignStructuredMessageState = () => useAtomValue(openSignStru
 //     return accounts[indexOverride];
 //   }
 //   return accounts.at(-1);
+// });
+
+export const microStacksStoreAtom = atom(get => {
+  const client = get(clientState);
+  const store = client.store as StoreApi<State>;
+  return store;
+});
+
+// export const cleanAccountsAtom = atom(get => {
+//   const accounts = get(accountsAtom);
+//   const network = get(networkState);
+
+//   const clean: Account[] = [];
+
+//   accounts.forEach((account: MicroStackAccount) => {
+//     const exists = clean.find(a => a.address[1] === account.address[1]);
+//     if (exists) return;
+//     clean.push({
+//       stxAddress: c32address(
+//         network.isMainnet ? account.address[0] : StacksNetworkVersion.testnetP2PKH,
+//         hexToBytes(account.address[1])
+//       ),
+//       ...account,
+//     });
+//   });
+//   return clean;
 // });
