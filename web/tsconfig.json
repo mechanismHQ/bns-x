@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -16,17 +20,45 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "sourceMap": true,
     "baseUrl": ".",
-    "types": ["jest", "@stacks/connect-ui"],
+    "types": [
+      "jest",
+      "@stacks/connect-ui"
+    ],
     "paths": {
-      "@components/*": ["./components/*"],
-      "@store/*": ["./common/store/*"],
-      "@store": ["./common/store"],
-      "@common/*": ["./common/*"],
-      "@pages/*": ["./pages/*"],
-      "@hooks/*": ["./common/hooks/*"]
-    }
+      "@components/*": [
+        "./components/*"
+      ],
+      "@store/*": [
+        "./common/store/*"
+      ],
+      "@store": [
+        "./common/store"
+      ],
+      "@common/*": [
+        "./common/*"
+      ],
+      "@pages/*": [
+        "./pages/*"
+      ],
+      "@hooks/*": [
+        "./common/hooks/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
