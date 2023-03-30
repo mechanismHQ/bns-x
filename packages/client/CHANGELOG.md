@@ -1,5 +1,11 @@
 # @bns-x/client
 
+## 0.2.4
+
+### Patch Changes
+
+- bc1ce22: Readme updates and improvements to `getNameDetails`
+
 ## 0.2.3
 
 ### Patch Changes
