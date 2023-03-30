@@ -73,13 +73,17 @@ const name = await bns.getDisplayName(address);
 
 ### Get details about a name
 
-Returns: `NameInfoResponse`
+You can call `getNameDetails` two different ways:
+
+- `getNameDetails(name)` - where `name` is a fully-qualified name (like `example.btc`)
+- `getNameDetails(name, namespace)`
+
+Returns: `NameInfoResponse | null`
 
 ```ts
-const details = await bns.getNameDetails('example', 'btc');
-
-// also can use a helper for a full name:
-await bns.getNameDetailsFromFqn('example.btc');
+const details = await bns.getNameDetails('example.btc');
+// equivalent to:
+// const details = await bns.getNameDetails('example', 'btc');
 ```
 
 If the name doesn't exist, the function returns `null`.
@@ -179,7 +183,7 @@ export const clarigen = new Clarigen(microStacksClient);
 const primaryName = await clarigen.ro(contracts.registry.getPrimaryName(address));
 
 // `roOk` is a helper to automatically expect and scope to a function's `ok` type
-const price = await clarigen.roOk(contracts.legacyBns.getNamePrice(nameBuff, namespaceBuff));
+const price = await clarigen.roOk(contracts.bnsCore.getNamePrice(nameBuff, namespaceBuff));
 ```
 
 **Make transactions**

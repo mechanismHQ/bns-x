@@ -54,8 +54,9 @@ export class BnsApiClient {
    * @param namespace
    * @returns
    */
-  async getNameDetails(name: string, namespace: string): Promise<NameInfoResponse | null> {
-    return this.getNameDetailsFromFqn(`${name}.${namespace}`);
+  async getNameDetails(name: string, namespace?: string): Promise<NameInfoResponse | null> {
+    const fqn = namespace ? `${name}.${namespace}` : name;
+    return this.getNameDetailsFromFqn(fqn);
   }
 
   /**
