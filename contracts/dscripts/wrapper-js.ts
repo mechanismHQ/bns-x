@@ -1,16 +1,22 @@
-const code = await Deno.readTextFile('./contracts/name-wrapper.clar');
+const code = await Deno.readTextFile('./contracts/name-wrapper-v2.clar');
+const oldCode = await Deno.readTextFile('./contracts/name-wrapper.clar');
+const template = await Deno.readTextFile('./dscripts/wrapper-js-template.ts');
 
-function file(code: string) {
-  const fixed = code.replaceAll('`', '\\`');
-  return `export const nameWrapperCode = \`${fixed}\`;
-`;
+function serialize(code: string) {
+  return code.replaceAll('`', '\\`');
 }
 
-await Deno.writeTextFile('./tests/mocks/wrapper.ts', file(code));
+function makeTemplate(currentCode: string, oldCode: string) {
+  return template
+    .replace('$$CODE$$', serialize(currentCode))
+    .replace('$$OLD_CODE$$', serialize(oldCode));
+}
 
-// const testnet = code.replaceAll(
-//   "SP000000000000000000002Q6VF78",
-//   "ST000000000000000000002AMW42H"
-// );
-const testnet = await Deno.readTextFile('./contracts/testnet/name-wrapper.clar');
-await Deno.writeTextFile('../packages/client/src/wrapper-code.ts', file(testnet));
+await Deno.writeTextFile('./tests/mocks/wrapper.ts', makeTemplate(code, oldCode));
+
+const testnet = await Deno.readTextFile('./contracts/testnet/name-wrapper-v2.clar');
+const testnetOld = await Deno.readTextFile('./contracts/testnet/name-wrapper.clar');
+await Deno.writeTextFile(
+  '../packages/client/src/wrapper-code.ts',
+  makeTemplate(testnet, testnetOld)
+);

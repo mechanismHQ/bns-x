@@ -3,7 +3,7 @@ import { contractFactory, projectFactory, ClarigenClient } from '@clarigen/core'
 import { asciiToBytes } from 'micro-stacks/common';
 import { convertNameBuff, getContractParts, project, contracts } from '@bns-x/core';
 import { getBnsDeployer } from './constants';
-import { nameWrapperCode } from './wrapper-code';
+import { nameWrapperCode, nameWrappers } from './wrapper-code';
 
 export type BnsxContracts = ProjectFactory<typeof project, DeploymentNetwork>;
 
@@ -41,15 +41,27 @@ export class BnsContractsClient {
   }
 
   get nameWrapperCode() {
+    return this.convertNameWrapperCode(nameWrapperCode);
+  }
+
+  get validNameWrappers(): typeof nameWrappers {
+    return nameWrappers.map(c => this.convertNameWrapperCode(c)) as unknown as typeof nameWrappers;
+  }
+
+  isValidNameWrapper(code: string) {
+    const found = this.validNameWrappers.find(c => c === code);
+    return typeof found !== 'undefined';
+  }
+
+  private convertNameWrapperCode(code: string) {
     const registryId = this.registry.identifier;
     const [addr] = getContractParts(registryId);
     const devnetDeployer = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
 
-    // TODO: fix bns for mainnet
-    const code = nameWrapperCode
+    const converted = code
       .replaceAll(devnetDeployer, addr)
       .replaceAll('ST000000000000000000002AMW42H', getBnsDeployer(this.isMainnet));
-    return code;
+    return converted;
   }
 
   /**

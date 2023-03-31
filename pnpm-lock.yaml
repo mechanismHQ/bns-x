@@ -11,8 +11,8 @@ importers:
       '@changesets/changelog-git': ^0.1.14
       '@changesets/changelog-github': ^0.4.8
       '@changesets/cli': ^2.26.0
-      '@clarigen/core': 1.0.13
-      '@clarigen/node': 1.0.13
+      '@clarigen/core': 1.0.14
+      '@clarigen/node': 1.0.14
       '@stacks/eslint-config': 1.2.0
       '@stacks/prettier-config': 0.0.10
       '@swc-node/register': ^1.3.7
@@ -39,7 +39,7 @@ importers:
       turbo: ^1.7.0
       typescript: 4.9.5
     dependencies:
-      '@clarigen/core': 1.0.13
+      '@clarigen/core': 1.0.14
       '@swc-node/register': 1.5.4_sl7dajxzqfsam4oulj5gieox3e
       '@swc/cli': 0.1.57_@swc+core@1.3.14
       '@swc/core': 1.3.14
@@ -56,7 +56,7 @@ importers:
       '@changesets/changelog-git': 0.1.14
       '@changesets/changelog-github': 0.4.8
       '@changesets/cli': 2.26.0
-      '@clarigen/node': 1.0.13
+      '@clarigen/node': 1.0.14
       '@stacks/eslint-config': 1.2.0_x6nlooz7zehsmdve7nmg3c3pmy
       '@stacks/prettier-config': 0.0.10
       '@types/localtunnel': 2.0.1
@@ -75,8 +75,8 @@ importers:
     specifiers:
       '@bns-x/core': workspace:*
       '@bns-x/punycode': workspace:*
-      '@clarigen/core': 1.0.13
-      '@clarigen/node': 1.0.13
+      '@clarigen/core': 1.0.14
+      '@clarigen/node': 1.0.14
       '@fastify/cors': ^8.2.0
       '@fastify/http-proxy': 8.4.0
       '@fastify/static': ^6.6.1
@@ -134,8 +134,8 @@ importers:
     dependencies:
       '@bns-x/core': link:../packages/core
       '@bns-x/punycode': link:../packages/punycode
-      '@clarigen/core': 1.0.13
-      '@clarigen/node': 1.0.13
+      '@clarigen/core': 1.0.14
+      '@clarigen/node': 1.0.14
       '@fastify/cors': 8.2.0
       '@fastify/http-proxy': 8.4.0
       '@fastify/static': 6.6.1
@@ -208,7 +208,7 @@ importers:
       '@adraffy/punycode': ^1.2.0
       '@bns-x/core': workspace:*
       '@bns-x/punycode': workspace:*
-      '@clarigen/core': 1.0.13
+      '@clarigen/core': 1.0.14
       '@fungible-systems/zone-file': ^2.0.0
       '@types/jest': ^29.2.4
       '@types/regenerate': ^1.4.1
@@ -228,7 +228,7 @@ importers:
       '@adraffy/punycode': 1.2.0
       '@bns-x/core': link:../core
       '@bns-x/punycode': link:../punycode
-      '@clarigen/core': 1.0.13
+      '@clarigen/core': 1.0.14
       '@fungible-systems/zone-file': 2.0.0
       axios: 1.3.4
       form-data: 4.0.0
@@ -249,14 +249,14 @@ importers:
   packages/core:
     specifiers:
       '@bns-x/punycode': workspace:*
-      '@clarigen/core': 1.0.13
+      '@clarigen/core': 1.0.14
       micro-stacks: ^1.1.4
       punycode: ^2.1.1
       tsup: ^6.5.0
       zod: 3.20.6
     dependencies:
       '@bns-x/punycode': link:../punycode
-      '@clarigen/core': 1.0.13
+      '@clarigen/core': 1.0.14
       micro-stacks: 1.1.4
       punycode: 2.1.1
       zod: 3.20.6
@@ -294,9 +294,9 @@ importers:
       '@bns-x/client': workspace:*
       '@bns-x/core': workspace:*
       '@bns-x/punycode': workspace:*
-      '@clarigen/core': 1.0.13
-      '@clarigen/node': 1.0.13
-      '@clarigen/web': 1.0.13
+      '@clarigen/core': 1.0.14
+      '@clarigen/node': 1.0.14
+      '@clarigen/web': 1.0.14
       '@fungible-systems/zone-file': ^2.0.0
       '@micro-stacks/client': 1.1.2
       '@micro-stacks/jotai': ^1.0.6
@@ -362,9 +362,9 @@ importers:
       '@bns-x/client': link:../packages/client
       '@bns-x/core': link:../packages/core
       '@bns-x/punycode': link:../packages/punycode
-      '@clarigen/core': 1.0.13
-      '@clarigen/node': 1.0.13
-      '@clarigen/web': 1.0.13_react@18.2.0
+      '@clarigen/core': 1.0.14
+      '@clarigen/node': 1.0.14
+      '@clarigen/web': 1.0.14_react@18.2.0
       '@fungible-systems/zone-file': 2.0.0
       '@micro-stacks/client': 1.1.2_react@18.2.0
       '@micro-stacks/jotai': 1.0.6_5hegripkw2pwstpbdvgaz5vrvm
@@ -2354,8 +2354,8 @@ packages:
       prettier: 2.8.4
     dev: true
 
-  /@clarigen/core/1.0.13:
-    resolution: {integrity: sha512-ZOO6GbIhWN3G6vC3DOjHeuTEBjva+qYjXipXKLWpMVUVrUeT13szni7Y+b483XJnISE2NV54HaLaJ/AJguVWsA==}
+  /@clarigen/core/1.0.14:
+    resolution: {integrity: sha512-Qi7fwvyb6sFY0vYzFFVDfP7EblMPM71LZrm773CAorqFe6H1u1a7wtJITpNBCelHiL5c6P23sAzueXQZYd+NIA==}
     engines: {node: '>=10'}
     dependencies:
       micro-stacks: 1.1.4
@@ -2363,21 +2363,21 @@ packages:
       - '@scure/bip32'
       - '@scure/bip39'
 
-  /@clarigen/node/1.0.13:
-    resolution: {integrity: sha512-n8W30dF/HgWa4bkBQ1BT+zqk6VHS4pMzm7JwmM9Atr7EoUTx3ceVVDsB0VVhTNSMWaays6OISlk1dzQQHAC/mA==}
+  /@clarigen/node/1.0.14:
+    resolution: {integrity: sha512-RZYLoTwDv61U9ueHl6qElqD2iYVVdRqQXTt2f3DaNtFCBHJ8pSIOh/gb6hN9JMY5ZyZ2XqrDq88t3IjQdttAnA==}
     engines: {node: '>=10'}
     dependencies:
-      '@clarigen/core': 1.0.13
+      '@clarigen/core': 1.0.14
       micro-stacks: 1.1.4
     transitivePeerDependencies:
       - '@scure/bip32'
       - '@scure/bip39'
 
-  /@clarigen/web/1.0.13_react@18.2.0:
-    resolution: {integrity: sha512-2lpLxx7jPxWJymG9VwK6gnimErvQXKZXstAL5B+BoMJ+lgjyKImILfdEJWlLj+md9gwhf0fb+pGzAHOUlbrLnQ==}
+  /@clarigen/web/1.0.14_react@18.2.0:
+    resolution: {integrity: sha512-9iMEfpUBkegthDQ12HdhW43y2YPNo4bsIUQ3k/Xu4HyWGU+rMt5i7+6+d5kp21kF+FdaZMvbFYD0NOH/3SgTzA==}
     engines: {node: '>=10'}
     dependencies:
-      '@clarigen/core': 1.0.13
+      '@clarigen/core': 1.0.14
       '@micro-stacks/client': 1.1.2_react@18.2.0
       micro-stacks: 1.1.4
     transitivePeerDependencies:
@@ -4124,6 +4124,11 @@ packages:
       konva: '>=2.6'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-konva: ^16.8.0 || ^17.0.0
+    peerDependenciesMeta:
+      konva:
+        optional: true
+      react-konva:
+        optional: true
     dependencies:
       '@react-spring/animated': 9.6.1_react@18.2.0
       '@react-spring/core': 9.6.1_react@18.2.0
@@ -4137,6 +4142,9 @@ packages:
     peerDependencies:
       react: ^16.8.0  || >=17.0.0 || >=18.0.0
       react-native: '>=0.58'
+    peerDependenciesMeta:
+      react-native:
+        optional: true
     dependencies:
       '@react-spring/animated': 9.6.1_react@18.2.0
       '@react-spring/core': 9.6.1_react@18.2.0
@@ -4165,6 +4173,11 @@ packages:
       '@react-three/fiber': '>=6.0'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       three: '>=0.126'
+    peerDependenciesMeta:
+      '@react-three/fiber':
+        optional: true
+      three:
+        optional: true
     dependencies:
       '@react-spring/animated': 9.6.1_react@18.2.0
       '@react-spring/core': 9.6.1_react@18.2.0
@@ -4198,6 +4211,11 @@ packages:
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-zdog: '>=1.0'
       zdog: '>=1.0'
+    peerDependenciesMeta:
+      react-zdog:
+        optional: true
+      zdog:
+        optional: true
     dependencies:
       '@react-spring/animated': 9.6.1_react@18.2.0
       '@react-spring/core': 9.6.1_react@18.2.0
@@ -5992,7 +6010,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
     transitivePeerDependencies:
       - debug
     dev: true
@@ -6000,7 +6018,7 @@ packages:
   /axios/0.25.0_debug@4.3.4:
     resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -8535,17 +8553,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-
-  /follow-redirects/1.15.2_debug@4.3.4:
-    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dependencies:
-      debug: 4.3.4
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}

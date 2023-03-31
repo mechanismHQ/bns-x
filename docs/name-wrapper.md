@@ -1,6 +1,6 @@
 # name-wrapper
 
-[`name-wrapper.clar`](../contracts/name-wrapper.clar)
+[`name-wrapper.clar`](../contracts/contracts/name-wrapper.clar)
 
 Source code for the name wrapper contract.
 
@@ -47,7 +47,7 @@ BNSx, then only Alice can interact with this contract.
 
 ### unwrap
 
-[View in file](../contracts/name-wrapper.clar#L29)
+[View in file](../contracts/contracts/name-wrapper.clar#L29)
 
 `(define-public (unwrap ((recipient (optional principal))) (response (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal)) uint))`
 
@@ -87,7 +87,7 @@ mapping between BNSx and BNS legacy names.
 
 ### get-own-name
 
-[View in file](../contracts/name-wrapper.clar#L44)
+[View in file](../contracts/contracts/name-wrapper.clar#L44)
 
 `(define-read-only (get-own-name () (response (tuple (name (buff 48)) (namespace (buff 20))) uint))`
 
@@ -106,7 +106,7 @@ Helper method to fetch the BNS legacy name owned by this contract.
 
 ### get-name-info
 
-[View in file](../contracts/name-wrapper.clar#L51)
+[View in file](../contracts/contracts/name-wrapper.clar#L51)
 
 `(define-read-only (get-name-info () (response (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal)) uint))`
 
@@ -133,7 +133,7 @@ legacy name owned by this contract. For example, if this contract owns
 
 ### get-owner
 
-[View in file](../contracts/name-wrapper.clar#L63)
+[View in file](../contracts/contracts/name-wrapper.clar#L63)
 
 `(define-read-only (get-owner () (response principal uint))`
 
@@ -153,7 +153,7 @@ contract's legacy name
 
 ### name-update
 
-[View in file](../contracts/name-wrapper.clar#L70)
+[View in file](../contracts/contracts/name-wrapper.clar#L70)
 
 `(define-public (name-update ((namespace (buff 20)) (name (buff 48)) (zonefile-hash (buff 20))) (response bool uint))`
 
@@ -193,7 +193,7 @@ Helper method to interact with legacy BNS to update the zonefile for this name
 
 ### get-wrapper-id
 
-[View in file](../contracts/name-wrapper.clar#L85)
+[View in file](../contracts/contracts/name-wrapper.clar#L85)
 
 `(define-read-only (get-wrapper-id () (optional uint))`
 
@@ -210,7 +210,7 @@ Helper method to interact with legacy BNS to update the zonefile for this name
 
 ### register-self
 
-[View in file](../contracts/name-wrapper.clar#L89)
+[View in file](../contracts/contracts/name-wrapper.clar#L89)
 
 `(define-private (register-self () (response uint uint))`
 
@@ -244,7 +244,7 @@ Helper method to interact with legacy BNS to update the zonefile for this name
 (define-data-var wrapper-id-var (optional uint) none)
 ```
 
-[View in file](../contracts/name-wrapper.clar#L18)
+[View in file](../contracts/contracts/name-wrapper.clar#L18)
 
 ## Constants
 
@@ -254,7 +254,7 @@ Helper method to interact with legacy BNS to update the zonefile for this name
 (define-constant ERR_NO_NAME (err u10000))
 ```
 
-[View in file](../contracts/name-wrapper.clar#L13)
+[View in file](../contracts/contracts/name-wrapper.clar#L13)
 
 ### ERR_NAME_TRANSFER
 
@@ -262,7 +262,7 @@ Helper method to interact with legacy BNS to update the zonefile for this name
 (define-constant ERR_NAME_TRANSFER (err u10001))
 ```
 
-[View in file](../contracts/name-wrapper.clar#L14)
+[View in file](../contracts/contracts/name-wrapper.clar#L14)
 
 ### ERR_UNAUTHORIZED
 
@@ -270,7 +270,7 @@ Helper method to interact with legacy BNS to update the zonefile for this name
 (define-constant ERR_UNAUTHORIZED (err u10002))
 ```
 
-[View in file](../contracts/name-wrapper.clar#L15)
+[View in file](../contracts/contracts/name-wrapper.clar#L15)
 
 ### ERR_NOT_WRAPPED
 
@@ -278,4 +278,4 @@ Helper method to interact with legacy BNS to update the zonefile for this name
 (define-constant ERR_NOT_WRAPPED (err u10003))
 ```
 
-[View in file](../contracts/name-wrapper.clar#L16)
+[View in file](../contracts/contracts/name-wrapper.clar#L16)

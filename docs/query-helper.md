@@ -1,6 +1,6 @@
 # query-helper
 
-[`query-helper.clar`](../contracts/query-helper.clar)
+[`query-helper.clar`](../contracts/contracts/query-helper.clar)
 
 Query helper contract for fetching an account's names
 
@@ -35,7 +35,7 @@ execution cost associated with fetching data.
 
 ### get-names
 
-[View in file](../contracts/query-helper.clar#L21)
+[View in file](../contracts/contracts/query-helper.clar#L21)
 
 `(define-read-only (get-names ((account principal)) (tuple (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20))))) (names (list 20 (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 48)) (owner principal)))) (next-id (optional uint))))`
 
@@ -70,7 +70,7 @@ The account's primary BNSx name will be returned first
 
 ### get-legacy-name
 
-[View in file](../contracts/query-helper.clar#L30)
+[View in file](../contracts/contracts/query-helper.clar#L30)
 
 `(define-read-only (get-legacy-name ((account principal)) (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (name (buff 48)) (namespace (buff 20)) (owner principal) (zonefile-hash (buff 20)))))`
 
@@ -100,7 +100,7 @@ Fetch the BNS legacy name and name properties owned by a given account.
 
 ### resolve-legacy-name
 
-[View in file](../contracts/query-helper.clar#L38)
+[View in file](../contracts/contracts/query-helper.clar#L38)
 
 `(define-read-only (resolve-legacy-name ((name (tuple (name (buff 48)) (namespace (buff 20))))) (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20)))))`
 
@@ -129,7 +129,7 @@ Given a `name,namespace` tuple, return the properties of that name
 
 ### get-bnsx-name
 
-[View in file](../contracts/query-helper.clar#L50)
+[View in file](../contracts/contracts/query-helper.clar#L50)
 
 `(define-read-only (get-bnsx-name ((id uint)) (optional (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 20)) (owner principal))))`
 
@@ -160,7 +160,7 @@ BNS.
 
 ### get-bnsx-by-name
 
-[View in file](../contracts/query-helper.clar#L60)
+[View in file](../contracts/contracts/query-helper.clar#L60)
 
 `(define-read-only (get-bnsx-by-name ((name (tuple (name (buff 48)) (namespace (buff 20))))) (optional (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 20)) (owner principal))))`
 
@@ -190,7 +190,7 @@ Same as [`get-bnsx-name`](#get-bnsx-name) but looking up via {name, namespace}.
 
 ### crawl-names
 
-[View in file](../contracts/query-helper.clar#L87)
+[View in file](../contracts/contracts/query-helper.clar#L87)
 
 `(define-read-only (crawl-names ((account principal)) (tuple (names (list 20 (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 48)) (owner principal)))) (next-id (optional uint))))`
 
@@ -250,7 +250,7 @@ will be `none`.
 
 ### crawl-from-id
 
-[View in file](../contracts/query-helper.clar#L110)
+[View in file](../contracts/contracts/query-helper.clar#L110)
 
 `(define-read-only (crawl-from-id ((id uint)) (tuple (names (list 20 (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 48)) (owner principal)))) (next-id (optional uint))))`
 
@@ -294,7 +294,7 @@ names.
 
 ### crawl-fold
 
-[View in file](../contracts/query-helper.clar#L133)
+[View in file](../contracts/contracts/query-helper.clar#L133)
 
 `(define-read-only (crawl-fold ((index uint) (iterator (tuple (names (list 20 (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 48)) (owner principal)))) (next-id (optional uint))))) (tuple (names (list 20 (tuple (id uint) (legacy (optional (tuple (lease-ending-at (optional uint)) (lease-started-at uint) (owner principal) (zonefile-hash (buff 20))))) (name (buff 48)) (namespace (buff 48)) (owner principal)))) (next-id (optional uint))))`
 
@@ -362,7 +362,7 @@ Internal method for iterating over names
 (define-constant ARRAY (list u0 u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18))
 ```
 
-[View in file](../contracts/query-helper.clar#L6)
+[View in file](../contracts/contracts/query-helper.clar#L6)
 
 ### MAX_NAMES_QUERY
 
@@ -370,4 +370,4 @@ Internal method for iterating over names
 (define-constant MAX_NAMES_QUERY (+ (len ARRAY) u1))
 ```
 
-[View in file](../contracts/query-helper.clar#L8)
+[View in file](../contracts/contracts/query-helper.clar#L8)

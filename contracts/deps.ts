@@ -9,13 +9,13 @@ export {
   err,
   factory,
   valueToCV,
-} from 'https://deno.land/x/clarigen@v0.4.15/mod.ts';
+} from 'https://deno.land/x/clarigen@v0.5.4/mod.ts';
 export type {
   FullContract,
   ContractCallTyped,
   UnknownArgs,
   Response,
-} from 'https://deno.land/x/clarigen@v0.4.15/mod.ts';
+} from 'https://deno.land/x/clarigen@v0.5.4/mod.ts';
 export { afterAll, beforeAll } from 'https://deno.land/std@0.159.0/testing/bdd.ts';
 export { Tx, types, Clarinet } from 'https://deno.land/x/clarinet@v1.4.2/index.ts';
 export { describe, it } from 'https://deno.land/std@0.159.0/testing/bdd.ts';

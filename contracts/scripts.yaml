@@ -32,6 +32,8 @@ scripts:
     cmd:
       - deno run -A dscripts/testnet-contracts.ts
       - deno run -A dscripts/wrapper-js.ts
+      - pnpm prettier --write ../packages/client/src/wrapper-code.ts
+      - deno fmt ./tests/mocks/wrapper.ts
 
   integrate:
     cmd:

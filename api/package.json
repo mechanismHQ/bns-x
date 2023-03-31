@@ -30,8 +30,8 @@
   "dependencies": {
     "@bns-x/punycode": "workspace:*",
     "@bns-x/core": "workspace:*",
-    "@clarigen/core": "1.0.13",
-    "@clarigen/node": "1.0.13",
+    "@clarigen/core": "1.0.14",
+    "@clarigen/node": "1.0.14",
     "@fastify/cors": "^8.2.0",
     "@fastify/http-proxy": "8.4.0",
     "@fastify/static": "^6.6.1",

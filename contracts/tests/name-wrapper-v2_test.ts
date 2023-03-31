@@ -16,9 +16,10 @@ import {
   nftAsset,
   assert,
 } from './helpers.ts';
+import { Tx } from '../deps.ts';
 import { btcBytes } from './mocks.ts';
 
-const contract = contracts.nameWrapper;
+const contract = contracts.nameWrapperV2;
 
 const noNameErr = contract.constants.ERR_NO_NAME.value;
 const notWrappedErr = contract.constants.ERR_NOT_WRAPPED.value;
@@ -145,9 +146,80 @@ describe('name-wrapper', () => {
       assert(event.contract_event.value.includes('op: "name-update"'));
     });
 
+    it('cannot be renewed by the non-owner', () => {
+      const price = chain.rovOk(bns.getNamePrice(nameObj));
+      const receipt = chain.txErr(contract.nameRenewal(price), alice);
+
+      assertEquals(receipt.value, unauthorizedErr);
+    });
+
+    it('can be renewed by the owner', () => {
+      const price = chain.rovOk(bns.getNamePrice(nameObj));
+      const receipt = chain.txOk(contract.nameRenewal(price), bob);
+
+      assertEquals(receipt.value, true);
+      const lifetime = chain.rovOk(bns.getNamespaceProperties(nameObj.namespace)).properties
+        .lifetime;
+
+      const newExpiry = chain.rovOk(bns.nameResolve(nameObj)).leaseEndingAt;
+
+      assertEquals(newExpiry, BigInt(chain.blockHeight) + lifetime - 1n);
+    });
+
     it('cant be unwrapped by non-owner', () => {
       const receipt = chain.txErr(contract.unwrap(null), alice);
       assertEquals(receipt.value, unauthorizedErr);
+    });
+
+    describe('withdrawing assets', () => {
+      const nftContract = contracts.fakeNft;
+      const ftContract = contracts.fakeFt;
+      it('non-owner cannot withdraw assets', () => {
+        const stxReceipt = chain.txErr(contract.withdrawStx(1000n, alice), alice);
+        assertEquals(stxReceipt.value, unauthorizedErr);
+
+        const nftReceipt = chain.txErr(
+          contract.withdrawNft(nftContract.identifier, 0n, alice),
+          alice
+        );
+        assertEquals(nftReceipt.value, unauthorizedErr);
+
+        const ftReceipt = chain.txErr(contract.withdrawFt(ftContract.identifier, 1n, alice), alice);
+        assertEquals(ftReceipt.value, unauthorizedErr);
+      });
+
+      it('owner can withdraw stx', () => {
+        chain.chain.mineBlock([Tx.transferSTX(100, contract.identifier, deployer)]);
+
+        const receipt = chain.txOk(contract.withdrawStx(100n, bob), bob);
+
+        receipt.events.expectSTXTransferEvent(100n, contract.identifier, bob);
+      });
+
+      it('owner can withdraw nft', () => {
+        chain.txOk(nftContract.mint(contract.identifier), alice);
+
+        const receipt = chain.txOk(contract.withdrawNft(nftContract.identifier, 1n, bob), bob);
+        receipt.events.expectNonFungibleTokenTransferEvent(
+          'u1',
+          contract.identifier,
+          bob,
+          nftContract.identifier,
+          'fake-nft'
+        );
+      });
+
+      it('owner can withdraw ft', () => {
+        chain.txOk(ftContract.mint(100n, contract.identifier), alice);
+
+        const receipt = chain.txOk(contract.withdrawFt(ftContract.identifier, 100n, bob), bob);
+        receipt.events.expectFungibleTokenTransferEvent(
+          100,
+          contract.identifier,
+          bob,
+          `${ftContract.identifier}::fake-ft`
+        );
+      });
     });
 
     it('can be unwrapped by owner and sent to other address', () => {

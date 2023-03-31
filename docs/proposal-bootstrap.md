@@ -1,6 +1,6 @@
 # proposal-bootstrap
 
-[`proposal-bootstrap.clar`](../contracts/proposals/proposal-bootstrap.clar)
+[`proposal-bootstrap.clar`](../contracts/contracts/proposals/proposal-bootstrap.clar)
 
 **Public functions:**
 
@@ -24,7 +24,7 @@
 
 ### execute
 
-[View in file](../contracts/proposals/proposal-bootstrap.clar#L5)
+[View in file](../contracts/contracts/proposals/proposal-bootstrap.clar#L5)
 
 `(define-public (execute ((sender principal)) (response bool uint))`
 
@@ -63,7 +63,7 @@
 
 ### add-bootstrap-utils
 
-[View in file](../contracts/proposals/proposal-bootstrap.clar#L25)
+[View in file](../contracts/contracts/proposals/proposal-bootstrap.clar#L25)
 
 `(define-private (add-bootstrap-utils () (response bool uint))`
 
@@ -99,4 +99,4 @@
 (define-constant DEPLOYER tx-sender)
 ```
 
-[View in file](../contracts/proposals/proposal-bootstrap.clar#L3)
+[View in file](../contracts/contracts/proposals/proposal-bootstrap.clar#L3)

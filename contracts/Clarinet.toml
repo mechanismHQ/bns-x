@@ -4,14 +4,9 @@ description = ''
 authors = []
 telemetry = false
 cache_dir = './.cache'
-requirements = []
+
 [contracts.bns-v1]
 path = 'contracts/bns-v1.clar'
-clarity_version = 1
-epoch = 2.0
-
-[contracts.demo-controller]
-path = 'contracts/demo-controller.clar'
 clarity_version = 1
 epoch = 2.0
 
@@ -20,13 +15,28 @@ path = 'contracts/bnsx-extensions.clar'
 clarity_version = 1
 epoch = 2.0
 
+[contracts.bnsx-registry]
+path = 'contracts/core/name-registry.clar'
+clarity_version = 1
+epoch = 2.0
+
+[contracts.demo-controller]
+path = 'contracts/demo-controller.clar'
+clarity_version = 1
+epoch = 2.0
+
 [contracts.extension-trait]
 path = 'contracts/traits/extension-trait.clar'
 clarity_version = 1
 epoch = 2.0
 
-[contracts.bnsx-registry]
-path = 'contracts/core/name-registry.clar'
+[contracts.fake-ft]
+path = 'contracts/mocks/fake-ft.clar'
+clarity_version = 1
+epoch = 2.0
+
+[contracts.fake-nft]
+path = 'contracts/mocks/fake-nft.clar'
 clarity_version = 1
 epoch = 2.0
 
@@ -35,13 +45,13 @@ path = 'contracts/name-wrapper.clar'
 clarity_version = 1
 epoch = 2.0
 
-[contracts.nft-trait]
-path = 'contracts/traits/nft-trait.clar'
+[contracts.name-wrapper-v2]
+path = 'contracts/name-wrapper-v2.clar'
 clarity_version = 1
 epoch = 2.0
 
-[contracts.proposal-bootstrap]
-path = 'contracts/proposals/proposal-bootstrap.clar'
+[contracts.nft-trait]
+path = 'contracts/traits/nft-trait.clar'
 clarity_version = 1
 epoch = 2.0
 
@@ -50,28 +60,13 @@ path = 'contracts/proposals/proposal-2.clar'
 clarity_version = 1
 epoch = 2.0
 
+[contracts.proposal-bootstrap]
+path = 'contracts/proposals/proposal-bootstrap.clar'
+clarity_version = 1
+epoch = 2.0
+
 [contracts.proposal-trait]
 path = 'contracts/traits/proposal-trait.clar'
-clarity_version = 1
-epoch = 2.0
-
-[contracts.test-utils]
-path = 'contracts/test-utils.clar'
-clarity_version = 1
-epoch = 2.0
-
-# [contracts.test-utils-2-1]
-# path = 'contracts/test-utils-2-1.clar'
-# clarity_version = 2
-# epoch = 2.1
-
-# [contracts.wrapper-migrator]
-# path = 'contracts/wrapper-migrator.clar'
-# clarity_version = 2
-# epoch = 2.1
-
-[contracts.wrapper-migrator]
-path = 'contracts/wrapper-migrator-v1.clar'
 clarity_version = 1
 epoch = 2.0
 
@@ -80,21 +75,15 @@ path = 'contracts/query-helper.clar'
 clarity_version = 1
 epoch = 2.0
 
-# [contracts.onchain-resolver]
-# path = "contracts/onchain-resolver.clar"
-# clarity_version = 2
-# epoch = 2.1
+[contracts.test-utils]
+path = 'contracts/test-utils.clar'
+clarity_version = 1
+epoch = 2.0
 
-# [contracts.bns-init]
-# path = 'contracts/testnet/bns-init.clar'
-# clarity_version = 1
-# epoch = 2.0
-
-# [contracts.fake-registry]
-# path = "contracts/fake-registry.clar"
-# clarity_version = 1
-# epoch = 2.0
-
+[contracts.wrapper-migrator]
+path = 'contracts/wrapper-migrator-v1.clar'
+clarity_version = 1
+epoch = 2.0
 [repl.analysis]
 passes = ['check_checker']
 

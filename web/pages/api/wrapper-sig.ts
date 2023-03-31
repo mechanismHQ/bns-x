@@ -48,10 +48,10 @@ export async function wrapperSignatureApi(req: NextApiRequest, res: NextApiRespo
   // verify source code
   const contractId = tx.smart_contract.contract_id;
   const code = tx.smart_contract.source_code;
-  const expected = getContractsClient().nameWrapperCode;
-  if (code !== expected) {
+  const valid = getContractsClient().isValidNameWrapper(code);
+  if (!valid) {
     console.warn('Attempted invalid name wrapper:', contractId);
-    return res.status(429).send({ error: 'Invalid source code' });
+    return res.status(401).send({ error: 'Invalid source code' });
   }
 
   const wrapperId = await clarigen.ro(contracts.wrapperMigrator.getIdFromWrapper(contractId));

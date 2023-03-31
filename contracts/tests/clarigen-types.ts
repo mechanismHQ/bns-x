@@ -6,7 +6,7 @@ export type ClarityAbiTypeResponse = {
 };
 export type ClarityAbiTypeOptional = { optional: ClarityAbiType };
 export type ClarityAbiTypeTuple = {
-  tuple: { name: string; type: ClarityAbiType }[];
+  tuple: readonly { name: string; type: ClarityAbiType }[];
 };
 export type ClarityAbiTypeList = {
   list: { type: ClarityAbiType; length: number };
@@ -97,7 +97,7 @@ export interface ClarityAbi {
   variables: ClarityAbiVariable[];
   maps: ClarityAbiMap[];
   fungible_tokens: ClarityAbiTypeFungibleToken[];
-  non_fungible_tokens: ClarityAbiTypeNonFungibleToken<unknown>[];
+  non_fungible_tokens: readonly ClarityAbiTypeNonFungibleToken<unknown>[];
 }
 
 export type TypedAbi = Readonly<{
@@ -1515,10 +1515,7 @@ export const contracts = {
             { 'name': 'namespace', 'type': { 'buffer': { 'length': 20 } } },
           ],
         },
-      } as ClarityAbiTypeNonFungibleToken<{
-        'name': Uint8Array;
-        'namespace': Uint8Array;
-      }>,
+      },
     ],
     'fungible_tokens': [],
     'epoch': 'Epoch20',
@@ -2657,10 +2654,7 @@ export const contracts = {
       tokenUriVar: '',
     },
     'non_fungible_tokens': [
-      {
-        'name': 'BNSx-Names',
-        'type': 'uint128',
-      } as ClarityAbiTypeNonFungibleToken<bigint>,
+      { 'name': 'BNSx-Names', 'type': 'uint128' },
     ],
     'fungible_tokens': [],
     'epoch': 'Epoch20',
@@ -2677,6 +2671,207 @@ export const contracts = {
     'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'extension-trait',
+  },
+  fakeFt: {
+    'functions': {
+      mint: {
+        'name': 'mint',
+        'access': 'public',
+        'args': [{ 'name': 'amount', 'type': 'uint128' }, {
+          'name': 'recipient',
+          'type': 'principal',
+        }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          amount: TypedAbiArg<number | bigint, 'amount'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      transfer: {
+        'name': 'transfer',
+        'access': 'public',
+        'args': [
+          { 'name': 'amount', 'type': 'uint128' },
+          { 'name': 'sender', 'type': 'principal' },
+          { 'name': 'recipient', 'type': 'principal' },
+          {
+            'name': 'memo',
+            'type': { 'optional': { 'buffer': { 'length': 34 } } },
+          },
+        ],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          amount: TypedAbiArg<number | bigint, 'amount'>,
+          sender: TypedAbiArg<string, 'sender'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+          memo: TypedAbiArg<Uint8Array | null, 'memo'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      getBalance: {
+        'name': 'get-balance',
+        'access': 'read_only',
+        'args': [{ 'name': 'owner', 'type': 'principal' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'uint128', 'error': 'none' } },
+        },
+      } as TypedAbiFunction<
+        [owner: TypedAbiArg<string, 'owner'>],
+        Response<bigint, null>
+      >,
+      getDecimals: {
+        'name': 'get-decimals',
+        'access': 'read_only',
+        'args': [],
+        'outputs': {
+          'type': { 'response': { 'ok': 'uint128', 'error': 'none' } },
+        },
+      } as TypedAbiFunction<[], Response<bigint, null>>,
+      getName: {
+        'name': 'get-name',
+        'access': 'read_only',
+        'args': [],
+        'outputs': {
+          'type': {
+            'response': {
+              'ok': { 'string-ascii': { 'length': 10 } },
+              'error': 'none',
+            },
+          },
+        },
+      } as TypedAbiFunction<[], Response<string, null>>,
+      getSymbol: {
+        'name': 'get-symbol',
+        'access': 'read_only',
+        'args': [],
+        'outputs': {
+          'type': {
+            'response': {
+              'ok': { 'string-ascii': { 'length': 4 } },
+              'error': 'none',
+            },
+          },
+        },
+      } as TypedAbiFunction<[], Response<string, null>>,
+      getTokenUri: {
+        'name': 'get-token-uri',
+        'access': 'read_only',
+        'args': [],
+        'outputs': {
+          'type': {
+            'response': { 'ok': { 'optional': 'none' }, 'error': 'none' },
+          },
+        },
+      } as TypedAbiFunction<[], Response<null | null, null>>,
+      getTotalSupply: {
+        'name': 'get-total-supply',
+        'access': 'read_only',
+        'args': [],
+        'outputs': {
+          'type': { 'response': { 'ok': 'uint128', 'error': 'none' } },
+        },
+      } as TypedAbiFunction<[], Response<bigint, null>>,
+    },
+    'maps': {},
+    'variables': {},
+    constants: {},
+    'non_fungible_tokens': [],
+    'fungible_tokens': [{ 'name': 'fake-ft' }],
+    'epoch': 'Epoch20',
+    'clarity_version': 'Clarity1',
+    contractName: 'fake-ft',
+  },
+  fakeNft: {
+    'functions': {
+      mint: {
+        'name': 'mint',
+        'access': 'public',
+        'args': [{ 'name': 'owner', 'type': 'principal' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'uint128', 'error': 'none' } },
+        },
+      } as TypedAbiFunction<
+        [owner: TypedAbiArg<string, 'owner'>],
+        Response<bigint, null>
+      >,
+      transfer: {
+        'name': 'transfer',
+        'access': 'public',
+        'args': [{ 'name': 'id', 'type': 'uint128' }, {
+          'name': 'sender',
+          'type': 'principal',
+        }, { 'name': 'recipient', 'type': 'principal' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          id: TypedAbiArg<number | bigint, 'id'>,
+          sender: TypedAbiArg<string, 'sender'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      getLastTokenId: {
+        'name': 'get-last-token-id',
+        'access': 'read_only',
+        'args': [],
+        'outputs': {
+          'type': { 'response': { 'ok': 'uint128', 'error': 'none' } },
+        },
+      } as TypedAbiFunction<[], Response<bigint, null>>,
+      getOwner: {
+        'name': 'get-owner',
+        'access': 'read_only',
+        'args': [{ 'name': 'id', 'type': 'uint128' }],
+        'outputs': {
+          'type': {
+            'response': { 'ok': { 'optional': 'principal' }, 'error': 'none' },
+          },
+        },
+      } as TypedAbiFunction<
+        [id: TypedAbiArg<number | bigint, 'id'>],
+        Response<string | null, null>
+      >,
+      getTokenUri: {
+        'name': 'get-token-uri',
+        'access': 'read_only',
+        'args': [{ 'name': 'id', 'type': 'uint128' }],
+        'outputs': {
+          'type': {
+            'response': { 'ok': { 'optional': 'none' }, 'error': 'none' },
+          },
+        },
+      } as TypedAbiFunction<
+        [id: TypedAbiArg<number | bigint, 'id'>],
+        Response<null | null, null>
+      >,
+    },
+    'maps': {},
+    'variables': {
+      lastTokenIdVar: {
+        name: 'last-token-id-var',
+        type: 'uint128',
+        access: 'variable',
+      } as TypedAbiVariable<bigint>,
+    },
+    constants: {
+      lastTokenIdVar: 0n,
+    },
+    'non_fungible_tokens': [
+      { 'name': 'fake-nft', 'type': 'uint128' },
+    ],
+    'fungible_tokens': [],
+    'epoch': 'Epoch20',
+    'clarity_version': 'Clarity1',
+    contractName: 'fake-nft',
   },
   nameWrapper: {
     'functions': {
@@ -2874,13 +3069,289 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 1n,
+      wrapperIdVar: 3n,
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
     'epoch': 'Epoch20',
     'clarity_version': 'Clarity1',
     contractName: 'name-wrapper',
+  },
+  nameWrapperV2: {
+    'functions': {
+      registerSelf: {
+        'name': 'register-self',
+        'access': 'private',
+        'args': [],
+        'outputs': {
+          'type': { 'response': { 'ok': 'uint128', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<[], Response<bigint, bigint>>,
+      validateOwner: {
+        'name': 'validate-owner',
+        'access': 'private',
+        'args': [],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<[], Response<boolean, bigint>>,
+      nameRenewal: {
+        'name': 'name-renewal',
+        'access': 'public',
+        'args': [{ 'name': 'stx-to-burn', 'type': 'uint128' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [stxToBurn: TypedAbiArg<number | bigint, 'stxToBurn'>],
+        Response<boolean, bigint>
+      >,
+      nameUpdate: {
+        'name': 'name-update',
+        'access': 'public',
+        'args': [
+          { 'name': 'namespace', 'type': { 'buffer': { 'length': 20 } } },
+          { 'name': 'name', 'type': { 'buffer': { 'length': 48 } } },
+          { 'name': 'zonefile-hash', 'type': { 'buffer': { 'length': 20 } } },
+        ],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          zonefileHash: TypedAbiArg<Uint8Array, 'zonefileHash'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      unwrap: {
+        'name': 'unwrap',
+        'access': 'public',
+        'args': [{ 'name': 'recipient', 'type': { 'optional': 'principal' } }],
+        'outputs': {
+          'type': {
+            'response': {
+              'ok': {
+                'tuple': [{ 'name': 'id', 'type': 'uint128' }, {
+                  'name': 'name',
+                  'type': { 'buffer': { 'length': 48 } },
+                }, {
+                  'name': 'namespace',
+                  'type': { 'buffer': { 'length': 20 } },
+                }, { 'name': 'owner', 'type': 'principal' }],
+              },
+              'error': 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [recipient: TypedAbiArg<string | null, 'recipient'>],
+        Response<{
+          'id': bigint;
+          'name': Uint8Array;
+          'namespace': Uint8Array;
+          'owner': string;
+        }, bigint>
+      >,
+      withdrawFt: {
+        'name': 'withdraw-ft',
+        'access': 'public',
+        'args': [{ 'name': 'ft', 'type': 'trait_reference' }, {
+          'name': 'amount',
+          'type': 'uint128',
+        }, { 'name': 'recipient', 'type': 'principal' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          ft: TypedAbiArg<string, 'ft'>,
+          amount: TypedAbiArg<number | bigint, 'amount'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      withdrawNft: {
+        'name': 'withdraw-nft',
+        'access': 'public',
+        'args': [{ 'name': 'nft', 'type': 'trait_reference' }, {
+          'name': 'token-id',
+          'type': 'uint128',
+        }, { 'name': 'recipient', 'type': 'principal' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          nft: TypedAbiArg<string, 'nft'>,
+          tokenId: TypedAbiArg<number | bigint, 'tokenId'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      withdrawStx: {
+        'name': 'withdraw-stx',
+        'access': 'public',
+        'args': [{ 'name': 'amount', 'type': 'uint128' }, {
+          'name': 'recipient',
+          'type': 'principal',
+        }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          amount: TypedAbiArg<number | bigint, 'amount'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      getNameInfo: {
+        'name': 'get-name-info',
+        'access': 'read_only',
+        'args': [],
+        'outputs': {
+          'type': {
+            'response': {
+              'ok': {
+                'tuple': [{ 'name': 'id', 'type': 'uint128' }, {
+                  'name': 'name',
+                  'type': { 'buffer': { 'length': 48 } },
+                }, {
+                  'name': 'namespace',
+                  'type': { 'buffer': { 'length': 20 } },
+                }, { 'name': 'owner', 'type': 'principal' }],
+              },
+              'error': 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [],
+        Response<{
+          'id': bigint;
+          'name': Uint8Array;
+          'namespace': Uint8Array;
+          'owner': string;
+        }, bigint>
+      >,
+      getOwnName: {
+        'name': 'get-own-name',
+        'access': 'read_only',
+        'args': [],
+        'outputs': {
+          'type': {
+            'response': {
+              'ok': {
+                'tuple': [{
+                  'name': 'name',
+                  'type': { 'buffer': { 'length': 48 } },
+                }, {
+                  'name': 'namespace',
+                  'type': { 'buffer': { 'length': 20 } },
+                }],
+              },
+              'error': 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [],
+        Response<{
+          'name': Uint8Array;
+          'namespace': Uint8Array;
+        }, bigint>
+      >,
+      getOwner: {
+        'name': 'get-owner',
+        'access': 'read_only',
+        'args': [],
+        'outputs': {
+          'type': { 'response': { 'ok': 'principal', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<[], Response<string, bigint>>,
+      getWrapperId: {
+        'name': 'get-wrapper-id',
+        'access': 'read_only',
+        'args': [],
+        'outputs': { 'type': { 'optional': 'uint128' } },
+      } as TypedAbiFunction<[], bigint | null>,
+    },
+    'maps': {},
+    'variables': {
+      ERR_NAME_TRANSFER: {
+        name: 'ERR_NAME_TRANSFER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_NOT_WRAPPED: {
+        name: 'ERR_NOT_WRAPPED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_NO_NAME: {
+        name: 'ERR_NO_NAME',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_UNAUTHORIZED: {
+        name: 'ERR_UNAUTHORIZED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      wrapperIdVar: {
+        name: 'wrapper-id-var',
+        type: {
+          optional: 'uint128',
+        },
+        access: 'variable',
+      } as TypedAbiVariable<bigint | null>,
+    },
+    constants: {
+      ERR_NAME_TRANSFER: {
+        isOk: false,
+        value: 10001n,
+      },
+      ERR_NOT_WRAPPED: {
+        isOk: false,
+        value: 10003n,
+      },
+      ERR_NO_NAME: {
+        isOk: false,
+        value: 10000n,
+      },
+      ERR_UNAUTHORIZED: {
+        isOk: false,
+        value: 10002n,
+      },
+      wrapperIdVar: 2n,
+    },
+    'non_fungible_tokens': [],
+    'fungible_tokens': [],
+    'epoch': 'Epoch20',
+    'clarity_version': 'Clarity1',
+    contractName: 'name-wrapper-v2',
   },
   nftTrait: {
     'functions': {},

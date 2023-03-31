@@ -1,6 +1,6 @@
 # bnsx-registry
 
-[`name-registry.clar`](../contracts/core/name-registry.clar)
+[`name-registry.clar`](../contracts/contracts/core/name-registry.clar)
 
 The name registry contract acts as the central hub for storing name information.
 Each 'name' record has two parts - the 'name' (domain) and the 'namespace'
@@ -111,7 +111,7 @@ NFT.
 
 ### is-dao-or-extension
 
-[View in file](../contracts/core/name-registry.clar#L67)
+[View in file](../contracts/contracts/core/name-registry.clar#L67)
 
 `(define-read-only (is-dao-or-extension () (response bool uint))`
 
@@ -131,7 +131,7 @@ Validate an action that can only be executed by a BNS X extension.
 
 ### register
 
-[View in file](../contracts/core/name-registry.clar#L81)
+[View in file](../contracts/contracts/core/name-registry.clar#L81)
 
 `(define-public (register ((name (tuple (name (buff 48)) (namespace (buff 20)))) (owner principal)) (response uint uint))`
 
@@ -184,7 +184,7 @@ primary
 
 ### set-primary-name
 
-[View in file](../contracts/core/name-registry.clar#L109)
+[View in file](../contracts/contracts/core/name-registry.clar#L109)
 
 `(define-public (set-primary-name ((id uint)) (response bool uint))`
 
@@ -222,7 +222,7 @@ their primary.
 
 ### burn
 
-[View in file](../contracts/core/name-registry.clar#L132)
+[View in file](../contracts/contracts/core/name-registry.clar#L132)
 
 `(define-public (burn ((id uint)) (response bool uint))`
 
@@ -258,7 +258,7 @@ name, a different name is automatically set as the account's new primary.
 
 ### burn-name
 
-[View in file](../contracts/core/name-registry.clar#L144)
+[View in file](../contracts/contracts/core/name-registry.clar#L144)
 
 `(define-private (burn-name ((id uint)) (response bool uint))`
 
@@ -299,7 +299,7 @@ Private method to handle burning a name. See [`burn`](#burn) and
 
 ### transfer-ownership
 
-[View in file](../contracts/core/name-registry.clar#L165)
+[View in file](../contracts/contracts/core/name-registry.clar#L165)
 
 `(define-private (transfer-ownership ((id uint) (sender principal) (recipient principal)) bool)`
 
@@ -338,7 +338,7 @@ data tracking name ownership, and transfers the NFT to the recipient.
 
 ### get-name-properties
 
-[View in file](../contracts/core/name-registry.clar#L188)
+[View in file](../contracts/contracts/core/name-registry.clar#L188)
 
 `(define-read-only (get-name-properties ((name (tuple (name (buff 48)) (namespace (buff 20))))) (optional (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal))))`
 
@@ -372,7 +372,7 @@ properties:
 
 ### get-name-properties-by-id
 
-[View in file](../contracts/core/name-registry.clar#L196)
+[View in file](../contracts/contracts/core/name-registry.clar#L196)
 
 `(define-read-only (get-name-properties-by-id ((id uint)) (optional (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal))))`
 
@@ -401,7 +401,7 @@ Get name properties of a name, with lookup via ID. See
 
 ### merge-name-props
 
-[View in file](../contracts/core/name-registry.clar#L204)
+[View in file](../contracts/contracts/core/name-registry.clar#L204)
 
 `(define-private (merge-name-props ((name (tuple (name (buff 48)) (namespace (buff 20)))) (id uint)) (optional (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal))))`
 
@@ -430,7 +430,7 @@ Get name properties of a name, with lookup via ID. See
 
 ### get-primary-name
 
-[View in file](../contracts/core/name-registry.clar#L213)
+[View in file](../contracts/contracts/core/name-registry.clar#L213)
 
 `(define-read-only (get-primary-name ((account principal)) (optional (tuple (name (buff 48)) (namespace (buff 20)))))`
 
@@ -459,7 +459,7 @@ Return the primary name for a given account. Returns an optional tuple with
 
 ### get-primary-name-properties
 
-[View in file](../contracts/core/name-registry.clar#L221)
+[View in file](../contracts/contracts/core/name-registry.clar#L221)
 
 `(define-read-only (get-primary-name-properties ((account principal)) (optional (tuple (id uint) (name (buff 48)) (namespace (buff 20)) (owner principal))))`
 
@@ -488,7 +488,7 @@ Return properties of an account's primary name. See
 
 ### get-id-for-name
 
-[View in file](../contracts/core/name-registry.clar#L229)
+[View in file](../contracts/contracts/core/name-registry.clar#L229)
 
 `(define-read-only (get-id-for-name ((name (tuple (name (buff 48)) (namespace (buff 20))))) (optional uint))`
 
@@ -513,7 +513,7 @@ Reverse lookup the ID of a name
 
 ### get-namespace-for-id
 
-[View in file](../contracts/core/name-registry.clar#L235)
+[View in file](../contracts/contracts/core/name-registry.clar#L235)
 
 `(define-read-only (get-namespace-for-id ((id uint)) (response (buff 20) uint))`
 
@@ -539,7 +539,7 @@ or `ERR_INVALID_ID` otherwise.
 
 ### get-name-owner
 
-[View in file](../contracts/core/name-registry.clar#L240)
+[View in file](../contracts/contracts/core/name-registry.clar#L240)
 
 `(define-read-only (get-name-owner ((id uint)) (optional principal))`
 
@@ -564,7 +564,7 @@ Returns the owner of a name
 
 ### mng-set-token-uri
 
-[View in file](../contracts/core/name-registry.clar#L250)
+[View in file](../contracts/contracts/core/name-registry.clar#L250)
 
 `(define-public (mng-set-token-uri ((uri (string-ascii 256))) (response bool uint))`
 
@@ -594,7 +594,7 @@ Set the Token URI for NFT metadata.
 
 ### mng-set-namespace-token-uri
 
-[View in file](../contracts/core/name-registry.clar#L261)
+[View in file](../contracts/contracts/core/name-registry.clar#L261)
 
 `(define-public (mng-set-namespace-token-uri ((namespace (buff 20)) (uri (string-ascii 256))) (response bool uint))`
 
@@ -625,7 +625,7 @@ Set a namespace-specific metadata URI
 
 ### get-last-token-id
 
-[View in file](../contracts/core/name-registry.clar#L272)
+[View in file](../contracts/contracts/core/name-registry.clar#L272)
 
 `(define-read-only (get-last-token-id () (response uint none))`
 
@@ -644,7 +644,7 @@ Set a namespace-specific metadata URI
 
 ### get-token-uri
 
-[View in file](../contracts/core/name-registry.clar#L284)
+[View in file](../contracts/contracts/core/name-registry.clar#L284)
 
 `(define-read-only (get-token-uri ((id uint)) (response (optional (string-ascii 256)) none))`
 
@@ -682,7 +682,7 @@ Otherwise, the contract's base token URI is returned.
 
 ### get-token-uri-for-namespace
 
-[View in file](../contracts/core/name-registry.clar#L297)
+[View in file](../contracts/contracts/core/name-registry.clar#L297)
 
 `(define-read-only (get-token-uri-for-namespace ((namespace (buff 20))) (optional (string-ascii 256)))`
 
@@ -707,7 +707,7 @@ Fetch a namespace-specific token URI.
 
 ### get-owner
 
-[View in file](../contracts/core/name-registry.clar#L302)
+[View in file](../contracts/contracts/core/name-registry.clar#L302)
 
 `(define-read-only (get-owner ((id uint)) (response (optional principal) none))`
 
@@ -732,7 +732,7 @@ SIP9 - fetch owner of an NFT
 
 ### get-balance
 
-[View in file](../contracts/core/name-registry.clar#L307)
+[View in file](../contracts/contracts/core/name-registry.clar#L307)
 
 `(define-read-only (get-balance ((account principal)) uint)`
 
@@ -757,7 +757,7 @@ Returns the total number of names owned by an account
 
 ### get-balance-of
 
-[View in file](../contracts/core/name-registry.clar#L310)
+[View in file](../contracts/contracts/core/name-registry.clar#L310)
 
 `(define-read-only (get-balance-of ((account principal)) (response uint none))`
 
@@ -778,7 +778,7 @@ Returns the total number of names owned by an account
 
 ### transfer
 
-[View in file](../contracts/core/name-registry.clar#L317)
+[View in file](../contracts/contracts/core/name-registry.clar#L317)
 
 `(define-public (transfer ((id uint) (sender principal) (recipient principal)) (response bool uint))`
 
@@ -819,7 +819,7 @@ Transfer a name
 
 ### can-dao-manage-ns
 
-[View in file](../contracts/core/name-registry.clar#L334)
+[View in file](../contracts/contracts/core/name-registry.clar#L334)
 
 `(define-read-only (can-dao-manage-ns ((namespace (buff 20))) bool)`
 
@@ -844,7 +844,7 @@ Returns `bool` specifying whether BNS X contracts can manage a given namespace
 
 ### remove-dao-namespace-manager
 
-[View in file](../contracts/core/name-registry.clar#L341)
+[View in file](../contracts/contracts/core/name-registry.clar#L341)
 
 `(define-public (remove-dao-namespace-manager ((namespace (buff 20))) (response bool uint))`
 
@@ -876,7 +876,7 @@ name-related actions (like registration) for that namespace.
 
 ### validate-namespace-action
 
-[View in file](../contracts/core/name-registry.clar#L356)
+[View in file](../contracts/contracts/core/name-registry.clar#L356)
 
 `(define-read-only (validate-namespace-action ((namespace (buff 20))) (response bool uint))`
 
@@ -911,7 +911,7 @@ If `contract-caller` is a manager: OK Otherwise:
 
 ### validate-namespace-action-by-id
 
-[View in file](../contracts/core/name-registry.clar#L366)
+[View in file](../contracts/contracts/core/name-registry.clar#L366)
 
 `(define-read-only (validate-namespace-action-by-id ((id uint)) (response bool uint))`
 
@@ -936,7 +936,7 @@ If `contract-caller` is a manager: OK Otherwise:
 
 ### is-namespace-manager
 
-[View in file](../contracts/core/name-registry.clar#L371)
+[View in file](../contracts/contracts/core/name-registry.clar#L371)
 
 `(define-read-only (is-namespace-manager ((namespace (buff 20)) (manager principal)) bool)`
 
@@ -962,7 +962,7 @@ Returns `bool` of whether a principal is a valid manager for a given namespace.
 
 ### mng-transfer
 
-[View in file](../contracts/core/name-registry.clar#L377)
+[View in file](../contracts/contracts/core/name-registry.clar#L377)
 
 `(define-public (mng-transfer ((id uint) (recipient principal)) (response bool uint))`
 
@@ -994,7 +994,7 @@ contracts to allow transfers based on flexible conditions.
 
 ### mng-burn
 
-[View in file](../contracts/core/name-registry.clar#L388)
+[View in file](../contracts/contracts/core/name-registry.clar#L388)
 
 `(define-public (mng-burn ((id uint)) (response bool uint))`
 
@@ -1023,7 +1023,7 @@ transfers based on flexible conditions.
 
 ### set-namespace-manager
 
-[View in file](../contracts/core/name-registry.clar#L398)
+[View in file](../contracts/contracts/core/name-registry.clar#L398)
 
 `(define-public (set-namespace-manager ((namespace (buff 20)) (manager principal) (enabled bool)) (response bool uint))`
 
@@ -1058,7 +1058,7 @@ rules.
 
 ### set-namespace-transfers-allowed
 
-[View in file](../contracts/core/name-registry.clar#L409)
+[View in file](../contracts/contracts/core/name-registry.clar#L409)
 
 `(define-public (set-namespace-transfers-allowed ((namespace (buff 20)) (enabled bool)) (response bool uint))`
 
@@ -1091,7 +1091,7 @@ rules.
 
 ### are-transfers-allowed
 
-[View in file](../contracts/core/name-registry.clar#L419)
+[View in file](../contracts/contracts/core/name-registry.clar#L419)
 
 `(define-read-only (are-transfers-allowed ((namespace (buff 20))) bool)`
 
@@ -1116,7 +1116,7 @@ Returns a `bool` indicating whether transfers are allowed for a given namespace.
 
 ### increment-id
 
-[View in file](../contracts/core/name-registry.clar#L425)
+[View in file](../contracts/contracts/core/name-registry.clar#L425)
 
 `(define-private (increment-id () uint)`
 
@@ -1139,7 +1139,7 @@ Returns a `bool` indicating whether transfers are allowed for a given namespace.
 
 ### get-next-node-id
 
-[View in file](../contracts/core/name-registry.clar#L439)
+[View in file](../contracts/contracts/core/name-registry.clar#L439)
 
 `(define-read-only (get-next-node-id ((id uint)) (optional uint))`
 
@@ -1164,7 +1164,7 @@ Helper method to traverse the linked list structure for an account's names.
 
 ### add-node
 
-[View in file](../contracts/core/name-registry.clar#L448)
+[View in file](../contracts/contracts/core/name-registry.clar#L448)
 
 `(define-private (add-node ((account principal) (id uint)) bool)`
 
@@ -1211,7 +1211,7 @@ that means it will also be the primary name.
 
 ### print-primary-update
 
-[View in file](../contracts/core/name-registry.clar#L471)
+[View in file](../contracts/contracts/core/name-registry.clar#L471)
 
 `(define-private (print-primary-update ((account principal) (id (optional uint))) bool)`
 
@@ -1246,7 +1246,7 @@ This only prints out information, which can be indexed off-chain.
 
 ### remove-node
 
-[View in file](../contracts/core/name-registry.clar#L484)
+[View in file](../contracts/contracts/core/name-registry.clar#L484)
 
 `(define-private (remove-node ((account principal) (id uint)) bool)`
 
@@ -1323,7 +1323,7 @@ Remove a name from an account's list of names.
 
 ### set-first
 
-[View in file](../contracts/core/name-registry.clar#L541)
+[View in file](../contracts/contracts/core/name-registry.clar#L541)
 
 `(define-private (set-first ((account principal) (node uint)) (response bool uint))`
 
@@ -1368,7 +1368,7 @@ data structure for an account's names.
 (define-map namespace-token-uri-map (buff 20) (string-ascii 256))
 ```
 
-[View in file](../contracts/core/name-registry.clar#L39)
+[View in file](../contracts/contracts/core/name-registry.clar#L39)
 
 ### namespace-managers-map
 
@@ -1376,7 +1376,7 @@ data structure for an account's names.
 (define-map namespace-managers-map { manager: principal, namespace: (buff 20) } bool)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L41)
+[View in file](../contracts/contracts/core/name-registry.clar#L41)
 
 ### dao-namespace-manager-map
 
@@ -1384,7 +1384,7 @@ data structure for an account's names.
 (define-map dao-namespace-manager-map (buff 20) bool)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L42)
+[View in file](../contracts/contracts/core/name-registry.clar#L42)
 
 ### namespace-transfers-allowed
 
@@ -1392,7 +1392,7 @@ data structure for an account's names.
 (define-map namespace-transfers-allowed (buff 20) bool)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L43)
+[View in file](../contracts/contracts/core/name-registry.clar#L43)
 
 ### owner-primary-name-map
 
@@ -1402,7 +1402,7 @@ linked list for account->names
 (define-map owner-primary-name-map principal uint)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L50)
+[View in file](../contracts/contracts/core/name-registry.clar#L50)
 
 ### owner-last-name-map
 
@@ -1410,7 +1410,7 @@ linked list for account->names
 (define-map owner-last-name-map principal uint)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L51)
+[View in file](../contracts/contracts/core/name-registry.clar#L51)
 
 ### owner-name-next-map
 
@@ -1418,7 +1418,7 @@ linked list for account->names
 (define-map owner-name-next-map uint uint)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L52)
+[View in file](../contracts/contracts/core/name-registry.clar#L52)
 
 ### owner-name-prev-map
 
@@ -1426,7 +1426,7 @@ linked list for account->names
 (define-map owner-name-prev-map uint uint)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L53)
+[View in file](../contracts/contracts/core/name-registry.clar#L53)
 
 ### name-owner-map
 
@@ -1434,7 +1434,7 @@ linked list for account->names
 (define-map name-owner-map uint principal)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L55)
+[View in file](../contracts/contracts/core/name-registry.clar#L55)
 
 ### name-id-map
 
@@ -1442,7 +1442,7 @@ linked list for account->names
 (define-map name-id-map { name: (buff 48), namespace: (buff 20) } uint)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L57)
+[View in file](../contracts/contracts/core/name-registry.clar#L57)
 
 ### id-name-map
 
@@ -1450,7 +1450,7 @@ linked list for account->names
 (define-map id-name-map uint { name: (buff 48), namespace: (buff 20) })
 ```
 
-[View in file](../contracts/core/name-registry.clar#L58)
+[View in file](../contracts/contracts/core/name-registry.clar#L58)
 
 ### name-encoding-map
 
@@ -1458,7 +1458,7 @@ linked list for account->names
 (define-map name-encoding-map uint (buff 1))
 ```
 
-[View in file](../contracts/core/name-registry.clar#L60)
+[View in file](../contracts/contracts/core/name-registry.clar#L60)
 
 ### owner-balance-map
 
@@ -1466,7 +1466,7 @@ linked list for account->names
 (define-map owner-balance-map principal uint)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L62)
+[View in file](../contracts/contracts/core/name-registry.clar#L62)
 
 ## Variables
 
@@ -1478,7 +1478,7 @@ uint
 (define-data-var last-id-var uint u0)
 ```
 
-[View in file](../contracts/core/name-registry.clar#L37)
+[View in file](../contracts/contracts/core/name-registry.clar#L37)
 
 ### token-uri-var
 
@@ -1488,7 +1488,7 @@ uint
 (define-data-var token-uri-var (string-ascii 256) "")
 ```
 
-[View in file](../contracts/core/name-registry.clar#L38)
+[View in file](../contracts/contracts/core/name-registry.clar#L38)
 
 ## Constants
 
@@ -1498,7 +1498,7 @@ uint
 (define-constant ROLE "registry")
 ```
 
-[View in file](../contracts/core/name-registry.clar#L26)
+[View in file](../contracts/contracts/core/name-registry.clar#L26)
 
 ### ERR_UNAUTHORIZED
 
@@ -1506,7 +1506,7 @@ uint
 (define-constant ERR_UNAUTHORIZED (err u4000))
 ```
 
-[View in file](../contracts/core/name-registry.clar#L28)
+[View in file](../contracts/contracts/core/name-registry.clar#L28)
 
 ### ERR_ALREADY_REGISTERED
 
@@ -1514,7 +1514,7 @@ uint
 (define-constant ERR_ALREADY_REGISTERED (err u4001))
 ```
 
-[View in file](../contracts/core/name-registry.clar#L29)
+[View in file](../contracts/contracts/core/name-registry.clar#L29)
 
 ### ERR_CANNOT_SET_PRIMARY
 
@@ -1522,7 +1522,7 @@ uint
 (define-constant ERR_CANNOT_SET_PRIMARY (err u4002))
 ```
 
-[View in file](../contracts/core/name-registry.clar#L30)
+[View in file](../contracts/contracts/core/name-registry.clar#L30)
 
 ### ERR_INVALID_ID
 
@@ -1530,7 +1530,7 @@ uint
 (define-constant ERR_INVALID_ID (err u4003))
 ```
 
-[View in file](../contracts/core/name-registry.clar#L31)
+[View in file](../contracts/contracts/core/name-registry.clar#L31)
 
 ### ERR_EXPIRED
 
@@ -1538,7 +1538,7 @@ uint
 (define-constant ERR_EXPIRED (err u4004))
 ```
 
-[View in file](../contracts/core/name-registry.clar#L32)
+[View in file](../contracts/contracts/core/name-registry.clar#L32)
 
 ### ERR_TRANSFER_BLOCKED
 
@@ -1546,7 +1546,7 @@ uint
 (define-constant ERR_TRANSFER_BLOCKED (err u4005))
 ```
 
-[View in file](../contracts/core/name-registry.clar#L33)
+[View in file](../contracts/contracts/core/name-registry.clar#L33)
 
 ### ERR_NOT_OWNER
 
@@ -1554,4 +1554,4 @@ uint
 (define-constant ERR_NOT_OWNER (err u4))
 ```
 
-[View in file](../contracts/core/name-registry.clar#L35)
+[View in file](../contracts/contracts/core/name-registry.clar#L35)
