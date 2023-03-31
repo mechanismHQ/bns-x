@@ -33,9 +33,12 @@ export const Checkbox: React.FC<{
   const checked = useAtomValue(atom);
 
   const toggleChecked = useAtomCallback(
-    useCallback((get, set) => {
-      set(atom, cur => !cur);
-    }, [])
+    useCallback(
+      (get, set) => {
+        set(atom, cur => !cur);
+      },
+      [atom]
+    )
   );
 
   if (checked)

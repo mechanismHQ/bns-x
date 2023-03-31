@@ -96,7 +96,21 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
             </Stack>
           </SpaceBetween>
           <Stack pt="20px" spacing="14px" width="280px">
-            {!isBnsx && (
+            {isBnsx ? (
+              <>
+                <Button
+                  width="100%"
+                  onClick={async () => {
+                    await router.push({
+                      pathname: '/unwrap/[name]',
+                      query: { name },
+                    });
+                  }}
+                >
+                  Unwrap
+                </Button>
+              </>
+            ) : (
               <>
                 <Button width="100%" onClick={upgrade}>
                   Upgrade to BNSx

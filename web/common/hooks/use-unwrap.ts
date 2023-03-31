@@ -1,8 +1,8 @@
 import { useOpenContractCall } from '@micro-stacks/react';
 import { nameDetailsAtom } from '@store/names';
-import { useAtomCallback } from 'jotai/utils';
+import { loadable, useAtomCallback } from 'jotai/utils';
 import { useAtomValue } from 'jotai';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { getContractsClient } from '@common/constants';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { NonFungibleConditionCode } from 'micro-stacks/transactions';
@@ -10,10 +10,19 @@ import { bnsContractState, nameRegistryState } from '@store/index';
 import { unwrapTxidAtom } from '@store/profile';
 import { nameToTupleBytes } from '@common/utils';
 import { makeNonFungiblePostCondition } from '@clarigen/core';
+import { makeBnsRecipientState } from '@store/migration';
+
+export const unwrapRecipientState = makeBnsRecipientState();
 
 export function useUnwrap(name: string) {
   const { openContractCall, isRequestPending } = useOpenContractCall();
   const unwrapTxid = useAtomValue(unwrapTxidAtom);
+  const recipientAddress = useAtomValue(loadable(unwrapRecipientState.validRecipientState));
+
+  const canUnwrap = useMemo(() => {
+    if (recipientAddress.state !== 'hasData') return false;
+    return !!recipientAddress.data;
+  }, [recipientAddress]);
 
   const unwrap = useAtomCallback(
     useCallback(
@@ -29,6 +38,11 @@ export function useUnwrap(name: string) {
         const registry = get(nameRegistryState);
         const bns = get(bnsContractState);
         const bnsAssetId = nameToTupleBytes(name);
+        const recipient = get(unwrapRecipientState.validRecipientState);
+        if (!recipient) {
+          console.warn('Cannot unwrap - no valid recipient.');
+          return;
+        }
 
         // Burn BNSx
         const bnsxPostCondition = makeNonFungiblePostCondition(
@@ -47,14 +61,14 @@ export function useUnwrap(name: string) {
         // User receives BNS
         const receiveBnsPostCondition = makeNonFungiblePostCondition(
           bns,
-          sender,
+          recipient,
           NonFungibleConditionCode.Owns,
           bnsAssetId
         );
 
         await openContractCall({
           ...wrapperContract.unwrap({
-            recipient: sender,
+            recipient,
           }),
           postConditions: [bnsxPostCondition, bnsPostCondition, receiveBnsPostCondition],
           onFinish(data) {
@@ -76,5 +90,6 @@ export function useUnwrap(name: string) {
     unwrap,
     unwrapTxid,
     isRequestPending,
+    canUnwrap,
   };
 }

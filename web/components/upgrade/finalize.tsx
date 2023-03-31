@@ -5,11 +5,8 @@ import { atom, useAtom, useAtomValue } from 'jotai';
 import {
   migrateTxidAtom,
   wrapperDeployTxidAtom,
-  upgradeRecipientAtom,
-  sendElsewhereAtom,
-  validRecipientState,
-  recipientIsBnsState,
   wrapperSignatureState,
+  migrateRecipientState,
 } from '@store/migration';
 import { Divider, DoneRow, NameHeading, PendingRow, UpgradeBox } from '@components/upgrade/rows';
 import { useWrapperMigrate } from '@common/hooks/use-wrapper-migrate';
@@ -22,42 +19,14 @@ import { CheckIcon } from '@components/icons/check';
 import { useMemo } from 'react';
 import { Spinner } from '@components/spinner';
 import { ErrorIcon } from '@components/icons/error';
+import { BnsRecipientField } from '@components/bns-recipient-field';
 
 export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
   const { migrate, isRequestPending } = useWrapperMigrate();
   const migrateTxid = useAtomValue(migrateTxidAtom);
-  const doSendElsewhere = useAtomValue(sendElsewhereAtom);
-  const recipientInput = useInput(useAtom(upgradeRecipientAtom));
-  const recipient = useAtomValue(upgradeRecipientAtom);
-  const recipientAddress = useAtomValue(loadable(validRecipientState));
+  const doSendElsewhere = useAtomValue(migrateRecipientState.sendElsewhereAtom);
+  const recipientAddress = useAtomValue(loadable(migrateRecipientState.validRecipientState));
   const wrapperSignature = useAtomValue(wrapperSignatureState);
-  const isBNS = useAtomValue(recipientIsBnsState);
-
-  const bnsInputValid = useMemo(() => {
-    if (!isBNS) return false;
-    if (recipientAddress.state === 'hasData') {
-      return !!recipientAddress.data;
-    }
-    return false;
-  }, [isBNS, recipientAddress]);
-
-  const bnsInputInvalid = useMemo(() => {
-    if (!isBNS) return false;
-    if (recipientAddress.state !== 'hasData') return false;
-    return !recipientAddress.data;
-  }, [isBNS, recipientAddress]);
-
-  const stxAddrInvalid = useMemo(() => {
-    if (isBNS || !doSendElsewhere || !recipient) return false;
-    if (recipientAddress.state !== 'hasData') return false;
-    return !recipientAddress.data;
-  }, [isBNS, doSendElsewhere, recipientAddress, recipient]);
-
-  const stxAddrValid = useMemo(() => {
-    if (isBNS || !doSendElsewhere) return false;
-    if (recipientAddress.state !== 'hasData') return false;
-    return !!recipientAddress.data;
-  }, [isBNS, doSendElsewhere, recipientAddress]);
 
   const canMigrate = useMemo(() => {
     if (recipientAddress.state !== 'hasData') return false;
@@ -88,68 +57,13 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
       <Divider />
       <Stack spacing="13px" p="30px">
         <Stack isInline spacing="$3" alignItems="center">
-          <Checkbox atom={sendElsewhereAtom} />
+          <Checkbox atom={migrateRecipientState.sendElsewhereAtom} />
           <Text variant="Label01" color="$onSurface-text">
             Send to different address
             <span style={{ color: 'var(--colors-onSurface-text-subdued)' }}> (optional)</span>
           </Text>
         </Stack>
-        {doSendElsewhere ? (
-          <>
-            <Input
-              placeholder="Enter a BNS name or Stacks address"
-              {...recipientInput.props}
-              autoFocus={true}
-              autoComplete="off"
-              autoCapitalize="off"
-              autoCorrect="off"
-              spellCheck="false"
-            />
-            {recipientAddress.state === 'loading' ? (
-              <Stack isInline spacing="$3" alignItems="center">
-                <Spinner size={16} />
-                <Text variant="Label02" color="$onSurface-text-subdued">
-                  Fetching BNS name
-                </Text>
-              </Stack>
-            ) : (
-              <>
-                {bnsInputValid && (
-                  <Stack isInline spacing="$3" alignItems="center">
-                    <CheckIcon />
-                    <Text variant="Label02" color="$onSurface-text-subdued">
-                      BNS Name looks good
-                    </Text>
-                  </Stack>
-                )}
-                {bnsInputInvalid && (
-                  <Stack isInline spacing="$3" alignItems="center">
-                    <ErrorIcon />
-                    <Text variant="Label02" color="$text-error">
-                      Invalid BNS name
-                    </Text>
-                  </Stack>
-                )}
-                {stxAddrInvalid && (
-                  <Stack isInline spacing="$3" alignItems="center">
-                    <ErrorIcon />
-                    <Text variant="Label02" color="$text-error">
-                      Invalid Stacks address
-                    </Text>
-                  </Stack>
-                )}
-                {stxAddrValid && (
-                  <Stack isInline spacing="$3" alignItems="center">
-                    <CheckIcon />
-                    <Text variant="Label02" color="$onSurface-text-subdued">
-                      Stacks address looks good
-                    </Text>
-                  </Stack>
-                )}
-              </>
-            )}
-          </>
-        ) : null}
+        {doSendElsewhere && <BnsRecipientField recipientState={migrateRecipientState} />}
       </Stack>
     </UpgradeBox>
   );

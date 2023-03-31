@@ -5,10 +5,10 @@ import { bnsContractState, contractsState } from '../store';
 import {
   migrateNameAssetIdState,
   migrateTxidAtom,
-  validRecipientState,
   wrapperSignatureState,
   wrapperContractIdState,
-} from '../store/migration';
+  migrateRecipientState,
+} from '@store/migration';
 import { hexToBytes } from 'micro-stacks/common';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { PostConditionMode, NonFungibleConditionCode } from 'micro-stacks/transactions';
@@ -24,7 +24,7 @@ export function useWrapperMigrate() {
         const migrator = contracts.wrapperMigrator;
         const contractId = get(wrapperContractIdState);
         const signature = get(wrapperSignatureState);
-        const recipient = get(validRecipientState);
+        const recipient = get(migrateRecipientState.validRecipientState);
         const address = get(stxAddressAtom)!;
         const bns = get(bnsContractState);
         const bnsTupleId = get(migrateNameAssetIdState);

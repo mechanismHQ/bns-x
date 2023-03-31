@@ -14,6 +14,7 @@ import { nip19 } from 'nostr-tools';
 import type { TXTType, URIType } from '@fungible-systems/zone-file/dist/zoneFile';
 
 export const unwrapTxidAtom = hashAtom('unwrapTxid');
+export const unwrapTxAtom = txidQueryAtom(unwrapTxidAtom)[0];
 
 export const isEditingProfileAtom = atom(false);
 

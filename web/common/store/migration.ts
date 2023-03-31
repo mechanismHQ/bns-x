@@ -32,10 +32,6 @@ export const nameUpgradingAtom = atom(get => {
   return fromQuery?.combined ?? null;
 });
 
-export const upgradeRecipientAtom = atom('');
-
-export const recipientAddrAtom = atom<string | null>(null);
-
 export const migrateNameAssetIdState = atom(get => {
   const nameStr = get(migrateNameAtom);
   if (!nameStr) throw new Error('Cannot get BNS name asset - empty');
@@ -74,8 +70,6 @@ export function txidQueryAtom(txidAtom: Atom<string | undefined>, unanchored = t
 }
 
 export const [migrateTxState] = txidQueryAtom(migrateTxidAtom);
-
-export const sendElsewhereAtom = atom(false);
 
 export const [wrapperDeployTxState] = txidQueryAtom(wrapperDeployTxidAtom);
 
@@ -118,49 +112,6 @@ export const [wrapperSignatureState] = atomsWithQuery<string | null>(get => {
   };
 });
 
-export const [validRecipientState] = atomsWithQuery<string | null>(get => ({
-  queryKey: ['valid-recipient', get(upgradeRecipientAtom), get(sendElsewhereAtom)],
-  queryFn: async () => {
-    const recipient = get(upgradeRecipientAtom).trim();
-    const sendElsewhere = get(sendElsewhereAtom);
-    if (!sendElsewhere) {
-      const me = get(stxAddressAtom);
-      return me || null;
-    }
-    if (!recipient) return null;
-    if (!recipient.includes('.')) {
-      return validateStacksAddress(recipient) ? recipient : null;
-    }
-    const clarigen = get(clarigenAtom);
-    const registry = get(nameRegistryState);
-    const bns = get(bnsContractState);
-    const [nameStr, namespaceStr] = getContractParts(recipient);
-    console.log(`Fetching addr for BNS name ${nameStr}.${namespaceStr}`);
-    const name = asciiToBytes(nameStr);
-    const namespace = asciiToBytes(namespaceStr);
-
-    const [xName, v1Name] = await Promise.all([
-      clarigen.ro(registry.getNameProperties({ name, namespace })),
-      clarigen.ro(bns.nameResolve({ name, namespace })),
-    ]);
-    if (xName !== null) {
-      console.log(`Setting recipient from BNSx: ${xName.owner}`);
-      return standardPrincipalOnly(xName.owner);
-    }
-    if (v1Name.isOk) {
-      console.log(`Setting name from v1 to addr`, v1Name.value.owner);
-      return standardPrincipalOnly(v1Name.value.owner);
-    }
-    return null;
-  },
-}));
-
-// export const validRecipientState = atom(get => {
-//   const isBnsx = get(recipientIsBnsState);
-//   const recipientAddress = get(validRecipientQuery);
-
-// });
-
 function standardPrincipalOnly(address: string) {
   if (address.includes('.')) {
     return null;
@@ -168,12 +119,64 @@ function standardPrincipalOnly(address: string) {
   return address;
 }
 
-export const recipientIsBnsState = atom(get => {
-  const sendElsewhere = get(sendElsewhereAtom);
-  const inputBNS = get(upgradeRecipientAtom).split('.').length === 2;
-  return sendElsewhere && inputBNS;
-});
+export function makeBnsRecipientState() {
+  const sendElsewhereAtom = atom(false);
+  const upgradeRecipientAtom = atom('');
 
-// export const bnsInputValidState = atom<boolean | null>(get => {
+  const recipientAddrAtom = atom<string | null>(null);
 
-// })
+  const [validRecipientState] = atomsWithQuery<string | null>(get => ({
+    queryKey: ['valid-recipient', get(upgradeRecipientAtom), get(sendElsewhereAtom)],
+    queryFn: async () => {
+      const recipient = get(upgradeRecipientAtom).trim();
+      const sendElsewhere = get(sendElsewhereAtom);
+      if (!sendElsewhere) {
+        const me = get(stxAddressAtom);
+        return me || null;
+      }
+      if (!recipient) return null;
+      if (!recipient.includes('.')) {
+        return validateStacksAddress(recipient) ? recipient : null;
+      }
+      const clarigen = get(clarigenAtom);
+      const registry = get(nameRegistryState);
+      const bns = get(bnsContractState);
+      const [nameStr, namespaceStr] = getContractParts(recipient);
+      console.log(`Fetching addr for BNS name ${nameStr}.${namespaceStr}`);
+      const name = asciiToBytes(nameStr);
+      const namespace = asciiToBytes(namespaceStr);
+
+      const [xName, v1Name] = await Promise.all([
+        clarigen.ro(registry.getNameProperties({ name, namespace })),
+        clarigen.ro(bns.nameResolve({ name, namespace })),
+      ]);
+      if (xName !== null) {
+        console.log(`Setting recipient from BNSx: ${xName.owner}`);
+        return standardPrincipalOnly(xName.owner);
+      }
+      if (v1Name.isOk) {
+        console.log(`Setting name from v1 to addr`, v1Name.value.owner);
+        return standardPrincipalOnly(v1Name.value.owner);
+      }
+      return null;
+    },
+  }));
+
+  const recipientIsBnsState = atom(get => {
+    const sendElsewhere = get(sendElsewhereAtom);
+    const inputBNS = get(upgradeRecipientAtom).split('.').length === 2;
+    return sendElsewhere && inputBNS;
+  });
+
+  return {
+    sendElsewhereAtom,
+    upgradeRecipientAtom,
+    recipientAddrAtom,
+    validRecipientState,
+    recipientIsBnsState,
+  };
+}
+
+export const migrateRecipientState = makeBnsRecipientState();
+
+export type BnsRecipientState = ReturnType<typeof makeBnsRecipientState>;

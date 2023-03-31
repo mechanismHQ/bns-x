@@ -3,13 +3,7 @@ import { Flex, Box, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { PendingRow, DoneRow, NameHeading, Divider, UpgradeBox } from './rows';
 import { CenterBox } from '../layout';
-import {
-  migrateTxidAtom,
-  migrateTxState,
-  nameUpgradingAtom,
-  validRecipientState,
-  wrapperDeployTxidAtom,
-} from '@store/migration';
+import { migrateTxidAtom, wrapperDeployTxidAtom, migrateRecipientState } from '@store/migration';
 import { useAtomValue } from 'jotai/utils';
 import { Button } from '@components/button';
 import { useRouter } from 'next/router';
@@ -18,7 +12,7 @@ import { stxAddressAtom } from '@store/micro-stacks';
 import { currentUserUpgradedState } from '@store/names';
 
 export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
-  const recipient = useAtomValue(validRecipientState);
+  const recipient = useAtomValue(migrateRecipientState.validRecipientState);
   const stxAddress = useAtomValue(stxAddressAtom);
 
   if (recipient === null || recipient === stxAddress) return null;
