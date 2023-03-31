@@ -7,11 +7,12 @@ import { useRouter } from 'next/router';
 import { Button } from '@components/button';
 import { Checkbox } from '@components/checkbox';
 import { BnsRecipientField } from '@components/bns-recipient-field';
-import { unwrapRecipientState, useUnwrap } from '@common/hooks/use-unwrap';
-import { unwrapTxAtom, unwrapTxidAtom } from '@store/profile';
+import { useUnwrap } from '@common/hooks/use-unwrap';
+import { unwrapTxAtom, unwrapTxidAtom, unwrapRecipientState } from '@store/profile';
 import { Divider, DoneRow, PendingRow } from '@components/upgrade/rows';
 import { loadable } from 'jotai/utils';
 import { stxAddressAtom } from '@store/micro-stacks';
+import { ErrorIcon } from '@components/icons/error';
 
 export const TransferredRow = () => {
   const recipient = useAtomValue(unwrapRecipientState.validRecipientState);
@@ -57,7 +58,7 @@ export const Unwrap = () => {
   const router = useRouter();
   const name = router.query.name as string;
   const doSendElsewhere = useAtomValue(unwrapRecipientState.sendElsewhereAtom);
-  const { canUnwrap, unwrap, isRequestPending, unwrapTxid } = useUnwrap(name);
+  const { canUnwrap, unwrap, isRequestPending, unwrapTxid, recipientHasBns } = useUnwrap(name);
   const unwrapTx = useAtomValue(loadable(unwrapTxAtom));
 
   return (
@@ -91,6 +92,14 @@ export const Unwrap = () => {
                   </Text>
                 </Stack>
                 {doSendElsewhere && <BnsRecipientField recipientState={unwrapRecipientState} />}
+                {recipientHasBns.state === 'hasData' && recipientHasBns.data && (
+                  <Stack isInline spacing="$3" alignItems="center">
+                    <ErrorIcon />
+                    <Text variant="Label02" color="$text-error">
+                      {doSendElsewhere ? 'Recipient already has' : 'You already have'} a BNS name
+                    </Text>
+                  </Stack>
+                )}
               </Stack>
             )}
           </Stack>

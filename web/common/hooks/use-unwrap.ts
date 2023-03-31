@@ -7,22 +7,21 @@ import { getContractsClient } from '@common/constants';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { NonFungibleConditionCode } from 'micro-stacks/transactions';
 import { bnsContractState, nameRegistryState } from '@store/index';
-import { unwrapTxidAtom } from '@store/profile';
+import { unwrapTxidAtom, unwrapRecipientState, unwrapRecipientHasBnsState } from '@store/profile';
 import { nameToTupleBytes } from '@common/utils';
 import { makeNonFungiblePostCondition } from '@clarigen/core';
-import { makeBnsRecipientState } from '@store/migration';
-
-export const unwrapRecipientState = makeBnsRecipientState();
 
 export function useUnwrap(name: string) {
   const { openContractCall, isRequestPending } = useOpenContractCall();
   const unwrapTxid = useAtomValue(unwrapTxidAtom);
   const recipientAddress = useAtomValue(loadable(unwrapRecipientState.validRecipientState));
+  const recipientHasBns = useAtomValue(loadable(unwrapRecipientHasBnsState));
 
   const canUnwrap = useMemo(() => {
     if (recipientAddress.state !== 'hasData') return false;
-    return !!recipientAddress.data;
-  }, [recipientAddress]);
+    if (recipientHasBns.state !== 'hasData') return false;
+    return !!recipientAddress.data && !recipientHasBns.data;
+  }, [recipientAddress, recipientHasBns]);
 
   const unwrap = useAtomCallback(
     useCallback(
@@ -91,5 +90,6 @@ export function useUnwrap(name: string) {
     unwrapTxid,
     isRequestPending,
     canUnwrap,
+    recipientHasBns,
   };
 }

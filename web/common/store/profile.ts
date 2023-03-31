@@ -1,11 +1,11 @@
 import type { Atom, Getter, WritableAtom } from 'jotai';
 import { atom } from 'jotai';
-import { hashAtom, txidQueryAtom } from './migration';
+import { hashAtom, makeBnsRecipientState, txidQueryAtom } from './migration';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { atomFamily, atomWithStorage } from 'jotai/utils';
 import { parsedUserZonefileState, userNameState, userZonefileState } from '@store/names';
 import { nameDetailsAtom } from '@store/names';
-import { coreNodeInfoAtom } from '@store/api';
+import { coreNodeInfoAtom, namesForAddressState } from '@store/api';
 import type { ZoneFileObject } from '@bns-x/client';
 import { ZoneFile } from '@bns-x/client';
 import { doesNamespaceExpire, parseFqn, ZonefileTxtKeys, ZonefileUriKeys } from '@bns-x/client';
@@ -272,4 +272,18 @@ export const zonefileUpdateConfirmedState = atom<boolean | null>(get => {
 
   const realZonefile = get(userZonefileState[0]);
   return realZonefile === pendingZonefile.zonefile;
+});
+
+// UNWRAPPING
+
+export const unwrapRecipientState = makeBnsRecipientState();
+
+export const unwrapRecipientHasBnsState = atom(get => {
+  const recipient = get(unwrapRecipientState.validRecipientState);
+
+  if (recipient === null) return false;
+
+  const names = get(namesForAddressState(recipient));
+
+  return names.coreName !== null;
 });
