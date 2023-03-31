@@ -1,5 +1,17 @@
 # contracts
 
+## 0.1.0
+
+### Minor Changes
+
+- 22cc6ed: Created a new "name wrapper" contract that has functionality to support renewing a name and withdrawing assets that were accidentally sent to the name.
+
+### Patch Changes
+
+- Updated dependencies [22cc6ed]
+  - @bns-x/client@0.3.0
+  - @bns-x/core@0.2.0
+
 ## 0.0.6
 
 ### Patch Changes

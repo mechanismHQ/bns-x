@@ -1,5 +1,16 @@
 # web
 
+## 0.1.12
+
+### Patch Changes
+
+- 2f3fcc4: Prevent unwrap if the recipient already has a BNS name
+- a5e84e6: Adds the ability to unwrap names
+- Updated dependencies [22cc6ed]
+  - @bns-x/client@0.3.0
+  - @bns-x/core@0.2.0
+  - @bns-x/api-types@0.2.3
+
 ## 0.1.11
 
 ### Patch Changes
