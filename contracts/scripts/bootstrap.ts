@@ -41,7 +41,7 @@ async function waitForConstruct(): Promise<void> {
         console.log(`Failed to check for bootstrap status`);
         // console.error(error);
       }
-      setTimeout(() => void tryConstruct(), 10000);
+      setTimeout(() => void tryConstruct(), 3000);
     })();
   });
 }

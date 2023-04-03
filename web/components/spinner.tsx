@@ -9,7 +9,7 @@ const spin = keyframes({
 });
 
 export const Spinner: React.FC<BoxProps & { size?: number }> = props => {
-  const size = props.size || 16;
+  const size = props.size ?? 16;
   const radius = size / 2;
   return (
     <Box

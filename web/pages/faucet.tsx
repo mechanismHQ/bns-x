@@ -9,9 +9,7 @@ export const getServerSideProps = withSSRProps();
 const FaucetPage: NextPage = () => {
   return (
     <Layout centerBox={true}>
-      {/* <Stack> */}
       <Faucet />
-      {/* </Stack> */}
     </Layout>
   );
 };

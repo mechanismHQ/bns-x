@@ -42,6 +42,7 @@ import type { Mutate, StoreApi } from 'zustand/vanilla';
 import { c32address, StacksNetworkVersion } from 'micro-stacks/crypto';
 import type { StacksNetwork } from 'micro-stacks/network';
 import isEqual from 'lodash-es/isEqual';
+import { useHydrateAtoms } from 'jotai/utils';
 
 /** ------------------------------------------------------------------------------------------------------------------
  *   Client
@@ -51,7 +52,7 @@ import isEqual from 'lodash-es/isEqual';
 const NO_CLIENT_MESSAGE =
   'No client set in jotai context, wrap your app in JotaiClientProvider to set one';
 
-const clientAtom = atom<MicroStacksClient | null>(null);
+export const clientAtom = atom<MicroStacksClient | null>(null);
 export const clientState = atom<MicroStacksClient>(get => {
   const client = get(clientAtom);
   if (!client) throw new Error(NO_CLIENT_MESSAGE);
@@ -62,6 +63,16 @@ export const clientState = atom<MicroStacksClient>(get => {
  *   Jotai provider (for setting client context)
  *  ------------------------------------------------------------------------------------------------------------------
  */
+
+// export const JotaiClientProvider2: React.FC<{
+//   initialValues?: [Atom<unknown>, unknown][];
+//   children: React.ReactNode;
+// }> = ({ children, initialValues }) => {
+//   const client = useMicroStacksClient();
+//   useHydrateAtoms([[clientAtom, client] as const, ...(initialValues || [])]);
+
+//   return <>{children}</>;
+// };
 
 // this goes below `ClientProvider` in your app
 export const JotaiClientProvider: React.FC<

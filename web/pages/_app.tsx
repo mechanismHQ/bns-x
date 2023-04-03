@@ -3,7 +3,7 @@ import { ClientProvider } from '@micro-stacks/react';
 import { useCallback, useMemo } from 'react';
 import { destroySession, saveSession } from '../common/fetchers';
 import '../public/fonts.css';
-import { JotaiClientProvider } from '@store/micro-stacks';
+import { JotaiClientProvider } from '@components/jotai-provider';
 import { queryClientAtom } from 'jotai-tanstack-query';
 import { queryClient } from '@store/query-client';
 
@@ -46,11 +46,11 @@ function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppPro
     return getAppUrl();
   }, []);
 
-  const hydratedAtoms: AtomPair[] = [[queryClientAtom, queryClient]];
-
   if (pageProps?.displayName) {
     queryClient.setQueryData(displayNameQueryKey(pageProps.stxAddress!), pageProps.displayName);
   }
+
+  const hydratedAtoms: AtomPair[] = [[queryClientAtom, queryClient]];
 
   if (pageProps?.meta) {
     hydratedAtoms.push([docTitleState, pageProps.meta.title]);
