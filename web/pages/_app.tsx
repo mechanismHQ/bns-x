@@ -15,11 +15,13 @@ import type { Atom } from 'jotai';
 import { docTitleState, pageDescriptionState } from '@store/index';
 import { displayNameQueryKey, prefetchedDisplayNameState } from '@store/api';
 import { Analytics } from '@vercel/analytics/react';
+import { useMonitorAccount } from '@common/hooks/use-monitor-account';
 
 export interface PageProps {
   dehydratedState: string;
   displayName?: string;
   stxAddress?: string;
+  accountIndex?: number;
   meta?: {
     title: string;
     description?: string;
@@ -30,6 +32,7 @@ type AtomPair<T = unknown> = [Atom<T>, T];
 
 function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppProps, 'pageProps'>) {
   const router = useRouter();
+  useMonitorAccount(pageProps?.accountIndex);
   const onPersistState: ClientConfig['onPersistState'] = useCallback(
     async (dehydratedState: string) => {
       await saveSession(dehydratedState);

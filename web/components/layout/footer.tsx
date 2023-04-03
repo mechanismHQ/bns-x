@@ -2,13 +2,14 @@
 import React, { Suspense, useMemo } from 'react';
 import { SpaceBetween, Box } from '@nelson-ui/react';
 import { Text } from '../text';
-import type { LinkProps } from '@components/link';
+import type { LinkProps, Url } from '@components/link';
 import { Link } from '@components/link';
 import { styled } from '@common/theme';
 import { useAtomValue } from 'jotai';
 import { isMainnetState } from '@store/index';
 import { ONLY_INSCRIPTIONS } from '@common/constants';
 import { btnShiftActiveProps } from '@components/button';
+import { useAccountPath } from '@common/hooks/use-account-path';
 
 const FooterContainer = styled(SpaceBetween, {
   flexDirection: 'row',
@@ -43,7 +44,7 @@ const HeaderLinkBox = styled(Box, {
 export const HeaderLink: React.FC<
   LinkProps & {
     children?: React.ReactNode;
-    href: string;
+    href: Url;
     target?: string;
   }
 > = ({ children, href, target, ...rest }) => {
@@ -77,6 +78,7 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
     return new Date().getFullYear();
   }, []);
   const isMainnet = useAtomValue(isMainnetState);
+  const faucetPath = useAccountPath('/faucet');
   return (
     <FooterContainer
       // isInline
@@ -128,7 +130,7 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
           Mint BNS names
         </HeaderLink>
         {!isMainnet && (
-          <HeaderLink href="/faucet" color="$onSurface-text-subdued">
+          <HeaderLink href={faucetPath} color="$onSurface-text-subdued">
             Testnet faucet
           </HeaderLink>
         )}

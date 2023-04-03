@@ -10,6 +10,7 @@ import { adjectives, animals, uniqueNamesGenerator } from 'unique-names-generato
 import { Button } from './button';
 import { currentUserV1NameState } from '../common/store/names';
 import { useRouter } from 'next/router';
+import { useAccountPath } from '@common/hooks/use-account-path';
 
 const nameAtom = atom('');
 
@@ -51,14 +52,11 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
     }, [])
   );
 
+  const profilePath = useAccountPath('/profile');
+
   useEffect(() => {
     if (bnsName?.combined) {
-      void router.push({
-        pathname: '/profile',
-        query: {
-          redirect: 'false',
-        },
-      });
+      void router.push(profilePath);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bnsName?.combined]);

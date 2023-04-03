@@ -451,3 +451,22 @@ export const microStacksStoreAtom = atom(get => {
 //   });
 //   return clean;
 // });
+
+export function findAccountIndexForAddress({
+  address,
+  accounts,
+  network,
+}: {
+  address: string;
+  accounts: MicroStackAccount[];
+  network: StacksNetwork;
+}) {
+  const accountIndex = accounts?.findIndex(a => {
+    const _address = c32address(
+      network.isMainnet() ? StacksNetworkVersion.mainnetP2PKH : StacksNetworkVersion.testnetP2PKH,
+      hexToBytes(a.address[1])
+    );
+    return address === _address;
+  });
+  return accountIndex;
+}

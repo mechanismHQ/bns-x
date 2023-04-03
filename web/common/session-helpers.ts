@@ -22,14 +22,14 @@ export const getDehydratedStateFromSession = async (ctx: GetServerSidePropsConte
    * because it's encrypted in a cookie. We just want to avoid passing it down the wire because
    * if someone is watching the data, they could gain access to it.
    */
-  return dehydratedState ? cleanDehydratedState(dehydratedState) : null;
+  return typeof dehydratedState !== 'undefined' ? cleanDehydratedState(dehydratedState) : null;
 };
 
-export function getSessionAccount(dehydratedState?: string) {
+export function getSessionClient(dehydratedState?: string) {
   const config: ClientConfig = {
     dehydratedState: dehydratedState,
     network: getNetwork(),
   };
   const client = createClient({ config });
-  return client.selectStxAddress(client.getState());
+  return client;
 }

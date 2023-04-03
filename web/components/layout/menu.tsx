@@ -164,6 +164,15 @@ const MenuDropdown: React.FC = () => {
           >
             <Text variant="Body02">Switch accounts</Text>
           </PopoverOption>
+          <PopoverOption
+            onClick={async () => {
+              await router.push({
+                pathname: '/accounts',
+              });
+            }}
+          >
+            Accounts
+          </PopoverOption>
           <PopoverOption>
             <Text variant="Body02" onClick={async () => await signOut()}>
               Sign out

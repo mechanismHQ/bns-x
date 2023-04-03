@@ -1,6 +1,8 @@
-import { getDehydratedStateFromSession, getSessionAccount } from '@common/session-helpers';
+import { getDehydratedStateFromSession, getSessionClient } from '@common/session-helpers';
 import type { GetServerSidePropsContext } from 'next';
 import { trpc, bnsApi } from '@store/api';
+import { getNetwork } from '@common/constants';
+import { findAccountIndexForAddress } from '@store/micro-stacks';
 
 type GetProps = (
   ctx: GetServerSidePropsContext
@@ -17,10 +19,27 @@ export function withSSRProps(cb?: GetProps) {
       dehydratedState,
     };
     if (dehydratedState !== null) {
-      const address = getSessionAccount(dehydratedState)!;
+      const client = getSessionClient(dehydratedState)!;
+      const state = client.getState();
+      const address = client.selectStxAddress(state)!;
       const displayName = await bnsApi.getDisplayName(address);
       baseProps.displayName = displayName;
       baseProps.stxAddress = address;
+      if (typeof ctx.params?.address === 'string') {
+        const address = ctx.params.address;
+        const network = getNetwork();
+        const foundIndex = findAccountIndexForAddress({
+          network,
+          address,
+          accounts: state.accounts,
+        });
+        if (foundIndex !== -1) {
+          baseProps.accountIndex = foundIndex;
+        }
+      }
+      if (typeof baseProps.accountIndex === 'undefined') {
+        baseProps.accountIndex = state.currentAccountIndex;
+      }
     }
     if (typeof cb !== 'undefined') {
       const extra = await cb(ctx);
