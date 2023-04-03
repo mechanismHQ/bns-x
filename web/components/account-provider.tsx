@@ -1,3 +1,4 @@
+import React from 'react';
 import { microStacksStoreAtom, networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
@@ -6,7 +7,11 @@ import { c32address, StacksNetworkVersion } from 'micro-stacks/crypto';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
 
-export function useMonitorAccount(primaryIndex?: number, pathAccountIndex?: number) {
+export const AccountProvider: React.FC<{
+  children?: React.ReactNode;
+  primaryIndex?: number;
+  pathAccountIndex?: number;
+}> = ({ children, primaryIndex, pathAccountIndex }) => {
   const router = useRouter();
   const stxAddress = useAtomValue(stxAddressAtom);
 
@@ -43,23 +48,16 @@ export function useMonitorAccount(primaryIndex?: number, pathAccountIndex?: numb
     useCallback(
       get => {
         const store = get(microStacksStoreAtom);
-        // const storeIndex = store.getState().currentAccountIndex;
+        const storeIndex = store.getState().currentAccountIndex;
         if (typeof pathAccountIndex !== 'undefined') {
-          // if (pathAccountIndex !== storeIndex) {
-          console.log('First load - setting index to path-based account', pathAccountIndex);
-          store.setState({ currentAccountIndex: pathAccountIndex });
-          // }
-        } else if (typeof primaryIndex !== 'undefined') {
-          console.log('First load - resetting index to primary', primaryIndex);
+          if (pathAccountIndex !== storeIndex) {
+            console.log('Setting index to path-based account', pathAccountIndex);
+            store.setState({ currentAccountIndex: pathAccountIndex });
+          }
+        } else if (typeof primaryIndex !== 'undefined' && primaryIndex !== storeIndex) {
+          console.log('Resetting index to primary', primaryIndex);
           store.setState({ currentAccountIndex: primaryIndex });
         }
-        // if (typeof pathAccountIndex !== 'undefined' && pathAccountIndex !== storeIndex) {
-        //   console.log('First load - setting index to path-based account', pathAccountIndex);
-        //   store.setState({ currentAccountIndex: pathAccountIndex });
-        // } else if (typeof primaryIndex !== 'undefined' && primaryIndex !== storeIndex) {
-        //     console.log('First load - resetting index to primary', primaryIndex);
-        //     store.setState({ currentAccountIndex: primaryIndex });
-        // }
       },
       [primaryIndex, pathAccountIndex]
     )
@@ -92,4 +90,6 @@ export function useMonitorAccount(primaryIndex?: number, pathAccountIndex?: numb
       router.events.off('routeChangeStart', setAccountFromRoute);
     };
   }, [router, setAccount, resetFromSSR]);
-}
+
+  return <>{children}</>;
+};

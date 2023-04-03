@@ -22,24 +22,27 @@ export function withSSRProps(cb?: GetProps) {
       const client = getSessionClient(dehydratedState)!;
       const state = client.getState();
       const address = client.selectStxAddress(state)!;
-      const displayName = await bnsApi.getDisplayName(address);
-      baseProps.displayName = displayName;
+      baseProps.accountIndex = state.currentAccountIndex;
       baseProps.stxAddress = address;
       if (typeof ctx.params?.address === 'string') {
         const address = ctx.params.address;
         const network = getNetwork();
-        const foundIndex = findAccountIndexForAddress({
+        const account = findAccountIndexForAddress({
           network,
           address,
           accounts: state.accounts,
         });
-        if (foundIndex !== -1) {
-          baseProps.accountIndex = foundIndex;
+        if (typeof account !== 'undefined') {
+          baseProps.dehydratedState = setAccountIndexInDehydratedState(
+            dehydratedState,
+            account.index
+          );
+          baseProps.pathAccountIndex = account.index;
+          baseProps.stxAddress = account.stxAddress;
         }
       }
-      if (typeof baseProps.accountIndex === 'undefined') {
-        baseProps.accountIndex = state.currentAccountIndex;
-      }
+      const displayName = await bnsApi.getDisplayName(address);
+      baseProps.displayName = displayName;
     }
     if (typeof cb !== 'undefined') {
       const extra = await cb(ctx);
@@ -52,4 +55,12 @@ export function withSSRProps(cb?: GetProps) {
       props: baseProps,
     };
   };
+}
+
+type Dehydrated = [[number, string], [number | undefined, any[]]];
+
+function setAccountIndexInDehydratedState(dehydratedState: string, accountIndex: number) {
+  const state = JSON.parse(dehydratedState) as Dehydrated;
+  state[1][0] = accountIndex;
+  return JSON.stringify(state);
 }

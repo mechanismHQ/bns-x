@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { currentUserUpgradedState } from '@store/names';
+import { useAccountPath } from '@common/hooks/use-account-path';
 
 export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
   const recipient = useAtomValue(migrateRecipientState.validRecipientState);
@@ -29,12 +30,11 @@ export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
   const migrateTxid = useAtomValue(migrateTxidAtom);
   const router = useRouter();
   const isUpgraded = useAtomValue(currentUserUpgradedState);
+  const profilePath = useAccountPath('/profile');
 
   const done = useCallback(() => {
-    void router.push({
-      pathname: '/profile',
-    });
-  }, [router]);
+    void router.push(profilePath);
+  }, [router, profilePath]);
 
   if (!migrateTxid) return null;
 

@@ -38,6 +38,8 @@ import {
 import { Link, LinkInner, LinkText } from '@components/link';
 import { ProfileActions } from '@components/p/name/actions';
 import { useWatchPendingZonefile } from '@common/hooks/use-watch-pending-zonefile';
+import { useAccountPath } from '@common/hooks/use-account-path';
+import { useAccount } from '@micro-stacks/react';
 
 export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   useWatchPendingZonefile();
@@ -50,11 +52,13 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   const setEditing = useSetEditing();
   const isEditing = useAtomValue(isEditingProfileAtom);
 
+  const upgradePath = useAccountPath('/upgrade');
+  const unwrapPath = useAccountPath('/unwrap/[name]', { name });
+  const accountPath = useAccountPath('');
+
   const upgrade = useCallback(async () => {
-    await router.push({
-      pathname: '/upgrade',
-    });
-  }, [router]);
+    await router.push(upgradePath);
+  }, [router, upgradePath]);
 
   if (nameDetails === null) {
     return (
@@ -101,10 +105,7 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
                 <Button
                   width="100%"
                   onClick={async () => {
-                    await router.push({
-                      pathname: '/unwrap/[name]',
-                      query: { name },
-                    });
+                    await router.push(unwrapPath);
                   }}
                 >
                   Unwrap
@@ -140,7 +141,7 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
                 <Button
                   type="big"
                   onClick={async () => {
-                    await router.push('/');
+                    await router.push(accountPath);
                   }}
                 >
                   Go back

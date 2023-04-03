@@ -15,6 +15,7 @@ import { useSwitchAccounts } from '@hooks/use-switch-accounts';
 import { ONLY_INSCRIPTIONS } from '@common/constants';
 import { btnShiftActiveProps } from '@components/button';
 import { usePunycode } from '@common/hooks/use-punycode';
+import { useAccountPath } from '@common/hooks/use-account-path';
 
 const StyledMenu = styled(Stack, {
   '&:hover': {
@@ -44,6 +45,8 @@ export const MenuName: React.FC = () => {
     }
     return show;
   }, [nameDisplay, stxAddress]);
+
+  const profilePath = useAccountPath('/profile');
   return (
     <StyledMenu
       isInline
@@ -59,13 +62,8 @@ export const MenuName: React.FC = () => {
       _active={btnShiftActiveProps}
       pr="50px"
       onClick={async () => {
-        const pathname = ONLY_INSCRIPTIONS ? '/' : '/profile';
-        await router.push({
-          pathname,
-          query: {
-            redirect: 'false',
-          },
-        });
+        const pathname = ONLY_INSCRIPTIONS ? '/' : profilePath;
+        await router.push(pathname);
       }}
     >
       <Stack isInline alignItems={'center'} spacing="8px">

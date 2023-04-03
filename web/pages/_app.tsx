@@ -16,12 +16,14 @@ import { docTitleState, pageDescriptionState } from '@store/index';
 import { displayNameQueryKey, prefetchedDisplayNameState } from '@store/api';
 import { Analytics } from '@vercel/analytics/react';
 import { useMonitorAccount } from '@common/hooks/use-monitor-account';
+import { AccountProvider } from '@components/account-provider';
 
 export interface PageProps {
   dehydratedState: string;
   displayName?: string;
   stxAddress?: string;
   accountIndex?: number;
+  pathAccountIndex?: number;
   meta?: {
     title: string;
     description?: string;
@@ -32,7 +34,6 @@ type AtomPair<T = unknown> = [Atom<T>, T];
 
 function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppProps, 'pageProps'>) {
   const router = useRouter();
-  useMonitorAccount(pageProps?.accountIndex);
   const onPersistState: ClientConfig['onPersistState'] = useCallback(
     async (dehydratedState: string) => {
       await saveSession(dehydratedState);
@@ -72,6 +73,10 @@ function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppPro
       network={getNetwork()}
     >
       <JotaiClientProvider initialValues={hydratedAtoms}>
+        <AccountProvider
+          primaryIndex={pageProps?.accountIndex}
+          pathAccountIndex={pageProps?.pathAccountIndex}
+        />
         <Component {...(pageProps as any)} />
         <Analytics />
       </JotaiClientProvider>

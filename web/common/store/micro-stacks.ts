@@ -432,26 +432,6 @@ export const microStacksStoreAtom = atom(get => {
   return store;
 });
 
-// export const cleanAccountsAtom = atom(get => {
-//   const accounts = get(accountsAtom);
-//   const network = get(networkState);
-
-//   const clean: Account[] = [];
-
-//   accounts.forEach((account: MicroStackAccount) => {
-//     const exists = clean.find(a => a.address[1] === account.address[1]);
-//     if (exists) return;
-//     clean.push({
-//       stxAddress: c32address(
-//         network.isMainnet ? account.address[0] : StacksNetworkVersion.testnetP2PKH,
-//         hexToBytes(account.address[1])
-//       ),
-//       ...account,
-//     });
-//   });
-//   return clean;
-// });
-
 export function findAccountIndexForAddress({
   address,
   accounts,
@@ -460,13 +440,18 @@ export function findAccountIndexForAddress({
   address: string;
   accounts: MicroStackAccount[];
   network: StacksNetwork;
-}) {
-  const accountIndex = accounts?.findIndex(a => {
+}): { index: number; stxAddress: string } | undefined {
+  for (let i = 0; i < accounts.length; i++) {
+    const a = accounts[i];
     const _address = c32address(
       network.isMainnet() ? StacksNetworkVersion.mainnetP2PKH : StacksNetworkVersion.testnetP2PKH,
-      hexToBytes(a.address[1])
+      hexToBytes(a!.address[1])
     );
-    return address === _address;
-  });
-  return accountIndex;
+    if (address === _address) {
+      return {
+        index: i,
+        stxAddress: _address,
+      };
+    }
+  }
 }

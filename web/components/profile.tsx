@@ -19,6 +19,7 @@ import { truncateMiddle } from '@common/utils';
 import { Link, LinkText } from '@components/link';
 import { styled } from '@common/theme';
 import { usePunycode } from '@common/hooks/use-punycode';
+import { useAccountPath } from '@common/hooks/use-account-path';
 
 const StyledName = styled(Text, {
   // initial: {
@@ -55,19 +56,17 @@ export const ProfileRow: React.FC<{
   const nameString = usePunycode(name);
   const router = useRouter();
   const gradient = useGradient(name);
+  const upgradePath = useAccountPath('/upgrade');
 
   const upgrade = useCallback(async () => {
-    await router.push({
-      pathname: '/upgrade',
-    });
-  }, [router]);
+    await router.push(upgradePath);
+  }, [router, upgradePath]);
+
+  const namePath = useAccountPath(`/names/[name]`, { name });
 
   const manage = useCallback(async () => {
-    await router.push({
-      pathname: '/names/[name]',
-      query: { name },
-    });
-  }, [router, name]);
+    await router.push(namePath);
+  }, [router, namePath]);
   const stxAddress = useAtomValue(stxAddressAtom);
 
   return (
