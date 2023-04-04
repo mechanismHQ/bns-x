@@ -13,6 +13,8 @@ import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-
 import { getContractParts, nameToTupleBytes } from '@common/utils';
 import { currentUserV1NameState } from '@store/names';
 import { accountProgressAtom, currentAccountProgressAtom } from '@store/accounts';
+import isEqual from 'lodash-es/isEqual';
+import { atomFamily } from 'jotai/utils';
 
 export function hashAtom(name: string, defaultValue?: string) {
   return typeof window === 'undefined'
@@ -54,35 +56,73 @@ export const migrateNameAssetIdState = atom(get => {
   return nameToTupleBytes(nameStr);
 });
 
-export function txidQueryAtom(txidAtom: Atom<string | undefined>, unanchored = true) {
-  return atomsWithQuery<MempoolTransaction | Transaction | null>(get => ({
-    queryKey: ['txid-query', get(txidAtom) || ''],
-    refetchInterval: data => {
-      if (data) {
-        if (data.tx_status === 'pending') return 5000;
-        if (data.tx_status === 'success') {
-          return data.is_unanchored ? 5000 : false;
+export const txState = atomFamily(
+  ({ txid, unanchored = true }: { txid?: string; unanchored?: boolean }) => {
+    return atomsWithQuery<MempoolTransaction | Transaction | null>(get => ({
+      queryKey: ['txid-query', txid || ''],
+      refetchInterval: data => {
+        if (data) {
+          if (data.tx_status === 'pending') return 5000;
+          if (data.tx_status === 'success') {
+            return data.is_unanchored ? 5000 : false;
+          }
+          return false;
         }
-        return false;
-      }
-      return 5000;
-    },
-    queryFn: async () => {
-      const txid = get(txidAtom);
-      const network = get(networkAtom);
-      if (!txid) return Promise.resolve(null);
-      try {
-        const tx = await fetchTransaction({
-          url: network.getCoreApiUrl(),
-          unanchored,
-          txid,
-        });
-        return tx;
-      } catch (error) {
-        return null;
-      }
-    },
-  }));
+        return 5000;
+      },
+      queryFn: async () => {
+        const network = get(networkAtom);
+        if (!txid) return Promise.resolve(null);
+        try {
+          const tx = await fetchTransaction({
+            url: network.getCoreApiUrl(),
+            unanchored,
+            txid,
+          });
+          return tx;
+        } catch (error) {
+          return null;
+        }
+      },
+    }))[0];
+  },
+  isEqual
+);
+
+export function txidQueryAtom(txidAtom: Atom<string | undefined>, unanchored = true) {
+  return [
+    atom<MempoolTransaction | Transaction | null>(get => {
+      return get(txState({ txid: get(txidAtom), unanchored }));
+    }),
+  ] as const;
+  // return atomsWithQuery<MempoolTransaction | Transaction | null>(get => ({
+  //   queryKey: ['txid-query', get(txidAtom) || ''],
+  //   refetchInterval: data => {
+  //     if (data) {
+  //       if (data.tx_status === 'pending') return 5000;
+  //       if (data.tx_status === 'success') {
+  //         return data.is_unanchored ? 5000 : false;
+  //       }
+  //       return false;
+  //     }
+  //     return 5000;
+  //   },
+  //   queryFn: async () => {
+  //     const txid = get(txidAtom);
+  //     const network = get(networkAtom);
+  //     if (!txid) return Promise.resolve(null);
+  //     try {
+  //       const tx = await fetchTransaction({
+  //         url: network.getCoreApiUrl(),
+  //         unanchored,
+  //         txid,
+  //       });
+  //       return tx;
+  //     } catch (error) {
+  //       return null;
+  //     }
+  //   },
+  // }));
 }
 
 export const [migrateTxState] = txidQueryAtom(migrateTxidAtom);

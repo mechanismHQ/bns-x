@@ -18,7 +18,7 @@ import { useMigrationProgress } from '@common/hooks/use-migration-progress';
 
 export function useWrapperMigrate() {
   const { isRequestPending, openContractCall } = useOpenContractCall();
-  const { saveProgress } = useMigrationProgress();
+  const { saveFinalizeTxid } = useMigrationProgress();
 
   const migrate = useAtomCallback(
     useCallback(
@@ -63,14 +63,11 @@ export function useWrapperMigrate() {
           postConditionMode: PostConditionMode.Deny,
           postConditions: [postCondition],
           async onFinish(payload) {
-            // set(migrateTxidHashAtom, payload.txId);
-            await saveProgress({
-              migrationTxid: payload.txId,
-            });
+            await saveFinalizeTxid(payload.txId);
           },
         });
       },
-      [openContractCall, saveProgress]
+      [openContractCall, saveFinalizeTxid]
     )
   );
 

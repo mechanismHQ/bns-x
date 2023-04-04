@@ -8,10 +8,13 @@ import { atomFamily, waitForAll, atomWithStorage } from 'jotai/utils';
 import { generateGaiaHubConfigSync, getFile, putFile } from 'micro-stacks/storage';
 import isEqual from 'lodash-es/isEqual';
 import { atom } from 'jotai';
+import { txidQueryAtom, txState } from '@store/migration';
 
 export enum AccountProgress {
   NotStarted = 'NotStarted',
   WrapperDeployed = 'WrapperDeployed',
+  WrapperDeployPending = 'WrapperDeployPending',
+  FinalizePending = 'FinalizePending',
   Done = 'Done',
   NoName = 'NoName',
 }
@@ -64,11 +67,42 @@ export const accountProgressAtom = atomFamily((stxAddress: string) => {
     const name = names.coreName?.combined;
 
     if (name && progressData.name !== name) {
-      // not started
-      return {};
+      // likely new name
+      return {
+        name,
+      };
+    }
+
+    if (!progressData.name) {
+      return { name };
     }
 
     return progressData;
+  });
+}, isEqual);
+
+export const accountProgressStatusState = atomFamily((stxAddress: string) => {
+  return atom(get => {
+    const { name, wrapperTxid, migrationTxid } = get(accountProgressAtom(stxAddress));
+    if (typeof name === 'undefined') return AccountProgress.NoName;
+    if (typeof wrapperTxid === 'undefined') {
+      return AccountProgress.NotStarted;
+    }
+    if (typeof migrationTxid !== 'undefined') {
+      const migrateTx = get(txState({ txid: migrationTxid }));
+      if (migrateTx?.tx_status === 'success') {
+        return AccountProgress.Done;
+      }
+      return AccountProgress.FinalizePending;
+    }
+    if (typeof wrapperTxid !== 'undefined') {
+      const deployTx = get(txState({ txid: wrapperTxid }));
+      if (deployTx?.tx_status === 'success') {
+        return AccountProgress.WrapperDeployed;
+      }
+      return AccountProgress.WrapperDeployPending;
+    }
+    throw new Error('Unknown account progress state');
   });
 }, isEqual);
 
@@ -85,7 +119,13 @@ export const currentAccountProgressAtom = atom(
   }
 );
 
-// GAIA Storage
+/**
+ *
+ *
+ * Gaia Storage (not used currently)
+ *
+ *
+ */
 
 export async function getProgressFile(appPrivateKey: string): Promise<AccountProgressData | null> {
   const gaiaHubConfig = generateGaiaHubConfigSync({

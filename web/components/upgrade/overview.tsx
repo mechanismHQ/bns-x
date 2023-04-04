@@ -5,7 +5,7 @@ import { Button } from '../button';
 import { styled } from '@common/theme';
 
 import { currentUserV1NameState } from '../../common/store/names';
-import { useAtomCallback, useAtomValue } from 'jotai/utils';
+import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
 import { nameUpgradingAtom } from '@store/migration';

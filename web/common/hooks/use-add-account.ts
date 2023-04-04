@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { authenticate } from 'micro-stacks/connect';
-import { useAtomCallback, useAtomValue } from 'jotai/utils';
+import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue } from 'jotai';
 import {
   accountsAtom,
   appDetailsAtom,

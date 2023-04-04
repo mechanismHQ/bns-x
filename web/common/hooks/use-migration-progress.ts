@@ -32,7 +32,29 @@ export function useMigrationProgress() {
     }, [])
   );
 
+  const saveWrapperTxid = useAtomCallback(
+    useCallback((get, set, txid: string) => {
+      const prev = get(currentAccountProgressAtom);
+      set(currentAccountProgressAtom, {
+        name: prev?.name,
+        wrapperTxid: txid,
+      });
+    }, [])
+  );
+
+  const saveFinalizeTxid = useAtomCallback(
+    useCallback((get, set, txid: string) => {
+      const prev = get(currentAccountProgressAtom);
+      set(currentAccountProgressAtom, {
+        ...prev,
+        migrationTxid: txid,
+      });
+    }, [])
+  );
+
   return {
     saveProgress,
+    saveFinalizeTxid,
+    saveWrapperTxid,
   };
 }

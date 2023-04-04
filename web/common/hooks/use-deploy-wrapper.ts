@@ -4,21 +4,15 @@ import { nameWrapperCodeState } from '@store/index';
 import { networkAtom } from '@store/micro-stacks';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
-import {
-  nameUpgradingAtom,
-  wrapperDeployTxidAtom,
-  wrapperDeployTxidHashAtom,
-} from '@store/migration';
 
 export function useDeployWrapper() {
   const { isRequestPending, openContractDeploy } = useOpenContractDeploy();
 
-  const { saveProgress } = useMigrationProgress();
+  const { saveWrapperTxid } = useMigrationProgress();
 
   const deploy = useAtomCallback(
     useCallback(
       async get => {
-        const name = get(nameUpgradingAtom);
         const network = get(networkAtom);
         const wrapperCode = get(nameWrapperCodeState);
         const nonce = new Date().getTime() % 2000;
@@ -32,15 +26,11 @@ export function useDeployWrapper() {
             coreApiUrl: network.getCoreApiUrl(),
           },
           async onFinish(payload) {
-            // set(wrapperDeployTxidHashAtom, payload.txId);
-            await saveProgress({
-              wrapperTxid: payload.txId,
-              name: name!,
-            });
+            await saveWrapperTxid(payload.txId);
           },
         });
       },
-      [openContractDeploy, saveProgress]
+      [openContractDeploy, saveWrapperTxid]
     )
   );
 

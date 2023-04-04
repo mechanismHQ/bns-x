@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo } from 'react';
 import NextHead from 'next/head';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useAtom } from 'jotai';
 import { getAppUrl, ONLY_INSCRIPTIONS } from '../common/constants';
 import { pageTitleState, docTitleState, pageDescriptionState } from '@store';
 import { useRouter } from 'next/router';
 
 export const useSetTitle = (title: string) => {
-  const setTitle = useUpdateAtom(docTitleState);
+  const [_, setTitle] = useAtom(docTitleState);
   useEffect(() => {
     setTitle(title);
   }, [title, setTitle]);

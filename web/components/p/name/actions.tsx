@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import { Stack } from '@nelson-ui/react';
 import { Text } from '@components/text';
-import { useAtomCallback, useAtomValue } from 'jotai/utils';
+import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue } from 'jotai';
 import {
   zonefileBtcAtom,
   zonefileNostrAtom,
