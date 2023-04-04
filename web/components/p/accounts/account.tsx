@@ -7,12 +7,12 @@ import type { Account } from '@store/micro-stacks';
 import { currentAccountAtom, stxAddressAtom } from '@store/micro-stacks';
 import { useGradient } from '@common/hooks/use-gradient';
 import { truncateMiddle } from '@common/utils';
-import { Button } from '@components/button';
-import { useRouter } from 'next/router';
 import { AccountProgress, accountProgressAtom, accountProgressStatusState } from '@store/accounts';
 import type { ProgressProps } from '@components/progress-bar';
 import { ProgressBar } from '@components/progress-bar';
-import { LinkText } from '@components/link';
+import { BoxLink, LinkText } from '@components/link';
+import { DropdownMenu, PopoverOption } from '@components/dropdown-menu';
+import { usePunycode } from '@common/hooks/use-punycode';
 
 export const AccountRow: React.FC<{ account: Account }> = ({ account }) => {
   return (
@@ -22,26 +22,47 @@ export const AccountRow: React.FC<{ account: Account }> = ({ account }) => {
   );
 };
 
+export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
+  const pathBase = '/accounts/[address]';
+  const query = { address: account.stxAddress };
+  return (
+    <DropdownMenu
+      popover={
+        <>
+          <BoxLink href={{ pathname: `${pathBase}/upgrade`, query }}>
+            <PopoverOption>Migrate</PopoverOption>
+          </BoxLink>
+          <BoxLink href={{ pathname: pathBase, query }}>
+            <PopoverOption>View account</PopoverOption>
+          </BoxLink>
+        </>
+      }
+    >
+      Actions
+    </DropdownMenu>
+  );
+};
+
 export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) => {
   const name = useAtomValue(addressDisplayNameState(account.stxAddress));
   const progress = useAtomValue(accountProgressAtom(account.stxAddress));
   const status = useAtomValue(accountProgressStatusState(account.stxAddress));
-  const router = useRouter();
   const gradient = useGradient(name || account.stxAddress);
   const currentAccount = useAtomValue(stxAddressAtom);
   const addressTruncated = useMemo(() => {
     return truncateMiddle(account.stxAddress, 4);
   }, [account.stxAddress]);
-  const primaryDisplay = useMemo(() => {
+  const primaryDisplayName = useMemo(() => {
     if (progress.name) return progress.name;
     if (name !== null) return name;
-    return truncateMiddle(account.stxAddress, 6);
-  }, [account.stxAddress, progress.name, name]);
+    return 'No BNS name';
+  }, [progress.name, name]);
+  const primaryDisplay = usePunycode(primaryDisplayName);
 
   const progressProps: ProgressProps = useMemo(() => {
     switch (status) {
       case AccountProgress.NotStarted:
-        return { value: 3, pending: false };
+        return { value: 5, pending: false };
       case AccountProgress.Done:
         return { value: 100, pending: false };
       case AccountProgress.WrapperDeployPending:
@@ -78,21 +99,11 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
         </Stack>
       </Stack>
       <Box flexGrow={1} />
-      <Stack isInline alignItems="center" spacing="10px" flexGrow={1}>
+      <Stack isInline alignItems="center" spacing="20px" flexGrow={1}>
         <Box maxWidth="400px" flexGrow={1}>
           <ProgressBar {...progressProps} />
         </Box>
-        <Button
-          secondary
-          onClick={async () => {
-            await router.push({
-              pathname: `/accounts/[address]`,
-              query: { address: account.stxAddress },
-            });
-          }}
-        >
-          Manage
-        </Button>
+        <AccountActions account={account} />
       </Stack>
     </SpaceBetween>
   );

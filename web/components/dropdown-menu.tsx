@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { styled } from '@common/theme';
 import Tippy from '@tippyjs/react/headless';
 import { useSpring, animated } from 'react-spring';
@@ -53,13 +53,24 @@ const StyledMenu = styled(Stack, {
 export const DropdownMenu: React.FC<MenuProps> = ({ children, popover, ...props }) => {
   const [mouseDown, setMouseDown] = useState(false);
   const activeStyles = mouseDown ? btnShiftActiveProps : {};
+  const ButtonText = useMemo(() => {
+    if (typeof children === 'string') {
+      return (
+        <Text pl="13px" variant="Body01">
+          {children}
+        </Text>
+      );
+    }
+    return children;
+  }, [children]);
+
   return (
     <MenuContainerStyled
       {...activeStyles}
       onMouseDown={() => setMouseDown(true)}
       onMouseUp={() => setMouseDown(false)}
     >
-      <MenuButton {...props}>{children}</MenuButton>
+      <MenuButton {...props}>{ButtonText}</MenuButton>
       <MenuDropdown>{popover}</MenuDropdown>
     </MenuContainerStyled>
   );

@@ -42,7 +42,6 @@ export const Ui: React.FC<{ children?: React.ReactNode }> = () => {
     <Stack spacing="20px">
       <Flex>
         <DropdownMenu
-          pl="23px"
           popover={
             <>
               <BoxLink href="/">
@@ -51,7 +50,7 @@ export const Ui: React.FC<{ children?: React.ReactNode }> = () => {
             </>
           }
         >
-          <Text variant="Body01">Actions</Text>
+          Actions
         </DropdownMenu>
       </Flex>
       <Flex width="100%" justifyContent={'center'}>

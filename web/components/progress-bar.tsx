@@ -63,7 +63,7 @@ export const ProgressBar: React.FC<{ children?: React.ReactNode } & ProgressProp
         width="100%"
         height="100%"
         {...barStyles.bg}
-        borderRadius="3px"
+        borderRadius="4px"
       ></Box>
       <Box
         transition="all 1s ease"
@@ -71,7 +71,7 @@ export const ProgressBar: React.FC<{ children?: React.ReactNode } & ProgressProp
         top="0"
         height="100%"
         {...barStyles.bar}
-        borderRadius="3px"
+        borderRadius="4px"
         width={`${value}%`}
       ></Box>
     </Box>

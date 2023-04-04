@@ -11,6 +11,7 @@ import { Button } from '@components/button';
 import { Link } from '@components/link';
 import { useAddAccount } from '@common/hooks/use-add-account';
 import { AccountRow } from '@components/p/accounts/account';
+import { Toggle } from '@components/ui/toggle';
 
 export const Accounts: React.FC<{ children?: React.ReactNode }> = () => {
   const displayName = useAtomValue(userNameState);
@@ -46,7 +47,7 @@ export const Accounts: React.FC<{ children?: React.ReactNode }> = () => {
           />
           <Stack spacing="8px" justifyContent={'center'}>
             <Text variant="Label01">{primaryDisplay}</Text>
-            <Text variant="Caption01">Primary Name</Text>
+            <Text variant="Caption01">Primary Account</Text>
           </Stack>
         </Stack>
         <Button>Change</Button>
@@ -68,6 +69,10 @@ export const Accounts: React.FC<{ children?: React.ReactNode }> = () => {
           Learn more
         </Link>
       </Text>
+      {/* <Flex>
+        <Toggle>Show pending</Toggle>
+      </Flex> */}
+      <Box height="10px" />
       {accountRows}
     </Stack>
   );
