@@ -19,7 +19,7 @@ export default class Document extends NextDocument {
   }
   render() {
     return (
-      <Html lang="en" className={darkMode}>
+      <Html lang="en" className={`${darkMode} dark`}>
         <Head>
           <style id="stitches" dangerouslySetInnerHTML={{ __html: allCss() }} />
           <style
