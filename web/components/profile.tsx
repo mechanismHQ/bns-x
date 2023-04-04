@@ -16,7 +16,7 @@ import { useRouter } from 'next/router';
 import { useGradient } from '@common/hooks/use-gradient';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { truncateMiddle } from '@common/utils';
-import { Link, LinkText } from '@components/link';
+import { BoxLink, Link, LinkText } from '@components/link';
 import { styled } from '@common/theme';
 import { usePunycode } from '@common/hooks/use-punycode';
 import { useAccountPath } from '@common/hooks/use-account-path';
@@ -113,9 +113,9 @@ export const ProfileRow: React.FC<{
       </Stack>
       <StyledEditBox>
         <Stack isInline>
-          <Button onClick={manage} secondary={v1}>
-            Edit
-          </Button>
+          <BoxLink href={upgradePath}>
+            <Button secondary={v1}>Edit</Button>
+          </BoxLink>
           {v1 && (
             <Button
               onClick={upgrade}

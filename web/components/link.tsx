@@ -88,6 +88,30 @@ export const LinkText: React.FC<LinkProps> = ({ href, prefetch, children, ...pro
 
 type InnerLinkProps = Omit<LinkProps, 'href' | 'prefetch'>;
 
+export const LinkContainer: React.FC<{
+  children: React.ReactNode;
+  href?: string;
+  target?: string;
+}> = React.forwardRef(({ children, ...props }, ref) => {
+  return (
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    <Box ref={ref as any} as="a" {...props}>
+      {children}
+    </Box>
+  );
+});
+LinkContainer.displayName = 'LinkContainer';
+
+export const BoxLink: React.FC<
+  { children: React.ReactNode } & React.ComponentProps<typeof NextLink>
+> = ({ children, ...props }) => {
+  return (
+    <NextLink {...props} passHref>
+      <LinkContainer>{children}</LinkContainer>
+    </NextLink>
+  );
+};
+
 export const LinkInner: React.FC<InnerLinkProps> = React.forwardRef(
   ({ children, plain, ...props }, ref) => {
     const extra = plain

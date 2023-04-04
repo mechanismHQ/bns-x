@@ -34,8 +34,9 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
   }, [account.stxAddress]);
   const primaryDisplay = useMemo(() => {
     if (progress.name) return progress.name;
+    if (name !== null) return name;
     return truncateMiddle(account.stxAddress, 6);
-  }, [account.stxAddress, progress.name]);
+  }, [account.stxAddress, progress.name, name]);
 
   const progressProps: ProgressProps = useMemo(() => {
     switch (status) {
