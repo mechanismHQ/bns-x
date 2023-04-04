@@ -1,34 +1,18 @@
-import React, { useCallback } from 'react';
-import { Box, Flex, SpaceBetween, Stack, Grid } from '@nelson-ui/react';
+import React from 'react';
+import { Stack } from '@nelson-ui/react';
 import { Text } from '../text';
-import { Button } from '../button';
 
 import { currentUserV1NameState } from '../../common/store/names';
-import { useAtomCallback, useAtomValue } from 'jotai/utils';
+import { useAtomValue } from 'jotai';
 import { Link } from '../link';
-import { migrateNameAtom, wrapperDeployTxidAtom } from '@store/migration';
-import { useEffect } from 'react';
-import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
+import { nameUpgradingAtom, wrapperDeployTxidAtom } from '@store/migration';
 import { UpgradeOverview } from '@components/upgrade/overview';
 import { UpgradeSteps } from '@components/upgrade/steps';
 
 export const Upgrade: React.FC = () => {
   const deployTxid = useAtomValue(wrapperDeployTxidAtom);
   const v1Name = useAtomValue(currentUserV1NameState);
-  const name = useAtomValue(migrateNameAtom);
-
-  const cacheName = useAtomCallback(
-    useCallback((get, set, name: string) => {
-      set(migrateNameAtom, name);
-    }, [])
-  );
-
-  useEffect(() => {
-    if (v1Name?.combined) {
-      void cacheName(v1Name?.combined);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [v1Name?.combined]);
+  const name = useAtomValue(nameUpgradingAtom);
 
   if (v1Name === null && !name) {
     return (

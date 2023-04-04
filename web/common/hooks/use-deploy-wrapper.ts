@@ -1,16 +1,24 @@
+import { useMigrationProgress } from '@common/hooks/use-migration-progress';
 import { useOpenContractDeploy } from '@micro-stacks/react';
 import { nameWrapperCodeState } from '@store/index';
 import { networkAtom } from '@store/micro-stacks';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
-import { wrapperDeployTxidAtom } from '../store/migration';
+import {
+  nameUpgradingAtom,
+  wrapperDeployTxidAtom,
+  wrapperDeployTxidHashAtom,
+} from '@store/migration';
 
 export function useDeployWrapper() {
   const { isRequestPending, openContractDeploy } = useOpenContractDeploy();
 
+  const { saveProgress } = useMigrationProgress();
+
   const deploy = useAtomCallback(
     useCallback(
-      async (get, set) => {
+      async get => {
+        const name = get(nameUpgradingAtom);
         const network = get(networkAtom);
         const wrapperCode = get(nameWrapperCodeState);
         const nonce = new Date().getTime() % 2000;
@@ -23,12 +31,16 @@ export function useDeployWrapper() {
             ...network,
             coreApiUrl: network.getCoreApiUrl(),
           },
-          onFinish(payload) {
-            set(wrapperDeployTxidAtom, payload.txId);
+          async onFinish(payload) {
+            // set(wrapperDeployTxidHashAtom, payload.txId);
+            await saveProgress({
+              wrapperTxid: payload.txId,
+              name: name!,
+            });
           },
         });
       },
-      [openContractDeploy]
+      [openContractDeploy, saveProgress]
     )
   );
 

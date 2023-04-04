@@ -8,18 +8,21 @@ import {
   wrapperSignatureState,
   wrapperContractIdState,
   migrateRecipientState,
+  migrateTxidHashAtom,
 } from '@store/migration';
 import { hexToBytes } from 'micro-stacks/common';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { PostConditionMode, NonFungibleConditionCode } from 'micro-stacks/transactions';
 import { makeNonFungiblePostCondition } from '@clarigen/core';
+import { useMigrationProgress } from '@common/hooks/use-migration-progress';
 
 export function useWrapperMigrate() {
   const { isRequestPending, openContractCall } = useOpenContractCall();
+  const { saveProgress } = useMigrationProgress();
 
   const migrate = useAtomCallback(
     useCallback(
-      async (get, set) => {
+      async (get, _set) => {
         const contracts = get(contractsState);
         const migrator = contracts.wrapperMigrator;
         const contractId = get(wrapperContractIdState);
@@ -59,12 +62,15 @@ export function useWrapperMigrate() {
           },
           postConditionMode: PostConditionMode.Deny,
           postConditions: [postCondition],
-          onFinish(payload) {
-            set(migrateTxidAtom, payload.txId);
+          async onFinish(payload) {
+            // set(migrateTxidHashAtom, payload.txId);
+            await saveProgress({
+              migrationTxid: payload.txId,
+            });
           },
         });
       },
-      [openContractCall]
+      [openContractCall, saveProgress]
     )
   );
 

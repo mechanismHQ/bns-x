@@ -127,7 +127,7 @@ function atomWithMicroStacks<V>(getter: GetterFn<V>, subscribe: SubscriptionFn<V
 
 export const stxAddressAtom = atomWithMicroStacks(getStxAddress, watchStxAddress);
 export const accountsAtom = atomWithMicroStacks(getAccounts, watchAccounts);
-export const currentAccountAtom = atomWithMicroStacks(getCurrentAccount, watchCurrentAccount);
+export const currentAccountInnterAtom = atomWithMicroStacks(getCurrentAccount, watchCurrentAccount);
 export const identityAddressAtom = atomWithMicroStacks(getIdentityAddress, watchIdentityAddress);
 export const networkAtom = atomWithMicroStacks(getNetwork, watchNetwork);
 export const statusAtom = atomWithMicroStacks(getStatus, watchStatus);
@@ -136,12 +136,22 @@ export const appDetailsAtom = atomWithMicroStacks(getAppDetails, watchAppDetails
 
 export const useStxAddressValue = () => useAtomValue(stxAddressAtom);
 export const useAccountsValue = () => useAtomValue(accountsAtom);
-export const useCurrentAccountValue = () => useAtomValue(currentAccountAtom);
+export const useCurrentAccountValue = () => useAtomValue(currentAccountInnterAtom);
 export const useIdentityAddressValue = () => useAtomValue(identityAddressAtom);
 export const useNetworkValue = () => useAtomValue(networkAtom);
 export const useStatusValue = () => useAtomValue(statusAtom);
 export const useDecentralizedIDValue = () => useAtomValue(decentralizedIDAtom);
 export const useAppDetails = () => useAtomValue(appDetailsAtom);
+
+export const currentAccountAtom = atom<Account | undefined>(get => {
+  const account = get(currentAccountInnterAtom);
+  const address = get(stxAddressAtom);
+  if (typeof account === 'undefined') return undefined;
+  return {
+    ...account,
+    stxAddress: address!,
+  };
+});
 
 export type Account = MicroStackAccount & {
   stxAddress: string;

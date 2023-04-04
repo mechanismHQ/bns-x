@@ -12,6 +12,7 @@ import { bnsContractState, clarigenAtom, nameRegistryState } from '@store/index'
 import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
 import { getContractParts, nameToTupleBytes } from '@common/utils';
 import { currentUserV1NameState } from '@store/names';
+import { accountProgressAtom, currentAccountProgressAtom } from '@store/accounts';
 
 export function hashAtom(name: string, defaultValue?: string) {
   return typeof window === 'undefined'
@@ -19,21 +20,36 @@ export function hashAtom(name: string, defaultValue?: string) {
     : atomWithHash<string | undefined>(name, defaultValue);
 }
 
-export const wrapperDeployTxidAtom = hashAtom('deployTx');
+export const wrapperDeployTxidHashAtom = hashAtom('deployTx');
 
-export const migrateTxidAtom = hashAtom('migrateTxid');
+export const migrateTxidHashAtom = hashAtom('migrateTxid');
+
+export const wrapperDeployTxidAtom = atom(get => {
+  const progress = get(currentAccountProgressAtom);
+  console.log('progress', progress);
+  if (progress?.wrapperTxid) return progress.wrapperTxid;
+  return get(wrapperDeployTxidHashAtom);
+});
+
+export const migrateTxidAtom = atom(get => {
+  const progress = get(currentAccountProgressAtom);
+  if (progress?.migrationTxid) return progress.migrationTxid;
+  return get(migrateTxidHashAtom);
+});
 
 export const migrateNameAtom = hashAtom('name');
 
 export const nameUpgradingAtom = atom(get => {
   const cacheName = get(migrateNameAtom);
-  const fromQuery = get(currentUserV1NameState);
   if (cacheName) return cacheName;
+  const progress = get(currentAccountProgressAtom);
+  if (progress?.name) return progress.name ?? null;
+  const fromQuery = get(currentUserV1NameState);
   return fromQuery?.combined ?? null;
 });
 
 export const migrateNameAssetIdState = atom(get => {
-  const nameStr = get(migrateNameAtom);
+  const nameStr = get(nameUpgradingAtom);
   if (!nameStr) throw new Error('Cannot get BNS name asset - empty');
   return nameToTupleBytes(nameStr);
 });

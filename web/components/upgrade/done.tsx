@@ -4,7 +4,7 @@ import { Text } from '../text';
 import { PendingRow, DoneRow, NameHeading, Divider, UpgradeBox } from './rows';
 import { CenterBox } from '../layout';
 import { migrateTxidAtom, wrapperDeployTxidAtom, migrateRecipientState } from '@store/migration';
-import { useAtomValue } from 'jotai/utils';
+import { useAtomValue } from 'jotai';
 import { Button } from '@components/button';
 import { useRouter } from 'next/router';
 import { useAuth } from '@micro-stacks/react';
