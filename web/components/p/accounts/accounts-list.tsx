@@ -9,6 +9,7 @@ import {
   cleanAccountsAtom,
   clientState,
   primaryAccountState,
+  secondaryAccountsAtom,
   stxAddressAtom,
 } from '@store/micro-stacks';
 import { truncateMiddle } from '@common/utils';
@@ -22,6 +23,7 @@ import { RESET, useAtomCallback } from 'jotai/utils';
 import type { AccountProgressData } from '@store/accounts';
 import { accountProgressAtom, accountProgressStorageAtom } from '@store/accounts';
 import { networkKeyAtom } from '@store/index';
+import { Divider } from '@components/upgrade/rows';
 
 export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
   const primaryAccount = useAtomValue(primaryAccountState);
@@ -30,7 +32,7 @@ export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
   const { stxAddress } = primaryAccount ?? {};
   const gradient = useGradient(displayName || stxAddress || '');
   const { addAccount } = useAddAccount();
-  const accounts = useAtomValue(cleanAccountsAtom);
+  const accounts = useAtomValue(secondaryAccountsAtom);
   const networkKey = useAtomValue(networkKeyAtom);
 
   const primaryDisplay = useMemo(() => {
@@ -41,7 +43,10 @@ export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
 
   const accountRows = useMemo(() => {
     return accounts.map(account => (
-      <AccountRow key={account.address.join('-')} account={account} />
+      <>
+        <Divider />
+        <AccountRow key={account.address.join('-')} account={account} />
+      </>
     ));
   }, [accounts]);
 
@@ -59,8 +64,17 @@ export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
   );
 
   return (
-    <Stack width="100%" px="29px">
-      <Text variant="Heading035">Accounts</Text>
+    <Stack width="100%" px="29px" spacing="25px">
+      <div className="flex flex-wrap flex-col gap-0">
+        <Text variant="Heading035">Accounts</Text>
+        <Text variant="Body02" color="$text-dim">
+          Manage upgrading multiple accounts simultaneously by connecting new accounts.{' '}
+          <Link href="#" display="inline-block">
+            Learn more
+          </Link>{' '}
+        </Text>
+      </div>
+
       <SpaceBetween isInline alignItems="center">
         <Stack isInline>
           <Box
@@ -75,34 +89,30 @@ export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
             <Text variant="Caption01">Primary Account</Text>
           </Stack>
         </Stack>
-        <Button>Change</Button>
       </SpaceBetween>
-      <SpaceBetween isInline alignItems="center">
-        <Text variant="Heading04">In Progress:</Text>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
+        <Text variant="Heading05">Secondary accounts</Text>
         <Button
-          secondary
+          className="w-full md:w-auto"
+          // secondary
           onClick={async () => {
             await addAccount();
           }}
         >
           Add Account
         </Button>
-      </SpaceBetween>
-      <Text variant="Body02" color="$text-dim">
-        Manage upgrading multiple accounts simultaneously by connecting new accounts.{' '}
-        <Link href="#" display="inline-block">
-          Learn more
-        </Link>{' '}
-      </Text>
+      </div>
+      <Stack spacing="25px">
+        {accountRows}
+        {accounts.length > 0 && <Divider />}
+      </Stack>
       {networkKey === 'devnet' && (
         <Box cursor="pointer">
-          <Text variant="Caption02">
+          <Text variant="Caption02" color="$text-very-dim">
             <code onClick={removeAllProgress}>reset all</code>
           </Text>
         </Box>
       )}
-      <Box height="10px" />
-      {accountRows}
     </Stack>
   );
 };

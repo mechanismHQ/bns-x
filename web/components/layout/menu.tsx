@@ -15,6 +15,7 @@ import { useAccountPath } from '@common/hooks/use-account-path';
 import { styled } from '@common/theme';
 import { useAddAccount } from '@common/hooks/use-add-account';
 import { User, Users, UserPlus, LogOut } from 'lucide-react';
+import { useTruncateEnd } from '@common/hooks/use-truncate-end';
 
 export const Dropdown: React.FC = () => {
   const { signOut } = useAuthState();
@@ -69,14 +70,7 @@ export const Menu: React.FC = () => {
   const router = useRouter();
   const profilePath = useAccountPath('/profile');
 
-  const display = useMemo(() => {
-    const show = nameDisplay || stxAddress || '';
-    const MAX_NAME = 20;
-    if (show.length > MAX_NAME) {
-      return show.slice(0, MAX_NAME - 3) + '...';
-    }
-    return show;
-  }, [nameDisplay, stxAddress]);
+  const display = useTruncateEnd(nameDisplay ?? stxAddress ?? '', 20);
 
   return (
     <DropdownMenu

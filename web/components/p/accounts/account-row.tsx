@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo } from 'react';
+import React, { Suspense, memo, useMemo } from 'react';
 import { Box, Stack, Flex, SpaceBetween } from '@nelson-ui/react';
 import { Text } from '@components/text';
 import { useAtomValue } from 'jotai';
@@ -16,6 +16,7 @@ import { usePunycode } from '@common/hooks/use-punycode';
 import { useSetPrimaryAccount } from '@common/hooks/use-set-primary-account';
 import { waitForAll } from 'jotai/utils';
 import { useRemoveAccount } from '@common/hooks/use-remove-account';
+import { useTruncateEnd } from '@common/hooks/use-truncate-end';
 
 export const AccountRow: React.FC<{ account: Account }> = ({ account }) => {
   return (
@@ -30,14 +31,29 @@ export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
   const query = { address: account.stxAddress };
   const { setPrimary } = useSetPrimaryAccount();
   const { removeAccount } = useRemoveAccount();
+  const status = useAtomValue(accountProgressStatusState(account.stxAddress));
+
+  const migrateOptionMessage = useMemo(() => {
+    switch (status) {
+      case AccountProgress.NoName:
+        return null;
+      case AccountProgress.NotStarted:
+        return 'Migrate to BNSx';
+      case AccountProgress.Done:
+        return 'View migration';
+    }
+    return 'Continue migration';
+  }, [status]);
 
   return (
     <DropdownMenu
       popover={
         <>
-          <BoxLink href={{ pathname: `${pathBase}/upgrade`, query }}>
-            <PopoverOption>Migrate to BNSx</PopoverOption>
-          </BoxLink>
+          {migrateOptionMessage !== null && (
+            <BoxLink href={{ pathname: `${pathBase}/upgrade`, query }}>
+              <PopoverOption>{migrateOptionMessage}</PopoverOption>
+            </BoxLink>
+          )}
           <BoxLink href={{ pathname: pathBase, query }}>
             <PopoverOption>Manage names</PopoverOption>
           </BoxLink>
@@ -79,9 +95,10 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
   const primaryDisplayName = useMemo(() => {
     if (progress.name) return progress.name;
     if (name !== null) return name;
-    return 'No BNS name';
-  }, [progress.name, name]);
+    return `Account ${account.index + 1}`;
+  }, [progress.name, name, account.index]);
   const primaryDisplay = usePunycode(primaryDisplayName);
+  const displayTruncated = useTruncateEnd(primaryDisplay, 15);
 
   const progressProps: ProgressProps = useMemo(() => {
     switch (status) {
@@ -107,9 +124,12 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
   return (
     <SpaceBetween isInline>
       <Stack isInline alignItems="center" spacing="10px">
-        <Box size="50px" borderRadius="50%" background={gradient} />
+        <Box size="50px" borderRadius="50%" background={gradient} className="hidden md:block" />
         <Stack py="4px" spacing="1px">
-          <Text variant="Label02">{primaryDisplay}</Text>
+          <Text variant="Label02">
+            <span className="inline md:hidden">{displayTruncated}</span>
+            <span className="hidden md:inline">{primaryDisplay}</span>
+          </Text>
           <Flex>
             <LinkText
               href={`https://explorer.stacks.co/address/${account.stxAddress ?? ''}`}

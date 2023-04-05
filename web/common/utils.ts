@@ -83,6 +83,13 @@ export function truncateMiddle(input: string, offset = 5): string {
   }
 }
 
+export function truncateEnd(str: string, maxSize: number) {
+  if (str.length > maxSize) {
+    return str.slice(0, maxSize - 3) + '...';
+  }
+  return str;
+}
+
 export function getContractParts(identifier: string): [string, string] {
   const [addr, name] = identifier.split('.');
   if (!addr || !name) {

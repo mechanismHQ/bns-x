@@ -221,6 +221,13 @@ export const cleanAccountsAtom = atom(get => {
 });
 cleanAccountsAtom.debugLabel = 'cleanAccountsAtom';
 
+export const secondaryAccountsAtom = atom(get => {
+  const accounts = get(cleanAccountsAtom);
+  const primary = get(primaryAccountState);
+  if (!primary) return accounts;
+  return accounts.filter(account => account.stxAddress !== primary.stxAddress);
+});
+
 /** ------------------------------------------------------------------------------------------------------------------
  *  Authentication (derived state)
  *  ------------------------------------------------------------------------------------------------------------------
