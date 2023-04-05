@@ -43,6 +43,7 @@ import { c32address, StacksNetworkVersion } from 'micro-stacks/crypto';
 import type { StacksNetwork } from 'micro-stacks/network';
 import isEqual from 'lodash-es/isEqual';
 import { useHydrateAtoms } from 'jotai/utils';
+import { createStacksAddress } from '@common/utils';
 
 /** ------------------------------------------------------------------------------------------------------------------
  *   Client
@@ -126,8 +127,8 @@ function atomWithMicroStacks<V>(getter: GetterFn<V>, subscribe: SubscriptionFn<V
  */
 
 export const stxAddressAtom = atomWithMicroStacks(getStxAddress, watchStxAddress);
-export const accountsAtom = atomWithMicroStacks(getAccounts, watchAccounts);
-export const currentAccountInnterAtom = atomWithMicroStacks(getCurrentAccount, watchCurrentAccount);
+export const accountsInnerAtom = atomWithMicroStacks(getAccounts, watchAccounts);
+export const currentAccountInnerAtom = atomWithMicroStacks(getCurrentAccount, watchCurrentAccount);
 export const identityAddressAtom = atomWithMicroStacks(getIdentityAddress, watchIdentityAddress);
 export const networkAtom = atomWithMicroStacks(getNetwork, watchNetwork);
 export const statusAtom = atomWithMicroStacks(getStatus, watchStatus);
@@ -136,66 +137,83 @@ export const appDetailsAtom = atomWithMicroStacks(getAppDetails, watchAppDetails
 
 export const useStxAddressValue = () => useAtomValue(stxAddressAtom);
 export const useAccountsValue = () => useAtomValue(accountsAtom);
-export const useCurrentAccountValue = () => useAtomValue(currentAccountInnterAtom);
+export const useCurrentAccountValue = () => useAtomValue(currentAccountInnerAtom);
 export const useIdentityAddressValue = () => useAtomValue(identityAddressAtom);
 export const useNetworkValue = () => useAtomValue(networkAtom);
 export const useStatusValue = () => useAtomValue(statusAtom);
 export const useDecentralizedIDValue = () => useAtomValue(decentralizedIDAtom);
 export const useAppDetails = () => useAtomValue(appDetailsAtom);
 
-export const currentAccountAtom = atom<Account | undefined>(get => {
-  const account = get(currentAccountInnterAtom);
-  const address = get(stxAddressAtom);
-  if (typeof account === 'undefined') return undefined;
-  return {
-    ...account,
-    stxAddress: address!,
-  };
-});
-
 export type Account = MicroStackAccount & {
   stxAddress: string;
+  index: number;
 };
 
-function selectAccounts(accounts: MicroStackAccount[], network: StacksNetwork): Account[] {
-  return accounts.map(account => ({
-    stxAddress: c32address(
-      network.isMainnet() ? account.address[0] : StacksNetworkVersion.testnetP2PKH,
-      hexToBytes(account.address[1])
-    ),
-    ...account,
-  }));
-}
+export const accountsAtom = atom<Account[]>(get => {
+  const accounts = get(accountsInnerAtom);
+  const network = get(networkAtom);
+  return accounts.map((account, index) => {
+    const { address } = account;
+    return {
+      stxAddress: createStacksAddress({ address, network }),
+      index,
+      ...account,
+    };
+  });
+});
+accountsAtom.debugLabel = 'accountsAtom';
 
-// return de-duped accounts
-export function getCleanAccounts(options: { client: MicroStacksClient; state?: State }): Account[] {
-  const { client, state } = options;
-  const accounts = state?.accounts || client.getState().accounts;
-  const network = state?.network || client.getState().network;
+export const overridePrimaryAccountIndexAtom = atom<number | undefined>(undefined);
+
+const getCurrentAccountIndex: GetterFn<number> = ({ client, state }) => {
+  const index = state?.currentAccountIndex ?? client.getState().currentAccountIndex;
+  return index;
+};
+
+const watchCurrentAccountIndex: SubscriptionFn<number> = (cb, client) => {
+  return client.subscribe(state => state.currentAccountIndex, cb, { equalityFn: isEqual });
+};
+
+export const currentAccountIndexAtom = atomWithMicroStacks(
+  getCurrentAccountIndex,
+  watchCurrentAccountIndex
+);
+
+export const primaryAccountIndexState = atom(get => {
+  const overrideIndex = get(overridePrimaryAccountIndexAtom);
+  if (typeof overrideIndex !== 'undefined') return overrideIndex;
+  return get(currentAccountIndexAtom);
+});
+
+export const primaryAccountState = atom<Account | undefined>(get => {
+  const accounts = get(accountsAtom);
+  const index = get(primaryAccountIndexState);
+  return accounts[index];
+});
+
+export const currentAccountAtom = atom<Account | undefined>(get => {
+  const index = get(currentAccountIndexAtom);
+  const accounts = get(accountsAtom);
+  return accounts[index];
+});
+
+// de-duped accounts
+export const cleanAccountsAtom = atom(get => {
+  const accounts = get(accountsAtom);
 
   const clean: Account[] = [];
+  const hashes: Record<string, true> = {};
 
-  accounts.forEach((account: MicroStackAccount) => {
-    const exists = clean.find(a => a.address[1] === account.address[1]);
+  accounts.forEach(account => {
+    const { stxAddress } = account;
+    const exists = hashes[stxAddress];
     if (exists) return;
-    clean.push({
-      stxAddress: c32address(
-        network.isMainnet() ? account.address[0] : StacksNetworkVersion.testnetP2PKH,
-        hexToBytes(account.address[1])
-      ),
-      ...account,
-    });
+    hashes[stxAddress] = true;
+    clean.push(account);
   });
   return clean;
-}
-
-export const cleanAccountsAtom = atomWithMicroStacks<Account[]>(
-  getCleanAccounts,
-  (callback: (payload: Account[]) => void, client: MicroStacksClient = getClient()) =>
-    client.subscribe((state: State) => selectAccounts(state.accounts, state.network), callback, {
-      equalityFn: isEqual,
-    })
-);
+});
+cleanAccountsAtom.debugLabel = 'cleanAccountsAtom';
 
 /** ------------------------------------------------------------------------------------------------------------------
  *  Authentication (derived state)

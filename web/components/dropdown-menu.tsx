@@ -6,21 +6,28 @@ import type { BoxProps } from '@nelson-ui/react';
 import { Box, Stack, Flex } from '@nelson-ui/react';
 import { Text } from '@components/text';
 import { btnShiftActiveProps } from '@components/button';
+import type { LucideIcon } from 'lucide-react';
 
-export const PopoverOption: React.FC<BoxProps> = ({ children, onClick }) => {
+export const PopoverOption: React.FC<BoxProps & { Icon?: LucideIcon }> = ({
+  children,
+  onClick,
+  Icon,
+}) => {
   return (
-    <Box
+    <Flex
       px="12px"
       py="10px"
       onClick={onClick}
       cursor="pointer"
+      alignItems="center"
       _hover={{ backgroundColor: '$surface-surface--hovered' }}
       _active={{
         backgroundColor: '$surface-surface--pressed',
       }}
     >
+      {Icon && <Icon size={16} color={'var(--colors-text-dim)'} className="mr-2" />}
       <Text variant="Body02">{children}</Text>
-    </Box>
+    </Flex>
   );
 };
 

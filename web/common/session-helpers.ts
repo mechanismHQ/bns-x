@@ -13,7 +13,7 @@ export const getIronSession = (req: NextPageContext['req'], res: NextPageContext
 };
 
 export const getDehydratedStateFromSession = async (ctx: GetServerSidePropsContext) => {
-  const { dehydratedState } = await getIronSession(ctx.req, ctx.res);
+  const { dehydratedState, primaryAccountIndex } = await getIronSession(ctx.req, ctx.res);
   /**
    * This is important:
    *
@@ -22,8 +22,29 @@ export const getDehydratedStateFromSession = async (ctx: GetServerSidePropsConte
    * because it's encrypted in a cookie. We just want to avoid passing it down the wire because
    * if someone is watching the data, they could gain access to it.
    */
-  return typeof dehydratedState !== 'undefined' ? cleanDehydratedState(dehydratedState) : null;
+  let dehydratedStateCleaned: string | null = null;
+  if (typeof dehydratedState !== 'undefined') {
+    dehydratedStateCleaned = cleanDehydratedState(dehydratedState);
+    if (typeof primaryAccountIndex !== 'undefined') {
+      dehydratedStateCleaned = setAccountIndexInDehydratedState(
+        dehydratedStateCleaned,
+        primaryAccountIndex
+      );
+    }
+  }
+  return {
+    dehydratedState: dehydratedStateCleaned,
+    primaryAccountIndex,
+  };
 };
+
+type Dehydrated = [[number, string], [number | undefined, any[]]];
+
+export function setAccountIndexInDehydratedState(dehydratedState: string, accountIndex: number) {
+  const state = JSON.parse(dehydratedState) as Dehydrated;
+  state[1][0] = accountIndex;
+  return JSON.stringify(state);
+}
 
 export function getSessionClient(dehydratedState?: string) {
   const config: ClientConfig = {

@@ -13,34 +13,43 @@ import { userNameState } from '@store/names';
 import { useGradient } from '@common/hooks/use-gradient';
 import { useAccountPath } from '@common/hooks/use-account-path';
 import { styled } from '@common/theme';
+import { useAddAccount } from '@common/hooks/use-add-account';
+import { User, Users, UserPlus, LogOut } from 'lucide-react';
 
 export const Dropdown: React.FC = () => {
   const { signOut } = useAuthState();
-  const { switchAccounts } = useSwitchAccounts();
+  const { addAccount } = useAddAccount();
   const router = useRouter();
-  const profilePath = useAccountPath('/profile');
 
   return (
     <>
       {!ONLY_INSCRIPTIONS && (
-        <BoxLink href={{ pathname: '/profile', query: { redirect: 'false' } }}>
-          <PopoverOption>View all names</PopoverOption>
-        </BoxLink>
+        <>
+          <BoxLink href={{ pathname: '/profile', query: { redirect: 'false' } }}>
+            <PopoverOption Icon={User}>Names</PopoverOption>
+          </BoxLink>
+          <BoxLink href="/accounts">
+            <PopoverOption Icon={Users}>Accounts</PopoverOption>
+          </BoxLink>
+          <PopoverOption
+            Icon={UserPlus}
+            onClick={async () => {
+              await addAccount(async address => {
+                await router.push({
+                  pathname: '/accounts/[address]',
+                  query: { address },
+                });
+              });
+            }}
+          >
+            Add account
+          </PopoverOption>
+        </>
       )}
-      <PopoverOption
-        onClick={async () => {
-          await switchAccounts(async () => {
-            const pathname = ONLY_INSCRIPTIONS ? '/' : profilePath;
-            await router.push(pathname);
-          });
-        }}
-      >
-        Switch accounts
+
+      <PopoverOption Icon={LogOut} onClick={async () => await signOut()}>
+        Sign out
       </PopoverOption>
-      <BoxLink href="/accounts">
-        <PopoverOption>Accounts</PopoverOption>
-      </BoxLink>
-      <PopoverOption onClick={async () => await signOut()}>Sign out</PopoverOption>
     </>
   );
 };

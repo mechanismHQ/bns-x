@@ -1,11 +1,17 @@
 import React from 'react';
-import { microStacksStoreAtom, networkAtom, stxAddressAtom } from '@store/micro-stacks';
+import {
+  microStacksStoreAtom,
+  networkAtom,
+  overridePrimaryAccountIndexAtom,
+  stxAddressAtom,
+} from '@store/micro-stacks';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { hexToBytes } from 'micro-stacks/common';
-import { c32address, StacksNetworkVersion } from 'micro-stacks/crypto';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
+import { useMicroStacksClient } from '@micro-stacks/react';
+import { destroySession, saveSession } from '@common/fetchers';
+import { createStacksAddress } from '@common/utils';
 
 export const AccountProvider: React.FC<{
   children?: React.ReactNode;
@@ -14,6 +20,36 @@ export const AccountProvider: React.FC<{
 }> = ({ children, primaryIndex, pathAccountIndex }) => {
   const router = useRouter();
   const stxAddress = useAtomValue(stxAddressAtom);
+  const client = useMicroStacksClient();
+
+  const onSignOut = useAtomCallback(
+    useCallback(
+      async (get, set) => {
+        set(overridePrimaryAccountIndexAtom, undefined);
+        await destroySession();
+        await router.push({ pathname: '/' });
+      },
+      [router]
+    )
+  );
+
+  const onPersistState = useAtomCallback(
+    useCallback(async (get, _set, dehydratedState: string) => {
+      const overridePrimaryIndex = get(overridePrimaryAccountIndexAtom);
+      await saveSession(dehydratedState, overridePrimaryIndex);
+    }, [])
+  );
+
+  useEffect(() => {
+    client.setOnSignOut(() => void onSignOut());
+    client.setOnPersistState(onPersistState);
+    () => {
+      client.setOnSignOut(undefined);
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      client.setOnPersistState(() => {});
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const setAccount = useAtomCallback(
     useCallback((get, set, address: string) => {
@@ -22,12 +58,7 @@ export const AccountProvider: React.FC<{
 
       store.setState(({ accounts }) => {
         const accountIndex = accounts?.findIndex(a => {
-          const _address = c32address(
-            network.isMainnet()
-              ? StacksNetworkVersion.mainnetP2PKH
-              : StacksNetworkVersion.testnetP2PKH,
-            hexToBytes(a.address[1])
-          );
+          const _address = createStacksAddress({ address: a.address, network });
           return address === _address;
         });
 
@@ -68,7 +99,7 @@ export const AccountProvider: React.FC<{
   }, [resetFromSSR]);
 
   useEffect(() => {
-    console.log(`Account changed to ${stxAddress ?? 'none'}`);
+    console.log(`Account set to ${stxAddress ?? 'none'}`);
   }, [stxAddress]);
 
   useEffect(() => {

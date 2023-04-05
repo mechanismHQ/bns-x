@@ -1,4 +1,3 @@
-import { getDehydratedStateFromSession } from '@common/session-helpers';
 import type { NextPage, GetServerSidePropsContext } from 'next';
 import { Layout } from '@components/layout';
 import { Faucet } from '@components/faucet';

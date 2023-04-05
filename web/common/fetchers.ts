@@ -6,12 +6,12 @@ import { getAppUrl } from './constants';
  * A simple wrapper around `fetch` to post to the `/api/session/save` endpoint
  * @param dehydratedState - the string value of the client state serialized
  */
-export const saveSession = async (dehydratedState: string) => {
+export const saveSession = async (dehydratedState: string, primaryAccountIndex?: number) => {
   try {
     await fetch(getAppUrl() + '/api/session/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dehydratedState }),
+      body: JSON.stringify({ dehydratedState, primaryAccountIndex }),
     });
   } catch (e) {
     console.error(e);

@@ -15,7 +15,6 @@ import type { Atom } from 'jotai';
 import { docTitleState, pageDescriptionState } from '@store/index';
 import { displayNameQueryKey, prefetchedDisplayNameState } from '@store/api';
 import { Analytics } from '@vercel/analytics/react';
-import { useMonitorAccount } from '@common/hooks/use-monitor-account';
 import { AccountProvider } from '@components/account-provider';
 
 export interface PageProps {
@@ -34,12 +33,12 @@ type AtomPair<T = unknown> = [Atom<T>, T];
 
 function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppProps, 'pageProps'>) {
   const router = useRouter();
-  const onPersistState: ClientConfig['onPersistState'] = useCallback(
-    async (dehydratedState: string) => {
-      await saveSession(dehydratedState);
-    },
-    []
-  );
+  // const onPersistState: ClientConfig['onPersistState'] = useCallback(
+  //   async (dehydratedState: string) => {
+  //     await saveSession(dehydratedState);
+  //   },
+  //   []
+  // );
 
   const onSignOut: ClientConfig['onSignOut'] = useCallback(async () => {
     await destroySession();
@@ -68,7 +67,7 @@ function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppPro
       appName={ONLY_INSCRIPTIONS ? 'BNS' : 'Dots'}
       appIconUrl={`${appUrl}/logo.svg`}
       dehydratedState={pageProps?.dehydratedState}
-      onPersistState={onPersistState}
+      // onPersistState={onPersistState}
       onSignOut={onSignOut}
       network={getNetwork()}
     >

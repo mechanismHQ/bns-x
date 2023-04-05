@@ -8,6 +8,7 @@ import { bufferCV, tupleCV } from 'micro-stacks/clarity';
 import type { ClassValue } from 'clsx';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { c32address, StacksNetworkVersion } from 'micro-stacks/crypto';
 
 export function intToString(int: IntegerType) {
   const str = typeof int === 'bigint' ? int.toString() : String(int);
@@ -108,4 +109,16 @@ export function nameToTupleBytes(fqn: string) {
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function createStacksAddress({
+  address,
+  network,
+}: {
+  address: [number, string | Uint8Array];
+  network: StacksNetwork;
+}) {
+  const version = network.isMainnet() ? address[0] : StacksNetworkVersion.testnetP2PKH;
+  const hash = typeof address[1] === 'string' ? hexToBytes(address[1]) : address[1];
+  return c32address(version, hash);
 }

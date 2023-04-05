@@ -15,5 +15,6 @@ export const sessionOptions: IronSessionOptions = {
 declare module 'iron-session' {
   interface IronSessionData {
     dehydratedState?: string;
+    primaryAccountIndex?: number;
   }
 }

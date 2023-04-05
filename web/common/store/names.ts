@@ -1,6 +1,11 @@
 import { clarigenAtom, nameRegistryState, registryAssetState } from '.';
 import { atom } from 'jotai';
-import { currentAccountAtom, networkAtom, stxAddressAtom } from '@store/micro-stacks';
+import {
+  currentAccountAtom,
+  networkAtom,
+  primaryAccountState,
+  stxAddressAtom,
+} from '@store/micro-stacks';
 import { convertNameBuff, getContractParts } from '../utils';
 import type { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
 import { atomsWithQuery } from 'jotai-tanstack-query';
@@ -53,6 +58,12 @@ export const userNameState = atom<string | null>(get => {
   const address = get(stxAddressAtom);
   if (!address) return null;
   return get(addressDisplayNameState(address));
+});
+
+export const primaryNameState = atom(get => {
+  const primary = get(primaryAccountState);
+  if (!primary) return null;
+  return get(addressDisplayNameState(primary.stxAddress));
 });
 
 export const currentUserNameIdsState = atom<number[]>(get => {

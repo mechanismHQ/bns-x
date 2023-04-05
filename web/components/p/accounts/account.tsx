@@ -4,7 +4,7 @@ import { Text } from '@components/text';
 import { useAtomValue } from 'jotai';
 import { addressDisplayNameState } from '@store/api';
 import type { Account } from '@store/micro-stacks';
-import { currentAccountAtom, stxAddressAtom } from '@store/micro-stacks';
+import { primaryAccountState } from '@store/micro-stacks';
 import { useGradient } from '@common/hooks/use-gradient';
 import { truncateMiddle } from '@common/utils';
 import { AccountProgress, accountProgressAtom, accountProgressStatusState } from '@store/accounts';
@@ -13,6 +13,9 @@ import { ProgressBar } from '@components/progress-bar';
 import { BoxLink, LinkText } from '@components/link';
 import { DropdownMenu, PopoverOption } from '@components/dropdown-menu';
 import { usePunycode } from '@common/hooks/use-punycode';
+import { useSetPrimaryAccount } from '@common/hooks/use-set-primary-account';
+import { waitForAll } from 'jotai/utils';
+import { useRemoveAccount } from '@common/hooks/use-remove-account';
 
 export const AccountRow: React.FC<{ account: Account }> = ({ account }) => {
   return (
@@ -25,16 +28,33 @@ export const AccountRow: React.FC<{ account: Account }> = ({ account }) => {
 export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
   const pathBase = '/accounts/[address]';
   const query = { address: account.stxAddress };
+  const { setPrimary } = useSetPrimaryAccount();
+  const { removeAccount } = useRemoveAccount();
+
   return (
     <DropdownMenu
       popover={
         <>
           <BoxLink href={{ pathname: `${pathBase}/upgrade`, query }}>
-            <PopoverOption>Migrate</PopoverOption>
+            <PopoverOption>Migrate to BNSx</PopoverOption>
           </BoxLink>
           <BoxLink href={{ pathname: pathBase, query }}>
-            <PopoverOption>View account</PopoverOption>
+            <PopoverOption>Manage names</PopoverOption>
           </BoxLink>
+          <PopoverOption
+            onClick={async () => {
+              await setPrimary(account.index);
+            }}
+          >
+            Set as primary
+          </PopoverOption>
+          <PopoverOption
+            onClick={async () => {
+              await removeAccount(account);
+            }}
+          >
+            Remove account
+          </PopoverOption>
         </>
       }
     >
@@ -44,11 +64,15 @@ export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
 };
 
 export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) => {
-  const name = useAtomValue(addressDisplayNameState(account.stxAddress));
-  const progress = useAtomValue(accountProgressAtom(account.stxAddress));
+  const [name, progress] = useAtomValue(
+    waitForAll([
+      addressDisplayNameState(account.stxAddress),
+      accountProgressAtom(account.stxAddress),
+    ])
+  );
   const status = useAtomValue(accountProgressStatusState(account.stxAddress));
   const gradient = useGradient(name || account.stxAddress);
-  const currentAccount = useAtomValue(stxAddressAtom);
+  const primaryAccount = useAtomValue(primaryAccountState);
   const addressTruncated = useMemo(() => {
     return truncateMiddle(account.stxAddress, 4);
   }, [account.stxAddress]);
@@ -78,7 +102,7 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
     }
   }, [status]);
 
-  if (currentAccount === account.stxAddress) return null;
+  if (primaryAccount?.stxAddress === account.stxAddress) return null;
 
   return (
     <SpaceBetween isInline>
@@ -101,8 +125,9 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
       <Box flexGrow={1} />
       <Stack isInline alignItems="center" spacing="20px" flexGrow={1}>
         <Box maxWidth="400px" flexGrow={1}>
-          <ProgressBar {...progressProps} />
+          {status !== AccountProgress.NoName && <ProgressBar {...progressProps} />}
         </Box>
+
         <AccountActions account={account} />
       </Stack>
     </SpaceBetween>

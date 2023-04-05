@@ -14,7 +14,7 @@ export function withSSRProps(cb?: GetProps) {
     if (typeof user === 'string') {
       console.log(`Auth: ${user}`);
     }
-    const dehydratedState = await getDehydratedStateFromSession(ctx);
+    const { dehydratedState, primaryAccountIndex } = await getDehydratedStateFromSession(ctx);
     let baseProps: Record<string, any> = {
       dehydratedState,
     };
@@ -22,7 +22,7 @@ export function withSSRProps(cb?: GetProps) {
       const client = getSessionClient(dehydratedState)!;
       const state = client.getState();
       const address = client.selectStxAddress(state)!;
-      baseProps.accountIndex = state.currentAccountIndex;
+      baseProps.accountIndex = primaryAccountIndex ?? state.currentAccountIndex;
       baseProps.stxAddress = address;
       if (typeof ctx.params?.address === 'string') {
         const address = ctx.params.address;
