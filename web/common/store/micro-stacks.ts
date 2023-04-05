@@ -191,6 +191,12 @@ export const primaryAccountState = atom<Account | undefined>(get => {
   return accounts[index];
 });
 
+export const currentIsPrimaryState = atom(get => {
+  const primaryIndex = get(primaryAccountIndexState);
+  const currentIndex = get(currentAccountIndexAtom);
+  return primaryIndex === currentIndex;
+});
+
 export const currentAccountAtom = atom<Account | undefined>(get => {
   const index = get(currentAccountIndexAtom);
   const accounts = get(accountsAtom);

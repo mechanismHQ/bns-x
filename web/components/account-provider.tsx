@@ -1,17 +1,36 @@
 import React from 'react';
 import {
+  accountsAtom,
+  accountsInnerAtom,
   microStacksStoreAtom,
   networkAtom,
   overridePrimaryAccountIndexAtom,
+  primaryAccountState,
   stxAddressAtom,
 } from '@store/micro-stacks';
 import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomCallback, useHydrateAtoms } from 'jotai/utils';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
 import { useMicroStacksClient } from '@micro-stacks/react';
 import { destroySession, saveSession } from '@common/fetchers';
 import { createStacksAddress } from '@common/utils';
+
+function useDebugAccounts() {
+  const accounts = useAtomValue(accountsAtom);
+  const msAccounts = useAtomValue(accountsInnerAtom);
+  const addrs = accounts.map(a => a.stxAddress);
+  const msAddrs = msAccounts.map(a => a.address[1]);
+  const primaryAccount = useAtomValue(primaryAccountState);
+  const currentAddress = useAtomValue(stxAddressAtom);
+
+  useEffect(() => {
+    console.log('Accounts', addrs);
+    console.log('MS Accounts', msAddrs);
+    console.log('Primary Account', primaryAccount?.stxAddress);
+    console.log('Current Address', currentAddress);
+  }, [addrs, msAddrs]);
+}
 
 export const AccountProvider: React.FC<{
   children?: React.ReactNode;
@@ -19,15 +38,19 @@ export const AccountProvider: React.FC<{
   pathAccountIndex?: number;
 }> = ({ children, primaryIndex, pathAccountIndex }) => {
   const router = useRouter();
+  useHydrateAtoms([[overridePrimaryAccountIndexAtom, primaryIndex]]);
   const stxAddress = useAtomValue(stxAddressAtom);
   const client = useMicroStacksClient();
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useDebugAccounts();
+  }
 
   const onSignOut = useAtomCallback(
     useCallback(
       async (get, set) => {
         set(overridePrimaryAccountIndexAtom, undefined);
-        await destroySession();
-        await router.push({ pathname: '/' });
+        await Promise.all([destroySession(), router.push({ pathname: '/' })]);
       },
       [router]
     )

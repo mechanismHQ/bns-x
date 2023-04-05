@@ -5,7 +5,12 @@ import { asciiToBytes } from 'micro-stacks/common';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import type { Atom } from 'jotai';
 import { PrimitiveAtom } from 'jotai';
-import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
+import {
+  currentIsPrimaryState,
+  networkAtom,
+  primaryAccountState,
+  stxAddressAtom,
+} from '@store/micro-stacks';
 import { fetchTransaction } from '@common/stacks-api';
 import { validateStacksAddress } from 'micro-stacks/crypto';
 import { bnsContractState, clarigenAtom, nameRegistryState } from '@store/index';
@@ -56,6 +61,21 @@ export const migrateNameAssetIdState = atom(get => {
   return nameToTupleBytes(nameStr);
 });
 
+export const doSendToPrimaryCheckedAtom = atom(true);
+
+export const doSendToPrimaryState = atom(
+  get => {
+    const currentIsPrimary = get(currentIsPrimaryState);
+    if (currentIsPrimary) return false;
+
+    return get(doSendToPrimaryCheckedAtom);
+  },
+  (get, set, cb: (current: boolean) => boolean) => {
+    const checked = cb(get(doSendToPrimaryCheckedAtom));
+    set(doSendToPrimaryCheckedAtom, checked);
+  }
+);
+
 export const txState = atomFamily(
   ({ txid, unanchored = true }: { txid?: string; unanchored?: boolean }) => {
     return atomsWithQuery<MempoolTransaction | Transaction | null>(get => ({
@@ -95,34 +115,6 @@ export function txidQueryAtom(txidAtom: Atom<string | undefined>, unanchored = t
       return get(txState({ txid: get(txidAtom), unanchored }));
     }),
   ] as const;
-  // return atomsWithQuery<MempoolTransaction | Transaction | null>(get => ({
-  //   queryKey: ['txid-query', get(txidAtom) || ''],
-  //   refetchInterval: data => {
-  //     if (data) {
-  //       if (data.tx_status === 'pending') return 5000;
-  //       if (data.tx_status === 'success') {
-  //         return data.is_unanchored ? 5000 : false;
-  //       }
-  //       return false;
-  //     }
-  //     return 5000;
-  //   },
-  //   queryFn: async () => {
-  //     const txid = get(txidAtom);
-  //     const network = get(networkAtom);
-  //     if (!txid) return Promise.resolve(null);
-  //     try {
-  //       const tx = await fetchTransaction({
-  //         url: network.getCoreApiUrl(),
-  //         unanchored,
-  //         txid,
-  //       });
-  //       return tx;
-  //     } catch (error) {
-  //       return null;
-  //     }
-  //   },
-  // }));
 }
 
 export const [migrateTxState] = txidQueryAtom(migrateTxidAtom);
@@ -233,6 +225,14 @@ export function makeBnsRecipientState() {
   };
 }
 
-export const migrateRecipientState = makeBnsRecipientState();
+export const migrateRecipientFieldState = makeBnsRecipientState();
+
+export const migrateRecipientState = atom(get => {
+  const sendToPrimary = get(doSendToPrimaryState);
+  if (sendToPrimary) {
+    return get(primaryAccountState)!.stxAddress;
+  }
+  return get(migrateRecipientFieldState.validRecipientState);
+});
 
 export type BnsRecipientState = ReturnType<typeof makeBnsRecipientState>;

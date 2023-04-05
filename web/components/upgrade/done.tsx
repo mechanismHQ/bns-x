@@ -7,13 +7,12 @@ import { migrateTxidAtom, wrapperDeployTxidAtom, migrateRecipientState } from '@
 import { useAtomValue } from 'jotai';
 import { Button } from '@components/button';
 import { useRouter } from 'next/router';
-import { useAuth } from '@micro-stacks/react';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { currentUserUpgradedState } from '@store/names';
 import { useAccountPath } from '@common/hooks/use-account-path';
 
 export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
-  const recipient = useAtomValue(migrateRecipientState.validRecipientState);
+  const recipient = useAtomValue(migrateRecipientState);
   const stxAddress = useAtomValue(stxAddressAtom);
 
   if (recipient === null || recipient === stxAddress) return null;

@@ -16,14 +16,14 @@ import { useGradient } from '@common/hooks/use-gradient';
 import { Button } from '@components/button';
 import { Link } from '@components/link';
 import { useAddAccount } from '@common/hooks/use-add-account';
-import { AccountRow } from '@components/p/accounts/account';
+import { AccountRow } from '@components/p/accounts/account-row';
 import { Toggle } from '@components/ui/toggle';
 import { RESET, useAtomCallback } from 'jotai/utils';
 import type { AccountProgressData } from '@store/accounts';
 import { accountProgressAtom, accountProgressStorageAtom } from '@store/accounts';
 import { networkKeyAtom } from '@store/index';
 
-export const Accounts: React.FC<{ children?: React.ReactNode }> = () => {
+export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
   const primaryAccount = useAtomValue(primaryAccountState);
   const displayName = useAtomValue(primaryNameState);
   const nameDisplay = usePunycode(displayName);

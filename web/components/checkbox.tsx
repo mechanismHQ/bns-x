@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import type { PrimitiveAtom } from 'jotai';
+import type { PrimitiveAtom, WritableAtom } from 'jotai';
 import { useAtomValue } from 'jotai';
 import { Box } from '@nelson-ui/react';
 import { useAtomCallback } from 'jotai/utils';
@@ -28,7 +28,7 @@ export const CheckboxCheckedIcon: React.FC<{ children?: React.ReactNode }> = () 
 
 export const Checkbox: React.FC<{
   children?: React.ReactNode;
-  atom: PrimitiveAtom<boolean>;
+  atom: PrimitiveAtom<boolean> | WritableAtom<boolean, (current: boolean) => boolean>;
 }> = ({ atom }) => {
   const checked = useAtomValue(atom);
 
