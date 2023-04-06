@@ -171,7 +171,14 @@ const getCurrentAccountIndex: GetterFn<number> = ({ client, state }) => {
 };
 
 const watchCurrentAccountIndex: SubscriptionFn<number> = (cb, client) => {
-  return client.subscribe(state => state.currentAccountIndex, cb, { equalityFn: isEqual });
+  return client.subscribe(
+    state => {
+      // console.log('Subscriber to current account index changed.');
+      return state.currentAccountIndex;
+    },
+    cb,
+    { equalityFn: isEqual, fireImmediately: true }
+  );
 };
 
 export const currentAccountIndexAtom = atomWithMicroStacks(
@@ -194,6 +201,9 @@ export const primaryAccountState = atom<Account | undefined>(get => {
 export const currentIsPrimaryState = atom(get => {
   const primaryIndex = get(primaryAccountIndexState);
   const currentIndex = get(currentAccountIndexAtom);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`Current: ${currentIndex}, Primary: ${primaryIndex}`);
+  }
   return primaryIndex === currentIndex;
 });
 

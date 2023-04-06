@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Box, Flex, SpaceBetween, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { atom, useAtom, useAtomValue } from 'jotai';
@@ -9,12 +9,13 @@ import {
   migrateRecipientFieldState,
   migrateRecipientState,
   doSendToPrimaryState,
+  doSendToPrimaryCheckedAtom,
 } from '@store/migration';
 import { Divider, DoneRow, UpgradeBox } from '@components/upgrade/rows';
 import { useWrapperMigrate } from '@common/hooks/use-wrapper-migrate';
 import { Checkbox } from '@components/checkbox';
 import { Button } from '@components/button';
-import { loadable } from 'jotai/utils';
+import { loadable, useAtomCallback, useResetAtom } from 'jotai/utils';
 import { useMemo } from 'react';
 import { BnsRecipientField } from '@components/bns-recipient-field';
 import { currentIsPrimaryState } from '@store/micro-stacks';
@@ -27,6 +28,16 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
   const wrapperSignature = useAtomValue(wrapperSignatureState);
   const doSendToPrimary = useAtomValue(doSendToPrimaryState);
   const currentIsPrimary = useAtomValue(currentIsPrimaryState);
+
+  const resetState = useAtomCallback(
+    useCallback((get, set) => {
+      set(doSendToPrimaryCheckedAtom, true);
+    }, [])
+  );
+
+  useEffect(() => {
+    void resetState();
+  }, [resetState]);
 
   const canMigrate = useMemo(() => {
     if (recipientAddress.state !== 'hasData') return false;
@@ -50,7 +61,7 @@ export const FinalizeUpgrade: React.FC<{ children?: React.ReactNode }> = () => {
               spacing="5px"
             >
               <Text variant="Caption02" color="$text-dim">
-                Your BNSx name will be sent to
+                Your BNSx name will be sent to:
               </Text>
               <Text variant="Caption02" color="$text-dim">
                 {recipientAddress.data}

@@ -13,7 +13,7 @@ export function useRemoveAccount() {
       const store = get(microStacksStoreAtom);
       const client = get(clientAtom);
 
-      store.setState({ accounts: newAccounts });
+      store.setState(s => ({ ...s, accounts: newAccounts }));
 
       await client?.persist();
     }, [])

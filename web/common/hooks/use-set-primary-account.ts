@@ -13,7 +13,8 @@ export function useSetPrimaryAccount() {
       const store = get(microStacksStoreAtom);
 
       set(overridePrimaryAccountIndexAtom, index);
-      store.setState(() => ({
+      store.setState(s => ({
+        ...s,
         currentAccountIndex: index,
       }));
       await client?.persist();

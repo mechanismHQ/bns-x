@@ -79,7 +79,7 @@ export const AccountProvider: React.FC<{
       const store = get(microStacksStoreAtom);
       const network = get(networkAtom);
 
-      store.setState(({ accounts }) => {
+      store.setState(({ accounts, ...rest }) => {
         const accountIndex = accounts?.findIndex(a => {
           const _address = createStacksAddress({ address: a.address, network });
           return address === _address;
@@ -92,6 +92,7 @@ export const AccountProvider: React.FC<{
         console.log(`Setting account index ${accountIndex} for address ${address}`);
 
         return {
+          ...rest,
           currentAccountIndex: accountIndex,
         };
       });
@@ -100,17 +101,18 @@ export const AccountProvider: React.FC<{
 
   const resetFromSSR = useAtomCallback(
     useCallback(
-      get => {
+      (get, set) => {
         const store = get(microStacksStoreAtom);
         const storeIndex = store.getState().currentAccountIndex;
+        set(overridePrimaryAccountIndexAtom, primaryIndex);
         if (typeof pathAccountIndex !== 'undefined') {
           if (pathAccountIndex !== storeIndex) {
             console.log('Setting index to path-based account', pathAccountIndex);
-            store.setState({ currentAccountIndex: pathAccountIndex });
+            store.setState(s => ({ ...s, currentAccountIndex: pathAccountIndex }));
           }
         } else if (typeof primaryIndex !== 'undefined' && primaryIndex !== storeIndex) {
           console.log('Resetting index to primary', primaryIndex);
-          store.setState({ currentAccountIndex: primaryIndex });
+          store.setState(s => ({ ...s, currentAccountIndex: primaryIndex }));
         }
       },
       [primaryIndex, pathAccountIndex]

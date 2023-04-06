@@ -75,8 +75,9 @@ function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppPro
         <AccountProvider
           primaryIndex={pageProps?.accountIndex}
           pathAccountIndex={pageProps?.pathAccountIndex}
-        />
-        <Component {...(pageProps as any)} />
+        >
+          <Component {...(pageProps as any)} />
+        </AccountProvider>
         <Analytics />
       </JotaiClientProvider>
     </ClientProvider>

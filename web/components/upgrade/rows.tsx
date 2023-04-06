@@ -12,6 +12,13 @@ import { CenterBox } from '@components/layout';
 import { atom } from 'jotai';
 import { styled } from '@common/theme';
 import { usePunycode } from '@common/hooks/use-punycode';
+import { ArrowLeft } from 'lucide-react';
+import { BoxLink } from '@components/link';
+import {
+  currentAccountIndexAtom,
+  currentIsPrimaryState,
+  primaryAccountIndexState,
+} from '@store/micro-stacks';
 
 interface BaseRowProps extends BoxProps {
   children?: React.ReactNode;
@@ -69,8 +76,19 @@ export const UpgradeBox: React.FC<{
   children?: React.ReactNode | React.ReactNode[];
   bottom?: React.ReactNode;
 }> = ({ children, bottom }) => {
+  const currentIsPrimary = useAtomValue(currentIsPrimaryState);
   return (
     <>
+      {!currentIsPrimary && (
+        <BoxLink href="/accounts">
+          <Flex px="27px" alignItems="center" maxWidth="160px">
+            <ArrowLeft color="var(--colors-text-dim)" className="h-4" />
+            <Text variant="Body02" color="$text-dim">
+              Accounts
+            </Text>
+          </Flex>
+        </BoxLink>
+      )}
       <Box flexGrow={1} />
       <Stack spacing="0" alignItems={'center'} width="100%" pb="50px" px="29px">
         <NameHeading />

@@ -1,4 +1,4 @@
-import React, { Suspense, memo, useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { Box, Stack, Flex, SpaceBetween } from '@nelson-ui/react';
 import { Text } from '@components/text';
 import { useAtomValue } from 'jotai';
@@ -8,16 +8,10 @@ import { primaryAccountState } from '@store/micro-stacks';
 import { useGradient } from '@common/hooks/use-gradient';
 import { truncateMiddle } from '@common/utils';
 import { AccountProgress, accountProgressAtom, accountProgressStatusState } from '@store/accounts';
-import type { ProgressProps } from '@components/progress-bar';
-import { ProgressBar } from '@components/progress-bar';
-import { BoxLink, LinkText } from '@components/link';
-import { DropdownMenu, PopoverOption } from '@components/account-menu';
+import { LinkText } from '@components/link';
 import { usePunycode } from '@common/hooks/use-punycode';
-import { useSetPrimaryAccount } from '@common/hooks/use-set-primary-account';
 import { waitForAll } from 'jotai/utils';
-import { useRemoveAccount } from '@common/hooks/use-remove-account';
 import { useTruncateEnd } from '@common/hooks/use-truncate-end';
-import { Beutton } from '@components/ui/beutton';
 import { AccountActions } from './account-actions';
 import { Loader2 } from 'lucide-react';
 
@@ -28,7 +22,10 @@ export const LoadingRow: React.FC<{ children?: React.ReactNode; account: Account
     <div className="flex gap-[10px]">
       <div className="w-[50px] h-[50px] rounded-full bg-gray-200 animate-pulse" />
       <div className="flex flex-col justify-center">
-        <Text variant="Label02">Account {account.index + 1}</Text>
+        <div className="flex flex-row items-center">
+          <Text variant="Label02">Account {account.index + 1}</Text>
+          <Loader2 className="animate-spin h-4 text-gray-400 ml-1" aria-label="Loading" />
+        </div>
         <div className="flex">
           <LinkText
             href={`https://explorer.stacks.co/address/${account.stxAddress ?? ''}`}
@@ -73,25 +70,6 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
   }, [progress.name, name, account.index]);
   const primaryDisplay = usePunycode(primaryDisplayName);
   const displayTruncated = useTruncateEnd(primaryDisplay, 15);
-
-  const progressProps: ProgressProps = useMemo(() => {
-    switch (status) {
-      case AccountProgress.NotStarted:
-        return { value: 5, pending: false };
-      case AccountProgress.Done:
-        return { value: 100, pending: false };
-      case AccountProgress.WrapperDeployPending:
-        return { value: 45, pending: true };
-      case AccountProgress.WrapperDeployed:
-        return { value: 50, pending: false };
-      case AccountProgress.FinalizePending:
-        return { value: 95, pending: true };
-      case AccountProgress.Done:
-        return { value: 100, pending: false };
-      case AccountProgress.NoName:
-        return { value: 100, pending: false };
-    }
-  }, [status]);
 
   const isPending = useMemo(() => {
     return (

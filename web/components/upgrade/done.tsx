@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Flex, Box, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { PendingRow, DoneRow, NameHeading, Divider, UpgradeBox } from './rows';
@@ -7,9 +7,10 @@ import { migrateTxidAtom, wrapperDeployTxidAtom, migrateRecipientState } from '@
 import { useAtomValue } from 'jotai';
 import { Button } from '@components/button';
 import { useRouter } from 'next/router';
-import { stxAddressAtom } from '@store/micro-stacks';
+import { currentIsPrimaryState, stxAddressAtom } from '@store/micro-stacks';
 import { currentUserUpgradedState } from '@store/names';
 import { useAccountPath } from '@common/hooks/use-account-path';
+import { BoxLink } from '@components/link';
 
 export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
   const recipient = useAtomValue(migrateRecipientState);
@@ -27,13 +28,14 @@ export const TransferredRow: React.FC<{ children?: React.ReactNode }> = () => {
 
 export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
   const migrateTxid = useAtomValue(migrateTxidAtom);
-  const router = useRouter();
   const isUpgraded = useAtomValue(currentUserUpgradedState);
-  const profilePath = useAccountPath('/profile');
-
-  const done = useCallback(() => {
-    void router.push(profilePath);
-  }, [router, profilePath]);
+  const currentIsPrimary = useAtomValue(currentIsPrimaryState);
+  const donePath = useMemo(() => {
+    if (currentIsPrimary) {
+      return '/profile';
+    }
+    return '/accounts';
+  }, [currentIsPrimary]);
 
   if (!migrateTxid) return null;
 
@@ -43,9 +45,9 @@ export const UpgradeDone: React.FC<{ children?: React.ReactNode }> = () => {
         isUpgraded ? (
           <Stack spacing="25px">
             <Flex width="100%" justifyContent="center">
-              <Button type="big" onClick={done}>
-                Done
-              </Button>
+              <BoxLink href={donePath}>
+                <Button type="big">Done</Button>
+              </BoxLink>
             </Flex>
           </Stack>
         ) : null

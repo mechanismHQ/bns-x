@@ -33,7 +33,6 @@ export const migrateTxidHashAtom = hashAtom('migrateTxid');
 
 export const wrapperDeployTxidAtom = atom(get => {
   const progress = get(currentAccountProgressAtom);
-  console.log('progress', progress);
   if (progress?.wrapperTxid) return progress.wrapperTxid;
   return get(wrapperDeployTxidHashAtom);
 });

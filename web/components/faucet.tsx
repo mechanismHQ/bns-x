@@ -24,6 +24,8 @@ function useFakeName() {
         separator: '-',
       });
       set(nameAtom, name);
+      set(submittingAtom, false);
+      set(txidAtom, '');
     }, [])
   );
   useEffect(() => {
