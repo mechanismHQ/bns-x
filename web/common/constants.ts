@@ -24,7 +24,7 @@ export function getApiUrl() {
   return 'http://127.0.0.1:3002';
 }
 
-type NetworkKey = typeof DEPLOYMENT_NETWORKS[number];
+type NetworkKey = (typeof DEPLOYMENT_NETWORKS)[number];
 export function getNetworkKey(): NetworkKey {
   const key = process.env.NEXT_PUBLIC_NETWORK_KEY;
   if (key === 'mocknet') return 'devnet';
@@ -82,3 +82,8 @@ export function testUtilsContract() {
 }
 
 export const ONLY_INSCRIPTIONS = process.env.NEXT_PUBLIC_INSCRIPTIONS === 'true';
+
+export function getTestnetNamespace() {
+  if (getNetworkKey() === 'testnet') return 'testable';
+  return 'satoshi';
+}

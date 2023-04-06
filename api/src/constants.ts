@@ -2,7 +2,7 @@ import { DEPLOYMENT_NETWORKS } from '@clarigen/core';
 import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMainnet, StacksMocknet, StacksTestnet } from 'micro-stacks/network';
 
-type NetworkKey = typeof DEPLOYMENT_NETWORKS[number];
+type NetworkKey = (typeof DEPLOYMENT_NETWORKS)[number];
 export function getNetworkKey(): NetworkKey {
   const key = process.env.NETWORK_KEY;
   if (key === 'mocknet') return 'devnet';

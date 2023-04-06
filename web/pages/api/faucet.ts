@@ -7,7 +7,12 @@ import {
   PostConditionMode,
 } from 'micro-stacks/transactions';
 import { fetchAccountNonces } from 'micro-stacks/api';
-import { getNetwork, getNetworkKey, testUtilsContract } from '@common/constants';
+import {
+  getNetwork,
+  getNetworkKey,
+  getTestnetNamespace,
+  testUtilsContract,
+} from '@common/constants';
 import { privateKeyToStxAddress, StacksNetworkVersion } from 'micro-stacks/crypto';
 
 const network = getNetwork();
@@ -32,8 +37,10 @@ export async function faucetApi(req: NextApiRequest, res: NextApiResponse) {
       : StacksNetworkVersion.testnetP2PKH;
   const faucetAddr = privateKeyToStxAddress(privateKey.slice(0, 64), version, true);
 
+  const namespace = getTestnetNamespace();
+
   const zonefile = asciiToBytes(
-    `$ORIGIN ${name}.testable.\n$TTL 3600\n_http._tcp\tIN\tURI\t10\t1\t"https://gaia.blockstack.org/hub/13WcjxWGz3JkZYhoPeCHw2ukcK1f1zH6M1/profile.json"\n\n`
+    `$ORIGIN ${name}.${namespace}.\n$TTL 3600\n_http._tcp\tIN\tURI\t10\t1\t"https://gaia.blockstack.org/hub/13WcjxWGz3JkZYhoPeCHw2ukcK1f1zH6M1/profile.json"\n\n`
   );
 
   const nonces = await fetchAccountNonces({
@@ -43,7 +50,7 @@ export async function faucetApi(req: NextApiRequest, res: NextApiResponse) {
 
   const tx = await makeContractCall({
     ...testUtils.v1RegisterTransfer({
-      namespace: asciiToBytes('testable'),
+      namespace: asciiToBytes(namespace),
       name: asciiToBytes(name),
       recipient,
     }),

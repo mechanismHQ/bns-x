@@ -12,6 +12,7 @@ import { doesNamespaceExpire, parseFqn, ZonefileTxtKeys, ZonefileUriKeys } from 
 import { Address as BtcAddress } from 'micro-btc-signer';
 import { nip19 } from 'nostr-tools';
 import type { TXTType, URIType } from '@fungible-systems/zone-file/dist/zoneFile';
+import { getTestnetNamespace } from '@common/constants';
 
 export const unwrapTxidAtom = hashAtom('unwrapTxid');
 export const unwrapTxAtom = txidQueryAtom(unwrapTxidAtom)[0];
@@ -43,7 +44,7 @@ export const nameExpirationAtom = atomFamily((name?: string) => {
       if (details === null) return null;
       const { namespace } = parseFqn(name);
       if (!doesNamespaceExpire(namespace)) return null;
-      if (namespace === 'testable') return null; // testnet faucet namespace
+      if (namespace === getTestnetNamespace()) return null; // testnet faucet namespace
       if (typeof details.expire_block === 'undefined') return null;
       const nodeInfo = get(coreNodeInfoAtom);
       if (typeof nodeInfo.stacks_tip_height !== 'number') return null;

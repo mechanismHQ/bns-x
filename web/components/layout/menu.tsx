@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { DropdownMenu, PopoverOption } from '@components/dropdown-menu';
+import { DropdownMenu, PopoverOption } from '@components/account-menu';
 import { BoxLink } from '@components/link';
 import { Stack, Box } from '@nelson-ui/react';
 import { stxAddressAtom, useAuthState } from '@store/micro-stacks';

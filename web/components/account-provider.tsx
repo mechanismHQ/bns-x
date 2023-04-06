@@ -29,7 +29,7 @@ function useDebugAccounts() {
     console.log('MS Accounts', msAddrs);
     console.log('Primary Account', primaryAccount?.stxAddress);
     console.log('Current Address', currentAddress);
-  }, [addrs, msAddrs]);
+  }, [addrs, msAddrs, primaryAccount?.stxAddress, currentAddress]);
 }
 
 export const AccountProvider: React.FC<{

@@ -17,7 +17,15 @@ import { ClarigenClient } from '@clarigen/core';
 
 config();
 
-import { contracts, bns, network, networkKey, getControllerAddress } from './script-utils';
+import {
+  contracts,
+  bns,
+  network,
+  networkKey,
+  getControllerAddress,
+  testnetNamespace,
+  namespacePrice,
+} from './script-utils';
 
 const privateKey = process.env.DEPLOYER_KEY!;
 
@@ -49,9 +57,10 @@ async function waitForConstruct(): Promise<void> {
 async function run() {
   console.log('Waiting until network setup.');
   await waitForConstruct();
-  const namespace = asciiToBytes('testable');
-  const salt = hexToBytes('00');
-  const salted = hashRipemd160(hashSha256(hexToBytes(bytesToHex(namespace) + '00')));
+  const namespace = asciiToBytes(testnetNamespace);
+  const saltHex = '01';
+  const salt = hexToBytes(saltHex);
+  const salted = hashRipemd160(hashSha256(hexToBytes(bytesToHex(namespace) + saltHex)));
   const deployer = contracts.bnsxExtensions.identifier.split('.')[0];
   // console.log("salted", bytesToHex(hashRipemd160(salted)));
   const nonces = await fetchAccountNonces({
@@ -71,7 +80,7 @@ async function run() {
   if (networkKey === 'devnet') {
     await broadcast(
       await makeContractCall({
-        ...bns.namespacePreorder(salted, 640000000),
+        ...bns.namespacePreorder(salted, namespacePrice),
         network,
         anchorMode: AnchorMode.Any,
         postConditionMode: PostConditionMode.Allow,

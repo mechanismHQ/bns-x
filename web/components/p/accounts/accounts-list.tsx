@@ -43,10 +43,10 @@ export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
 
   const accountRows = useMemo(() => {
     return accounts.map(account => (
-      <>
+      <React.Fragment key={account.stxAddress}>
         <Divider />
         <AccountRow key={account.address.join('-')} account={account} />
-      </>
+      </React.Fragment>
     ));
   }, [accounts]);
 

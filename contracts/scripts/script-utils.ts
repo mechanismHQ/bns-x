@@ -21,6 +21,9 @@ if (networkKeyEnv === 'testnet') {
   }
 }
 
+export const testnetNamespace = networkKey === 'testnet' ? 'testable' : 'satoshi';
+export const namespacePrice = networkKey === 'testnet' ? 640000000 : 6400000000;
+
 export const contracts = projectFactory(project, networkKey as unknown as 'devnet');
 
 export const bns = contractFactory(_contracts.bnsV1, 'ST000000000000000000002AMW42H.bns');

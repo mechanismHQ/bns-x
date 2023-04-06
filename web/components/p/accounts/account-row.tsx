@@ -11,71 +11,45 @@ import { AccountProgress, accountProgressAtom, accountProgressStatusState } from
 import type { ProgressProps } from '@components/progress-bar';
 import { ProgressBar } from '@components/progress-bar';
 import { BoxLink, LinkText } from '@components/link';
-import { DropdownMenu, PopoverOption } from '@components/dropdown-menu';
+import { DropdownMenu, PopoverOption } from '@components/account-menu';
 import { usePunycode } from '@common/hooks/use-punycode';
 import { useSetPrimaryAccount } from '@common/hooks/use-set-primary-account';
 import { waitForAll } from 'jotai/utils';
 import { useRemoveAccount } from '@common/hooks/use-remove-account';
 import { useTruncateEnd } from '@common/hooks/use-truncate-end';
+import { Beutton } from '@components/ui/beutton';
+import { AccountActions } from './account-actions';
+import { Loader2 } from 'lucide-react';
 
-export const AccountRow: React.FC<{ account: Account }> = ({ account }) => {
+export const LoadingRow: React.FC<{ children?: React.ReactNode; account: Account }> = ({
+  account,
+}) => {
   return (
-    <Suspense fallback={<Box width="100%" height="0px" />}>
-      <LoadedAccountRow account={account} />
-    </Suspense>
+    <div className="flex gap-[10px]">
+      <div className="w-[50px] h-[50px] rounded-full bg-gray-200 animate-pulse" />
+      <div className="flex flex-col justify-center">
+        <Text variant="Label02">Account {account.index + 1}</Text>
+        <div className="flex">
+          <LinkText
+            href={`https://explorer.stacks.co/address/${account.stxAddress ?? ''}`}
+            target="_blank"
+            variant="Body02"
+            color={'$onSurface-text-subdued'}
+          >
+            {truncateMiddle(account.stxAddress ?? '', 4)}
+          </LinkText>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
-  const pathBase = '/accounts/[address]';
-  const query = { address: account.stxAddress };
-  const { setPrimary } = useSetPrimaryAccount();
-  const { removeAccount } = useRemoveAccount();
-  const status = useAtomValue(accountProgressStatusState(account.stxAddress));
-
-  const migrateOptionMessage = useMemo(() => {
-    switch (status) {
-      case AccountProgress.NoName:
-        return null;
-      case AccountProgress.NotStarted:
-        return 'Migrate to BNSx';
-      case AccountProgress.Done:
-        return 'View migration';
-    }
-    return 'Continue migration';
-  }, [status]);
-
+export const AccountRow: React.FC<{ account: Account }> = ({ account }) => {
   return (
-    <DropdownMenu
-      popover={
-        <>
-          {migrateOptionMessage !== null && (
-            <BoxLink href={{ pathname: `${pathBase}/upgrade`, query }}>
-              <PopoverOption>{migrateOptionMessage}</PopoverOption>
-            </BoxLink>
-          )}
-          <BoxLink href={{ pathname: pathBase, query }}>
-            <PopoverOption>Manage names</PopoverOption>
-          </BoxLink>
-          <PopoverOption
-            onClick={async () => {
-              await setPrimary(account.index);
-            }}
-          >
-            Set as primary
-          </PopoverOption>
-          <PopoverOption
-            onClick={async () => {
-              await removeAccount(account);
-            }}
-          >
-            Remove account
-          </PopoverOption>
-        </>
-      }
-    >
-      Actions
-    </DropdownMenu>
+    <Suspense fallback={<LoadingRow account={account} />}>
+      {/* <LoadingRow account={account} /> */}
+      <LoadedAccountRow account={account} />
+    </Suspense>
   );
 };
 
@@ -119,6 +93,12 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
     }
   }, [status]);
 
+  const isPending = useMemo(() => {
+    return (
+      status === AccountProgress.FinalizePending || status === AccountProgress.WrapperDeployPending
+    );
+  }, [status]);
+
   if (primaryAccount?.stxAddress === account.stxAddress) return null;
 
   return (
@@ -142,12 +122,9 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
           </Flex>
         </Stack>
       </Stack>
-      <Box flexGrow={1} />
-      <Stack isInline alignItems="center" spacing="20px" flexGrow={1}>
-        <Box maxWidth="400px" flexGrow={1}>
-          {status !== AccountProgress.NoName && <ProgressBar {...progressProps} />}
-        </Box>
-
+      {/* <Box flexGrow={1} /> */}
+      <Stack isInline alignItems="center" spacing="20px">
+        {isPending && <Loader2 className="animate-spin h-4 w-4" color="var(--colors-text)" />}
         <AccountActions account={account} />
       </Stack>
     </SpaceBetween>

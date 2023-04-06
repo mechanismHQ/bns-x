@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Stack, Box, Flex } from '@nelson-ui/react';
 import { Text } from './text';
 import { atom, useAtom, useAtomValue } from 'jotai';
@@ -11,6 +11,8 @@ import { Button } from './button';
 import { currentUserV1NameState } from '../common/store/names';
 import { useRouter } from 'next/router';
 import { useAccountPath } from '@common/hooks/use-account-path';
+import { getTestnetNamespace } from '@common/constants';
+import { toPunycode } from '@bns-x/punycode';
 
 const nameAtom = atom('');
 
@@ -43,7 +45,8 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
     useCallback(async (get, set) => {
       const name = get(nameAtom);
       const address = get(stxAddressAtom)!;
-      const url = `/api/faucet?name=${name}&recipient=${address}`;
+      const ascii = toPunycode(name);
+      const url = `/api/faucet?name=${ascii}&recipient=${address}`;
       set(submittingAtom, true);
       const res = await fetch(url);
       const { txid } = (await res.json()) as { txid: string };
@@ -53,6 +56,10 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
   );
 
   const profilePath = useAccountPath('/profile');
+
+  const namespace = useMemo(() => {
+    return getTestnetNamespace();
+  }, []);
 
   useEffect(() => {
     if (bnsName?.combined) {
@@ -72,7 +79,7 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
           Name
         </Text>
         <Text variant="Caption01" color="$text-dim">
-          You&apos;ll get the name &quot;{name.value}.testable&quot;
+          You&apos;ll get the name &quot;{name.value}.{namespace}&quot;
         </Text>
         <Input autoFocus {...name.props} />
       </Stack>
