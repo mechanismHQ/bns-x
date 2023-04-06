@@ -49,8 +49,8 @@ function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppPro
     return getAppUrl();
   }, []);
 
-  if (pageProps?.displayName) {
-    queryClient.setQueryData(displayNameQueryKey(pageProps.stxAddress!), pageProps.displayName);
+  if (pageProps?.stxAddress) {
+    queryClient.setQueryData(displayNameQueryKey(pageProps.stxAddress), pageProps.displayName);
   }
 
   const hydratedAtoms: AtomPair[] = [[queryClientAtom, queryClient]];
