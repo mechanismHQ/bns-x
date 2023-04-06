@@ -113,7 +113,7 @@ export const ProfileRow: React.FC<{
       </Stack>
       <StyledEditBox>
         <Stack isInline>
-          <BoxLink href={upgradePath}>
+          <BoxLink href={namePath}>
             <Button secondary={v1}>Edit</Button>
           </BoxLink>
           {v1 && (

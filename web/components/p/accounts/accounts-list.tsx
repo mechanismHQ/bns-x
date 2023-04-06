@@ -69,7 +69,11 @@ export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
         <Text variant="Heading035">Accounts</Text>
         <Text variant="Body02" color="$text-dim">
           Manage upgrading multiple accounts simultaneously by connecting new accounts.{' '}
-          <Link href="#" display="inline-block">
+          <Link
+            href="https://docs.bns.xyz/dots/migrating-multiple-accounts"
+            target="_blank"
+            display="inline-block"
+          >
             Learn more
           </Link>{' '}
         </Text>
