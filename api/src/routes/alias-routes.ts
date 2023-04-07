@@ -9,6 +9,7 @@ import type { FastifyPlugin } from './api-types';
 import { simpleNamesForAddressSchema, nameDetailsSchema } from '@bns-x/core';
 import { errorSchema } from '@routes/api-types';
 import { z } from 'zod';
+import { logger } from '~/logger';
 
 export const aliasRoutes: FastifyPlugin = (fastify, opts, done) => {
   fastify.get(
@@ -50,11 +51,16 @@ Fetch information about a specific name
         if (error instanceof TRPCError) {
           const status = getHTTPStatusCodeFromError(error);
           if (status !== 404) {
-            console.error(`Unable to find details for ${fqn}`);
+            res.log.warn(
+              {
+                fqn,
+              },
+              `Unable to find details for ${fqn}`
+            );
           }
           return res.status(status).send({ error: { message: error.message } });
         }
-        console.error(`Unexpected error fetching details for ${fqn}:`, error);
+        res.log.error({ error, fqn }, `Unexpected error fetching details for ${fqn}:`);
         return res.status(500).send({ error: { message: 'Unexpected error' } });
       }
     }

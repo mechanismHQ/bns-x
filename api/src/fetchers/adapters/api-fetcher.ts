@@ -6,6 +6,7 @@ import { getNameDetails as getNameDetailsQuery, getPrimaryName } from '~/fetcher
 import { toUnicode } from '@bns-x/punycode';
 import { getZonefileProperties } from '@fetchers/zonefile';
 import { convertNameBuff } from '~/contracts/utils';
+import { logger } from '~/logger';
 
 export class ApiFetcher implements BaseFetcher {
   async getDisplayName(address: string): Promise<string | null> {
@@ -53,7 +54,7 @@ export class ApiFetcher implements BaseFetcher {
         zonefileRecords,
       };
     } catch (error) {
-      console.warn(`Error fetching name details for ${fqn}:`, error);
+      logger.error({ fqn }, 'Error fetching name details');
       return null;
     }
   }

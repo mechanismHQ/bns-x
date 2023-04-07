@@ -4,6 +4,7 @@ import fp from 'fastify-plugin';
 import type { BaseFetcher } from '@fetchers/adapters/base';
 import { ApiFetcher } from '@fetchers/adapters/api-fetcher';
 import { DbFetcher } from '@fetchers/adapters/db-fetcher';
+import { logger } from '~/logger';
 declare module 'fastify' {
   interface FastifyInstance {
     prisma?: BnsDb;
@@ -22,7 +23,7 @@ export const prismaPlugin: FastifyPluginAsync = fp(async server => {
 
   const stacksPrisma = new StacksDb();
   const params = new URLSearchParams(dbEnv.split('?')[1]);
-  console.log('Connection query parameters:', params);
+  logger.debug({ params }, 'Connection query parameters');
   const promises = [stacksPrisma.$connect()];
   const prismaDbEnv = process.env.BNSX_DB_URL;
   const prisma = new BnsDb();

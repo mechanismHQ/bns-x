@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { expectDb } from '../../db/db-utils';
 import { fetchInscription, verifyInscriptionZonefile } from '../../fetchers/inscriptions';
 import { router, procedure } from './base';
+import { logger } from '~/logger';
 
 export const createInscriptionInput = z.object({
   inscriptionId: z.string(),
@@ -66,7 +67,7 @@ export const inscriptionRouter = router({
           inscriptionId,
         };
       } catch (error) {
-        console.error(error);
+        logger.error({ error }, `Unable to fetch details for ${inscriptionId}`);
         throw new TRPCError({
           message: `Unable to fetch details for ${inscriptionId}`,
           code: 'NOT_FOUND',
@@ -93,7 +94,7 @@ export const inscriptionRouter = router({
         zonefile: content,
       };
     } catch (error) {
-      console.error(error);
+      logger.error({ error }, `Unable to fetch details for ${inscriptionId}`);
       throw new TRPCError({
         message: `Unable to fetch details for ${inscriptionId}`,
         code: 'NOT_FOUND',

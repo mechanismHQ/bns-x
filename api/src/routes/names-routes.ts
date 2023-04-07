@@ -40,7 +40,7 @@ The logic for determining name order in the \`names\` property is:
         const names = await req.server.fetcher.getAddressNames(principal);
         return res.status(200).send(names);
       } catch (error) {
-        logger.error(`Unexpected error fetching details for ${principal}:`, { error });
+        res.log.error({ error, principal }, `Unexpected error fetching details for ${principal}:`);
         return res.status(500).send({ error: { message: 'Unexpected error' } });
       }
     }

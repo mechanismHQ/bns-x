@@ -8,6 +8,7 @@ import type { BaseFetcher } from './base';
 import { toUnicode } from '@bns-x/punycode';
 import { getZonefileProperties } from '@fetchers/zonefile';
 import { convertDbName, convertNameBuff } from '~/contracts/utils';
+import { logger } from '~/logger';
 
 export class DbFetcher implements BaseFetcher {
   bnsDb: BnsDb;
@@ -79,7 +80,10 @@ export class DbFetcher implements BaseFetcher {
         wrapper: api.address,
       };
     } catch (error) {
-      console.warn(`Error fetching name details for ${name}.${namespace}:`, error);
+      logger.error(
+        { name, namespace, error },
+        `Error fetching name details for ${name}.${namespace}`
+      );
       return null;
     }
   }

@@ -84,7 +84,6 @@ export async function makeApp({
   });
 
   const staticRoot = join(__dirname, '..', 'static');
-  // console.log("Serving static files from", staticRoot);
   await app.register(staticPlugin, {
     root: staticRoot,
     prefix: '/static/',
@@ -95,8 +94,13 @@ export async function makeApp({
   await app.register(metadataRoutes);
 
   const networkKey = getNetworkKey();
-  console.log(`NETWORK_KEY=${networkKey}`);
-  console.log(`STACKS_API=${getNodeUrl()}`);
+  logger.debug(
+    {
+      networkKey,
+      stacksApi: getNodeUrl(),
+    },
+    'Starting server with config'
+  );
 
   await app.register(aliasRoutes, {
     prefix: '/v1',

@@ -78,7 +78,7 @@ export function listenAndSyncPrints(bnsDb: BnsDb, stacksDb: StacksDb) {
     log.error('connect_error to websocket');
   });
   client.socket.on('disconnect', e => {
-    console.log(e);
+    log.debug({ event: e }, 'Disconnected from websocket');
     if (e === 'io server disconnect') {
       client.socket.connect();
     }
