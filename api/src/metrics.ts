@@ -60,6 +60,14 @@ export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, _option
     const route = request.routeConfig.statsId ?? request.routerPath;
     const statusCode = reply.statusCode;
 
+    reply.log.info(
+      {
+        route,
+        statusCode,
+      },
+      'outgoing response'
+    );
+
     const labels = {
       route,
       method,
