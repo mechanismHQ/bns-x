@@ -1,4 +1,8 @@
-import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
+import type {
+  NameInfoResponse,
+  NameStringsForAddressResponse,
+  NamesByAddressResponse,
+} from '@bns-x/core';
 
 export abstract class BaseFetcher {
   /**
@@ -10,4 +14,8 @@ export abstract class BaseFetcher {
   abstract getNameDetails(fqn: string): Promise<NameInfoResponse | null>;
 
   abstract getAddressNames(address: string): Promise<NamesByAddressResponse>;
+
+  abstract getAddressNameStrings(address: string): Promise<NameStringsForAddressResponse>;
+
+  abstract getCoreName(address: string): Promise<string | null>;
 }

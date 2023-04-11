@@ -2,8 +2,8 @@ import type { Jsonize, FunctionReturnType } from '@clarigen/core';
 import type { contracts } from './clarigen';
 import { z } from 'zod';
 
-export type Registry = typeof contracts['bnsxRegistry']['functions'];
-export type QueryHelper = typeof contracts['queryHelper']['functions'];
+export type Registry = (typeof contracts)['bnsxRegistry']['functions'];
+export type QueryHelper = (typeof contracts)['queryHelper']['functions'];
 
 export type NameProperties = NonNullable<FunctionReturnType<Registry['getNameProperties']>>;
 
@@ -164,3 +164,17 @@ export const simpleOrExtraNamesByAddress = z.union([
 ]);
 
 export type NamesByAddressResponse = z.infer<typeof namesByAddressBnsxSchema>;
+
+export const nameStringsForAddressSchema = z.object({
+  coreName: z.nullable(z.string()).describe('The BNS core name owned by this address'),
+  bnsxNames: z
+    .array(
+      z.object({
+        name: z.string(),
+        id: z.number(),
+      })
+    )
+    .describe('The BNSx names owned by this address'),
+});
+
+export type NameStringsForAddressResponse = z.infer<typeof nameStringsForAddressSchema>;

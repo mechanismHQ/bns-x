@@ -64,11 +64,11 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
   }, []);
 
   useEffect(() => {
-    if (bnsName?.combined) {
+    if (bnsName !== null) {
       void router.push(profilePath);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bnsName?.combined]);
+  }, [bnsName]);
 
   return (
     <Stack p="30px">

@@ -1,7 +1,11 @@
 import { fetchBnsxDisplayName, fetchBnsxName } from '@db/names';
 import type { BnsDb, StacksDb } from '@db';
 import { fetchCoreName, getNameDetailsApi, getNameDetailsFqnApi } from '@fetchers/stacks-api';
-import type { NameInfoResponse, NamesByAddressResponse } from '@bns-x/core';
+import type {
+  NameInfoResponse,
+  NameStringsForAddressResponse,
+  NamesByAddressResponse,
+} from '@bns-x/core';
 import { getNameParts } from '@bns-x/core';
 import { parseFqn } from '~/utils';
 import type { BaseFetcher } from './base';
@@ -9,6 +13,7 @@ import { toUnicode } from '@bns-x/punycode';
 import { getZonefileProperties } from '@fetchers/zonefile';
 import { convertDbName, convertNameBuff } from '~/contracts/utils';
 import { logger } from '~/logger';
+import { fetchCoreNameByAddress } from '@db/bns-core';
 
 export class DbFetcher implements BaseFetcher {
   bnsDb: BnsDb;
@@ -25,7 +30,7 @@ export class DbFetcher implements BaseFetcher {
 
   async getDisplayName(address: string): Promise<string | null> {
     const [legacyName, bnsxName] = await Promise.all([
-      fetchCoreName(address),
+      this.getCoreName(address),
       fetchBnsxDisplayName(address, this.bnsDb),
     ]);
     return legacyName ?? bnsxName;
@@ -103,7 +108,7 @@ export class DbFetcher implements BaseFetcher {
           account: address,
         },
       }),
-      fetchCoreName(address),
+      this.getCoreName(address),
     ]);
     const primaryId = primaryNameRow?.primaryId ?? null;
 
@@ -161,6 +166,31 @@ export class DbFetcher implements BaseFetcher {
     };
   }
 
+  async getAddressNameStrings(address: string): Promise<NameStringsForAddressResponse> {
+    const [coreName, bnsxNameRows] = await Promise.all([
+      this.getCoreName(address),
+      this.bnsDb.nameOwnership.findMany({
+        include: {
+          name: true,
+        },
+        where: {
+          account: address,
+        },
+      }),
+    ]);
+    const bnsxNames = bnsxNameRows.map(n => {
+      const converted = convertNameBuff({
+        ...n.name!,
+        id: Number(n.name!.id),
+      });
+      return {
+        name: converted.combined,
+        id: converted.id,
+      };
+    });
+    return { coreName, bnsxNames };
+  }
+
   async getInscribedZonefile(name: string, namespace: string) {
     const zf = await this.bnsDb.inscriptionZonefiles.findFirst({
       where: {
@@ -185,5 +215,9 @@ export class DbFetcher implements BaseFetcher {
     ).map(convertDbName);
 
     return names;
+  }
+
+  async getCoreName(address: string): Promise<string | null> {
+    return fetchCoreNameByAddress(this.stacksDb, address);
   }
 }

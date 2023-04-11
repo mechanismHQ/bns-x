@@ -49,6 +49,22 @@ export type AppProcedures = {
     getDisplayName: AnyProc<"query", string, {
         name: string | null;
     }>;
+    getAddressNameStrings: AnyProc<"query", {
+        /** A Stacks address to fetch names for */
+        address: string;
+    }, {
+        /** The BNS core name owned by this address */
+        coreName: string | null;
+        /** The BNSx names owned by this address */
+        bnsxNames: {
+            name: string;
+            id: number;
+        }[];
+    }>;
+    getCoreName: AnyProc<"query", {
+        /** A Stacks address to fetch names for */
+        address: string;
+    }, string | null>;
     inscriptions: TrpcServer.CreateRouterInner<TrpcServer.AnyRootConfig, {
         create: AnyProc<"mutation", {
             inscriptionId: string;
