@@ -29,7 +29,7 @@ export const currentUserNamesState = atom(get => {
 });
 
 export const currentUserV1NameState = atom(get => {
-  const names = get(currentUserNamesState);
+  const names = get(currentUserAddressNameStringsState);
   return names?.coreName ?? null;
 });
 
@@ -72,36 +72,29 @@ export const currentUserNameIdsState = atom<number[]>(get => {
   return names.nameProperties.map(n => n.id);
 });
 
-export const currentUserNameIdsState2 = atomsWithQuery<number[]>(get => ({
-  queryKey: ['cur-user-names', get(stxAddressAtom)],
-  refetchInterval: 10000,
-  queryFn: async () => {
-    const network = get(networkAtom);
-    const urlBase = network.getCoreApiUrl();
-    const addr = get(stxAddressAtom);
-    if (!addr) return [];
-    const params = new URLSearchParams({
-      principal: addr,
-      unanchored: 'true',
-      // asset_identifiers: asset,
-    });
-    const url = `${urlBase}/extended/v1/tokens/nft/holdings?${params.toString()}`;
-    const res = await fetch(url);
-    const data = (await res.json()) as NonFungibleTokenHoldingsList;
-    return data.results
-      .map(d => {
-        const bign = cvToValue<bigint>(deserializeCV(d.value.hex));
-        return Number(bign);
-      })
-      .filter(n => !Number.isNaN(n));
-  },
-}));
-
 export const currentUserUpgradedState = atom(get => {
   const toUpgrade = get(nameUpgradingAtom);
   if (toUpgrade === null) return false;
   const nameDetails = get(nameDetailsAtom(toUpgrade));
   return nameDetails?.isBnsx ?? false;
+});
+
+export const addressNameStringsAtom = atomFamily((address: string) => {
+  return atomsWithQuery(() => ({
+    queryKey: ['addr-name-strings', address],
+    async queryFn() {
+      const res = await trpc.getAddressNameStrings.query({ address });
+      return res;
+    },
+  }))[0];
+}, isEqual);
+
+export const currentUserAddressNameStringsState = atom(get => {
+  const addr = get(stxAddressAtom);
+  if (typeof addr === 'undefined') {
+    throw new Error('Unable to get current user address');
+  }
+  return get(addressNameStringsAtom(addr));
 });
 
 export const nameDetailsAtom = atomFamily((name: string) => {

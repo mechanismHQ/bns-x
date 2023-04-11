@@ -51,12 +51,12 @@ export const nameUpgradingAtom = atom(get => {
   const progress = get(currentAccountProgressAtom);
   if (progress?.name) return progress.name ?? null;
   const fromQuery = get(currentUserV1NameState);
-  return fromQuery?.combined ?? null;
+  return fromQuery;
 });
 
 export const migrateNameAssetIdState = atom(get => {
   const nameStr = get(nameUpgradingAtom);
-  if (!nameStr) throw new Error('Cannot get BNS name asset - empty');
+  if (nameStr === null) throw new Error('Cannot get BNS name asset - empty');
   return nameToTupleBytes(nameStr);
 });
 

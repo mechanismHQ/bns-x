@@ -9,7 +9,7 @@ import { coreNodeInfoAtom, namesForAddressState } from '@store/api';
 import type { ZoneFileObject } from '@bns-x/client';
 import { ZoneFile } from '@bns-x/client';
 import { doesNamespaceExpire, parseFqn, ZonefileTxtKeys, ZonefileUriKeys } from '@bns-x/client';
-import { Address as BtcAddress } from 'micro-btc-signer';
+import { Address as BtcAddress } from '@scure/btc-signer';
 import { nip19 } from 'nostr-tools';
 import type { TXTType, URIType } from '@fungible-systems/zone-file/dist/zoneFile';
 import { getTestnetNamespace } from '@common/constants';

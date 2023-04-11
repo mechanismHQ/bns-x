@@ -24,8 +24,7 @@ export const namesForAddressState = atomFamily((address: string) => {
     queryKey: ['apiNamesState', address],
     refetchInterval: 15000,
     queryFn: async () => {
-      // return trpc.getAddressNames.query({ address });
-      return bnsApi.getNamesOwnedByAddress(address);
+      return trpc.getAddressNames.query({ address });
     },
   }))[0];
 }, Object.is);
@@ -46,7 +45,8 @@ export const addressDisplayNameState = atomFamily((address: string) => {
     queryKey: displayNameQueryKey(address),
     refetchInterval: 15000,
     queryFn: async () => {
-      return bnsApi.getDisplayName(address);
+      const { name } = await trpc.getDisplayName.query(address);
+      return name;
     },
   }))[0];
 }, Object.is);

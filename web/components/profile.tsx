@@ -1,12 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import type { BoxProps } from '@nelson-ui/react';
 import { Stack, Box, Flex, SpaceBetween } from '@nelson-ui/react';
-import {
-  currentUserNameIdsState,
-  currentUserV1NameState,
-  userPrimaryNameState,
-  currentUserNamesState,
-} from '@store/names';
+import { currentUserV1NameState, currentUserAddressNameStringsState } from '@store/names';
 import type { ResponsiveVariant } from './text';
 import { Text } from './text';
 import { useAtomValue } from 'jotai';
@@ -90,8 +85,7 @@ export const ProfileRow: React.FC<{
           <StyledName variant="Heading035" color={'$text'}>
             {nameString}
           </StyledName>
-
-          <Stack isInline height="20px" spacing="27px">
+          <div className="flex flex-row gap-[27px] h-[27px] items-baseline">
             <LinkText
               href={`https://explorer.stacks.co/address/${stxAddress ?? ''}`}
               target="_blank"
@@ -103,12 +97,7 @@ export const ProfileRow: React.FC<{
             <Text variant="Body02" height="20px" color={'$onSurface-text-subdued'}>
               {v1 ? 'BNS Core' : 'BNSx'}
             </Text>
-            {/* {v1 && (
-              <Text variant="Body02" height="20px" color={'$onSurface-text-subdued'}>
-                Upgrade to BNSx
-              </Text>
-            )} */}
-          </Stack>
+          </div>
         </Stack>
       </Stack>
       <StyledEditBox>
@@ -133,8 +122,6 @@ export const ProfileRow: React.FC<{
   );
 };
 
-const everRedirect = false; // dev: change to enable auto-redirect to 'upgrade'
-
 const Border: React.FC = () => {
   return (
     <Flex width="100%" px="29px" alignItems="center">
@@ -144,18 +131,8 @@ const Border: React.FC = () => {
 };
 
 export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
-  const router = useRouter();
-  const v1Name = useAtomValue(currentUserV1NameState);
-  const allNames = useAtomValue(currentUserNamesState);
-  const hasV1 = v1Name !== null;
-  const holdings = useAtomValue(currentUserNameIdsState);
-
-  const shouldRedirect = useMemo(() => {
-    const noBnsx = holdings.length === 0;
-    const canRedirect = router.query.redirect !== 'false';
-    return everRedirect && hasV1 && noBnsx && canRedirect;
-    // return false;
-  }, [hasV1, holdings.length, router.query.redirect]);
+  const allNames = useAtomValue(currentUserAddressNameStringsState);
+  const v1Name = allNames.coreName;
 
   useEffect(() => {
     console.log('All names:', allNames);
@@ -163,26 +140,21 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
 
   const rows = useMemo(() => {
     return (
-      allNames?.nameProperties.map((name, index) => {
+      allNames?.bnsxNames.map((name, index) => {
         return (
           <Box key={`name-${name.id}`}>
             {index === 0 && <Border />}
-            <ProfileRow name={name.combined} />
-            {/* <LoadableProfileRow id={name} /> */}
-            {/* {index !== holdings.length - 1 ? ( */}
+            <ProfileRow name={name.name} />
             <Border />
-            {/* ) : null} */}
           </Box>
         );
       }) ?? null
     );
-  }, [allNames?.nameProperties]);
+  }, [allNames?.bnsxNames]);
 
-  useEffect(() => {
-    if (shouldRedirect) {
-      void router.push({ pathname: '/upgrade' });
-    }
-  }, [shouldRedirect, router]);
+  const noNames = useMemo(() => {
+    return allNames.coreName === null && allNames.bnsxNames.length === 0;
+  }, [allNames.coreName, allNames.bnsxNames.length]);
 
   const mintName = useCallback(() => {
     window.open('https://btc.us', '_blank');
@@ -192,7 +164,7 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
     <>
       <Box flexGrow={1} />
       <Stack width="100%" spacing="0px">
-        {v1Name === null && holdings.length === 0 ? (
+        {noNames ? (
           <Stack spacing="0" alignContent="center" width="100%" textAlign="center">
             <Text width="100%" variant="Display02">
               No names here
@@ -210,7 +182,7 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
             {v1Name !== null ? (
               <>
                 <Border />
-                <ProfileRow v1 name={v1Name.combined} />
+                <ProfileRow v1 name={v1Name} />
                 {rows?.length === 0 && <Border />}
               </>
             ) : null}
