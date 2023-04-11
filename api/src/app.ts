@@ -25,6 +25,7 @@ import SwaggerUi from '@fastify/swagger-ui';
 import { namesRoutes } from '@routes/names-routes';
 import { txRoutes } from '@routes/tx-routes';
 // import { trpcOpenApiRouter } from '@routes/trpc-openapi';
+import { getFastifyPlugin } from 'trpc-playground/handlers/fastify';
 
 const options: FastifyServerOptions = {
   logger,
@@ -74,6 +75,17 @@ export async function makeApp({
       createContext,
     },
   });
+
+  await app.register(
+    await getFastifyPlugin({
+      router: appRouter,
+      trpcApiEndpoint: '/trpc',
+      playgroundEndpoint: '/playground',
+    }),
+    {
+      prefix: '/playground',
+    }
+  );
 
   await app.register(namesRoutes, {
     prefix: '/bns',

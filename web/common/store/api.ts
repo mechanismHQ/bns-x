@@ -52,7 +52,7 @@ export const addressDisplayNameState = atomFamily((address: string) => {
 }, Object.is);
 
 export type NostrName = Awaited<
-  ReturnType<typeof trpc['zonefiles']['allNostr']['query']>
+  ReturnType<(typeof trpc)['zonefiles']['allNostr']['query']>
 >['results'][number];
 
 export const allNostrNamesState = atomsWithQuery<NostrName[]>(() => ({

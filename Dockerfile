@@ -15,6 +15,7 @@ COPY api/package.json api/
 COPY web/package.json web/
 COPY packages/core/package.json packages/core/
 COPY packages/client/package.json packages/client/
+COPY packages/api-types/package.json packages/api-types/
 COPY web/patches ./web/patches
 
 COPY . .
@@ -38,7 +39,7 @@ ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
 ENV NEXT_PUBLIC_NETWORK_KEY=${NEXT_PUBLIC_NETWORK_KEY}
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
-RUN pnpm --filter @bns-x/api-types prebuild
+RUN pnpm --filter @bns-x/api prebuild
 
 RUN pnpm build
 

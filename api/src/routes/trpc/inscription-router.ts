@@ -1,7 +1,12 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { expectDb } from '../../db/db-utils';
-import { fetchInscription, verifyInscriptionZonefile } from '../../fetchers/inscriptions';
+import {
+  fetchInscription,
+  inscriptionSchema,
+  inscriptionVerifyResultSchema,
+  verifyInscriptionZonefile,
+} from '../../fetchers/inscriptions';
 import { router, procedure } from './base';
 import { logger } from '~/logger';
 
@@ -75,32 +80,42 @@ export const inscriptionRouter = router({
       }
     }),
 
-  fetchZonefile: procedure.input(createInscriptionInput).query(async ({ ctx, input }) => {
-    const { inscriptionId } = input;
-    const db = ctx.bnsxDb;
-    if (typeof db === 'undefined') {
-      throw new TRPCError({
-        message: ``,
-        code: 'INTERNAL_SERVER_ERROR',
-      });
-    }
-    try {
-      const inscription = await fetchInscription(inscriptionId);
-      const content = await verifyInscriptionZonefile(inscription.content);
-      return {
-        success: content.verified,
-        inscriptionId,
-        inscription,
-        zonefile: content,
-      };
-    } catch (error) {
-      logger.error({ error }, `Unable to fetch details for ${inscriptionId}`);
-      throw new TRPCError({
-        message: `Unable to fetch details for ${inscriptionId}`,
-        code: 'NOT_FOUND',
-      });
-    }
-  }),
+  fetchZonefile: procedure
+    .input(createInscriptionInput)
+    .output(
+      z.object({
+        success: z.boolean(),
+        inscriptionId: z.string(),
+        inscription: inscriptionSchema,
+        zonefile: inscriptionVerifyResultSchema,
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { inscriptionId } = input;
+      const db = ctx.bnsxDb;
+      if (typeof db === 'undefined') {
+        throw new TRPCError({
+          message: ``,
+          code: 'INTERNAL_SERVER_ERROR',
+        });
+      }
+      try {
+        const inscription = await fetchInscription(inscriptionId);
+        const content = await verifyInscriptionZonefile(inscription.content);
+        return {
+          success: content.verified,
+          inscriptionId,
+          inscription,
+          zonefile: content,
+        };
+      } catch (error) {
+        logger.error({ error }, `Unable to fetch details for ${inscriptionId}`);
+        throw new TRPCError({
+          message: `Unable to fetch details for ${inscriptionId}`,
+          code: 'NOT_FOUND',
+        });
+      }
+    }),
 
   fetchAll: procedure
     .input(z.object({ skip: z.optional(z.number().positive()) }))

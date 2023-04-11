@@ -7,6 +7,7 @@ import { parseZoneFile } from '@fungible-systems/zone-file';
 import { getZonefileInfo } from './zonefile';
 import { verifyMessageSignature, hashMessage } from 'micro-stacks/connect';
 import { publicKeyToStxAddress } from 'micro-stacks/crypto';
+import { z } from 'zod';
 
 export interface InscriptionMeta {
   id: string;
@@ -24,21 +25,23 @@ export interface InscriptionMeta {
   content: string;
 }
 
-export interface Inscription {
-  id: string;
-  address: string;
-  sat: string;
-  outputValue: number;
-  contentType: string;
-  timestamp: number;
-  genesisHeight: number;
-  genesisFee: string;
-  genesisTransaction: string;
-  location: string;
-  output: string;
-  offset: string;
-  content: string;
-}
+export const inscriptionSchema = z.object({
+  id: z.string(),
+  address: z.string(),
+  sat: z.string(),
+  outputValue: z.number(),
+  contentType: z.string(),
+  timestamp: z.number(),
+  genesisHeight: z.number(),
+  genesisFee: z.string(),
+  genesisTransaction: z.string(),
+  location: z.string(),
+  output: z.string(),
+  offset: z.string(),
+  content: z.string(),
+});
+
+export type Inscription = z.infer<typeof inscriptionSchema>;
 
 export async function fetchInscription(inscriptionId: string): Promise<Inscription> {
   const res = await fetch(`https://ordinals.com/inscription/${inscriptionId}`);
@@ -102,6 +105,16 @@ export function parseZonefile(content: string) {
   const parsed = parseZoneFile(content);
   return parsed;
 }
+
+export const inscriptionVerifyResultSchema = z.object({
+  verified: z.boolean(),
+  owner: z.string(),
+  zonefile: z.string(),
+  intro: z.string(),
+  zonefileInfo: z.any(),
+});
+
+export type InscriptionVerifyResult = z.infer<typeof inscriptionVerifyResultSchema>;
 
 export async function verifyInscriptionZonefile(content: string) {
   const [intro, zonefileRaw, sigParts] = content.split(/\r*\n-{3,}\r*\n/g);

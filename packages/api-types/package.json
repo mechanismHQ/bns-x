@@ -1,0 +1,32 @@
+{
+  "name": "@bns-x/api-types",
+  "version": "0.3.0",
+  "license": "MIT",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/mechanismHQ/bns-x/tree/main/packages/api-types",
+  "types": "./dist/export-types.d.ts",
+  "main": "./dist/export-types.js",
+  "module": "./dist/export-types.mjs",
+  "import": "./dist/export-types.mjs",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsup",
+    "export:trpc": "pnpm -r build:trpc"
+  },
+  "dependencies": {
+    "@trpc/server": "10.9.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.2.4",
+    "ts-jest": "^29.0.3",
+    "tsup": "^6.5.0",
+    "tsx": "^3.12.3",
+    "zod": "3.20.6"
+  }
+}

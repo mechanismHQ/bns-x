@@ -4,4 +4,5 @@ packages:
   - "packages/client"
   - "packages/core"
   - "packages/punycode"
+  - "packages/api-types"
   - "contracts"

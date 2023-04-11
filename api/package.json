@@ -1,5 +1,5 @@
 {
-  "name": "@bns-x/api-types",
+  "name": "@bns-x/api",
   "version": "0.2.3",
   "description": "",
   "files": [
@@ -23,13 +23,14 @@
     "typecheck": "tsc --noEmit",
     "prebuild": "prisma generate --schema prisma/stacks-api-schema.prisma && pnpm prisma generate",
     "build": "tsup",
-    "build:openapi": "pnpm r scripts/openapi-generator.ts"
+    "build:openapi": "pnpm r scripts/openapi-generator.ts",
+    "build:trpc": "tsx scripts/export-trpc/run.ts ../packages/api-types/src/export-types.ts"
   },
   "author": "Hank Stoever",
   "license": "ISC",
   "dependencies": {
-    "@bns-x/punycode": "workspace:*",
     "@bns-x/core": "workspace:*",
+    "@bns-x/punycode": "workspace:*",
     "@clarigen/core": "1.0.14",
     "@clarigen/node": "1.0.14",
     "@fastify/cors": "^8.2.0",
@@ -70,10 +71,12 @@
     "stacks-encoding-native-js": "1.0.0",
     "trpc-openapi": "^1.1.2",
     "trpc-openapi-fork-fastify-pr-177": "^1.1.2",
+    "trpc-playground": "^1.0.4",
     "tsup": "^6.6.3",
     "tsx": "^3.12.3",
     "typescript": "4.9.5",
-    "zod": "3.20.6"
+    "zod": "3.20.6",
+    "zod-to-ts": "^1.1.4"
   },
   "devDependencies": {
     "@pnpm/make-dedicated-lockfile": "^0.4.9",
