@@ -21,15 +21,18 @@ import { AccountRow } from '@components/p/accounts/account-row';
 import { Toggle } from '@components/ui/toggle';
 import { RESET, useAtomCallback } from 'jotai/utils';
 import type { AccountProgressData } from '@store/accounts';
-import { accountProgressAtom, accountProgressStorageAtom } from '@store/accounts';
+import { accountProgressStorageAtom } from '@store/accounts';
 import { networkKeyAtom } from '@store/index';
 import { Divider } from '@components/upgrade/rows';
+import { useDeepCompareMemoize } from 'use-deep-compare-effect';
+import { useMonitorProgress } from '@common/hooks/use-monitor-progress';
 
 export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
   const primaryAccount = useAtomValue(primaryAccountState);
   const displayName = useAtomValue(primaryNameState);
   const nameDisplay = usePunycode(displayName);
   const { stxAddress } = primaryAccount ?? {};
+  useMonitorProgress(stxAddress!);
   const gradient = useGradient(displayName || stxAddress || '');
   const { addAccount } = useAddAccount();
   const accounts = useAtomValue(secondaryAccountsAtom);
@@ -42,13 +45,16 @@ export const AccountsList: React.FC<{ children?: React.ReactNode }> = () => {
   }, [nameDisplay, stxAddress]);
 
   const accountRows = useMemo(() => {
-    return accounts.map(account => (
-      <React.Fragment key={account.stxAddress}>
-        <Divider />
-        <AccountRow key={account.address.join('-')} account={account} />
-      </React.Fragment>
-    ));
-  }, [accounts]);
+    return accounts
+      .filter(a => a.stxAddress !== primaryAccount?.stxAddress)
+      .map(account => (
+        <React.Fragment key={account.stxAddress}>
+          <Divider />
+          <AccountRow key={account.address.join('-')} account={account} />
+        </React.Fragment>
+      ));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, useDeepCompareMemoize([accounts, primaryAccount?.stxAddress]));
 
   const removeAllProgress = useAtomCallback(
     useCallback((get, set) => {

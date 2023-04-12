@@ -13,7 +13,6 @@ import { cvToValue } from '@clarigen/core';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { atomFamily } from 'jotai/utils';
 import { addressDisplayNameState, bnsApi, namesForAddressState } from './api';
-import isEqual from 'lodash-es/isEqual';
 import { trpc } from './api';
 import { getApiUrl } from '@common/constants';
 import { parseZoneFile, makeZoneFile } from '@fungible-systems/zone-file';
@@ -29,8 +28,9 @@ export const currentUserNamesState = atom(get => {
 });
 
 export const currentUserV1NameState = atom(get => {
-  const names = get(currentUserAddressNameStringsState);
-  return names?.coreName ?? null;
+  const addr = get(stxAddressAtom);
+  if (!addr) return null;
+  return get(addressCoreNameAtom(addr));
 });
 
 export const addressPrimaryNameState2 = atomFamily((address: string) => {
@@ -46,7 +46,7 @@ export const addressPrimaryNameState2 = atomFamily((address: string) => {
       return res;
     },
   }))[0];
-}, isEqual);
+});
 
 export const userPrimaryNameState = atom(get => {
   const names = get(currentUserNamesState);
@@ -79,15 +79,26 @@ export const currentUserUpgradedState = atom(get => {
   return nameDetails?.isBnsx ?? false;
 });
 
+export const addressCoreNameAtom = atomFamily((address: string) => {
+  return atomsWithQuery(() => ({
+    queryKey: ['addr-core-name', address],
+    // refetchInterval: 15000,
+    async queryFn() {
+      return trpc.getCoreName.query({ address });
+    },
+  }))[0];
+});
+
 export const addressNameStringsAtom = atomFamily((address: string) => {
   return atomsWithQuery(() => ({
     queryKey: ['addr-name-strings', address],
+    refetchInterval: 15000,
     async queryFn() {
       const res = await trpc.getAddressNameStrings.query({ address });
       return res;
     },
   }))[0];
-}, isEqual);
+});
 
 export const currentUserAddressNameStringsState = atom(get => {
   const addr = get(stxAddressAtom);
@@ -113,7 +124,7 @@ export const nameDetailsAtom = atomFamily((name: string) => {
       return details;
     },
   }))[0];
-}, isEqual);
+});
 
 export const userZonefileState = atomsWithQuery(get => ({
   queryKey: ['cur-user-zonefile', get(stxAddressAtom)],

@@ -10,7 +10,7 @@ import { ClarigenClient } from '@clarigen/web';
 import { atomFamily } from 'jotai/utils';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { getNetworkKey, ONLY_INSCRIPTIONS } from '@common/constants';
-import isEqual from 'lodash-es/isEqual';
+import { dequal } from 'dequal';
 import { BnsContractsClient } from '@bns-x/client';
 
 export const networkKeyAtom = atom<DeploymentNetwork>(() => {
@@ -100,7 +100,7 @@ export const readOnlyState = atomFamily(
   (a, b) => {
     const aKey = callToQueryKey(a);
     const bKey = callToQueryKey(b);
-    return isEqual(aKey, bKey);
+    return dequal(aKey, bKey);
   }
 );
 
@@ -122,7 +122,7 @@ export const txReceiptState = atomFamily((txid: string | undefined) => {
       return tx;
     },
   }))[0];
-}, isEqual);
+}, dequal);
 
 export const pageTitleState = atom(get => {
   const title = get(docTitleState);

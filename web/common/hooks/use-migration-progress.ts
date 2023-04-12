@@ -1,11 +1,5 @@
 import type { AccountProgressData } from '@store/accounts';
 import { currentAccountProgressAtom } from '@store/accounts';
-import { accountProgressStorageAtom } from '@store/accounts';
-import { accountProgressFileQueryKey } from '@store/accounts';
-import { saveProgressFile } from '@store/accounts';
-import { currentAccountAtom, stxAddressAtom } from '@store/micro-stacks';
-import { nameUpgradingAtom } from '@store/migration';
-import { queryClientAtom } from 'jotai-tanstack-query';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
 

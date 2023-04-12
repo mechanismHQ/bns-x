@@ -6,7 +6,7 @@ import { networkAtom } from '@store/micro-stacks';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { atomFamily, waitForAll, atomWithStorage } from 'jotai/utils';
 import { generateGaiaHubConfigSync, getFile, putFile } from 'micro-stacks/storage';
-import isEqual from 'lodash-es/isEqual';
+import { dequal } from 'dequal';
 import { atom } from 'jotai';
 import { txidQueryAtom, txState } from '@store/migration';
 
@@ -56,30 +56,13 @@ export function accountProgressFileQueryKey({
 export const accountProgressStorageAtom = atomFamily((stxAddress: string) => {
   const key = `account-progress-${stxAddress}`;
   return storageAtom<AccountProgressData>(key, {});
-}, isEqual);
+});
 
 export const accountProgressAtom = atomFamily((stxAddress: string) => {
   return atom(get => {
-    const [names, progressData] = get(
-      waitForAll([namesForAddressState(stxAddress), accountProgressStorageAtom(stxAddress)])
-    );
-
-    const name = names.coreName?.combined;
-
-    if (name && progressData.name !== name) {
-      // likely new name
-      return {
-        name,
-      };
-    }
-
-    if (!progressData.name) {
-      return { name };
-    }
-
-    return progressData;
+    return get(accountProgressStorageAtom(stxAddress));
   });
-}, isEqual);
+});
 
 export const accountProgressStatusState = atomFamily((stxAddress: string) => {
   return atom(get => {
@@ -104,7 +87,7 @@ export const accountProgressStatusState = atomFamily((stxAddress: string) => {
     }
     throw new Error('Unknown account progress state');
   });
-}, isEqual);
+});
 
 export const currentAccountProgressAtom = atom(
   get => {
@@ -183,4 +166,4 @@ export const accountProgressFileAtom = atomFamily(({ account }: { account: Accou
       return progressData;
     },
   }))[0];
-}, isEqual);
+}, dequal);

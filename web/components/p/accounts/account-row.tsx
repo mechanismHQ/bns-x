@@ -10,10 +10,12 @@ import { truncateMiddle } from '@common/utils';
 import { AccountProgress, accountProgressAtom, accountProgressStatusState } from '@store/accounts';
 import { LinkText } from '@components/link';
 import { usePunycode } from '@common/hooks/use-punycode';
-import { waitForAll } from 'jotai/utils';
+import { loadable, waitForAll } from 'jotai/utils';
 import { useTruncateEnd } from '@common/hooks/use-truncate-end';
 import { AccountActions } from './account-actions';
 import { Loader2 } from 'lucide-react';
+import { useDeepMemo } from '@common/hooks/use-deep-memo';
+import { useMonitorProgress } from '@common/hooks/use-monitor-progress';
 
 export const LoadingRow: React.FC<{ children?: React.ReactNode; account: Account }> = ({
   account,
@@ -51,33 +53,33 @@ export const AccountRow: React.FC<{ account: Account }> = ({ account }) => {
 };
 
 export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) => {
-  const [name, progress] = useAtomValue(
-    waitForAll([
-      addressDisplayNameState(account.stxAddress),
-      accountProgressAtom(account.stxAddress),
-    ])
-  );
-  const status = useAtomValue(accountProgressStatusState(account.stxAddress));
+  const loadableName = useAtomValue(loadable(addressDisplayNameState(account.stxAddress)));
+  const progress = useAtomValue(accountProgressAtom(account.stxAddress));
+  const name = useDeepMemo(() => {
+    if (loadableName.state === 'hasData') return loadableName.data;
+    return progress.name ?? null;
+  }, [loadableName, progress]);
+  useMonitorProgress(account.stxAddress);
+  const status = useAtomValue(loadable(accountProgressStatusState(account.stxAddress)));
   const gradient = useGradient(name || account.stxAddress);
-  const primaryAccount = useAtomValue(primaryAccountState);
   const addressTruncated = useMemo(() => {
     return truncateMiddle(account.stxAddress, 4);
   }, [account.stxAddress]);
+
   const primaryDisplayName = useMemo(() => {
-    if (progress.name) return progress.name;
-    if (name !== null) return name;
+    if (name) return name;
     return `Account ${account.index + 1}`;
-  }, [progress.name, name, account.index]);
+  }, [name, account.index]);
   const primaryDisplay = usePunycode(primaryDisplayName);
   const displayTruncated = useTruncateEnd(primaryDisplay, 15);
 
   const isPending = useMemo(() => {
+    if (status.state !== 'hasData') return true;
     return (
-      status === AccountProgress.FinalizePending || status === AccountProgress.WrapperDeployPending
+      status.data === AccountProgress.FinalizePending ||
+      status.data === AccountProgress.WrapperDeployPending
     );
   }, [status]);
-
-  if (primaryAccount?.stxAddress === account.stxAddress) return null;
 
   return (
     <SpaceBetween isInline>
@@ -102,8 +104,12 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
       </Stack>
       {/* <Box flexGrow={1} /> */}
       <Stack isInline alignItems="center" spacing="20px">
-        {isPending && <Loader2 className="animate-spin h-4 w-4" color="var(--colors-text)" />}
-        <AccountActions account={account} />
+        <Suspense
+          fallback={<Loader2 className="animate-spin h-4 w-4" color="var(--colors-text)" />}
+        >
+          {isPending && <Loader2 className="animate-spin h-4 w-4" color="var(--colors-text)" />}
+          <AccountActions account={account} />
+        </Suspense>
       </Stack>
     </SpaceBetween>
   );

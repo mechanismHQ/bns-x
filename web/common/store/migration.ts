@@ -18,7 +18,7 @@ import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-
 import { getContractParts, nameToTupleBytes } from '@common/utils';
 import { currentUserV1NameState } from '@store/names';
 import { accountProgressAtom, currentAccountProgressAtom } from '@store/accounts';
-import isEqual from 'lodash-es/isEqual';
+import { dequal } from 'dequal';
 import { atomFamily } from 'jotai/utils';
 
 export function hashAtom(name: string, defaultValue?: string) {
@@ -105,7 +105,7 @@ export const txState = atomFamily(
       },
     }))[0];
   },
-  isEqual
+  dequal
 );
 
 export function txidQueryAtom(txidAtom: Atom<string | undefined>, unanchored = true) {

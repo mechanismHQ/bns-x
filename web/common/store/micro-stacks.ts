@@ -41,7 +41,7 @@ import type { ClarityValue } from 'micro-stacks/clarity';
 import type { Mutate, StoreApi } from 'zustand/vanilla';
 import { c32address, StacksNetworkVersion } from 'micro-stacks/crypto';
 import type { StacksNetwork } from 'micro-stacks/network';
-import isEqual from 'lodash-es/isEqual';
+import { dequal } from 'dequal';
 import { useHydrateAtoms } from 'jotai/utils';
 import { createStacksAddress } from '@common/utils';
 
@@ -177,7 +177,7 @@ const watchCurrentAccountIndex: SubscriptionFn<number> = (cb, client) => {
       return state.currentAccountIndex;
     },
     cb,
-    { equalityFn: isEqual, fireImmediately: true }
+    { equalityFn: dequal, fireImmediately: true }
   );
 };
 
