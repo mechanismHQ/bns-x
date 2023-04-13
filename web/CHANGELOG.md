@@ -1,5 +1,15 @@
 # web
 
+## 0.2.1
+
+### Patch Changes
+
+- e79d3e0: Various state within the Dots app now uses a more performant API call. Additionally, TRPC is used in place of OpenAPI calls, so that batching can be utilized better
+
+  Performance optimizations have also been made to the "accounts" page to render more quickly and reduce unnecessary refetches of data.
+
+- 8dae301: The accounts page now includes an "instant action" button next to accounts that are ready for the next transaction. This will open a transaction popup for the next step without having to change the page.
+
 ## 0.2.0
 
 ### Minor Changes
