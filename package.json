@@ -18,7 +18,7 @@
     "lint": "eslint packages/**/*.ts api/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",
     "lint:fix": "eslint --fix packages/**/*.ts api/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",
     "typecheck": "turbo run typecheck --continue",
-    "api:prod": "pnpm --filter @bns-x/api start",
+    "api:prod": "pnpm --filter @bns-x/api prod",
     "build:packages": "turbo run build --filter=@bns-x/client --filter=@bns-x/api-types",
     "publish-local": "pnpm build:packages && pnpm publish -r",
     "test": "turbo run test"

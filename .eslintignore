@@ -5,3 +5,4 @@ contracts/tests
 contracts/dep-tests
 dep-tests
 *.d.ts
+dist
