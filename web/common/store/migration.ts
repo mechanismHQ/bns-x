@@ -5,6 +5,7 @@ import { asciiToBytes } from 'micro-stacks/common';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import type { Atom } from 'jotai';
 import { PrimitiveAtom } from 'jotai';
+import type { Account } from '@store/micro-stacks';
 import {
   currentIsPrimaryState,
   networkAtom,
@@ -17,9 +18,14 @@ import { bnsContractState, clarigenAtom, nameRegistryState } from '@store/index'
 import type { MempoolTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
 import { getContractParts, nameToTupleBytes } from '@common/utils';
 import { currentUserV1NameState } from '@store/names';
-import { accountProgressAtom, currentAccountProgressAtom } from '@store/accounts';
+import {
+  AccountProgress,
+  accountProgressAtom,
+  accountProgressStatusState,
+  currentAccountProgressAtom,
+} from '@store/accounts';
 import { dequal } from 'dequal';
-import { atomFamily } from 'jotai/utils';
+import { atomFamily, loadable } from 'jotai/utils';
 
 export function hashAtom(name: string, defaultValue?: string) {
   return typeof window === 'undefined'
@@ -120,13 +126,30 @@ export const [migrateTxState] = txidQueryAtom(migrateTxidAtom);
 
 export const [wrapperDeployTxState] = txidQueryAtom(wrapperDeployTxidAtom);
 
-export const wrapperContractIdState = atom(get => {
-  const tx = get(wrapperDeployTxState);
+function getContractIdFromTx(tx: Transaction | MempoolTransaction | null): string | null {
   if (tx === null) return null;
   if (tx.tx_status !== 'success') return null;
   if (tx.tx_type !== 'smart_contract') return null;
   return tx.smart_contract.contract_id;
+}
+
+export const wrapperContractIdState = atom(get => {
+  const tx = get(wrapperDeployTxState);
+  return getContractIdFromTx(tx);
 });
+
+async function fetchWrapperSignature(deployTxid: string) {
+  try {
+    const res = await fetch(`/api/wrapper-sig?wrapper=${deployTxid}`);
+    if (!res.ok) {
+      return null;
+    }
+    const data = (await res.json()) as { signature: string; contractId: string };
+    return data;
+  } catch (error) {
+    return null;
+  }
+}
 
 export const [wrapperSignatureState] = atomsWithQuery<string | null>(get => {
   const deployTxid = get(wrapperDeployTxidAtom);
@@ -145,19 +168,37 @@ export const [wrapperSignatureState] = atomsWithQuery<string | null>(get => {
       if (!deployTxid) return null;
       if (wrapperId === null) return null;
 
-      try {
-        const res = await fetch(`/api/wrapper-sig?wrapper=${deployTxid}`);
-        if (!res.ok) {
-          return null;
-        }
-        const data = (await res.json()) as { signature: string; contractId: string };
-        return data.signature;
-      } catch (error) {
-        return null;
-      }
+      const res = await fetchWrapperSignature(deployTxid);
+      return res?.signature ?? null;
     },
   };
 });
+
+export const instantFinalizeDataAtom = atomFamily(
+  (account: Account) =>
+    atom(async get => {
+      const primary = get(primaryAccountState);
+      const progress = get(accountProgressAtom(account.stxAddress));
+      const status = get(loadable(accountProgressStatusState(account.stxAddress)));
+      if (status.state !== 'hasData' || status.data !== AccountProgress.WrapperDeployed) {
+        return null;
+      }
+      if (!progress.wrapperTxid) return null;
+
+      // const deployTx = get(txState({ txid: progress.migrationTxid }));
+      const signature = await fetchWrapperSignature(progress.wrapperTxid);
+      if (!signature) return null;
+      const recipient = primary!.stxAddress;
+
+      return {
+        wrapperTxid: progress.wrapperTxid,
+        name: progress.name!,
+        recipient,
+        ...signature,
+      };
+    }),
+  dequal
+);
 
 function standardPrincipalOnly(address: string) {
   if (address.includes('.')) {

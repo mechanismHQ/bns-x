@@ -16,11 +16,9 @@ export function useConnect() {
       } else {
         await defineCustomElements(window);
         const element = document.createElement('connect-modal');
-        if (appDetails) {
-          element.authOptions = {
-            appDetails,
-          };
-        }
+        element.authOptions = {
+          appDetails,
+        };
         document.body.appendChild(element);
         const handleEsc = (ev: KeyboardEvent) => {
           if (ev.key === 'Escape') {

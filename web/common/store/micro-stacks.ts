@@ -133,7 +133,16 @@ export const identityAddressAtom = atomWithMicroStacks(getIdentityAddress, watch
 export const networkAtom = atomWithMicroStacks(getNetwork, watchNetwork);
 export const statusAtom = atomWithMicroStacks(getStatus, watchStatus);
 export const decentralizedIDAtom = atomWithMicroStacks(getDecentralizedID, watchDecentralizedID);
-export const appDetailsAtom = atomWithMicroStacks(getAppDetails, watchAppDetails);
+export const appDetailsInnerAtom = atomWithMicroStacks(getAppDetails, watchAppDetails);
+
+export const appDetailsAtom = atom<{ name: string; icon: string }>(get => {
+  const inner = get(appDetailsInnerAtom);
+  if (typeof inner === 'undefined' || !inner.icon || !inner.name) {
+    throw new Error('Missing app details');
+  }
+  const { icon, name } = inner;
+  return { icon, name };
+});
 
 export const useStxAddressValue = () => useAtomValue(stxAddressAtom);
 export const useAccountsValue = () => useAtomValue(accountsAtom);

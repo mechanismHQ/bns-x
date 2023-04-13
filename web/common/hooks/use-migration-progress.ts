@@ -1,53 +1,47 @@
 import type { AccountProgressData } from '@store/accounts';
+import { accountProgressStorageAtom } from '@store/accounts';
+import { accountProgressAtom } from '@store/accounts';
 import { currentAccountProgressAtom } from '@store/accounts';
+import type { Account } from '@store/micro-stacks';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
 
-export function useMigrationProgress() {
-  const saveProgress = useAtomCallback(
-    useCallback((get, set, data: AccountProgressData) => {
-      const prev = get(currentAccountProgressAtom);
-      set(currentAccountProgressAtom, {
-        ...prev,
-        ...data,
-      });
-      // const account = get(currentAccountAtom);
-      // const address = get(stxAddressAtom);
-      // const name = get(nameUpgradingAtom);
-      // const client = get(queryClientAtom);
-      // if (!account) return;
-      // set(accountProgressStorageAtom({ account }), prev => ({
-      //   ...prev,
-      //   ...data,
-      // }));
-      // if (!name) throw new Error('No name to save progress for');
-      // await saveProgressFile({ appPrivateKey: account.appPrivateKey!, data });
-      // client.setQueryData(accountProgressFileQueryKey({ account }), data);
-    }, [])
-  );
-
+export function useMigrationProgress(account: Account) {
   const saveWrapperTxid = useAtomCallback(
-    useCallback((get, set, txid: string) => {
-      const prev = get(currentAccountProgressAtom);
-      set(currentAccountProgressAtom, {
-        name: prev?.name,
-        wrapperTxid: txid,
-      });
-    }, [])
+    useCallback(
+      (get, set, txid: string) => {
+        console.log('account?.stxAddress', account?.stxAddress);
+        const atom = account?.stxAddress
+          ? accountProgressStorageAtom(account.stxAddress)
+          : currentAccountProgressAtom;
+        const prev = get(atom);
+        set(atom, {
+          name: prev?.name,
+          wrapperTxid: txid,
+        });
+      },
+      [account?.stxAddress]
+    )
   );
 
   const saveFinalizeTxid = useAtomCallback(
-    useCallback((get, set, txid: string) => {
-      const prev = get(currentAccountProgressAtom);
-      set(currentAccountProgressAtom, {
-        ...prev,
-        migrationTxid: txid,
-      });
-    }, [])
+    useCallback(
+      (get, set, txid: string) => {
+        const atom = account?.stxAddress
+          ? accountProgressStorageAtom(account.stxAddress)
+          : currentAccountProgressAtom;
+        const prev = get(atom);
+        console.log('account?.stxAddress', account?.stxAddress);
+        set(atom, {
+          ...prev,
+          migrationTxid: txid,
+        });
+      },
+      [account?.stxAddress]
+    )
   );
 
   return {
-    saveProgress,
     saveFinalizeTxid,
     saveWrapperTxid,
   };

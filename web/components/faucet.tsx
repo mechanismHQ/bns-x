@@ -5,14 +5,17 @@ import { atom, useAtom, useAtomValue } from 'jotai';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { useInput } from '../common/hooks/use-input';
 import { Input } from './form';
-import { useAtomCallback } from 'jotai/utils';
+import { loadable, useAtomCallback } from 'jotai/utils';
 import { adjectives, animals, uniqueNamesGenerator } from 'unique-names-generator';
 import { Button } from './button';
-import { currentUserV1NameState } from '../common/store/names';
+import { addressCoreNameQueryKey, currentUserV1NameState } from '@store/names';
 import { useRouter } from 'next/router';
 import { useAccountPath } from '@common/hooks/use-account-path';
 import { getTestnetNamespace } from '@common/constants';
 import { toPunycode } from '@bns-x/punycode';
+import { txidQueryAtom } from '@store/migration';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+import { queryClientAtom } from 'jotai-tanstack-query';
 
 const nameAtom = atom('');
 
@@ -35,13 +38,28 @@ function useFakeName() {
 
 const txidAtom = atom('');
 const submittingAtom = atom(false);
+const [txStatusAtom] = txidQueryAtom(txidAtom);
 
 export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
   const name = useInput(useAtom(nameAtom));
   const bnsName = useAtomValue(currentUserV1NameState);
   const router = useRouter();
   const submitting = useAtomValue(submittingAtom);
+  const txStatus = useAtomValue(loadable(txStatusAtom));
+  const queryClient = useAtomValue(queryClientAtom);
   useFakeName();
+
+  useDeepCompareEffect(() => {
+    if (txStatus.state !== 'hasData') return;
+    if (txStatus.data?.tx_status === 'success') {
+      const timer = setTimeout(() => {
+        void queryClient.invalidateQueries([addressCoreNameQueryKey('')[0]]);
+      }, 1000);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [txStatus]);
 
   const submit = useAtomCallback(
     useCallback(async (get, set) => {

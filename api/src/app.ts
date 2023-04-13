@@ -29,6 +29,7 @@ import { getFastifyPlugin } from 'trpc-playground/handlers/fastify';
 
 const options: FastifyServerOptions = {
   logger,
+  maxParamLength: 2000,
 };
 
 export async function makeApp({

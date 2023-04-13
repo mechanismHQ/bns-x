@@ -13,6 +13,7 @@ import { Divider, DoneRow, PendingRow } from '@components/upgrade/rows';
 import { loadable } from 'jotai/utils';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { ErrorIcon } from '@components/icons/error';
+import { useAccountPath } from '@common/hooks/use-account-path';
 
 export const TransferredRow = () => {
   const recipient = useAtomValue(unwrapRecipientState.validRecipientState);
@@ -60,6 +61,7 @@ export const Unwrap = () => {
   const doSendElsewhere = useAtomValue(unwrapRecipientState.sendElsewhereAtom);
   const { canUnwrap, unwrap, isRequestPending, unwrapTxid, recipientHasBns } = useUnwrap(name);
   const unwrapTx = useAtomValue(loadable(unwrapTxAtom));
+  const donePath = useAccountPath('/');
 
   return (
     <>
@@ -120,7 +122,7 @@ export const Unwrap = () => {
             <Button
               type="big"
               onClick={async () => {
-                await router.push('/');
+                await router.push(donePath);
               }}
             >
               Done

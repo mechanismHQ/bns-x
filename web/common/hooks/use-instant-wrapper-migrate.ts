@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useAtomCallback } from 'jotai/utils';
+import { loadable, useAtomCallback } from 'jotai/utils';
 import { useOpenContractCall } from '@micro-stacks/react';
 import { bnsContractState, contractsState } from '../store';
 import {
@@ -7,30 +7,40 @@ import {
   wrapperSignatureState,
   wrapperContractIdState,
   migrateRecipientState,
+  instantFinalizeDataAtom,
 } from '@store/migration';
 import { hexToBytes } from 'micro-stacks/common';
 import type { Account } from '@store/micro-stacks';
-import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
+import { networkAtom, stxAddressAtom, primaryAccountState } from '@store/micro-stacks';
 import { PostConditionMode, NonFungibleConditionCode } from 'micro-stacks/transactions';
 import { makeNonFungiblePostCondition } from '@clarigen/core';
 import { useMigrationProgress } from '@common/hooks/use-migration-progress';
 import { useAccountOpenContractCall } from '@common/hooks/use-account-open-contract-call';
+import { nameToTupleBytes } from '@common/utils';
+import { useDeepCompareMemoize } from 'use-deep-compare-effect';
+import { useAtomValue } from 'jotai';
 
-export function useWrapperMigrate(_account?: Account) {
+export function useWrapperMigrateInstant(_account?: Account) {
   const { isRequestPending, openContractCall, account } = useAccountOpenContractCall(_account);
   const { saveFinalizeTxid } = useMigrationProgress(account!);
+  useAtomValue(loadable(instantFinalizeDataAtom(account!)));
 
   const migrate = useAtomCallback(
-    useCallback(
-      async (get, _set) => {
+    useCallback(async (get, _set) => {
+      try {
+        const migrationData = get(instantFinalizeDataAtom(account!));
         const contracts = get(contractsState);
         const migrator = contracts.wrapperMigrator;
-        const contractId = get(wrapperContractIdState);
-        const signature = get(wrapperSignatureState);
-        const recipient = get(migrateRecipientState);
+        if (!migrationData) {
+          console.error('No migration data');
+          return;
+        }
+        const contractId = migrationData.contractId;
+        const signature = migrationData.signature;
+        const recipient = migrationData.recipient;
         const address = account?.stxAddress;
         const bns = get(bnsContractState);
-        const bnsTupleId = get(migrateNameAssetIdState);
+        const bnsTupleId = nameToTupleBytes(migrationData.name);
         const network = get(networkAtom);
         if (!contractId || !signature || !address) {
           console.error('No signature');
@@ -66,9 +76,11 @@ export function useWrapperMigrate(_account?: Account) {
             await saveFinalizeTxid(payload.txId);
           },
         });
-      },
-      [openContractCall, saveFinalizeTxid, account?.stxAddress]
-    )
+      } catch (error) {
+        console.error(error);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, useDeepCompareMemoize([account, openContractCall, saveFinalizeTxid]))
   );
 
   return {

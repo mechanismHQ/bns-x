@@ -12,10 +12,13 @@ import type { ClientConfig } from '@micro-stacks/client';
 import { useRouter } from 'next/router';
 import { getNetwork, getAppUrl, ONLY_INSCRIPTIONS } from '@common/constants';
 import type { Atom } from 'jotai';
+import { Provider } from 'jotai';
 import { docTitleState, pageDescriptionState } from '@store/index';
 import { displayNameQueryKey, prefetchedDisplayNameState } from '@store/api';
 import { Analytics } from '@vercel/analytics/react';
 import { AccountProvider } from '@components/account-provider';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export interface PageProps {
   dehydratedState: string;
@@ -71,15 +74,20 @@ function MyApp({ Component, pageProps }: { pageProps?: PageProps } & Omit<AppPro
       onSignOut={onSignOut}
       network={getNetwork()}
     >
-      <JotaiClientProvider initialValues={hydratedAtoms}>
-        <AccountProvider
-          primaryIndex={pageProps?.accountIndex}
-          pathAccountIndex={pageProps?.pathAccountIndex}
-        >
-          <Component {...(pageProps as any)} />
-        </AccountProvider>
-        <Analytics />
-      </JotaiClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools />
+        <Provider>
+          <JotaiClientProvider initialValues={hydratedAtoms}>
+            <AccountProvider
+              primaryIndex={pageProps?.accountIndex}
+              pathAccountIndex={pageProps?.pathAccountIndex}
+            >
+              <Component {...(pageProps as any)} />
+            </AccountProvider>
+            <Analytics />
+          </JotaiClientProvider>
+        </Provider>
+      </QueryClientProvider>
     </ClientProvider>
   );
 }

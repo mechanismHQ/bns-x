@@ -1,4 +1,4 @@
-import React, { Suspense, memo, useMemo } from 'react';
+import React, { Suspense, memo, useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import type { Account } from '@store/micro-stacks';
 import { AccountProgress, accountProgressStatusState } from '@store/accounts';
@@ -15,7 +15,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Play } from 'lucide-react';
+import { useDeployWrapper } from '@common/hooks/use-deploy-wrapper';
+import { isMainnetState } from '@store/index';
+import { useWrapperMigrateInstant } from '@common/hooks/use-instant-wrapper-migrate';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@components/ui/tooltip';
 
 function actionStyle({
   label,
@@ -33,12 +37,36 @@ function actionStyle({
   };
 }
 
+function useInstantTx(account: Account, status: AccountProgress) {
+  const { deploy } = useDeployWrapper(account);
+  const { migrate } = useWrapperMigrateInstant(account);
+
+  const hasNextTx = useMemo(() => {
+    return status === AccountProgress.NotStarted || status === AccountProgress.WrapperDeployed;
+  }, [status]);
+
+  const openNextTx = useCallback(async () => {
+    if (status === AccountProgress.NotStarted) {
+      await deploy();
+    } else if (status === AccountProgress.WrapperDeployed) {
+      await migrate();
+    }
+  }, [status, deploy, migrate]);
+
+  return {
+    hasNextTx,
+    openNextTx,
+  };
+}
+
 export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
   const pathBase = '/accounts/[address]';
   const query = { address: account.stxAddress };
   const { setPrimary } = useSetPrimaryAccount();
   const { removeAccount } = useRemoveAccount();
   const status = useAtomValue(accountProgressStatusState(account.stxAddress));
+  const { hasNextTx, openNextTx } = useInstantTx(account, status);
+  const isMainnet = useAtomValue(isMainnetState);
 
   const migrateOptionMessage = useMemo(() => {
     switch (status) {
@@ -70,42 +98,67 @@ export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
   }, [status]);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Beutton
-          size="sm"
-          variant="outline"
-          status={actionLabel.status}
-          className={actionLabel.className}
-        >
-          {actionLabel.label}
-          <ChevronDown className="ml-1 w-3" />
-        </Beutton>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {migrateOptionMessage !== null && (
-          <BoxLink href={{ pathname: `${pathBase}/upgrade`, query }}>
-            <DropdownMenuItem>{migrateOptionMessage}</DropdownMenuItem>
+    <div className="flex gap-4 items-center">
+      {hasNextTx && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Beutton variant="ghost" size="sm" onClick={openNextTx}>
+                <Play className="h-4" color={'var(--colors-text-dim)'} />
+              </Beutton>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                {status === AccountProgress.NotStarted
+                  ? 'Deploy wrapper contract'
+                  : 'Finalize migration'}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Beutton
+            size="sm"
+            variant="outline"
+            status={actionLabel.status}
+            className={actionLabel.className}
+          >
+            {actionLabel.label}
+            <ChevronDown className="ml-1 w-3" />
+          </Beutton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {migrateOptionMessage !== null && (
+            <BoxLink href={{ pathname: `${pathBase}/upgrade`, query }}>
+              <DropdownMenuItem>{migrateOptionMessage}</DropdownMenuItem>
+            </BoxLink>
+          )}
+          {!isMainnet && (
+            <BoxLink href={{ pathname: `${pathBase}/faucet`, query }}>
+              <DropdownMenuItem>Faucet</DropdownMenuItem>
+            </BoxLink>
+          )}
+          <BoxLink href={{ pathname: pathBase, query }}>
+            <DropdownMenuItem>Manage account</DropdownMenuItem>
           </BoxLink>
-        )}
-        <BoxLink href={{ pathname: pathBase, query }}>
-          <DropdownMenuItem>Manage account</DropdownMenuItem>
-        </BoxLink>
-        <DropdownMenuItem
-          onClick={async () => {
-            await setPrimary(account.index);
-          }}
-        >
-          Set as primary
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={async () => {
-            await removeAccount(account);
-          }}
-        >
-          Remove account
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <DropdownMenuItem
+            onClick={async () => {
+              await setPrimary(account.index);
+            }}
+          >
+            Set as primary
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={async () => {
+              await removeAccount(account);
+            }}
+          >
+            Remove account
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };

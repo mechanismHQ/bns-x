@@ -56,7 +56,7 @@ export const LoadedAccountRow: React.FC<{ account: Account }> = ({ account }) =>
   const loadableName = useAtomValue(loadable(addressDisplayNameState(account.stxAddress)));
   const progress = useAtomValue(accountProgressAtom(account.stxAddress));
   const name = useDeepMemo(() => {
-    if (loadableName.state === 'hasData') return loadableName.data;
+    if (loadableName.state === 'hasData' && loadableName.data) return loadableName.data;
     return progress.name ?? null;
   }, [loadableName, progress]);
   useMonitorProgress(account.stxAddress);

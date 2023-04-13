@@ -79,9 +79,13 @@ export const currentUserUpgradedState = atom(get => {
   return nameDetails?.isBnsx ?? false;
 });
 
+export function addressCoreNameQueryKey(address: string) {
+  return ['addr-core-name', address];
+}
+
 export const addressCoreNameAtom = atomFamily((address: string) => {
   return atomsWithQuery(() => ({
-    queryKey: ['addr-core-name', address],
+    queryKey: addressCoreNameQueryKey(address),
     // refetchInterval: 15000,
     async queryFn() {
       return trpc.getCoreName.query({ address });
