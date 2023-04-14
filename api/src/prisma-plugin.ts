@@ -22,8 +22,8 @@ export const prismaPlugin: FastifyPluginAsync = fp(async server => {
   }
 
   const stacksPrisma = new StacksDb();
-  const params = new URLSearchParams(dbEnv.split('?')[1]);
-  logger.debug({ params }, 'Connection query parameters');
+  const params = dbEnv.split('?')[1];
+  logger.debug({ params }, 'Stacks DB connection query parameters');
   const promises = [stacksPrisma.$connect()];
   const prismaDbEnv = process.env.BNSX_DB_URL;
   const prisma = new BnsDb();
