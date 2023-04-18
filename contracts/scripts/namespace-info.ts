@@ -97,6 +97,10 @@ async function run() {
       console.log('No expiration:', namespace.ns);
     }
   }
+  const sats = await provider.ro(bns.getNamespaceProperties({ namespace: asciiToBytes('sats') }), {
+    json: true,
+  });
+  console.log(sats);
   // console.log(
   //   inspect(allInfo, {
   //     showHidden: false,
