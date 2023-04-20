@@ -40,6 +40,7 @@ import { ProfileActions } from '@components/p/name/actions';
 import { useWatchPendingZonefile } from '@common/hooks/use-watch-pending-zonefile';
 import { useAccountPath } from '@common/hooks/use-account-path';
 import { useAccount } from '@micro-stacks/react';
+import { RenewButton } from '@components/p/name/renew-button';
 
 export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   useWatchPendingZonefile();
@@ -123,6 +124,7 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
                 )}
               </>
             )}
+            <RenewButton name={name} />
           </Stack>
         </LeftBar>
         <ElementGap />

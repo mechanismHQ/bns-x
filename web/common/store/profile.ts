@@ -2,8 +2,13 @@ import type { Atom, Getter, WritableAtom } from 'jotai';
 import { atom } from 'jotai';
 import { hashAtom, makeBnsRecipientState, txidQueryAtom } from './migration';
 import { atomsWithQuery } from 'jotai-tanstack-query';
-import { atomFamily, atomWithStorage } from 'jotai/utils';
-import { parsedUserZonefileState, userNameState, userZonefileState } from '@store/names';
+import { atomFamily, atomWithStorage, waitForAll } from 'jotai/utils';
+import {
+  nameExpirationBlockState,
+  parsedUserZonefileState,
+  userNameState,
+  userZonefileState,
+} from '@store/names';
 import { nameDetailsAtom } from '@store/names';
 import { coreNodeInfoAtom, namesForAddressState } from '@store/api';
 import type { ZoneFileObject } from '@bns-x/client';
@@ -35,20 +40,17 @@ export const nameUpdateTxidConfirmedAtom = hashAtom('finishedTx');
 
 export const nameExpirationAtom = atomFamily((name?: string) => {
   return atomsWithQuery(get => ({
-    queryKey: ['name-expiration', name],
+    queryKey: ['name-expiration-string', name],
     queryFn() {
       if (typeof name === 'undefined') {
         return null;
       }
-      const details = get(nameDetailsAtom(name));
-      if (details === null) return null;
-      const { namespace } = parseFqn(name);
-      if (!doesNamespaceExpire(namespace)) return null;
-      if (namespace === getTestnetNamespace()) return null; // testnet faucet namespace
-      if (typeof details.expire_block === 'undefined') return null;
-      const nodeInfo = get(coreNodeInfoAtom);
+      const [expireBlock, nodeInfo] = get(
+        waitForAll([nameExpirationBlockState(name), coreNodeInfoAtom])
+      );
+      if (expireBlock === null) return null;
       if (typeof nodeInfo.stacks_tip_height !== 'number') return null;
-      const blockDiff = details.expire_block - nodeInfo.stacks_tip_height;
+      const blockDiff = expireBlock - nodeInfo.stacks_tip_height;
       const timeDiff = blockDiff * 10 * 60 * 1000;
       const expireDate = new Date(new Date().getTime() + timeDiff);
       return [expireDate.getFullYear(), expireDate.getMonth(), expireDate.getDate()].join('-');

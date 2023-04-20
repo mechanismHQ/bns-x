@@ -115,7 +115,7 @@ async function run() {
           1,
           1,
           1,
-          0,
+          networkKey === 'devnet' ? 500 : 0,
           deployer
         ),
         network,

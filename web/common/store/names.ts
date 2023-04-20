@@ -11,13 +11,14 @@ import type { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { cvToValue } from '@clarigen/core';
 import { deserializeCV } from 'micro-stacks/clarity';
-import { atomFamily } from 'jotai/utils';
-import { addressDisplayNameState, bnsApi, namesForAddressState } from './api';
+import { atomFamily, waitForAll } from 'jotai/utils';
+import { addressDisplayNameState, bnsApi, contractSrcState, namesForAddressState } from './api';
 import { trpc } from './api';
 import { getApiUrl } from '@common/constants';
 import { parseZoneFile, makeZoneFile } from '@fungible-systems/zone-file';
 import { nameUpgradingAtom } from '@store/migration';
 import type { NameInfoResponse } from '@bns-x/core';
+import { doesNamespaceExpire, parseFqn } from '@bns-x/core';
 import type { ZoneFileObject } from '@bns-x/client';
 import { ZoneFile } from '@bns-x/client';
 
@@ -128,6 +129,45 @@ export const nameDetailsAtom = atomFamily((name: string) => {
       return details;
     },
   }))[0];
+});
+
+export const nameExpirationBlockState = atomFamily((name: string) => {
+  return atomsWithQuery(get => ({
+    queryKey: ['name-expiration-block', name],
+    queryFn: () => {
+      const details = get(nameDetailsAtom(name));
+      if (details === null) return null;
+      const { namespace } = parseFqn(name);
+      if (!doesNamespaceExpire(namespace)) return null;
+      if (typeof details.expire_block === 'undefined') return null;
+      return details.expire_block;
+    },
+  }))[0];
+});
+
+export enum WrapperVersion {
+  V1,
+  V2,
+}
+
+export const nameWrapperVersionState = atomFamily((wrapperId: string) => {
+  return atom(get => {
+    const source = get(contractSrcState(wrapperId));
+    if (source.includes('name-renewal')) return WrapperVersion.V2;
+    return WrapperVersion.V1;
+  });
+});
+
+export const canNameBeRenewedState = atomFamily((name: string) => {
+  return atom(get => {
+    const [details, expireBlock] = get(
+      waitForAll([nameDetailsAtom(name), nameExpirationBlockState(name)])
+    );
+    if (details === null || expireBlock === null) return false;
+    if (details.isBnsx === false) return true;
+    const wrapperVersion = get(nameWrapperVersionState(details.wrapper));
+    return wrapperVersion !== WrapperVersion.V1;
+  });
 });
 
 export const userZonefileState = atomsWithQuery(get => ({
