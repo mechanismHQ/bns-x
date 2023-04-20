@@ -13,6 +13,45 @@ declare module 'fastify' {
   }
 }
 
+function getStacksDb() {
+  if (process.env.DEBUG_SLOW_QUERIES === 'true') {
+    const stacksPrisma = new StacksDb({
+      log: [
+        {
+          emit: 'event',
+          level: 'query',
+        },
+        {
+          emit: 'stdout',
+          level: 'error',
+        },
+        {
+          emit: 'stdout',
+          level: 'info',
+        },
+        {
+          emit: 'stdout',
+          level: 'warn',
+        },
+      ],
+    });
+    stacksPrisma.$on('query', e => {
+      if (e.duration > 500) {
+        logger.warn(
+          {
+            query: e.query,
+            duration: e.duration,
+            params: e.params,
+          },
+          'slow query'
+        );
+      }
+    });
+    return stacksPrisma;
+  }
+  return new StacksDb();
+}
+
 export const prismaPlugin: FastifyPluginAsync = fp(async server => {
   const dbEnv = process.env.STACKS_API_POSTGRES;
   if (typeof dbEnv === 'undefined' || dbEnv === '') {
@@ -21,7 +60,7 @@ export const prismaPlugin: FastifyPluginAsync = fp(async server => {
     return;
   }
 
-  const stacksPrisma = new StacksDb();
+  const stacksPrisma = getStacksDb();
   const params = dbEnv.split('?')[1];
   logger.debug({ params }, 'Stacks DB connection query parameters');
   const promises = [stacksPrisma.$connect()];
