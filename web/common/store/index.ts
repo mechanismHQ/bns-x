@@ -29,7 +29,8 @@ export const clarigenAtom = atom(get => {
 
 export const contractsClientState = atom(get => {
   const networkKey = get(networkKeyAtom);
-  return new BnsContractsClient(networkKey);
+  const network = get(networkAtom);
+  return new BnsContractsClient(networkKey, network.getCoreApiUrl());
 });
 
 export const contractsState = atom(get => {
@@ -79,6 +80,7 @@ export const bnsAssetInfoState = atom(get => {
 function callToQueryKey(contractCall: ContractCall<any>) {
   return [
     contractCall.contractAddress,
+    contractCall.contractName,
     contractCall.function.name,
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     ...contractCall.nativeArgs.map(a => `${a}`),

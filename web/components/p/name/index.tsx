@@ -4,18 +4,18 @@ import { Text } from '../../text';
 import { useRouter } from 'next/router';
 import { Button } from '@components/button';
 import { useAtom, useAtomValue } from 'jotai';
-import { nameDetailsAtom } from '@store/names';
+import { nameDetailsAtom, nameExpirationBlockState } from '@store/names';
 import { getTxUrl } from '@common/utils';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { loadable, useAtomCallback } from 'jotai/utils';
 import {
-  nameExpirationAtom,
   unwrapTxidAtom,
   zonefileBtcAtom,
   zonefileNostrAtom,
   zonefileRedirectAtom,
   isEditingProfileAtom,
   profileFormValidAtom,
+  nameExpirationBlocksRemainingState,
 } from '@store/profile';
 import { useGradient } from '@common/hooks/use-gradient';
 import { DuplicateIcon } from '@components/icons/duplicate';
@@ -41,6 +41,9 @@ import { useWatchPendingZonefile } from '@common/hooks/use-watch-pending-zonefil
 import { useAccountPath } from '@common/hooks/use-account-path';
 import { useAccount } from '@micro-stacks/react';
 import { RenewButton } from '@components/p/name/renew-button';
+import { useDeepMemo } from '@common/hooks/use-deep-memo';
+import format from 'date-fns/format';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@components/ui/tooltip';
 
 export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   useWatchPendingZonefile();
@@ -48,7 +51,8 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   const name = router.query.name as string;
   const nameDetails = useAtomValue(nameDetailsAtom(name));
   const gradient = useGradient(name);
-  const expiration = useAtomValue(loadable(nameExpirationAtom(name)));
+  const expBlock = useAtomValue(loadable(nameExpirationBlockState(name)));
+  const expBlocks = useAtomValue(loadable(nameExpirationBlocksRemainingState(name)));
   const stxAddress = useAtomValue(stxAddressAtom);
   const setEditing = useSetEditing();
   const isEditing = useAtomValue(isEditingProfileAtom);
@@ -56,6 +60,30 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
   const upgradePath = useAccountPath('/upgrade');
   const unwrapPath = useAccountPath('/unwrap/[name]', { name });
   const accountPath = useAccountPath('');
+
+  const expirationDate = useDeepMemo(() => {
+    if (expBlocks.state !== 'hasData') return null;
+    if (expBlocks.data === null) {
+      return 'No expiration';
+    }
+    const timeDiff = expBlocks.data * 10 * 60 * 1000;
+    const expireDate = new Date(new Date().getTime() + timeDiff);
+    const dateString = format(expireDate, 'yyyy-MM-dd');
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            Expires <span style={{ color: 'var(--colors-text)' }}>{dateString}</span>
+          </TooltipTrigger>
+          <TooltipContent hidden={expBlock.state !== 'hasData'}>
+            {expBlock.state === 'hasData' && expBlock.data !== null && (
+              <p>Expires at Stacks block {expBlock.data}</p>
+            )}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }, [expBlocks]);
 
   const upgrade = useCallback(async () => {
     await router.push(upgradePath);
@@ -86,15 +114,9 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
               <Text variant="Label02" color="$text-subdued">
                 {isBnsx ? 'BNSx' : 'BNS Core'}
               </Text>
-              {expiration.state === 'hasData' && (
+              {expirationDate !== null && (
                 <Text variant="Label02" color="$text-subdued">
-                  {expiration.data === null ? (
-                    'No expiration'
-                  ) : (
-                    <>
-                      Expires <span style={{ color: 'var(--colors-text)' }}>{expiration.data}</span>
-                    </>
-                  )}
+                  {expirationDate}
                 </Text>
               )}
               <DuplicateIcon clipboardText={name} copyLabel="Copy Name" />

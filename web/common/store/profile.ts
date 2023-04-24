@@ -22,6 +22,9 @@ import { getTestnetNamespace } from '@common/constants';
 export const unwrapTxidAtom = hashAtom('unwrapTxid');
 export const unwrapTxAtom = txidQueryAtom(unwrapTxidAtom)[0];
 
+export const renewalTxidAtom = hashAtom('renewTxid');
+export const renewalTxAtom = txidQueryAtom(renewalTxidAtom)[0];
+
 export const isEditingProfileAtom = atom(false);
 
 export const nameUpdateTxidAtom = atom(get => {
@@ -38,25 +41,30 @@ export const nameUpdateTxAtom = atom(get => {
 
 export const nameUpdateTxidConfirmedAtom = hashAtom('finishedTx');
 
+export const nameExpirationBlocksRemainingState = atomFamily((name?: string) => {
+  return atom(get => {
+    if (typeof name === 'undefined') {
+      return null;
+    }
+    const [expireBlock, nodeInfo] = get(
+      waitForAll([nameExpirationBlockState(name), coreNodeInfoAtom])
+    );
+    if (expireBlock === null) return null;
+    if (typeof nodeInfo.stacks_tip_height !== 'number') return null;
+    const blockDiff = expireBlock - nodeInfo.stacks_tip_height;
+    return blockDiff;
+  });
+});
+
 export const nameExpirationAtom = atomFamily((name?: string) => {
-  return atomsWithQuery(get => ({
-    queryKey: ['name-expiration-string', name],
-    queryFn() {
-      if (typeof name === 'undefined') {
-        return null;
-      }
-      const [expireBlock, nodeInfo] = get(
-        waitForAll([nameExpirationBlockState(name), coreNodeInfoAtom])
-      );
-      if (expireBlock === null) return null;
-      if (typeof nodeInfo.stacks_tip_height !== 'number') return null;
-      const blockDiff = expireBlock - nodeInfo.stacks_tip_height;
-      const timeDiff = blockDiff * 10 * 60 * 1000;
-      const expireDate = new Date(new Date().getTime() + timeDiff);
-      return [expireDate.getFullYear(), expireDate.getMonth(), expireDate.getDate()].join('-');
-    },
-  }))[0];
-}, Object.is);
+  return atom(get => {
+    const blockDiff = get(nameExpirationBlocksRemainingState(name));
+    if (blockDiff === null) return null;
+    const timeDiff = blockDiff * 10 * 60 * 1000;
+    const expireDate = new Date(new Date().getTime() + timeDiff);
+    return [expireDate.getFullYear(), expireDate.getMonth(), expireDate.getDate()].join('-');
+  });
+});
 
 type ZfGetter = (zf: ZoneFile | null) => string | null;
 

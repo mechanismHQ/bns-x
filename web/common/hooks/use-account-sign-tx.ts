@@ -17,6 +17,7 @@ import { makeContractDeployToken, makeStxTransferToken } from 'micro-stacks/conn
 import { openTransactionPopup } from 'micro-stacks/connect';
 import { makeContractCallToken } from 'micro-stacks/connect';
 import { useCallback, useMemo } from 'react';
+import omit from 'lodash-es/omit';
 
 export type TxRequest =
   | {
@@ -73,7 +74,7 @@ export function useAccountSignTx(_account?: Account) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const token = await fn({
           ...sharedParams,
-          ...params,
+          ...omit(params, ['function', 'nativeArgs']),
         } as any);
 
         client.setIsRequestPending(StatusKeys.TransactionSigning);
