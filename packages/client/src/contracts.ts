@@ -93,7 +93,7 @@ export class BnsContractsClient {
    * @returns a type-safe interface to the name wrapper contract
    */
   nameWrapper(contractId: string) {
-    const wrapper = contracts.nameWrapper;
+    const wrapper = contracts.nameWrapperV2;
     return contractFactory(wrapper, contractId);
   }
 

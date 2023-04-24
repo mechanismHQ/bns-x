@@ -19,9 +19,4 @@ if [ "${BNSX_DB_URL}" ]; then
   
 fi
 
-
-echo "Starting API"
-
-echo "PORT $PORT"
-
 exec pnpm api:prod

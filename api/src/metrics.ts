@@ -1,14 +1,37 @@
-import type { LabelValues } from 'prom-client';
 import { Gauge, Counter, Summary } from 'prom-client';
 import 'fastify-metrics';
-import type { FastifyPluginAsync, FastifyPlugin } from './routes/api-types';
+import type { FastifyPluginAsync } from './routes/api-types';
 import { getTotalNames } from './fetchers/stacks-db';
 import fp from 'fastify-plugin';
-import type { FastifyRequest } from 'fastify';
+import { logger } from '~/logger';
 
-type RequestMetrics = {
-  summaryRolling: (labels?: LabelValues<'route' | 'method' | 'status_code'>) => void;
-};
+export enum DbQueryTag {
+  NAME_BY_ADDRESS = 'name_by_address',
+  SUBDOMAIN_BY_ADDRESS = 'subdomain_by_address',
+  BNSX_NAMES_BY_ADDRESS = 'bnsx_names_by_address',
+  BNSX_NAME_DETAILS = 'bnsx_name_details',
+  NAME_DETAILS = 'name_details',
+  BNSX_PRIMARY_NAME = 'bnsx_primary_name',
+  BNSX_PRIMARY_NAME_ID = 'bnsx_primary_name_id',
+}
+
+export const dbQuerySummary = new Summary({
+  name: 'db_query_summary_seconds',
+  help: 'Summary metric for DB query time',
+  labelNames: ['query'] as const,
+});
+
+export function observeQuery(query: DbQueryTag) {
+  const timer = dbQuerySummary.startTimer();
+  return () => {
+    const duration = timer({ query });
+    logger.debug({
+      query,
+      duration,
+      type: 'db-query',
+    });
+  };
+}
 
 export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, _options) => {
   const requestCount = new Counter({
@@ -36,34 +59,23 @@ export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, _option
     ageBuckets: 5,
   });
 
-  const metricsStorage = new WeakMap<FastifyRequest, RequestMetrics>();
-
-  server.addHook('onRequest', (request, _, done) => {
-    if (request.routeConfig.disableMetrics === true) {
-      return done();
-    }
-    metricsStorage.set(request, {
-      summaryRolling: reqSummaryRolling.startTimer(),
-    });
-    done();
-  });
-
   server.addHook('onResponse', (request, reply, done) => {
     if (request.routeConfig.disableMetrics === true) {
       return done();
     }
-
-    const stored = metricsStorage.get(request);
 
     const method = request.routerMethod ?? request.method;
 
     const route = request.routeConfig.statsId ?? request.routerPath;
     const statusCode = reply.statusCode;
 
+    const duration = reply.getResponseTime();
+
     reply.log.info(
       {
         route,
         statusCode,
+        duration,
       },
       'outgoing response'
     );
@@ -74,7 +86,7 @@ export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, _option
       status_code: statusCode,
     };
 
-    stored?.summaryRolling(labels);
+    reqSummaryRolling.labels(labels).observe(duration / 1000);
 
     requestCount.labels(labels).inc();
   });

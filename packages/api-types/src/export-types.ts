@@ -2,117 +2,160 @@
 import type * as TrpcServer from '@trpc/server';
 
 export type AppProcedures = {
-    getAddressNames: AnyProc<"query", {
-        /** A Stacks address to fetch names for */
-        address: string;
-    }, {
-        /** A list of names that the address owns */
-        names: string[];
-        /** A single name that can be shown as the "display name" for the user */
-        displayName: string | null;
-        /** The address's BNS Core name */
-        coreName: {
-            zonefileHash: string;
-            leaseEndingAt: number | null;
-            leaseStartedAt?: number | undefined;
-            owner: string;
-            combined: string;
-            decoded: string;
-            name: string;
-            namespace: string;
-        } | null;
-        /** The address's BNSx primary name */
-        primaryName: string | null;
-        /** The name properties of the address's BNSx name */
-        primaryProperties: {
-            id: number;
-            combined: string;
-            decoded: string;
-            name: string;
-            namespace: string;
-        } | null;
-        /** An array of BNSx name properties */
-        nameProperties: {
-            id: number;
-            combined: string;
-            decoded: string;
-            name: string;
-            namespace: string;
-        }[];
-    }>;
-    getNameDetails: AnyProc<"query", {
+  getAddressNames: AnyProc<
+    'query',
+    {
+      /** A Stacks address to fetch names for */
+      address: string;
+    },
+    {
+      /** A list of names that the address owns */
+      names: string[];
+      /** A single name that can be shown as the "display name" for the user */
+      displayName: string | null;
+      /** The address's BNS Core name */
+      coreName: {
+        zonefileHash: string;
+        leaseEndingAt: number | null;
+        leaseStartedAt?: number | undefined;
+        owner: string;
+        combined: string;
+        decoded: string;
         name: string;
         namespace: string;
-    } | {
+      } | null;
+      /** The address's BNSx primary name */
+      primaryName: string | null;
+      /** The name properties of the address's BNSx name */
+      primaryProperties: {
+        id: number;
+        combined: string;
+        decoded: string;
+        name: string;
+        namespace: string;
+      } | null;
+      /** An array of BNSx name properties */
+      nameProperties: {
+        id: number;
+        combined: string;
+        decoded: string;
+        name: string;
+        namespace: string;
+      }[];
+    }
+  >;
+  getNameDetails: AnyProc<
+    'query',
+    | {
+        name: string;
+        namespace: string;
+      }
+    | {
         fqn: string;
-    }, unknown>;
-    getDisplayName: AnyProc<"query", string, {
-        name: string | null;
-    }>;
-    getAddressNameStrings: AnyProc<"query", {
-        /** A Stacks address to fetch names for */
-        address: string;
-    }, {
-        /** The BNS core name owned by this address */
-        coreName: string | null;
-        /** The BNSx names owned by this address */
-        bnsxNames: {
+      },
+    unknown
+  >;
+  getDisplayName: AnyProc<
+    'query',
+    string,
+    {
+      name: string | null;
+    }
+  >;
+  getAddressNameStrings: AnyProc<
+    'query',
+    {
+      /** A Stacks address to fetch names for */
+      address: string;
+    },
+    {
+      /** The BNS core name owned by this address */
+      coreName: string | null;
+      /** The BNSx names owned by this address */
+      bnsxNames: {
+        name: string;
+        id: number;
+      }[];
+    }
+  >;
+  getCoreName: AnyProc<
+    'query',
+    {
+      /** A Stacks address to fetch names for */
+      address: string;
+    },
+    string | null
+  >;
+  inscriptions: TrpcServer.CreateRouterInner<
+    TrpcServer.AnyRootConfig,
+    {
+      create: AnyProc<
+        'mutation',
+        {
+          inscriptionId: string;
+        },
+        {
+          success: boolean;
+          inscriptionId: string;
+        }
+      >;
+      fetchZonefile: AnyProc<
+        'query',
+        {
+          inscriptionId: string;
+        },
+        {
+          success: boolean;
+          inscriptionId: string;
+          inscription: {
+            id: string;
+            address: string;
+            sat: string;
+            outputValue: number;
+            contentType: string;
+            timestamp: number;
+            genesisHeight: number;
+            genesisFee: string;
+            genesisTransaction: string;
+            location: string;
+            output: string;
+            offset: string;
+            content: string;
+          };
+          zonefile: {
+            verified: boolean;
+            owner: string;
+            zonefile: string;
+            intro: string;
+            zonefileInfo?: any;
+          };
+        }
+      >;
+      fetchAll: AnyProc<
+        'query',
+        {
+          skip?: number | undefined;
+        },
+        unknown
+      >;
+    }
+  >;
+  zonefiles: TrpcServer.CreateRouterInner<
+    TrpcServer.AnyRootConfig,
+    {
+      allNostr: AnyProc<
+        'query',
+        unknown,
+        {
+          results: {
             name: string;
-            id: number;
-        }[];
-    }>;
-    getCoreName: AnyProc<"query", {
-        /** A Stacks address to fetch names for */
-        address: string;
-    }, string | null>;
-    inscriptions: TrpcServer.CreateRouterInner<TrpcServer.AnyRootConfig, {
-        create: AnyProc<"mutation", {
-            inscriptionId: string;
-        }, {
-            success: boolean;
-            inscriptionId: string;
-        }>;
-        fetchZonefile: AnyProc<"query", {
-            inscriptionId: string;
-        }, {
-            success: boolean;
-            inscriptionId: string;
-            inscription: {
-                id: string;
-                address: string;
-                sat: string;
-                outputValue: number;
-                contentType: string;
-                timestamp: number;
-                genesisHeight: number;
-                genesisFee: string;
-                genesisTransaction: string;
-                location: string;
-                output: string;
-                offset: string;
-                content: string;
-            };
-            zonefile: {
-                verified: boolean;
-                owner: string;
-                zonefile: string;
-                intro: string;
-                zonefileInfo?: any;
-            };
-        }>;
-        fetchAll: AnyProc<"query", {
-            skip?: number | undefined;
-        }, unknown>;
-    }>;
-    zonefiles: TrpcServer.CreateRouterInner<TrpcServer.AnyRootConfig, {
-        allNostr: AnyProc<"query", unknown, {
-            results: {
-                name: string;
-                zonefile: string;
-                nostr: string;
-            }[];
-        }>;
-    }>;
+            zonefile: string;
+            nostr: string;
+          }[];
+        }
+      >;
+    }
+  >;
 };
 
 type AnyProc<Type extends 'query' | 'mutation', Input, Output> = TrpcServer.BuildProcedure<

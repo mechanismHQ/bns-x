@@ -1,4 +1,4 @@
-import { fetchBnsxDisplayName, fetchBnsxName } from '@db/names';
+import { fetchBnsxDisplayName, fetchBnsxName, fetchBnsxNamesByAddressRows } from '@db/names';
 import type { BnsDb, StacksDb } from '@db';
 import { fetchCoreName, getNameDetailsApi, getNameDetailsFqnApi } from '@fetchers/stacks-api';
 import type {
@@ -14,6 +14,7 @@ import { getZonefileProperties } from '@fetchers/zonefile';
 import { convertDbName, convertNameBuff } from '~/contracts/utils';
 import { logger } from '~/logger';
 import { fetchCoreNameByAddress } from '@db/bns-core';
+import { DbQueryTag, observeQuery } from '~/metrics';
 
 export class DbFetcher implements BaseFetcher {
   bnsDb: BnsDb;
@@ -95,19 +96,8 @@ export class DbFetcher implements BaseFetcher {
 
   async getAddressNames(address: string): Promise<NamesByAddressResponse> {
     const [owned, primaryNameRow, coreName] = await Promise.all([
-      this.bnsDb.nameOwnership.findMany({
-        include: {
-          name: true,
-        },
-        where: {
-          account: address,
-        },
-      }),
-      this.bnsDb.primaryName.findFirst({
-        where: {
-          account: address,
-        },
-      }),
+      fetchBnsxNamesByAddressRows(address, this.bnsDb),
+      this.getPrimaryNameId(address),
       this.getCoreName(address),
     ]);
     const primaryId = primaryNameRow?.primaryId ?? null;
@@ -169,14 +159,7 @@ export class DbFetcher implements BaseFetcher {
   async getAddressNameStrings(address: string): Promise<NameStringsForAddressResponse> {
     const [coreName, bnsxNameRows] = await Promise.all([
       this.getCoreName(address),
-      this.bnsDb.nameOwnership.findMany({
-        include: {
-          name: true,
-        },
-        where: {
-          account: address,
-        },
-      }),
+      fetchBnsxNamesByAddressRows(address, this.bnsDb),
     ]);
     const bnsxNames = bnsxNameRows.map(n => {
       const converted = convertNameBuff({
@@ -189,6 +172,17 @@ export class DbFetcher implements BaseFetcher {
       };
     });
     return { coreName, bnsxNames };
+  }
+
+  async getPrimaryNameId(address: string) {
+    const done = observeQuery(DbQueryTag.BNSX_PRIMARY_NAME_ID);
+    const rows = await this.bnsDb.primaryName.findUnique({
+      where: {
+        account: address,
+      },
+    });
+    done();
+    return rows;
   }
 
   async getInscribedZonefile(name: string, namespace: string) {

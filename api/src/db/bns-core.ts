@@ -1,5 +1,6 @@
 import type { StacksDb } from '@db';
 import { getNetwork } from '~/constants';
+import { DbQueryTag, dbQuerySummary, observeQuery } from '~/metrics';
 
 export function getBnsSmartContractId(): string {
   const network = getNetwork();
@@ -9,6 +10,7 @@ export function getBnsSmartContractId(): string {
 }
 
 export async function fetchNameByAddressCore(db: StacksDb, address: string) {
+  const done = observeQuery(DbQueryTag.NAME_BY_ADDRESS);
   const names = await db.names.findFirst({
     select: {
       name: true,
@@ -28,10 +30,12 @@ export async function fetchNameByAddressCore(db: StacksDb, address: string) {
       { event_index: 'desc' },
     ],
   });
+  done();
   return names?.name ?? null;
 }
 
 export async function fetchSubdomainsByAddress(db: StacksDb, address: string) {
+  const done = observeQuery(DbQueryTag.SUBDOMAIN_BY_ADDRESS);
   const result = await db.subdomains.findFirst({
     where: {
       owner: address,
@@ -45,6 +49,7 @@ export async function fetchSubdomainsByAddress(db: StacksDb, address: string) {
       fully_qualified_subdomain: 'asc',
     },
   });
+  done();
   return result?.fully_qualified_subdomain ?? null;
 }
 

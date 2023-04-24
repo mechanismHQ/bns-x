@@ -1,4 +1,10 @@
-import { clarigenAtom, nameRegistryState, registryAssetState } from '.';
+import {
+  clarigenAtom,
+  nameRegistryState,
+  registryAssetState,
+  contractsClientState,
+  bnsContractState,
+} from '.';
 import { atom } from 'jotai';
 import {
   currentAccountAtom,
@@ -11,15 +17,17 @@ import type { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { cvToValue } from '@clarigen/core';
 import { deserializeCV } from 'micro-stacks/clarity';
-import { atomFamily } from 'jotai/utils';
-import { addressDisplayNameState, bnsApi, namesForAddressState } from './api';
+import { atomFamily, waitForAll } from 'jotai/utils';
+import { addressDisplayNameState, bnsApi, contractSrcState, namesForAddressState } from './api';
 import { trpc } from './api';
 import { getApiUrl } from '@common/constants';
 import { parseZoneFile, makeZoneFile } from '@fungible-systems/zone-file';
 import { nameUpgradingAtom } from '@store/migration';
 import type { NameInfoResponse } from '@bns-x/core';
+import { doesNamespaceExpire, parseFqn } from '@bns-x/core';
 import type { ZoneFileObject } from '@bns-x/client';
 import { ZoneFile } from '@bns-x/client';
+import { asciiToBytes } from 'micro-stacks/common';
 
 export const currentUserNamesState = atom(get => {
   const address = get(stxAddressAtom);
@@ -128,6 +136,72 @@ export const nameDetailsAtom = atomFamily((name: string) => {
       return details;
     },
   }))[0];
+});
+
+export const nameExpirationBlockState = atomFamily((name: string) => {
+  return atomsWithQuery(get => ({
+    queryKey: ['name-expiration-block', name],
+    queryFn: () => {
+      const resolved = get(resolvedNameState(name));
+      if (resolved === null) return null;
+      const { leaseEndingAt } = resolved;
+      if (leaseEndingAt === null) return null;
+      return Number(resolved.leaseEndingAt);
+      // const details = get(nameDetailsAtom(name));
+      // if (details === null) return null;
+      // const { namespace } = parseFqn(name);
+      // if (!doesNamespaceExpire(namespace)) return null;
+      // if (typeof details.expire_block === 'undefined') return null;
+      // return details.expire_block;
+    },
+  }))[0];
+});
+
+export const resolvedNameState = atomFamily((name: string) => {
+  return atomsWithQuery(get => ({
+    queryKey: ['name-expiration-block-from-contract', name],
+    queryFn: async () => {
+      const bnsContract = get(bnsContractState);
+      const clarigen = get(clarigenAtom);
+      const nameParts = parseFqn(name);
+      const props = await clarigen.ro(
+        bnsContract.nameResolve({
+          name: asciiToBytes(nameParts.name),
+          namespace: asciiToBytes(nameParts.namespace),
+        })
+      );
+      console.log('props', props);
+      if (props.isOk) {
+        return props.value;
+      }
+      return null;
+    },
+  }))[0];
+});
+
+export enum WrapperVersion {
+  V1,
+  V2,
+}
+
+export const nameWrapperVersionState = atomFamily((wrapperId: string) => {
+  return atom(get => {
+    const source = get(contractSrcState(wrapperId));
+    if (source.includes('name-renewal')) return WrapperVersion.V2;
+    return WrapperVersion.V1;
+  });
+});
+
+export const canNameBeRenewedState = atomFamily((name: string) => {
+  return atom(get => {
+    const [details, expireBlock] = get(
+      waitForAll([nameDetailsAtom(name), nameExpirationBlockState(name)])
+    );
+    if (details === null || expireBlock === null) return false;
+    if (details.isBnsx === false) return true;
+    const wrapperVersion = get(nameWrapperVersionState(details.wrapper));
+    return wrapperVersion !== WrapperVersion.V1;
+  });
 });
 
 export const userZonefileState = atomsWithQuery(get => ({
@@ -249,3 +323,26 @@ ${zonefile}
 export const signedInscriptionZonefileAtom = atom<{ publicKey: string; signature: string } | null>(
   null
 );
+
+export const namePriceState = atomFamily((name: string) => {
+  return atomsWithQuery(get => ({
+    queryKey: ['name-price', name],
+    queryFn: async () => {
+      const client = get(contractsClientState);
+      const nameParts = parseFqn(name);
+      const price = await client.computeNamePrice(nameParts.name, nameParts.namespace);
+      return price;
+    },
+  }))[0];
+});
+
+export const namespaceLifetimeState = atomFamily((namespace: string) => {
+  return atomsWithQuery(get => ({
+    queryKey: ['namespace-lifetime', namespace],
+    queryFn: async () => {
+      const client = get(contractsClientState);
+      const lifetime = await client.fetchNamespaceExpiration(namespace);
+      return lifetime;
+    },
+  }))[0];
+});

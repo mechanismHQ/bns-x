@@ -7,6 +7,7 @@ export const defaultOptions: Options = {
   outDir: 'dist',
   dts: true,
   splitting: true,
+  sourcemap: true,
   format: ['esm', 'cjs'],
 };
 

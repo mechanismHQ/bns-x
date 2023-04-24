@@ -19,6 +19,10 @@ export function shiftInt(int: IntegerType, shift: number) {
   return new BigNumber(intToString(int)).shiftedBy(shift);
 }
 
+export function ustxToStx(ustx: IntegerType) {
+  return shiftInt(ustx, -6).decimalPlaces(6);
+}
+
 export function convertNameBuff<T extends NameBuff>(nameObj: T): WithCombined<T> {
   const { name: nameB, namespace: ns, ...rest } = nameObj;
   const name = bytesToAscii(nameB);

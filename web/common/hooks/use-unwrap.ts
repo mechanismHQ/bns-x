@@ -1,4 +1,3 @@
-import { useOpenContractCall } from '@micro-stacks/react';
 import { nameDetailsAtom } from '@store/names';
 import { loadable, useAtomCallback } from 'jotai/utils';
 import { useAtomValue } from 'jotai';
@@ -10,9 +9,10 @@ import { bnsContractState, nameRegistryState } from '@store/index';
 import { unwrapTxidAtom, unwrapRecipientState, unwrapRecipientHasBnsState } from '@store/profile';
 import { nameToTupleBytes } from '@common/utils';
 import { makeNonFungiblePostCondition } from '@clarigen/core';
+import { useAccountOpenContractCall } from '@common/hooks/use-account-open-contract-call';
 
 export function useUnwrap(name: string) {
-  const { openContractCall, isRequestPending } = useOpenContractCall();
+  const { openContractCall, isRequestPending } = useAccountOpenContractCall();
   const unwrapTxid = useAtomValue(unwrapTxidAtom);
   const recipientAddress = useAtomValue(loadable(unwrapRecipientState.validRecipientState));
   const recipientHasBns = useAtomValue(loadable(unwrapRecipientHasBnsState));

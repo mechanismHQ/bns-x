@@ -1,6 +1,7 @@
 import type { BnsDb } from '@db';
 import type { Name } from '@prisma/client';
 import { convertNameBuff } from '~/contracts/utils';
+import { DbQueryTag, observeQuery } from '~/metrics';
 import { nameObjectToHex } from '~/utils';
 
 export async function fetchBnsxName(name: string, namespace: string, db: BnsDb) {
@@ -45,7 +46,8 @@ function convertNameRow(nameRow: Name, owner: string) {
   };
 }
 
-async function fetchBnsxNamesByAddressRows(account: string, db: BnsDb) {
+export async function fetchBnsxNamesByAddressRows(account: string, db: BnsDb) {
+  const done = observeQuery(DbQueryTag.BNSX_NAMES_BY_ADDRESS);
   const names = await db.nameOwnership.findMany({
     where: {
       account,
@@ -54,6 +56,7 @@ async function fetchBnsxNamesByAddressRows(account: string, db: BnsDb) {
       name: true,
     },
   });
+  done();
   return names;
 }
 
@@ -70,6 +73,7 @@ export async function fetchBnsxNamesByAddress(account: string, db: BnsDb) {
 }
 
 export async function fetchBnsxPrimaryName(account: string, db: BnsDb) {
+  const done = observeQuery(DbQueryTag.BNSX_PRIMARY_NAME);
   const name = await db.primaryName.findUnique({
     where: {
       account,
@@ -78,6 +82,7 @@ export async function fetchBnsxPrimaryName(account: string, db: BnsDb) {
       name: true,
     },
   });
+  done();
   return name;
 }
 

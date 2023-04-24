@@ -1,6 +1,6 @@
 {
   "name": "@bns-x/api",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "",
   "files": [
     "dist"
@@ -15,6 +15,7 @@
     "dev:testnet": "NODE_ENV=staging pnpm tsx watch -r dotenv-flow/config scripts/server.ts",
     "dev": "pnpm rw scripts/server.ts",
     "start": "tsx scripts/server.ts",
+    "prod": "node dist/scripts/server.js",
     "test:migrate": "dotenv -e .env.test -- prisma migrate dev --name test-init",
     "test:server": "dotenv -e .env.test -- tsx scripts/server.ts",
     "test:run": "pnpm test:migrate && pnpm test:server",
@@ -22,7 +23,7 @@
     "db:reset": "prisma migrate reset",
     "typecheck": "tsc --noEmit",
     "prebuild": "prisma generate --schema prisma/stacks-api-schema.prisma && pnpm prisma generate",
-    "build": "tsup",
+    "build": "tsup && cp -r ./static ./dist/",
     "build:openapi": "pnpm r scripts/openapi-generator.ts",
     "build:trpc": "tsx scripts/export-trpc/run.ts ../packages/api-types/src/export-types.ts"
   },
@@ -93,7 +94,7 @@
     "typedoc": "^0.23.25"
   },
   "sideEffects": false,
-  "main": "./dist/export-types.js",
+  "main": "./dist/scripts/server.js",
   "types": "./dist/export-types.d.ts",
   "module": "./dist/export-types.mjs",
   "import": "./dist/export-types.mjs",

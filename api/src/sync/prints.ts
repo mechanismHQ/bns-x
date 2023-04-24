@@ -3,7 +3,7 @@ import type { StacksDb, BnsDb } from '@db';
 import { deserializeCV } from 'micro-stacks/clarity';
 import { hexToBytes } from 'micro-stacks/common';
 import { decodeClarityValue } from 'stacks-encoding-native-js';
-import type { ContractLogs } from '../../prisma/generated/stacks-api-schema';
+import type { ContractLogs } from '~prisma';
 import { cvToJSON } from '@clarigen/core';
 import { logger } from '~/logger';
 import { getDeployer } from '~/contracts';

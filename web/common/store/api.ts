@@ -1,4 +1,4 @@
-import { BnsApiClient } from '@bns-x/client';
+import { BnsApiClient, getNameParts } from '@bns-x/client';
 import { getApiUrl } from '@common/constants';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { atomFamily } from 'jotai/utils';
@@ -6,7 +6,7 @@ import type { PrimitiveAtom } from 'jotai';
 import { atom } from 'jotai';
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import type { AppRouter } from '@bns-x/api-types';
-import { fetchCoreApiInfo } from 'micro-stacks/api';
+import { fetchContractSource, fetchCoreApiInfo } from 'micro-stacks/api';
 import { networkAtom } from '@store/micro-stacks';
 
 export const trpc = createTRPCProxyClient<AppRouter>({
@@ -74,3 +74,25 @@ export const coreNodeInfoAtom = atomsWithQuery(get => ({
     return info;
   },
 }))[0];
+
+export const contractSrcState = atomFamily((contractId: string) => {
+  return atomsWithQuery(get => ({
+    queryKey: ['contract-src', contractId],
+    async queryFn() {
+      const network = get(networkAtom);
+      const url = network.getCoreApiUrl();
+      const [contractAddr, contractName] = getNameParts(contractId);
+      const src = await fetchContractSource({
+        url,
+        contract_address: contractAddr,
+        contract_name: contractName,
+        tip: 'latest',
+        proof: 0,
+      });
+      if (!src?.source) {
+        throw new Error('Unable to fetch contract source');
+      }
+      return src.source;
+    },
+  }))[0];
+});

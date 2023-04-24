@@ -1,5 +1,11 @@
 # @bns-x/api-types
 
+## 0.3.1
+
+### Patch Changes
+
+- 8c1da6e: Improved metrics logging for requests and db queries
+
 ## 0.3.0
 
 ### Minor Changes

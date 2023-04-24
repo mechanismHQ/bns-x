@@ -2,8 +2,13 @@ import type { Atom, Getter, WritableAtom } from 'jotai';
 import { atom } from 'jotai';
 import { hashAtom, makeBnsRecipientState, txidQueryAtom } from './migration';
 import { atomsWithQuery } from 'jotai-tanstack-query';
-import { atomFamily, atomWithStorage } from 'jotai/utils';
-import { parsedUserZonefileState, userNameState, userZonefileState } from '@store/names';
+import { atomFamily, atomWithStorage, waitForAll } from 'jotai/utils';
+import {
+  nameExpirationBlockState,
+  parsedUserZonefileState,
+  userNameState,
+  userZonefileState,
+} from '@store/names';
 import { nameDetailsAtom } from '@store/names';
 import { coreNodeInfoAtom, namesForAddressState } from '@store/api';
 import type { ZoneFileObject } from '@bns-x/client';
@@ -16,6 +21,9 @@ import { getTestnetNamespace } from '@common/constants';
 
 export const unwrapTxidAtom = hashAtom('unwrapTxid');
 export const unwrapTxAtom = txidQueryAtom(unwrapTxidAtom)[0];
+
+export const renewalTxidAtom = hashAtom('renewTxid');
+export const renewalTxAtom = txidQueryAtom(renewalTxidAtom)[0];
 
 export const isEditingProfileAtom = atom(false);
 
@@ -33,28 +41,30 @@ export const nameUpdateTxAtom = atom(get => {
 
 export const nameUpdateTxidConfirmedAtom = hashAtom('finishedTx');
 
+export const nameExpirationBlocksRemainingState = atomFamily((name?: string) => {
+  return atom(get => {
+    if (typeof name === 'undefined') {
+      return null;
+    }
+    const [expireBlock, nodeInfo] = get(
+      waitForAll([nameExpirationBlockState(name), coreNodeInfoAtom])
+    );
+    if (expireBlock === null) return null;
+    if (typeof nodeInfo.stacks_tip_height !== 'number') return null;
+    const blockDiff = expireBlock - nodeInfo.stacks_tip_height;
+    return blockDiff;
+  });
+});
+
 export const nameExpirationAtom = atomFamily((name?: string) => {
-  return atomsWithQuery(get => ({
-    queryKey: ['name-expiration', name],
-    queryFn() {
-      if (typeof name === 'undefined') {
-        return null;
-      }
-      const details = get(nameDetailsAtom(name));
-      if (details === null) return null;
-      const { namespace } = parseFqn(name);
-      if (!doesNamespaceExpire(namespace)) return null;
-      if (namespace === getTestnetNamespace()) return null; // testnet faucet namespace
-      if (typeof details.expire_block === 'undefined') return null;
-      const nodeInfo = get(coreNodeInfoAtom);
-      if (typeof nodeInfo.stacks_tip_height !== 'number') return null;
-      const blockDiff = details.expire_block - nodeInfo.stacks_tip_height;
-      const timeDiff = blockDiff * 10 * 60 * 1000;
-      const expireDate = new Date(new Date().getTime() + timeDiff);
-      return [expireDate.getFullYear(), expireDate.getMonth(), expireDate.getDate()].join('-');
-    },
-  }))[0];
-}, Object.is);
+  return atom(get => {
+    const blockDiff = get(nameExpirationBlocksRemainingState(name));
+    if (blockDiff === null) return null;
+    const timeDiff = blockDiff * 10 * 60 * 1000;
+    const expireDate = new Date(new Date().getTime() + timeDiff);
+    return [expireDate.getFullYear(), expireDate.getMonth(), expireDate.getDate()].join('-');
+  });
+});
 
 type ZfGetter = (zf: ZoneFile | null) => string | null;
 

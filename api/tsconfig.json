@@ -15,6 +15,9 @@
     "noFallthroughCasesInSwitch": true,
     "allowJs": true,
     "checkJs": true,
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "sourceMap": true,
     "baseUrl": ".",
     "paths": {
       "@db": ["./src/db"],
@@ -22,7 +25,8 @@
       "@fetchers": ["./src/fetchers"],
       "@routes/*": ["./src/routes/*"],
       "@db/*": ["./src/db/*"],
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "~prisma": ["./prisma/generated/stacks-api-schema"]
     }
   },
   "$schema": "https://json.schemastore.org/tsconfig",

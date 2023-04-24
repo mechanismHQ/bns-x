@@ -365,6 +365,7 @@ importers:
       bignumber.js: ^9.1.0
       class-variance-authority: ^0.5.1
       clsx: ^1.2.1
+      date-fns: ^2.29.3
       dequal: ^2.0.3
       eslint: 8.20.0
       eslint-config-next: 12.2.2
@@ -443,6 +444,7 @@ importers:
       bignumber.js: 9.1.0
       class-variance-authority: 0.5.1_typescript@4.9.5
       clsx: 1.2.1
+      date-fns: 2.29.3
       dequal: 2.0.3
       iron-session: 6.1.3_next@12.2.2
       joi: 17.7.0
