@@ -1,5 +1,11 @@
 # web
 
+## 0.2.2
+
+### Patch Changes
+
+- c383f32: Adds the ability to renew a name. Names that are wrapped in BNSx can also be renewed without needing to unwrap.
+
 ## 0.2.1
 
 ### Patch Changes
