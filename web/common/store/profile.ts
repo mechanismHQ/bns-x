@@ -167,6 +167,21 @@ export const zonefileRedirectAtom = zonefileFormAtoms(
   }
 );
 
+export const zonefileLnUrlAtom = zonefileFormAtoms(
+  'Lightning URL',
+  zf => {
+    return zf?.getUriRecord(ZonefileUriKeys.LNURL) ?? null;
+  },
+  url => {
+    try {
+      new URL(url);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+);
+
 function getFormFieldState(get: Getter, atom: ZonefileFieldAtom) {
   const valid = get(atom.valid);
   const value = get(atom.value);
@@ -182,12 +197,17 @@ function getFormFieldState(get: Getter, atom: ZonefileFieldAtom) {
 type FieldState = ReturnType<typeof getFormFieldState>;
 
 export const profileFormValidAtom = atom(get => {
-  const atoms = ([zonefileBtcAtom, zonefileNostrAtom, zonefileRedirectAtom] as const).map(a =>
-    getFormFieldState(get, a)
-  ) as unknown as [FieldState, FieldState, FieldState];
+  const atoms = (
+    [zonefileBtcAtom, zonefileNostrAtom, zonefileRedirectAtom, zonefileLnUrlAtom] as const
+  ).map(a => getFormFieldState(get, a)) as unknown as [
+    FieldState,
+    FieldState,
+    FieldState,
+    FieldState
+  ];
   let allValid = true;
   let anyDirty = false;
-  const [btc, nostr, redirect] = atoms;
+  const [btc, nostr, redirect, lnurl] = atoms;
   atoms.forEach(a => {
     if (a.valid !== true) {
       allValid = false;
@@ -201,6 +221,7 @@ export const profileFormValidAtom = atom(get => {
     btc,
     nostr,
     redirect,
+    lnurl,
   };
 });
 
@@ -223,6 +244,25 @@ function setTxtKey(txt: TXTType[], key: string, value: string) {
   }
 }
 
+function setUriKey(uri: URIType[], key: string, value: string) {
+  const index = uri.findIndex(record => record.name === ZonefileUriKeys.REDIRECT);
+  if (index === -1) {
+    if (!value) return;
+    uri.push({
+      priority: 10,
+      weight: 1,
+      name: key,
+      target: value,
+    });
+  } else {
+    if (value) {
+      uri[index]!.target = value;
+    } else {
+      uri.splice(index, 1);
+    }
+  }
+}
+
 export type PendingZonefileInfo = {
   txid: string;
   zonefile: string;
@@ -235,7 +275,7 @@ export const pendingZonefileState = atomWithStorage<PendingZonefileInfo | undefi
 
 export const editedZonefileState = atom(get => {
   const formState = get(profileFormValidAtom);
-  const { btc, nostr, redirect } = formState;
+  const { btc, nostr, redirect, lnurl } = formState;
   const currentZonefile = get(parsedUserZonefileState);
   const name = get(userNameState);
   if (name === null) {
@@ -255,21 +295,10 @@ export const editedZonefileState = atom(get => {
   }
   const uri: URIType[] = zonefile.uri ?? [];
   if (redirect.dirty) {
-    const index = uri.findIndex(record => record.name === ZonefileUriKeys.REDIRECT);
-    if (index === -1) {
-      uri.push({
-        priority: 10,
-        weight: 1,
-        name: ZonefileUriKeys.REDIRECT,
-        target: redirect.value,
-      });
-    } else {
-      if (redirect.value) {
-        uri[index]!.target = redirect.value;
-      } else {
-        uri.splice(index, 1);
-      }
-    }
+    setUriKey(uri, ZonefileUriKeys.REDIRECT, redirect.value);
+  }
+  if (lnurl.dirty) {
+    setUriKey(uri, ZonefileUriKeys.LNURL, lnurl.value);
   }
   zonefile.txt = txt;
   zonefile.uri = uri;

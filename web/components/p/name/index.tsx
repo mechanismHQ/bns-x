@@ -9,13 +9,12 @@ import { getTxUrl } from '@common/utils';
 import { networkAtom, stxAddressAtom } from '@store/micro-stacks';
 import { loadable, useAtomCallback } from 'jotai/utils';
 import {
-  unwrapTxidAtom,
   zonefileBtcAtom,
   zonefileNostrAtom,
   zonefileRedirectAtom,
   isEditingProfileAtom,
-  profileFormValidAtom,
   nameExpirationBlocksRemainingState,
+  zonefileLnUrlAtom,
 } from '@store/profile';
 import { useGradient } from '@common/hooks/use-gradient';
 import { DuplicateIcon } from '@components/icons/duplicate';
@@ -214,6 +213,16 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
                   </RowDescription>
                 </TitleBox>
                 <EditableAddressGroup atom={zonefileRedirectAtom} />
+              </Row>
+              <Divider />
+              <Row>
+                <TitleBox>
+                  <AddMeHeader>Lightning URL</AddMeHeader>
+                  <RowDescription>
+                    Connect your name to your Lightning node to receive payments
+                  </RowDescription>
+                </TitleBox>
+                <EditableAddressGroup atom={zonefileLnUrlAtom} />
               </Row>
               <Divider />
               <ProfileActions />

@@ -9,6 +9,7 @@ export enum ZonefileTxtKeys {
 
 export enum ZonefileUriKeys {
   REDIRECT = '_redirect',
+  LNURL = '_lnaddr_redirect',
 }
 
 export class ZoneFile {

@@ -12,6 +12,7 @@ import {
   nameUpdateTxAtom,
   nameUpdateTxidAtom,
   nameUpdateTxidConfirmedAtom,
+  zonefileLnUrlAtom,
 } from '@store/profile';
 import { Button } from '@components/button';
 import { LinkInner } from '@components/link';
@@ -34,9 +35,11 @@ export const ProfileActions: React.FC = () => {
       set(zonefileBtcAtom.value, '');
       set(zonefileNostrAtom.value, '');
       set(zonefileRedirectAtom.value, '');
+      set(zonefileLnUrlAtom.value, '');
       set(zonefileBtcAtom.dirty, false);
       set(zonefileNostrAtom.dirty, false);
       set(zonefileRedirectAtom.dirty, false);
+      set(zonefileLnUrlAtom.dirty, false);
       set(isEditingProfileAtom, false);
     }, [])
   );
