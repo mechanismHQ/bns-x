@@ -12,16 +12,16 @@ import {
   beforeAll,
   nftAsset,
   types,
-} from "./helpers.ts";
-import { ContractCallTyped, UnknownArgs, Response, Chain } from "../deps.ts";
-import { testUtils } from "./clarigen.ts";
-import { btcBytes } from "./mocks.ts";
+} from './helpers.ts';
+import { ContractCallTyped, UnknownArgs, Response, Chain } from '../deps.ts';
+import { testUtils } from './clarigen.ts';
+import { btcBytes } from './mocks.ts';
 
-const demoNs = asciiToBytes("demo");
+const demoNs = asciiToBytes('demo');
 const namespace = demoNs;
 const manager = charlie;
 
-describe("managed namespaces", () => {
+describe('managed namespaces', () => {
   const { chain } = deployWithNamespace();
 
   function expectTxErr(
@@ -37,7 +37,7 @@ describe("managed namespaces", () => {
   beforeAll(() => {
     const receipt = chain.txOk(
       testUtils.nameRegister({
-        name: asciiToBytes("alice"),
+        name: asciiToBytes('alice'),
         namespace,
         owner: alice,
       }),
@@ -46,17 +46,17 @@ describe("managed namespaces", () => {
     aliceId = receipt.value;
   });
 
-  describe("no manager set", () => {
-    it("manager is not set", () => {
+  describe('no manager set', () => {
+    it('manager is not set', () => {
       const isManager = chain.rov(registry.isNamespaceManager(demoNs, manager));
       assertEquals(isManager, false);
     });
 
-    it("blocks namespace actions by manager", () => {
+    it('blocks namespace actions by manager', () => {
       expectTxErr(
         registry.register({
           name: {
-            name: asciiToBytes("asdf"),
+            name: asciiToBytes('asdf'),
             namespace,
           },
           owner: bob,
@@ -88,13 +88,13 @@ describe("managed namespaces", () => {
       );
     });
 
-    it("cannot set namespace-specific token-uri", () => {
-      const uri = "https://example.com";
+    it('cannot set namespace-specific token-uri', () => {
+      const uri = 'https://example.com';
       expectTxErr(registry.mngSetNamespaceTokenUri(namespace, uri));
     });
   });
 
-  it("only dao can set manager first", () => {
+  it('only dao can set manager first', () => {
     chain.txOk(
       registry.setNamespaceManager({
         namespace,
@@ -115,12 +115,12 @@ describe("managed namespaces", () => {
     );
   });
 
-  it("manager cannot remove dao permission", () => {
+  it('manager cannot remove dao permission', () => {
     expectTxErr(registry.removeDaoNamespaceManager(namespace));
   });
 
-  it("only dao can set token-uri", () => {
-    const uri = "https://example.com";
+  it('only dao can set token-uri', () => {
+    const uri = 'https://example.com';
     expectTxErr(registry.mngSetTokenUri(uri));
 
     chain.txOk(registry.mngSetTokenUri(uri), deployer);
@@ -128,33 +128,30 @@ describe("managed namespaces", () => {
     assertEquals(chain.rovOk(registry.getTokenUri(0n)), uri);
   });
 
-  describe("with manager set", () => {
-    it("cant access other namespaces", () => {
+  describe('with manager set', () => {
+    it('cant access other namespaces', () => {
       expectTxErr(
         registry.register({
           name: {
-            name: asciiToBytes("asdf3"),
+            name: asciiToBytes('asdf3'),
             namespace: btcBytes,
           },
           owner: alice,
         })
       );
 
-      assertEquals(
-        chain.rov(registry.isNamespaceManager(btcBytes, manager)),
-        false
-      );
+      assertEquals(chain.rov(registry.isNamespaceManager(btcBytes, manager)), false);
 
-      expectTxErr(registry.mngSetNamespaceTokenUri(btcBytes, "asdf"));
+      expectTxErr(registry.mngSetNamespaceTokenUri(btcBytes, 'asdf'));
     });
 
     let managerNameId: bigint;
 
-    it("can register names", () => {
+    it('can register names', () => {
       const { value } = chain.txOk(
         registry.register({
           name: {
-            name: asciiToBytes("manager"),
+            name: asciiToBytes('manager'),
             namespace,
           },
           owner: alice,
@@ -164,33 +161,30 @@ describe("managed namespaces", () => {
       managerNameId = value;
     });
 
-    it("cannot set base token URI", () => {
-      expectTxErr(registry.mngSetTokenUri("asdf"));
+    it('cannot set base token URI', () => {
+      expectTxErr(registry.mngSetTokenUri('asdf'));
     });
 
-    const uri = "https://myuri.com";
-    it("can set namespace-specific token URI", () => {
+    const uri = 'https://myuri.com';
+    it('can set namespace-specific token URI', () => {
       chain.txOk(registry.mngSetNamespaceTokenUri(namespace, uri), manager);
 
       assertEquals(chain.rov(registry.getTokenUriForNamespace(namespace)), uri);
     });
 
-    it("returns namespace-specific token URI", () => {
+    it('returns namespace-specific token URI', () => {
       assertEquals(chain.rovOk(registry.getTokenUri(managerNameId)), uri);
     });
 
-    it("returns base token uri for invalid IDs", () => {
-      assertEquals(
-        chain.rovOk(registry.getTokenUri(111111111n)),
-        "https://example.com"
-      );
+    it('returns base token uri for invalid IDs', () => {
+      assertEquals(chain.rovOk(registry.getTokenUri(111111111n)), 'https://example.com');
     });
 
-    it("can transfer names", () => {
+    it('can transfer names', () => {
       chain.txOk(registry.mngTransfer(aliceId, bob), manager);
     });
 
-    it("can burn names", () => {
+    it('can burn names', () => {
       const receipt = chain.txOk(registry.mngBurn(managerNameId), manager);
 
       receipt.events.expectNonFungibleTokenBurnEvent(
@@ -205,7 +199,7 @@ describe("managed namespaces", () => {
       );
     });
 
-    it("can set new managers", () => {
+    it('can set new managers', () => {
       chain.txOk(
         registry.setNamespaceManager({
           namespace,
@@ -216,7 +210,7 @@ describe("managed namespaces", () => {
       );
     });
 
-    it("can update transfers allowed", () => {
+    it('can update transfers allowed', () => {
       chain.txOk(
         registry.setNamespaceTransfersAllowed({
           namespace,
@@ -227,18 +221,18 @@ describe("managed namespaces", () => {
     });
   });
 
-  describe("after revoking dao permissions", () => {
-    it("dao is marked as removed", () => {
+  describe('after revoking dao permissions', () => {
+    it('dao is marked as removed', () => {
       chain.txOk(registry.removeDaoNamespaceManager(namespace), deployer);
 
       assertEquals(chain.rov(registry.canDaoManageNs(namespace)), false);
     });
 
-    it("dao cannot make namespace actions", () => {
+    it('dao cannot make namespace actions', () => {
       expectTxErr(
         registry.register({
           name: {
-            name: asciiToBytes("blah2"),
+            name: asciiToBytes('blah2'),
             namespace,
           },
           owner: alice,
@@ -259,10 +253,7 @@ describe("managed namespaces", () => {
         deployer
       );
 
-      expectTxErr(
-        registry.setNamespaceTransfersAllowed(namespace, true),
-        deployer
-      );
+      expectTxErr(registry.setNamespaceTransfersAllowed(namespace, true), deployer);
     });
   });
 });
