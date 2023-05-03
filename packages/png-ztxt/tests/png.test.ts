@@ -8,13 +8,14 @@ import {
   validateCrc,
   makeTEXTChunk,
 } from '../src/png';
+import { hashPNG, idatBytes } from '../src/hash';
 import { PNG, findIDATChunks } from '../src/png';
 import { readFile, writeFile } from 'fs/promises';
 import * as P from 'micro-packed';
+import { readPng } from './helpers';
 
 test('can decode a png', async () => {
-  const file = await readFile('./data/card.png');
-  const png = PNG.decode(file);
+  const png = await readPng('./data/card.png');
   const debug = P.debug(Chunk);
   // png.chunks.forEach(c => {
   //   debug.encode(c);
@@ -22,18 +23,16 @@ test('can decode a png', async () => {
   // debug.decode(file);
 });
 
-test('decoding with itxt', async () => {
-  const file = await readFile('./data/card2.png');
-  const png = PNG.decode(file);
-  const debug = P.debug(Chunk);
-  png.chunks.forEach(c => {
-    console.log(decodeChunk(c));
-  });
-});
+// test('decoding with itxt', async () => {
+//   const png = await readPng('./data/screenshot1.png');
+//   const debug = P.debug(Chunk);
+//   png.chunks.forEach(c => {
+//     console.log(decodeChunk(c));
+//   });
+// });
 
 test('writing a chunk', async () => {
-  const file = await readFile('./data/card.png');
-  const png = PNG.decode(file);
+  const png = await readPng('./data/card.png');
   const chunk = makeTEXTChunk({
     keyword: 'testpacked',
     value: 'testpackedvalue',
@@ -53,8 +52,7 @@ test('creating chunks', () => {
 });
 
 test('reading a chunk just written', async () => {
-  const file = await readFile('./data/card4.png');
-  const png = PNG.decode(file);
+  const png = await readPng('./data/card4.png');
   png.chunks.forEach(c => {
     const chunk = decodeChunk(c);
     if (chunk.dataType === 'tEXt') {
@@ -65,8 +63,7 @@ test('reading a chunk just written', async () => {
 });
 
 test('validating crc', async () => {
-  const file = await readFile('./data/card4.png');
-  const png = PNG.decode(file);
+  const png = await readPng('./data/card4.png');
   png.chunks.forEach(c => {
     try {
       validateCrc(c);
@@ -74,4 +71,20 @@ test('validating crc', async () => {
       throw new Error(`Found invalid CRC in chunk with type ${c.type}`);
     }
   });
+});
+
+test('hashing png', async () => {
+  const png = await readPng('./data/screenshot1.png');
+  const hash = hashPNG(png);
+  const expected = new Uint8Array([
+    137, 100, 114, 217, 13, 130, 222, 141, 44, 10, 39, 230, 69, 137, 6, 87, 77, 96, 255, 94, 115,
+    148, 32, 217, 59, 97, 125, 251, 79, 124, 92, 51,
+  ]);
+  expect(P.equalBytes(hash, expected)).toEqual(true);
+});
+
+test('idatBytes', async () => {
+  const png = await readPng('./data/screenshot1.png');
+  const bytes = idatBytes(png);
+  expect(bytes.length).toEqual(361630);
 });
