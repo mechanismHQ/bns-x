@@ -17,7 +17,7 @@
     "zod": "3.20.6"
   },
   "devDependencies": {
-    "tsup": "^6.5.0"
+    "tsup": "^6.7.0"
   },
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
