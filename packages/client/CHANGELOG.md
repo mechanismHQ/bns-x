@@ -1,5 +1,11 @@
 # @bns-x/client
 
+## 0.3.1
+
+### Patch Changes
+
+- dc2fbf5: Allows setting the `_lnaddr_redirect` URI key when updating zonefile
+
 ## 0.3.0
 
 ### Minor Changes

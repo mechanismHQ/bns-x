@@ -1,5 +1,16 @@
 # web
 
+## 0.2.3
+
+### Patch Changes
+
+- dc2fbf5: Allows setting the `_lnaddr_redirect` URI key when updating zonefile
+- 6b0a515: The `@bns-x/png` package is used to create and verify "Verified Inscriptions", which are PNG files with embedded signatures. This can be used to associate provenance and creatorship of specific images.
+- Updated dependencies [dc2fbf5]
+- Updated dependencies [6b0a515]
+  - @bns-x/client@0.3.1
+  - @bns-x/png@0.2.4
+
 ## 0.2.2
 
 ### Patch Changes
