@@ -7,9 +7,16 @@ import {
   pngHashAtom,
   pngSignatureAtom,
   verifiedPngAtom,
+  verifiedPngDataState,
 } from '@store/verified-inscriptions';
 import { useOpenSignMessage } from '@micro-stacks/react';
-import { appendChunk, createVerificationChunk, getPngVerifications, pngMessage } from '@bns-x/png';
+import {
+  appendChunk,
+  createVerificationChunk,
+  getPngVerifications,
+  pngMessage,
+  PNG,
+} from '@bns-x/png';
 import { hexToBytes } from 'micro-stacks/common';
 
 export function useVerifiedInscriptionDropzone() {
@@ -34,18 +41,23 @@ export function useVerifiedInscriptionDropzone() {
         await openSignMessage({
           message: pngMessage(hash),
           async onFinish(payload) {
-            // set(pngSignatureAtom, payload.signature);
             await addSignature(payload.signature);
-            // const png = get(pngAtom);
-            // const sigBytes = hexToBytes(signature);
-            // const verificationChunk = createVerificationChunk('STX', sigBytes);
-            // appendChunk(png, verificationChunk);
-            console.log('payload.signature', payload.signature);
           },
         });
       },
       [openSignMessage, addSignature]
     )
+  );
+
+  const downloadVerifiedPng = useAtomCallback(
+    useCallback(get => {
+      const pngUrl = get(verifiedPngDataState);
+      if (!pngUrl) return null;
+      const link = document.createElement('a');
+      link.href = pngUrl;
+      link.download = 'verified.png';
+      link.click();
+    }, [])
   );
 
   const onDrop = useAtomCallback(
@@ -84,5 +96,6 @@ export function useVerifiedInscriptionDropzone() {
     dropzone,
     signFile,
     isRequestPending,
+    downloadVerifiedPng,
   };
 }

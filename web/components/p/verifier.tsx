@@ -25,6 +25,7 @@ import { useDeepMemo } from '@common/hooks/use-deep-memo';
 import { CheckIcon } from '@components/icons/check';
 import { truncateMiddle } from '@common/utils';
 import { DuplicateIcon } from '@components/icons/duplicate';
+import { Button } from '@components/button';
 
 export const VerificationAddress: React.FC<{ verification: Verification }> = ({ verification }) => {
   const name = useAtomValue(loadable(verificationNameState(verification)));
@@ -45,7 +46,7 @@ export const VerificationAddress: React.FC<{ verification: Verification }> = ({ 
 export const Verifier: React.FC<{ children?: React.ReactNode }> = () => {
   const pngHash = useAtomValue(pngHashAtom);
   const verifiedPngData = useAtomValue(verifiedPngDataState);
-  const { dropzone } = useVerifiedInscriptionDropzone();
+  const { dropzone, downloadVerifiedPng } = useVerifiedInscriptionDropzone();
   const verifications = useAtomValue(pngVerificationsState);
 
   useEffect(() => {
@@ -75,9 +76,12 @@ export const Verifier: React.FC<{ children?: React.ReactNode }> = () => {
         </div>
       ) : (
         <div className="flex gap-8">
-          <div className="w-full sm:w-80 max-h-[500px] relative">
+          <div className="w-full sm:w-80 max-h-[500px] relative flex gap-10 flex-col">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={verifiedPngData} className="max-w-full aspect-auto" alt="Signed PNG" />
+            <Button width="100%" secondary onClick={downloadVerifiedPng}>
+              Download Image
+            </Button>
           </div>
           <div className="grow flex gap-5 flex-col">
             <Text variant="Heading035">Verification complete</Text>

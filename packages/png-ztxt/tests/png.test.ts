@@ -7,6 +7,7 @@ import {
   decodeChunk,
   validateCrc,
   makeTEXTChunk,
+  appendChunk,
 } from '../src/png';
 import { hashPNG, idatBytes } from '../src/hash';
 import { PNG, findIDATChunks } from '../src/png';
@@ -14,23 +15,13 @@ import { readFile, writeFile } from 'fs/promises';
 import * as P from 'micro-packed';
 import { readPng } from './helpers';
 import { test, expect } from 'vitest';
+import { createVerificationChunk, makeZTXtChunk } from '../src';
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils';
 
 test('can decode a png', async () => {
   const png = await readPng('./data/card.png');
   const debug = P.debug(Chunk);
-  // png.chunks.forEach(c => {
-  //   debug.encode(c);
-  // });
-  // debug.decode(file);
 });
-
-// test('decoding with itxt', async () => {
-//   const png = await readPng('./data/screenshot1.png');
-//   const debug = P.debug(Chunk);
-//   png.chunks.forEach(c => {
-//     console.log(decodeChunk(c));
-//   });
-// });
 
 test('writing a chunk', async () => {
   const png = await readPng('./data/card.png');
@@ -77,10 +68,7 @@ test('validating crc', async () => {
 test('hashing png', async () => {
   const png = await readPng('./data/screenshot1.png');
   const hash = hashPNG(png);
-  const expected = new Uint8Array([
-    137, 100, 114, 217, 13, 130, 222, 141, 44, 10, 39, 230, 69, 137, 6, 87, 77, 96, 255, 94, 115,
-    148, 32, 217, 59, 97, 125, 251, 79, 124, 92, 51,
-  ]);
+  const expected = hexToBytes('e230ac890d2bb7cf5c0cb1d59fbe74ec42956c89d2207838682d5e0e4ea4ad83');
   expect(P.equalBytes(hash, expected)).toEqual(true);
 });
 
@@ -88,4 +76,22 @@ test('idatBytes', async () => {
   const png = await readPng('./data/screenshot1.png');
   const bytes = idatBytes(png);
   expect(bytes.length).toEqual(361630);
+});
+
+test('hashing png removes verification chunk', async () => {
+  const png = await readPng('./data/card.png');
+  const initHash = hashPNG(png);
+  const newChunk = createVerificationChunk('STX', new Uint8Array([]));
+  appendChunk(png, newChunk);
+  const hash = hashPNG(png);
+  expect(P.equalBytes(hash, initHash)).toEqual(true);
+});
+
+test('hashing includes non-verification chunks', async () => {
+  const png = await readPng('./data/card.png');
+  const initHash = hashPNG(png);
+  const newChunk = makeZTXtChunk('something', hexToBytes('deadbeef'));
+  appendChunk(png, newChunk);
+  const hash = hashPNG(png);
+  expect(P.equalBytes(hash, initHash)).toEqual(false);
 });
