@@ -13,6 +13,7 @@ import { PNG, findIDATChunks } from '../src/png';
 import { readFile, writeFile } from 'fs/promises';
 import * as P from 'micro-packed';
 import { readPng } from './helpers';
+import { test, expect } from 'vitest';
 
 test('can decode a png', async () => {
   const png = await readPng('./data/card.png');

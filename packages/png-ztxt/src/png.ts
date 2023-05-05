@@ -19,7 +19,7 @@ export const iTXtChunkData = P.struct({
 export const zTXtChunkData = P.struct({
   keyword: P.cstring,
   compressionMethod: P.U8,
-  value: P.string(null),
+  value: P.bytes(null),
 });
 
 export const tEXtChunkData = P.struct({
@@ -88,11 +88,11 @@ type DecodedTextChunk<Type extends string, Coder> = {
   data: Uint8Array;
 };
 
-type DecodedITXTChunk = DecodedTextChunk<'iTXt', typeof iTXtChunkData>;
-type DecodedZTXTChunk = DecodedTextChunk<'zTXt', typeof zTXtChunkData>;
-type DecodedTEXTChunk = DecodedTextChunk<'tEXt', typeof tEXtChunkData>;
+export type DecodedITXTChunk = DecodedTextChunk<'iTXt', typeof iTXtChunkData>;
+export type DecodedZTXTChunk = DecodedTextChunk<'zTXt', typeof zTXtChunkData>;
+export type DecodedTEXTChunk = DecodedTextChunk<'tEXt', typeof tEXtChunkData>;
 
-type DecodedChunk =
+export type DecodedChunk =
   | DecodedITXTChunk
   | DecodedTEXTChunk
   | DecodedZTXTChunk
