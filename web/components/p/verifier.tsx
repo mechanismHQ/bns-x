@@ -17,6 +17,7 @@ import {
   pngHashAtom,
   pngVerificationsState,
   verificationNameState,
+  imageDataState,
 } from '@store/verified-inscriptions';
 import { useVerifiedInscriptionDropzone } from '@common/hooks/use-verified-inscription-dropzone';
 import Image from 'next/image';
@@ -26,6 +27,7 @@ import { CheckIcon } from '@components/icons/check';
 import { truncateMiddle } from '@common/utils';
 import { DuplicateIcon } from '@components/icons/duplicate';
 import { Button } from '@components/button';
+import { useConnect } from '@common/hooks/use-connect';
 
 export const VerificationAddress: React.FC<{ verification: Verification }> = ({ verification }) => {
   const name = useAtomValue(loadable(verificationNameState(verification)));
@@ -46,8 +48,10 @@ export const VerificationAddress: React.FC<{ verification: Verification }> = ({ 
 export const Verifier: React.FC<{ children?: React.ReactNode }> = () => {
   const pngHash = useAtomValue(pngHashAtom);
   const verifiedPngData = useAtomValue(verifiedPngDataState);
-  const { dropzone, downloadVerifiedPng } = useVerifiedInscriptionDropzone();
+  const { dropzone, downloadVerifiedPng, signFile } = useVerifiedInscriptionDropzone();
   const verifications = useAtomValue(pngVerificationsState);
+  const imageData = useAtomValue(imageDataState);
+  const { isSignedIn, openAuthRequest, isRequestPending } = useConnect();
 
   useEffect(() => {
     if (!pngHash) return;
@@ -62,35 +66,94 @@ export const Verifier: React.FC<{ children?: React.ReactNode }> = () => {
 
   return (
     <Stack px="29px">
-      {verifiedPngData === null ? (
-        <div
-          className="w-full h-[300px] bg-cyan-900/50 text-center justify-center items-center flex rounded-md"
-          {...dropzone.getRootProps()}
-        >
-          <div className="max-w-sm">
-            <input {...dropzone.getInputProps()} />
-            <p className="max-w-sm text-slate-400">
-              Drag and drop a PNG image, or click to select a file
-            </p>
+      <div className="flex gap-8 flex-col">
+        <div className="w-full">
+          <div className="flex flex-col gap-0">
+            <Text variant="Heading035">Verified Inscriptions</Text>
+            <Text variant="Heading05" color="$text-dim">
+              Add or verify cryptographic attestations to an image
+            </Text>
           </div>
         </div>
-      ) : (
-        <div className="flex gap-8">
-          <div className="w-full sm:w-80 max-h-[500px] relative flex gap-10 flex-col">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={verifiedPngData} className="max-w-full aspect-auto" alt="Signed PNG" />
-            <Button width="100%" secondary onClick={downloadVerifiedPng}>
-              Download Image
-            </Button>
+        <div className="flex flex-col sm:flex-row gap-8">
+          <div className="w-full sm:w-1/2">
+            {imageData === null ? (
+              <div
+                className="w-full h-[300px] bg-cyan-900/50 text-center justify-center items-center flex rounded-md cursor-pointer"
+                {...dropzone.getRootProps()}
+              >
+                <div className="max-w-sm">
+                  <input {...dropzone.getInputProps()} />
+                  <p className="max-w-sm text-slate-400">
+                    Drag and drop a PNG image, or click to select a file
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imageData}
+                  className="max-w-full aspect-auto rounded-md"
+                  alt="Signed PNG"
+                />
+                <Button className="" tertiary onClick={downloadVerifiedPng}>
+                  Download Image
+                </Button>
+              </>
+            )}
           </div>
-          <div className="grow flex gap-5 flex-col">
-            <Text variant="Heading035">Verification complete</Text>
-            <Text variant="Body02">This image contains the following verifications:</Text>
-            {/* <Text variant="Body01">Your image has been updated with your signature.</Text> */}
-            {verificationRows}
+          <div className="w-full sm:w-1/2 flex flex-col gap-5">
+            {verifiedPngData !== null && (
+              <>
+                <Text variant="Heading035">Verification complete</Text>
+                <Text variant="Body02">This image contains the following verifications:</Text>
+                {/* <Text variant="Body01">Your image has been updated with your signature.</Text> */}
+                {verificationRows}
+              </>
+            )}
+            {imageData !== null && verifiedPngData === null && (
+              <>
+                <Text variant="Heading05">No verifications were found on this image.</Text>
+                {isSignedIn ? (
+                  <>
+                    <Button onClick={signFile}>Add your signature</Button>
+                    {/* <Text variant="Body01">Add your signature</Text> */}
+                  </>
+                ) : (
+                  <>
+                    <Text variant="Body01">
+                      If you&apos;d like to add your signature, first connect your wallet.
+                    </Text>
+                    <Button
+                      onClick={async () => await openAuthRequest()}
+                      disabled={isRequestPending}
+                    >
+                      {isRequestPending ? 'Connecting...' : 'Sign in'}
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+            {pngHash !== null && (
+              <>
+                <div className="flex flex-row gap-2 items-center">
+                  <Text variant="Body02" color="$text-dim">
+                    PNG Hash:{' '}
+                  </Text>
+                  <span className="font-mono text-gray-400 text-sm">
+                    {truncateMiddle(bytesToHex(pngHash), 8)}
+                  </span>
+                  <DuplicateIcon
+                    className="relative -top-[1px]"
+                    clipboardText={bytesToHex(pngHash)}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
       {/* <input type="file" name="file" onChange={onFile} />
       {pngHash !== null && <Beutton onClick={signFile}>Sign</Beutton>} */}

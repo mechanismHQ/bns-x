@@ -15,7 +15,8 @@ import {
   createVerificationChunk,
   getPngVerifications,
   pngMessage,
-  PNG,
+  createSTXVerification,
+  signatureVrsToRsv,
 } from '@bns-x/png';
 import { hexToBytes } from 'micro-stacks/common';
 
@@ -23,11 +24,15 @@ export function useVerifiedInscriptionDropzone() {
   const { openSignMessage, isRequestPending } = useOpenSignMessage();
 
   const addSignature = useAtomCallback(
-    useCallback((get, set, signature: string) => {
-      set(pngSignatureAtom, signature);
-      const sigBytes = hexToBytes(signature);
+    useCallback((get, set, payload: { signature: string; publicKey: string }) => {
+      set(pngSignatureAtom, payload.signature);
+      const sigBytes = hexToBytes(payload.signature);
+      const pubkeyBytes = hexToBytes(payload.publicKey);
       const png = get(pngAtom)!;
-      const verificationChunk = createVerificationChunk('STX', sigBytes);
+      const verificationChunk = createSTXVerification({
+        signature: sigBytes,
+        publicKey: pubkeyBytes,
+      });
       appendChunk(png, verificationChunk);
       set(verifiedPngAtom, png);
     }, [])
@@ -41,7 +46,7 @@ export function useVerifiedInscriptionDropzone() {
         await openSignMessage({
           message: pngMessage(hash),
           async onFinish(payload) {
-            await addSignature(payload.signature);
+            await addSignature(payload);
           },
         });
       },
@@ -61,27 +66,22 @@ export function useVerifiedInscriptionDropzone() {
   );
 
   const onDrop = useAtomCallback(
-    useCallback(
-      (get, set, acceptedFiles: File[]) => {
-        const [file] = acceptedFiles;
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async () => {
-          const arrayBuffer = reader.result as ArrayBuffer;
-          const bytes = new Uint8Array(arrayBuffer);
-          set(pngBytesAtom, bytes);
-          const png = get(pngAtom)!;
-          const verifications = getPngVerifications(png);
-          if (verifications.length > 0) {
-            set(verifiedPngAtom, png);
-          } else {
-            await signFile();
-          }
-        };
-        reader.readAsArrayBuffer(file);
-      },
-      [signFile]
-    )
+    useCallback((get, set, acceptedFiles: File[]) => {
+      const [file] = acceptedFiles;
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        const bytes = new Uint8Array(arrayBuffer);
+        set(pngBytesAtom, bytes);
+        const png = get(pngAtom)!;
+        const verifications = getPngVerifications(png);
+        if (verifications.length > 0) {
+          set(verifiedPngAtom, png);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }, [])
   );
 
   const dropzone = useDropzone({

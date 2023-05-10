@@ -32,6 +32,11 @@ export const pngVerificationsState = atom(get => {
   return getPngVerifications(png);
 });
 
+function imageBlob(bytes: Uint8Array) {
+  const blob = new Blob([bytes], { type: 'image/png' });
+  return URL.createObjectURL(blob);
+}
+
 export const verifiedPngDataState = atom(get => {
   const png = get(verifiedPngAtom);
   if (!png) return null;
@@ -39,8 +44,19 @@ export const verifiedPngDataState = atom(get => {
   return URL.createObjectURL(blob);
 });
 
+export const imageDataState = atom(get => {
+  const verified = get(verifiedPngAtom);
+  if (verified !== null) {
+    return imageBlob(PNG.encode(verified));
+  }
+  const basePng = get(pngBytesAtom);
+  if (basePng === null) return null;
+  return imageBlob(basePng);
+});
+
 export const verificationNameState = atomFamily((verification: Verification) => {
   return atom(get => {
+    console.log('verification', verification);
     if (verification.protocol.toLowerCase() === 'stx') {
       const name = get(addressDisplayNameState(verification.address));
       return name;

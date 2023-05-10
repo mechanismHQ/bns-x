@@ -6,6 +6,7 @@ import {
   makeStructuredDataHash,
   recoverSignature,
   hashMessage,
+  verifyMessageSignature,
   encodeMessage,
 } from 'micro-stacks/connect';
 import { ChainID } from 'micro-stacks/network';
@@ -13,7 +14,7 @@ import * as P from 'micro-packed';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils';
 import { sha256 } from '@noble/hashes/sha256';
 import { StacksNetworkVersion, publicKeyToStxAddress } from 'micro-stacks/crypto';
-import type { PNGFile } from './png';
+import type { ChunkType, PNGFile } from './png';
 import { PNG } from './png';
 import { zTXtChunkData } from './png';
 import { decompressZTXt, makeZTXtChunk } from './ztxt';
@@ -76,8 +77,15 @@ export function signatureVrsToRsv(signature: string) {
 export const verifiedInscriptionData = P.struct({
   protocol: P.cstring,
   version: P.U8,
+  signatureData: P.bytes(null),
+});
+
+export const stxSignatureData = P.struct({
+  publicKey: P.bytes(33),
   signature: P.bytes(null),
 });
+
+export type STXSignatureData = P.UnwrapCoder<typeof stxSignatureData>;
 
 export type DecodedVerification = P.UnwrapCoder<typeof verifiedInscriptionData>;
 
@@ -123,12 +131,23 @@ export function verifyDecodedVerification(
   verificationData: DecodedVerification,
   pngHash: Uint8Array
 ): Verification | false {
-  const { protocol, signature } = verificationData;
+  const { protocol, signatureData } = verificationData;
   try {
     switch (protocol.toLowerCase()) {
       case 'stx': {
-        const address = recoverStacksAddress(signature, pngHash);
-        return { protocol, address };
+        const { publicKey, signature } = stxSignatureData.decode(signatureData);
+        try {
+          const verified = verifyMessageSignature({
+            message: pngHash,
+            publicKey: bytesToHex(publicKey),
+            signature: bytesToHex(signature),
+          });
+          if (!verified) return false;
+          const stxAddress = publicKeyToStxAddress(publicKey, StacksNetworkVersion.mainnetP2PKH);
+          return { protocol, address: stxAddress };
+        } catch (error) {
+          return false;
+        }
       }
       default: {
         console.warn(`Unable to verify protocol ${protocol}`);
@@ -143,18 +162,30 @@ export function verifyDecodedVerification(
 export function getPngVerifications(pngOrBytes: PNGFile | Uint8Array): Verification[] {
   const png = pngOrBytes instanceof Uint8Array ? PNG.decode(pngOrBytes) : pngOrBytes;
   const verifications = getVerificationChunks(png);
-  const pngHash = hashPNG(png);
+  const pngHashBase = hashPNG(png);
+  const pngHash = pngMessageHash(pngHashBase);
   const verified = verifications
     .map(v => verifyDecodedVerification(v, pngHash))
     .filter((v): v is Verification => v !== false);
   return verified;
 }
 
-export function createVerificationChunk(protocol: string, signature: Uint8Array) {
+export function createVerificationChunk(protocol: string, signatureData: Uint8Array) {
   const sigData = verifiedInscriptionData.encode({
     protocol,
     version: 1,
-    signature,
+    signatureData,
   });
   return makeZTXtChunk(VERIFIED_INSCRIPTION_KEYWORD, sigData);
+}
+
+export function createSTXVerification({
+  signature,
+  publicKey,
+}: {
+  signature: Uint8Array;
+  publicKey: Uint8Array;
+}) {
+  const signatureData = stxSignatureData.encode({ signature, publicKey });
+  return createVerificationChunk('STX', signatureData);
 }
