@@ -56,7 +56,6 @@ export const imageDataState = atom(get => {
 
 export const verificationNameState = atomFamily((verification: Verification) => {
   return atom(get => {
-    console.log('verification', verification);
     if (verification.protocol.toLowerCase() === 'stx') {
       const name = get(addressDisplayNameState(verification.address));
       return name;
@@ -64,3 +63,5 @@ export const verificationNameState = atomFamily((verification: Verification) => 
     return null;
   });
 }, dequal);
+
+export const isFetchingExampleAtom = atom(false);

@@ -84,6 +84,21 @@ export function useVerifiedInscriptionDropzone() {
     }, [])
   );
 
+  const fetchExample = useAtomCallback(
+    useCallback(async (get, set) => {
+      const url = '/signed-example.png';
+      const res = await fetch(url);
+      const data = await res.arrayBuffer();
+      const bytes = new Uint8Array(data);
+      set(pngBytesAtom, bytes);
+      const png = get(pngAtom)!;
+      const verifications = getPngVerifications(png);
+      if (verifications.length > 0) {
+        set(verifiedPngAtom, png);
+      }
+    }, [])
+  );
+
   const dropzone = useDropzone({
     onDrop,
     maxFiles: 1,
@@ -97,5 +112,6 @@ export function useVerifiedInscriptionDropzone() {
     signFile,
     isRequestPending,
     downloadVerifiedPng,
+    fetchExample,
   };
 }

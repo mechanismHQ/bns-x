@@ -28,6 +28,7 @@ import { truncateMiddle } from '@common/utils';
 import { DuplicateIcon } from '@components/icons/duplicate';
 import { Button } from '@components/button';
 import { useConnect } from '@common/hooks/use-connect';
+import { LinkText } from '@components/link';
 
 export const VerificationAddress: React.FC<{ verification: Verification }> = ({ verification }) => {
   const name = useAtomValue(loadable(verificationNameState(verification)));
@@ -48,7 +49,8 @@ export const VerificationAddress: React.FC<{ verification: Verification }> = ({ 
 export const Verifier: React.FC<{ children?: React.ReactNode }> = () => {
   const pngHash = useAtomValue(pngHashAtom);
   const verifiedPngData = useAtomValue(verifiedPngDataState);
-  const { dropzone, downloadVerifiedPng, signFile } = useVerifiedInscriptionDropzone();
+  const { dropzone, downloadVerifiedPng, signFile, fetchExample } =
+    useVerifiedInscriptionDropzone();
   const verifications = useAtomValue(pngVerificationsState);
   const imageData = useAtomValue(imageDataState);
   const { isSignedIn, openAuthRequest, isRequestPending } = useConnect();
@@ -149,6 +151,16 @@ export const Verifier: React.FC<{ children?: React.ReactNode }> = () => {
                     clipboardText={bytesToHex(pngHash)}
                   />
                 </div>
+              </>
+            )}
+            {imageData === null && (
+              <>
+                <Text variant="Body01" color="$text-dim">
+                  Upload a PNG image to get started.
+                </Text>
+                <Text className="underline cursor-pointer" onClick={fetchExample}>
+                  Fetch an example
+                </Text>
               </>
             )}
           </div>
