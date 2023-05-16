@@ -78,7 +78,7 @@ export function makeTEXTChunk({ keyword, value }: { keyword: string; value: stri
 }
 
 export function appendChunk(file: PNGFile, chunk: ChunkType) {
-  file.chunks.splice(file.chunks.length - 2, 0, chunk);
+  file.chunks.splice(-1, 0, chunk);
 }
 
 type DecodedTextChunk<Type extends string, Coder> = {

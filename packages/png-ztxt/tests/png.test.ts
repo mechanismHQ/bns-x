@@ -95,3 +95,32 @@ test('hashing includes non-verification chunks', async () => {
   const hash = hashPNG(png);
   expect(P.equalBytes(hash, initHash)).toEqual(false);
 });
+
+test('adding verification to image with multiple idat chunks', async () => {
+  const pre = await readPng('./data/profile.png');
+
+  const verificationHex =
+    '000000887a54587476657269666965642d696e736372697074696f6e0000789c01670098ff535458000103145d8371fb09f59caa5918419da4677c900910689f86a9e9bd708562b5b601c5c3cd8afdd38b2d72c7f8e48827c8f314c668bec3344976c94dd56887750f097a296c7ae79402b7758f323e5a6876a4b4c7bd64a5815affdcc47cf21814b6f60800f42a32df07c7ce75';
+  const verification = Chunk.decode(hexToBytes(verificationHex));
+
+  appendChunk(pre, verification);
+
+  const ztxtChunk = pre.chunks.at(-2);
+  expect(ztxtChunk?.type).toEqual('zTXt');
+
+  // ensure all idat chunks are sequential
+  let idatStarted = false;
+  let idatEnded = false;
+  pre.chunks.forEach(c => {
+    if (c.type === 'IDAT') {
+      if (!idatStarted) {
+        idatStarted = true;
+      }
+      expect(idatEnded).toEqual(false);
+    } else {
+      if (idatStarted) {
+        idatEnded = true;
+      }
+    }
+  });
+});
