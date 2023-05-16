@@ -36,6 +36,8 @@ const allNamespaces = [
   'acloud',
   'penis',
   'stacksparrots',
+  'sats',
+  'ord',
   // "Labubu",
 ];
 
@@ -83,7 +85,8 @@ async function run() {
           const meta = await getNamespace(ns);
           return {
             ns,
-            lifetime: meta?.properties.lifetime,
+            controller: meta.properties.namespaceImport,
+            // lifetime: meta?.properties.lifetime,
           };
         } catch (error) {
           // console.log(`Error fetching ${ns}`);
@@ -93,9 +96,13 @@ async function run() {
     )
   ).filter(Boolean);
   for (const namespace of allInfo) {
-    if (namespace?.lifetime === 0n) {
-      console.log('No expiration:', namespace.ns);
+    if (namespace?.controller.includes('community')) {
+      console.log(namespace.ns);
     }
+    // console.log(namespace?.ns, namespace?.controller);
+    // if (namespace?.lifetime === 0n) {
+    //   console.log('No expiration:', namespace.ns);
+    // }
   }
   const sats = await provider.ro(bns.getNamespaceProperties({ namespace: asciiToBytes('sats') }), {
     json: true,
