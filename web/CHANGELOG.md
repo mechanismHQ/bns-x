@@ -1,5 +1,13 @@
 # web
 
+## 0.2.4
+
+### Patch Changes
+
+- Updated dependencies [17a728b]
+- Updated dependencies [3da4110]
+  - @bns-x/png@0.2.5
+
 ## 0.2.3
 
 ### Patch Changes
