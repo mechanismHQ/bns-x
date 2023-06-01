@@ -4,6 +4,7 @@ import { namesByAddressBnsxSchema } from '@bns-x/core';
 import { z } from 'zod';
 import { logger } from '~/logger';
 import { DbFetcher } from '@fetchers/adapters/db-fetcher';
+import { bnsContractAsset } from '~/contracts';
 
 export const namesRoutes: FastifyPlugin = (fastify, _opts, done) => {
   fastify.get(
@@ -46,6 +47,36 @@ The logic for determining name order in the \`names\` property is:
     }
   );
 
+  fastify.get(
+    '/total-names',
+    {
+      schema: {
+        summary: 'Fetch total number of names',
+        tags: ['BNS'],
+        response: {
+          200: z.object({
+            total: z.number(),
+          }),
+          404: errorSchema,
+          500: errorSchema,
+        },
+      },
+    },
+    async (req, res) => {
+      const { fetcher } = req.server;
+      if (DbFetcher.isDb(fetcher)) {
+        console.log(bnsContractAsset());
+        const nfts = await fetcher.stacksDb.nftCustody.count({
+          where: {
+            assetIdentifier: bnsContractAsset(),
+          },
+        });
+        return res.status(200).send({ total: nfts });
+      }
+      return res.status(500).send({ error: { message: 'Unable to fetch total names' } });
+    }
+  );
+
   fastify.get('/names/bnsx.csv', {}, async (req, res) => {
     const { fetcher } = req.server;
     if (DbFetcher.isDb(fetcher)) {
@@ -54,7 +85,7 @@ The logic for determining name order in the \`names\` property is:
       names.forEach(n => (str += `${[n.decoded].join(',')}\n`));
       return res.status(200).send(str);
     }
-    return res.status(500).send({ error: { message: 'Unable to iterate names' } });
+    return res.status(500).send({ error: { message: 'Unable to get total names' } });
   });
 
   done();

@@ -53,7 +53,7 @@ export async function makeApp({
   app.setErrorHandler(function (error, request, reply) {
     logger.error(
       {
-        error,
+        err: error,
         path: request.url,
       },
       'API Server Error'
@@ -62,7 +62,7 @@ export async function makeApp({
       const status = getHTTPStatusCodeFromError(error);
       return reply.status(status).send({ error: error.message, code: error.code });
     }
-    return reply.status(500).send({ error: 'Internal server error' });
+    return reply.status(500).send({ error: { message: 'Internal server error' } });
   });
 
   await app.register(metricsPlugin);

@@ -88,4 +88,23 @@ export class BnsService {
         });
     }
 
+    /**
+     * Fetch total number of names
+     * @returns any Default Response
+     * @throws ApiError
+     */
+    public getBnsTotalNames(): CancelablePromise<{
+        total: number;
+        names: number;
+    }> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/bns/total-names',
+            errors: {
+                404: `Default Response`,
+                500: `Default Response`,
+            },
+        });
+    }
+
 }
