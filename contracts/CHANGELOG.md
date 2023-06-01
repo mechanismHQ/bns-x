@@ -1,5 +1,12 @@
 # contracts
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [44cd014]
+  - @bns-x/client@0.3.2
+
 ## 0.1.1
 
 ### Patch Changes

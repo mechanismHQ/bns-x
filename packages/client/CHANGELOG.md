@@ -1,5 +1,11 @@
 # @bns-x/client
 
+## 0.3.2
+
+### Patch Changes
+
+- 44cd014: Adds a new "get total names" endpoint to the API. This can be fetched at `/bns/total-names`.
+
 ## 0.3.1
 
 ### Patch Changes
