@@ -71,6 +71,12 @@ plan:
             path: contracts/proposals/proposal-bootstrap.clar
             anchor-block-only: true
             # clarity-version: 1
+        - contract-publish:
+            contract-name: name-registrar
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 13970
+            path: contracts/testnet/name-registrar.clar
+            anchor-block-only: true
       epoch: "2.0"
     - id: 1
       transactions:

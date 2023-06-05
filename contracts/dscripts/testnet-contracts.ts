@@ -3,6 +3,7 @@ const needsConverted = [
   'name-wrapper.clar',
   'query-helper.clar',
   'name-wrapper-v2.clar',
+  'name-registrar.clar',
 ];
 
 await Promise.all(

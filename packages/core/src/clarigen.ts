@@ -2579,6 +2579,39 @@ export const contracts = {
     clarity_version: 'Clarity1',
     contractName: 'fake-nft',
   },
+  nameRegistrar: {
+    functions: {
+      nameRegister: {
+        name: 'name-register',
+        access: 'public',
+        args: [
+          { name: 'name', type: { buffer: { length: 48 } } },
+          { name: 'namespace', type: { buffer: { length: 20 } } },
+          { name: 'amount', type: 'uint128' },
+          { name: 'hashed-fqn', type: { buffer: { length: 20 } } },
+          { name: 'salt', type: { buffer: { length: 20 } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'int128' } } },
+      } as TypedAbiFunction<
+        [
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          amount: TypedAbiArg<number | bigint, 'amount'>,
+          hashedFqn: TypedAbiArg<Uint8Array, 'hashedFqn'>,
+          salt: TypedAbiArg<Uint8Array, 'salt'>
+        ],
+        Response<boolean, bigint>
+      >,
+    },
+    maps: {},
+    variables: {},
+    constants: {},
+    non_fungible_tokens: [],
+    fungible_tokens: [],
+    epoch: 'Epoch20',
+    clarity_version: 'Clarity1',
+    contractName: 'name-registrar',
+  },
   nameWrapper: {
     functions: {
       registerSelf: {
@@ -4227,6 +4260,12 @@ export const deployments = {
   fakeNft: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.fake-nft',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.fake-nft',
+    testnet: null,
+    mainnet: null,
+  },
+  nameRegistrar: {
+    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar',
+    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar',
     testnet: null,
     mainnet: null,
   },

@@ -51,6 +51,14 @@ FAUCET_KEY=de433bdfa14ec43aa1098d5be594c8ffb20a31485ff9de2923b2689471c401b801
 
 At the root level of the project, run `vr bootstrap`. This will run a script that polls the local devnet chain and deploys a few setup contracts once the chain is setup.
 
+**Build local packages**
+
+The API and web app use local packages inside this monorepo, so they must be built. To do so, run:
+
+```bash
+pnpm build:packages
+```
+
 **Setup and run the API**
 
 First, setup the API. Create a file at `./api/.env.local`. You need a few environment variables:
@@ -93,3 +101,14 @@ You can now run the web app with:
 cd web
 pnpm dev
 ```
+
+### Running on mainnet
+
+To run the Dots app for mainnet, modify `web/.env.local` to include:
+
+```
+NEXT_PUBLIC_NETWORK_KEY=mainnet
+NEXT_PUBLIC_API_URL=https://api.bns.xyz
+```
+
+Once changes, run `pnpm dev` in the `web` folder to run a mainnet version of Dots.

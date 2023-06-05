@@ -2873,6 +2873,41 @@ export const contracts = {
     'clarity_version': 'Clarity1',
     contractName: 'fake-nft',
   },
+  nameRegistrar: {
+    'functions': {
+      nameRegister: {
+        'name': 'name-register',
+        'access': 'public',
+        'args': [
+          { 'name': 'name', 'type': { 'buffer': { 'length': 48 } } },
+          { 'name': 'namespace', 'type': { 'buffer': { 'length': 20 } } },
+          { 'name': 'amount', 'type': 'uint128' },
+          { 'name': 'hashed-fqn', 'type': { 'buffer': { 'length': 20 } } },
+          { 'name': 'salt', 'type': { 'buffer': { 'length': 20 } } },
+        ],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'int128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          amount: TypedAbiArg<number | bigint, 'amount'>,
+          hashedFqn: TypedAbiArg<Uint8Array, 'hashedFqn'>,
+          salt: TypedAbiArg<Uint8Array, 'salt'>,
+        ],
+        Response<boolean, bigint>
+      >,
+    },
+    'maps': {},
+    'variables': {},
+    constants: {},
+    'non_fungible_tokens': [],
+    'fungible_tokens': [],
+    'epoch': 'Epoch20',
+    'clarity_version': 'Clarity1',
+    contractName: 'name-registrar',
+  },
   nameWrapper: {
     'functions': {
       registerSelf: {
@@ -4653,7 +4688,29 @@ export const accounts = {
   },
 } as const;
 
+export const identifiers = {
+  'bnsV1': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bns-v1',
+  'bnsxExtensions': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-extensions',
+  'bnsxRegistry': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-registry',
+  'extensionTrait': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.extension-trait',
+  'fakeFt': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.fake-ft',
+  'fakeNft': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.fake-nft',
+  'nameRegistrar': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar',
+  'nameWrapper': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-wrapper',
+  'nameWrapperV2': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-wrapper-v2',
+  'nftTrait': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.nft-trait',
+  'proposal2': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-2',
+  'proposalBootstrap':
+    'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap',
+  'proposalTrait': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-trait',
+  'queryHelper': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.query-helper',
+  'testUtils': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.test-utils',
+  'wrapperMigrator':
+    'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
+} as const;
+
 export const simnet = {
   accounts,
   contracts,
+  identifiers,
 } as const;
