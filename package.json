@@ -13,6 +13,8 @@
     "chainhook-test": "clarinet test --chainhooks chainhooks/tests/testing.chainhook.yaml --chainhooks chainhooks/tests/wrapper.chainhook.yaml --chainhooks chainhooks/tests/nft.chainhook.yaml --mine-block-delay 2 --allow-net tests/chainhooks-test.ts",
     "integration-test": "start-server-and-test test:server http://localhost:3003 chainhook-test",
     "web": "pnpm run --filter web dev",
+    "dev:web": "pnpm run --filter web dev",
+    "dev:api": "pnpm run --filter @bns-x/api-types dev",
     "web:prod": "pnpm --filter web start",
     "build": "turbo run build",
     "lint": "eslint packages/**/*.ts api/src/**/*.ts web/common/**/*.ts web/components/**/*.tsx web/pages/**/*.{ts,tsx}",

@@ -21,3 +21,4 @@ fly.toml
 .env.local
 .env.*.local
 api/docs
+!web/.env

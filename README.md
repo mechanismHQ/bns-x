@@ -38,6 +38,18 @@ clarinet test
 
 ### Running a local environment (blockchain, API, and web app)
 
+**Speedrun version**
+
+1. `vr integrate` - start the Clarinet devnet
+   - Leave running and open a new CLI tab
+1. `vr boostrap`
+   - Leave running and open a new CLI tab
+1. `pnpm build:packages`
+1. `pnpm dev:api`
+   - Leave running and open a new CLI tab
+1. `pnpm dev:web`
+   - Visit Dots at [localhost:3000](http://localhost:3000)
+
 #### Setup and start a Devnet chain
 
 To start up the local devnet environment:
@@ -66,16 +78,13 @@ pnpm build:packages
 
 #### Setup and run the API
 
-Next, in the `api` folder, run:
+Next, run:
 
 ```bash
-pnpm prebuild
-pnpm dev
+pnpm dev: api
 ```
 
 This will start the API at [localhost:3002](http://localhost:3002)
-
-Now, in the `api` folder, run `pnpm prisma migrate reset`. This will run migrations for your local database. Make sure you re-run this whenever you restart the local blockchain.
 
 **Optional: setup Postgres in the API server**
 
@@ -112,21 +121,10 @@ Then, run the API with `pnpm dev`.
 
 #### Setup and run the web app
 
-Create a file at `./web/.env.local` with a few environment variables. These are not private, they are keys copied from `./contracts/Settings/Devnet.toml`.
-
-```
-SECRET_COOKIE_PASSWORD=asdfasdfasdfasdfasdfasdfasdfasdf
-WRAPPER_SIGNER_KEY=753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601
-FAUCET_KEY=753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601
-
-NEXT_PUBLIC_NETWORK_KEY=devnet
-```
-
 You can now run the web app with:
 
 ```
-cd web
-pnpm dev
+pnpm dev:web
 ```
 
 ### Running Dots on mainnet
