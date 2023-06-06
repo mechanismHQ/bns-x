@@ -38,20 +38,25 @@ clarinet test
 
 ### Running a local environment (blockchain, API, and web app)
 
-**Setup and start a Devnet chain**
+#### Setup and start a Devnet chain
 
-Next, run a local Clarinet chain. To start this, run `vr integrate`. This will run some setup scripts and then run `clarinet integrate`.
+To start up the local devnet environment:
 
-Make a file at `./contracts/.env` with a few devnet private keys (these are not private, and are copied from `./contracts/Settings/Devnet.toml`):
-
-```
-DEPLOYER_KEY=753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601
-FAUCET_KEY=de433bdfa14ec43aa1098d5be594c8ffb20a31485ff9de2923b2689471c401b801
+```bash
+vr integrate
 ```
 
-At the root level of the project, run `vr bootstrap`. This will run a script that polls the local devnet chain and deploys a few setup contracts once the chain is setup.
+This will run some setup scripts and then run `clarinet integrate`.
 
-**Build local packages**
+Once the chain is running and BNS contracts are deployed, run:
+
+```bash
+vr bootstrap
+```
+
+This will run a script that polls the local devnet chain and deploys a few setup contracts once the chain is setup.
+
+#### Build local packages
 
 The API and web app use local packages inside this monorepo, so they must be built. To do so, run:
 
@@ -59,14 +64,35 @@ The API and web app use local packages inside this monorepo, so they must be bui
 pnpm build:packages
 ```
 
-**Setup and run the API**
+#### Setup and run the API
 
-First, setup the API. Create a file at `./api/.env.local`. You need a few environment variables:
+Next, in the `api` folder, run:
+
+```bash
+pnpm prebuild
+pnpm dev
+```
+
+This will start the API at [localhost:3002](http://localhost:3002)
+
+Now, in the `api` folder, run `pnpm prisma migrate reset`. This will run migrations for your local database. Make sure you re-run this whenever you restart the local blockchain.
+
+**Optional: setup Postgres in the API server**
+
+By default, the API runs in a "fallback" mode that queries on-chain contracts for all API requests. This works, but is less efficient and doesn't include all API endpoints.
+
+To setup Postgres, make sure Postgres is installed and running on your machine. Next, create a file at `./api/.env` with:
 
 ```
 # local postgres DB, you can change the DB name:
 BNSX_DB_URL="postgresql://localhost:5432/bnsx-dev?schema=public"
+```
 
+You might need to change the username and password for this to work, depending on your local Postgres environment.
+
+Next, create another file at `./api/.env.local` with:
+
+```
 # Stacks API DB: don't change this, it comes from clarinet integrate's docker setup
 STACKS_API_POSTGRES="postgresql://postgres:postgres@localhost:5433/stacks_api"
 
@@ -74,16 +100,17 @@ STACKS_API_POSTGRES="postgresql://postgres:postgres@localhost:5433/stacks_api"
 WORKER=true
 ```
 
-Now, in the `api` folder, run `pnpm prisma migrate reset`. This will run migrations for your local database. Make sure you re-run this whenever you restart the local blockchain.
+Next, run (in the `api` folder):
 
-Once the Devnet chain is running, you can start the API server:
-
-```
-cd api
-pnpm dev
+```bash
+pnpm prisma migrate dev
 ```
 
-**Setup and run the web app**
+When you restart your local devnet environment, you'll need to run `pnpm prisma migrate reset` to wipe your DB.
+
+Then, run the API with `pnpm dev`.
+
+#### Setup and run the web app
 
 Create a file at `./web/.env.local` with a few environment variables. These are not private, they are keys copied from `./contracts/Settings/Devnet.toml`.
 
@@ -102,7 +129,7 @@ cd web
 pnpm dev
 ```
 
-### Running on mainnet
+### Running Dots on mainnet
 
 To run the Dots app for mainnet, modify `web/.env.local` to include:
 
