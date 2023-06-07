@@ -26,6 +26,7 @@
     "@nelson-ui/react": "^0.1.6",
     "@nelson-ui/theme": "^0.1.7",
     "@radix-ui/react-dropdown-menu": "^2.0.4",
+    "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toggle": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.0.5",
     "@scure/btc-signer": "^0.5.1",
