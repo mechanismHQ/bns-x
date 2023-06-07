@@ -12,6 +12,7 @@
     "test:server": "pnpm run --filter api test:server",
     "chainhook-test": "clarinet test --chainhooks chainhooks/tests/testing.chainhook.yaml --chainhooks chainhooks/tests/wrapper.chainhook.yaml --chainhooks chainhooks/tests/nft.chainhook.yaml --mine-block-delay 2 --allow-net tests/chainhooks-test.ts",
     "integration-test": "start-server-and-test test:server http://localhost:3003 chainhook-test",
+    "api": "pnpm run --filter api dev",
     "web": "pnpm run --filter web dev",
     "dev:web": "pnpm run --filter web dev",
     "dev:api": "pnpm run --filter @bns-x/api-types dev",
