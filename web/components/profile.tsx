@@ -1,12 +1,15 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import type { BoxProps } from '@nelson-ui/react';
+import React, { useCallback, useMemo } from 'react';
 import { Stack, Box, Flex, SpaceBetween } from '@nelson-ui/react';
-import { currentUserV1NameState, currentUserAddressNameStringsState } from '@store/names';
-import type { ResponsiveVariant } from './text';
+import { ClarigenClient, contractFactory } from '@clarigen/core';
+import { asciiToBytes, hexToBytes, bytesToHex } from 'micro-stacks/common';
+import { networkAtom } from '@store/micro-stacks';
+import { Input } from '@components/ui/input';
+import { Check, AlertCircle } from 'lucide-react';
+import { currentUserAddressNameStringsState } from '@store/names';
 import { Text } from './text';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
-import { Button } from '@components/button';
+import { Button } from '@components/ui/button';
 import { useRouter } from 'next/router';
 import { useGradient } from '@common/hooks/use-gradient';
 import { stxAddressAtom } from '@store/micro-stacks';
@@ -15,6 +18,9 @@ import { BoxLink, Link, LinkText } from '@components/link';
 import { styled } from '@common/theme';
 import { usePunycode } from '@common/hooks/use-punycode';
 import { useAccountPath } from '@common/hooks/use-account-path';
+import { useOpenContractCall } from '@micro-stacks/react';
+import { hashFqn, contracts } from '@bns-x/core';
+import { PostConditionMode } from 'micro-stacks/transactions';
 
 const StyledName = styled(Text, {
   // initial: {
@@ -37,10 +43,6 @@ const StyledEditBox = styled(Box, {
 const StyledAvatar = styled(Box, {
   width: '86px',
   height: '86px',
-  // '@bp1': {
-  //   width: '40px',
-  //   height: '40px',
-  // },
 });
 
 export const ProfileRow: React.FC<{
@@ -103,18 +105,9 @@ export const ProfileRow: React.FC<{
       <StyledEditBox>
         <Stack isInline>
           <BoxLink href={namePath}>
-            <Button secondary={v1}>Edit</Button>
+            <Button variant="default">Edit</Button>
           </BoxLink>
-          {v1 && (
-            <Button
-              onClick={upgrade}
-              // secondary
-              // backgroundColor="$dark-primary-action-primary"
-              // color="$text-onPrimary"
-            >
-              Upgrade
-            </Button>
-          )}
+          {v1 && <Button onClick={upgrade}>Upgrade</Button>}
         </Stack>
         {/* {v1 ? <Button onClick={upgrade}>Upgrade</Button> : <Button disabled>Edit</Button>} */}
       </StyledEditBox>
@@ -131,8 +124,44 @@ const Border: React.FC = () => {
 };
 
 export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
+  const [isAvailable, setIsAvailable] = React.useState(false);
+  const [bnsName, setBnsName] = React.useState('');
+  const network = useAtomValue(networkAtom);
+  const clarigen = new ClarigenClient(network);
+  const { openContractCall } = useOpenContractCall();
   const allNames = useAtomValue(currentUserAddressNameStringsState);
   const v1Name = allNames.coreName;
+
+  const { bnsV1 } = contracts;
+  const bnsContract = contractFactory(bnsV1, 'ST000000000000000000002AMW42H.bns');
+
+  const register = async () => {
+    const { nameRegistrar } = contracts;
+    const name = bnsName.split('.')[0] as string;
+    const namespace = bnsName.split('.')[1] as string;
+    const price = 2000000;
+    const salt = '00';
+    const hashedFqn = hashFqn(name, namespace, salt);
+
+    const contract = contractFactory(
+      nameRegistrar,
+      `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar`
+    );
+
+    await openContractCall({
+      ...contract.nameRegister({
+        name: asciiToBytes(name),
+        namespace: asciiToBytes(namespace),
+        amount: price,
+        hashedFqn: hashedFqn,
+        salt: hexToBytes(salt),
+      }),
+      postConditionMode: PostConditionMode.Allow,
+      async onFinish(data) {
+        console.log('Broadcasted tx');
+      },
+    });
+  };
 
   useEffect(() => {
     console.log('All names:', allNames);
@@ -156,8 +185,27 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
     return allNames.coreName === null && allNames.bnsxNames.length === 0;
   }, [allNames.coreName, allNames.bnsxNames.length]);
 
-  const mintName = useCallback(() => {
-    window.open('https://btc.us', '_blank');
+  const fetchBnsAddress = React.useCallback(async (e: any) => {
+    const recipient = e.target.value;
+    setBnsName(recipient);
+    if (
+      recipient.endsWith('.btc') ||
+      recipient.endsWith('.stx') ||
+      recipient.endsWith('.id') ||
+      recipient.endsWith('.satoshi')
+    ) {
+      const canNameBeRegistered = bnsContract.canNameBeRegistered({
+        namespace: asciiToBytes('satoshi'),
+        name: asciiToBytes('sharko'),
+      });
+      const { value: isAvailable } = await clarigen.ro(canNameBeRegistered);
+      console.log({ isAvailable });
+      if (!isAvailable) {
+        console.log('not available');
+        return;
+      }
+      setIsAvailable(true);
+    }
   }, []);
 
   return (
@@ -165,18 +213,46 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
       <Box flexGrow={1} />
       <Stack width="100%" spacing="0px">
         {noNames ? (
-          <Stack spacing="0" alignContent="center" width="100%" textAlign="center">
-            <Text width="100%" variant="Display02">
-              No names here
-            </Text>
-            <Text width="100%" mt="15px" variant="Body02">
-              Looks like this address doesn&apos;t own any BNS or BNSx names. Mint a name then come
-              back.
-            </Text>
-            <Button type="big" onClick={mintName} mx="auto" mt="49px">
-              Mint name
-            </Button>
-          </Stack>
+          <div className="space-y-5 text-center">
+            <div className="space-y-6">
+              <h1 className="text-gray-200 text-7xl font-open-sauce-one font-medium tracking-normal leading-10">
+                No names here
+              </h1>
+              <p className="text-gray-200 text-sm font-inter font-normal tracking-normal leading-6">
+                Looks like this address doesn't own any BNS or BNSx names. Register a name below.
+              </p>
+            </div>
+            <div className="flex w-full max-w-xl mx-auto items-center space-x-3">
+              <div className="w-full relative">
+                <Input
+                  className="h-12 text-md"
+                  type="text"
+                  placeholder="BNS Name"
+                  value={bnsName}
+                  onChange={fetchBnsAddress}
+                />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  {bnsName.includes('.btc') ||
+                  bnsName.includes('.stx') ||
+                  bnsName.includes('.id') ||
+                  bnsName.includes('.satoshi') ? (
+                    isAvailable ? (
+                      <div className="p-1 bg-green-500/10 dark:bg-green-500/10 rounded-2xl">
+                        <Check className="w-3.5 h-3.5 text-green-500" />
+                      </div>
+                    ) : (
+                      <div className="p-1 bg-red-500/10 dark:bg-red-500/10 rounded-2xl">
+                        <AlertCircle className="w-3.5 h-3.5 text-red-500" />
+                      </div>
+                    )
+                  ) : null}
+                </div>
+              </div>
+              <Button className="w-60 text-md" size="lg" onClick={register}>
+                Register now
+              </Button>
+            </div>
+          </div>
         ) : (
           <>
             {v1Name !== null ? (
