@@ -51,6 +51,7 @@
     "@clarigen/node": "1.0.14",
     "@stacks/eslint-config": "1.2.0",
     "@stacks/prettier-config": "0.0.10",
+    "@types/jest": "^29.2.4",
     "@types/localtunnel": "^2.0.1",
     "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
