@@ -132,7 +132,9 @@ export const nameDetailsAtom = atomFamily((name: string) => {
       return 5000;
     },
     async queryFn() {
-      const details = await bnsApi.getNameDetailsFromFqn(name);
+      // const details = await bnsApi.getNameDetailsFromFqn(name);
+      const nameParsed = parseFqn(name);
+      const details = await trpc.getNameDetails.query(nameParsed);
       return details;
     },
   }))[0];

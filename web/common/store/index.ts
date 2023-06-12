@@ -60,7 +60,7 @@ export const registryAssetState = atom(get => {
 });
 
 export const bnsContractState = atom(get => {
-  return get(contractsClientState).legacyBns;
+  return get(contractsClientState).bnsCore;
 });
 
 export const bnsxAssetInfoState = atom(get => {
