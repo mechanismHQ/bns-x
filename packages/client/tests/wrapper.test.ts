@@ -1,4 +1,5 @@
 import { BnsContractsClient } from '../src/index';
+import { expect, test } from 'vitest';
 
 test('works for different environments', () => {
   process.env.NEXT_PUBLIC_NETWORK_KEY = '';

@@ -1,4 +1,5 @@
 import { BnsApiClient } from '../src';
+import { expect, test } from 'vitest';
 
 const api = new BnsApiClient();
 

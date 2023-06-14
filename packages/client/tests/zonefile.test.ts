@@ -1,4 +1,5 @@
 import { ZoneFile } from '../src/zonefile';
+import { expect, test, describe } from 'vitest';
 
 const _zonefileRaw =
   '$ORIGIN hank.btc.\n$TTL 3600\n_http._tcp\tIN\tURI\t10\t1\t"https://gaia.blockstack.org/hub/13WcjxWGz3JkZYhoPeCHw2ukcK1f1zH6M1/profile.json"\n\n_btc._addr\tIN\tTXT\t"bc1qqx4xnlcqkavs2d0e8wnxnj95yv87z7209dfp4e"\n\n';

@@ -1,5 +1,6 @@
 import { asciiToBytes } from 'micro-stacks/common';
 import { BnsContractsClient, hashFqn, randomSalt } from '../src';
+import { expect, test } from 'vitest';
 
 const client = new BnsContractsClient('devnet');
 const core = client.bnsCore;
