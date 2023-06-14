@@ -1,5 +1,14 @@
 # web
 
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [5b519d1]
+- Updated dependencies [293579a]
+  - @bns-x/core@0.2.1
+  - @bns-x/client@0.3.3
+
 ## 0.2.5
 
 ### Patch Changes

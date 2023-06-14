@@ -1,5 +1,15 @@
 # contracts
 
+## 0.1.3
+
+### Patch Changes
+
+- 293579a: Adds a contract for single-transaction name registrations
+- Updated dependencies [5b519d1]
+- Updated dependencies [293579a]
+  - @bns-x/core@0.2.1
+  - @bns-x/client@0.3.3
+
 ## 0.1.2
 
 ### Patch Changes

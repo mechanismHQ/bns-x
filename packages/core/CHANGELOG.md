@@ -1,5 +1,12 @@
 # @bns-x/core
 
+## 0.2.1
+
+### Patch Changes
+
+- 5b519d1: Adds client-side namespace properties, which are pulled from on-chain data.
+- 293579a: Adds a contract for single-transaction name registrations
+
 ## 0.2.0
 
 ### Minor Changes

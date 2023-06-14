@@ -1,5 +1,13 @@
 # @bns-x/api-types
 
+## 0.3.3
+
+### Patch Changes
+
+- Updated dependencies [5b519d1]
+- Updated dependencies [293579a]
+  - @bns-x/core@0.2.1
+
 ## 0.3.2
 
 ### Patch Changes
