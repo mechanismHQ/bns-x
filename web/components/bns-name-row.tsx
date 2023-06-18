@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, Box } from '@nelson-ui/react';
 import { ClarigenClient, contractFactory } from '@clarigen/core';
-import { asciiToBytes, hexToBytes, bytesToHex } from 'micro-stacks/common';
+import { asciiToBytes } from 'micro-stacks/common';
 import { networkAtom } from '@store/micro-stacks';
 import { Check, AlertCircle } from 'lucide-react';
 import { isMainnetState } from '@store/index';
@@ -13,12 +13,11 @@ import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { Button } from '@components/ui/button';
 import { useGradient } from '@common/hooks/use-gradient';
-import { stxAddressAtom } from '@store/micro-stacks';
 import { ustxToStx } from '@common/utils';
 import { styled } from '@common/theme';
-import { useOpenContractCall } from '@micro-stacks/react';
-import { hashFqn, contracts } from '@bns-x/core';
+import { contracts } from '@bns-x/core';
 import { PostConditionMode } from 'micro-stacks/transactions';
+import { useNameRegister } from '@common/hooks/use-name-register';
 
 const StyledName = styled(Text, {
   // initial: {
@@ -52,13 +51,10 @@ export const BnsNameRow: React.FC<{
   const [price, setPrice] = React.useState(0n);
   const debouncedValue = useDebounce<string>(name, 1000);
   const gradient = useGradient(name);
-  const { openContractCall } = useOpenContractCall();
-  const { bnsV1 } = contracts;
-  const bnsContract = contractFactory(bnsV1, 'ST000000000000000000002AMW42H.bns');
-  const stxAddress = useAtomValue(stxAddressAtom);
   const network = useAtomValue(networkAtom);
   const clarigen = new ClarigenClient(network);
   const isMainnet = useAtomValue(isMainnetState);
+  const { nameRegister, registerTxAtom } = useNameRegister(name, namespace, price);
 
   const memoizedNamePriceState = React.useMemo(
     () => namePriceState(`${debouncedValue || 'default'}.${isMainnet ? namespace : 'satoshi'}`),
@@ -66,8 +62,13 @@ export const BnsNameRow: React.FC<{
   );
   const namePrice = useAtomValue(memoizedNamePriceState);
 
+  const tx = useAtomValue(registerTxAtom); // TODO: use this to display some status of the tx
+
   useEffect(() => {
     async function checkAvailability() {
+      const { bnsV1 } = contracts;
+      const bnsContract = contractFactory(bnsV1, 'ST000000000000000000002AMW42H.bns');
+
       if (debouncedValue.length >= 2) {
         setIsLoading(true);
         const canNameBeRegistered = bnsContract.canNameBeRegistered({
@@ -93,30 +94,6 @@ export const BnsNameRow: React.FC<{
     checkAvailability();
   }, [debouncedValue]);
 
-  const register = async () => {
-    const { nameRegistrar } = contracts;
-    const salt = '00';
-    const hashedFqn = hashFqn(name, namespace, salt);
-
-    const contract = contractFactory(
-      nameRegistrar,
-      `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar`
-    );
-
-    await openContractCall({
-      ...contract.nameRegister({
-        name: asciiToBytes(name),
-        namespace: asciiToBytes(namespace),
-        amount: Number(price),
-        hashedFqn: hashedFqn,
-        salt: hexToBytes(salt),
-      }),
-      postConditionMode: PostConditionMode.Allow,
-      async onFinish(data) {
-        console.log('Broadcasted tx');
-      },
-    });
-  };
   return (
     <div className="flex items-center justify-between w-full h-24 px-8">
       <div className="flex items-center flex-row gap-4 min-w-0">
@@ -144,7 +121,7 @@ export const BnsNameRow: React.FC<{
         ) : (
           <Stack isInline>
             {isAvailable ? (
-              <Button variant="default" onClick={register}>
+              <Button variant="default" onClick={nameRegister}>
                 Claim
               </Button>
             ) : (
