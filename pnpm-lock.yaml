@@ -425,6 +425,7 @@ importers:
       react-dom: 18.2.0
       react-dropzone: ^14.2.3
       react-spring: ^9.6.1
+      sonner: ^0.5.0
       tailwind-merge: ^1.11.0
       tailwindcss: ^3.3.1
       tailwindcss-animate: ^1.0.5
@@ -503,6 +504,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-dropzone: 14.2.3_react@18.2.0
       react-spring: 9.6.1_biqbaboplfbrettd7655fr4n2y
+      sonner: 0.5.0_biqbaboplfbrettd7655fr4n2y
       tailwind-merge: 1.11.0
       tailwindcss-animate: 1.0.5_tailwindcss@3.3.1
       tinycolor2: 1.5.2
@@ -6561,7 +6563,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: true
@@ -6569,7 +6571,7 @@ packages:
   /axios/0.25.0_debug@4.3.4:
     resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: false
@@ -9149,6 +9151,17 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+
+  /follow-redirects/1.15.2_debug@4.3.4:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.4
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -13410,6 +13423,16 @@ packages:
       atomic-sleep: 1.0.0
     dev: false
 
+  /sonner/0.5.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-V5L4918wScYxpe3x1H92MV0vSkUqRREu8dwFf7dDTQmRMQ58r1vzSKCsULZ5HCTqxNkfCdhQXHf7rRMaj/MukQ==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /sort-keys/4.2.0:
     resolution: {integrity: sha512-aUYIEU/UviqPgc8mHR6IW1EGxkAXpeRETYcrzg8cLAvUPZcpAlleSXHV2mY7G12GphSH6Gzv+4MMVSSkbdteHg==}
     engines: {node: '>=8'}
@@ -14141,7 +14164,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.3.1
+      jest: 29.3.1_@types+node@18.0.6
       jest-util: 29.3.1
       json5: 2.2.3
       lodash.memoize: 4.1.2
