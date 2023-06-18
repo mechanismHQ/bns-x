@@ -25,6 +25,7 @@ import { hashFqn, contracts } from '@bns-x/core';
 import { PostConditionMode } from 'micro-stacks/transactions';
 import { useSwitchAccounts } from '@common/hooks/use-switch-accounts';
 import { BnsNameRow } from '@components/bns-name-row';
+import { Toaster } from 'sonner';
 
 const StyledName = styled(Text, {
   // initial: {
@@ -140,6 +141,7 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
         )}
       </div>
       <Box flexGrow={1} />
+      <Toaster theme="dark" closeButton />
     </>
   );
 };
