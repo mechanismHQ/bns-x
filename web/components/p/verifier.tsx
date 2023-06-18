@@ -6,7 +6,7 @@ import type { Verification } from '@bns-x/png';
 import { PNG, hashPNG, DOMAIN, pngMessage, appendChunk, createVerificationChunk } from '@bns-x/png';
 import { bytesToBase64, bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { useOpenSignMessage, useOpenSignStructuredMessage } from '@micro-stacks/react';
-import { Beutton } from '@components/ui/beutton';
+// import { Beutton } from '@components/ui/button';
 import { bufferCV, stringAsciiCV, tupleCV } from 'micro-stacks/clarity';
 import { verifiedInscriptionData } from '@bns-x/png';
 import {
