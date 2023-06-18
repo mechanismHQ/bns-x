@@ -5,8 +5,8 @@ import { AccountProgress, accountProgressStatusState } from '@store/accounts';
 import { BoxLink } from '@components/link';
 import { useSetPrimaryAccount } from '@common/hooks/use-set-primary-account';
 import { useRemoveAccount } from '@common/hooks/use-remove-account';
-import type { ButtonProps } from '@components/ui/beutton';
-import { Beutton } from '@components/ui/beutton';
+import type { ButtonProps } from '@components/ui/button';
+import { Button } from '@components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -103,9 +103,9 @@ export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <Beutton variant="ghost" size="sm" onClick={openNextTx}>
+              <Button variant="ghost" size="sm" onClick={openNextTx}>
                 <Play className="h-4" color={'var(--colors-text-dim)'} />
-              </Beutton>
+              </Button>
             </TooltipTrigger>
             <TooltipContent>
               <p>
@@ -119,7 +119,7 @@ export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
       )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Beutton
+          <Button
             size="sm"
             variant="outline"
             status={actionLabel.status}
@@ -127,7 +127,7 @@ export const AccountActions: React.FC<{ account: Account }> = ({ account }) => {
           >
             {actionLabel.label}
             <ChevronDown className="ml-1 w-3" />
-          </Beutton>
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {migrateOptionMessage !== null && (
