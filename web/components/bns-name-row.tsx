@@ -16,7 +16,6 @@ import { useGradient } from '@common/hooks/use-gradient';
 import { ustxToStx } from '@common/utils';
 import { styled } from '@common/theme';
 import { contracts } from '@bns-x/core';
-import { PostConditionMode } from 'micro-stacks/transactions';
 import { useNameRegister } from '@common/hooks/use-name-register';
 
 const StyledName = styled(Text, {
