@@ -6,7 +6,9 @@ import { StacksMainnet, StacksMocknet, StacksTestnet } from 'micro-stacks/networ
 import { privateKeyToStxAddress, StacksNetworkVersion } from 'micro-stacks/crypto';
 
 export let networkKey: 'devnet' | 'testnet' | 'mainnet' = 'devnet';
-export let network: StacksNetwork = new StacksMocknet();
+export let network: StacksNetwork = new StacksMocknet({
+  url: 'http://127.0.0.1:3999',
+});
 const networkKeyEnv = process.env.NETWORK_KEY;
 if (networkKeyEnv === 'testnet') {
   networkKey = 'testnet';
