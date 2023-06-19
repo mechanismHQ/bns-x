@@ -1,28 +1,34 @@
 import React from 'react';
-import { hashFqn, contracts } from '@bns-x/core';
-import { useOpenContractCall } from '@micro-stacks/react';
-import { ClarigenClient, contractFactory } from '@clarigen/core';
-import { asciiToBytes, hexToBytes, bytesToHex } from 'micro-stacks/common';
-import { registerTxAtom, registerTxIdAtom } from '@store/register';
+import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { makeZoneFile } from '@fungible-systems/zone-file';
-import { hashSha256 } from 'micro-stacks/crypto-sha';
-import { hashRipemd160 } from 'micro-stacks/crypto';
-import { networkAtom } from '@store/micro-stacks';
-import { PostConditionMode } from 'micro-stacks/transactions';
-import { bnsApi } from '@store/api';
-import { useAtom, useAtomValue } from 'jotai';
-import { toast } from 'sonner';
+import { hashFqn, contracts } from '@bns-x/core';
+import { contractFactory } from '@clarigen/core';
 import { isMainnetState } from '@store/index';
+import { registerTxAtom, registerTxIdAtom } from '@store/register';
+import { stxAddressAtom } from '@store/micro-stacks';
+import { useOpenContractCall } from '@micro-stacks/react';
+import { asciiToBytes, hexToBytes } from 'micro-stacks/common';
+import {
+  FungibleConditionCode,
+  makeStandardSTXPostCondition,
+  PostConditionMode,
+} from 'micro-stacks/transactions';
+import { toast } from 'sonner';
 
 export function useNameRegister(name: string, namespace: string, price: bigint) {
+  const stxAddress = useAtomValue(stxAddressAtom);
+  const isMainnet = useAtomValue(isMainnetState);
   const { openContractCall, isRequestPending } = useOpenContractCall();
   const { nameRegistrar } = contracts;
   const contract = contractFactory(
     nameRegistrar,
     `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar`
   );
-  const isMainnet = useAtomValue(isMainnetState);
+  const stxPostCondition = makeStandardSTXPostCondition(
+    stxAddress as string,
+    FungibleConditionCode.Equal,
+    price
+  );
 
   const nameRegister = useAtomCallback(
     React.useCallback(
@@ -35,7 +41,8 @@ export function useNameRegister(name: string, namespace: string, price: bigint) 
             hashedFqn: hashFqn(name, namespace, '00'),
             salt: hexToBytes('00'),
           }),
-          postConditionMode: PostConditionMode.Allow,
+          postConditionMode: PostConditionMode.Deny,
+          postConditions: [stxPostCondition],
           async onCancel() {
             console.log('Cancelled tx');
           },
