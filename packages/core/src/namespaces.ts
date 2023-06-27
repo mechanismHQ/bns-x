@@ -377,4 +377,32 @@ export const ALL_NAMESPACES = {
     },
     revealedAt: 71814n,
   },
+  satoshi: {
+    canUpdatePriceFunction: false,
+    launchedAt: 0n,
+    lifetime: 0n,
+    namespaceImport: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+    priceFunction: {
+      base: 10n,
+      buckets: [1n, 1n, 1n, 1n, 1n, 1n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 1n],
+      coeff: 1000n,
+      noVowelDiscount: 1n,
+      nonalphaDiscount: 1n,
+    },
+    revealedAt: 0n,
+  },
+  testable: {
+    canUpdatePriceFunction: false,
+    launchedAt: 0n,
+    lifetime: 0n,
+    namespaceImport: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+    priceFunction: {
+      base: 10n,
+      buckets: [1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n],
+      coeff: 64000n,
+      noVowelDiscount: 1n,
+      nonalphaDiscount: 1n,
+    },
+    revealedAt: 0n,
+  },
 };
