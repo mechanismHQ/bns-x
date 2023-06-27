@@ -141,7 +141,7 @@ export function hexToString(hex: any) {
  */
 export function hashFqn(name: string, namespace: string, salt: string | Uint8Array) {
   // Convert the salt value to a hexadecimal string if it's not already in that format.
-  const saltHex = typeof salt === 'string' ? salt : bytesToHex(salt);
+  const saltHex = typeof salt === 'string' ? salt : hexToString(bytesToHex(salt));
 
   // Convert the name and namespace values to hexadecimal strings.
   const nameBytes = asciiToHex(name);
