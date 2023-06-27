@@ -4,14 +4,10 @@ import {
   registryAssetState,
   contractsClientState,
   bnsContractState,
+  networkKeyAtom,
 } from '.';
 import { atom } from 'jotai';
-import {
-  currentAccountAtom,
-  networkAtom,
-  primaryAccountState,
-  stxAddressAtom,
-} from '@store/micro-stacks';
+import { currentAccountAtom, primaryAccountState, stxAddressAtom } from '@store/micro-stacks';
 import { convertNameBuff, getContractParts } from '../utils';
 import type { NonFungibleTokenHoldingsList } from '@stacks/stacks-blockchain-api-types';
 import { atomsWithQuery } from 'jotai-tanstack-query';
@@ -24,10 +20,12 @@ import { getApiUrl } from '@common/constants';
 import { parseZoneFile, makeZoneFile } from '@fungible-systems/zone-file';
 import { nameUpgradingAtom } from '@store/migration';
 import type { NameInfoResponse } from '@bns-x/core';
-import { doesNamespaceExpire, parseFqn } from '@bns-x/core';
+import { doesNamespaceExpire, parseFqn, NAMESPACES } from '@bns-x/core';
 import type { ZoneFileObject } from '@bns-x/client';
 import { ZoneFile } from '@bns-x/client';
 import { asciiToBytes } from 'micro-stacks/common';
+
+type NetworkKey = 'mainnet' | 'testnet' | 'devnet' | 'simnet';
 
 export const currentUserNamesState = atom(get => {
   const address = get(stxAddressAtom);
@@ -347,4 +345,35 @@ export const namespaceLifetimeState = atomFamily((namespace: string) => {
       return lifetime;
     },
   }))[0];
+});
+
+export const availableNamespacesState = atom(get => {
+  const networkKey = get(networkKeyAtom);
+  const excludeNames = [
+    'stacksparrot',
+    'spaghettipunk',
+    'satoshible',
+    'stacksparrots',
+    'sats',
+    'satoshibles',
+    'fren',
+    'miner',
+    'zest',
+    'citycoins',
+    'bitcoinmonkey',
+    'megapont',
+    'frens',
+    'trajan',
+    'crashpunk',
+    'mega',
+  ];
+
+  const keyToValue: Record<NetworkKey, string[]> = {
+    mainnet: NAMESPACES.filter(namespace => !excludeNames.includes(namespace)),
+    testnet: ['testable'],
+    devnet: ['satoshi'],
+    simnet: ['example'],
+  };
+
+  return keyToValue[networkKey] || [];
 });
