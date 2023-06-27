@@ -1,11 +1,10 @@
 import React from 'react';
 import { Stack, Box } from '@nelson-ui/react';
-import { ClarigenClient, contractFactory } from '@clarigen/core';
+import { ClarigenClient } from '@clarigen/core';
 import { asciiToBytes } from 'micro-stacks/common';
 import { networkAtom } from '@store/micro-stacks';
 import { Check, AlertCircle } from 'lucide-react';
-import { isMainnetState } from '@store/index';
-import { namePriceState } from '@store/names';
+import { bnsContractState } from '@store/index';
 import { Spinner } from '@components/spinner';
 import { useDebounce } from 'usehooks-ts';
 import { Text } from './text';
@@ -15,7 +14,7 @@ import { Button } from '@components/ui/button';
 import { useGradient } from '@common/hooks/use-gradient';
 import { ustxToStx } from '@common/utils';
 import { styled } from '@common/theme';
-import { contracts } from '@bns-x/core';
+import { computeNamePrice } from '@bns-x/core';
 import { useNameRegister } from '@common/hooks/use-name-register';
 
 const StyledName = styled(Text, {
@@ -44,7 +43,7 @@ const StyledAvatar = styled(Box, {
 export const BnsNameRow: React.FC<{
   name: string;
   namespace: string;
-}> = ({ name, namespace }) => {
+}> = ({ name, namespace = 'btc' }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isAvailable, setIsAvailable] = React.useState(false);
   const [price, setPrice] = React.useState(0n);
@@ -52,22 +51,13 @@ export const BnsNameRow: React.FC<{
   const gradient = useGradient(name);
   const network = useAtomValue(networkAtom);
   const clarigen = new ClarigenClient(network);
-  const isMainnet = useAtomValue(isMainnetState);
   const { nameRegister, registerTxAtom } = useNameRegister(name, namespace, price);
 
-  const memoizedNamePriceState = React.useMemo(
-    () => namePriceState(`${debouncedValue || 'default'}.${isMainnet ? namespace : 'satoshi'}`),
-    [debouncedValue, namespace]
-  );
-  const namePrice = useAtomValue(memoizedNamePriceState);
-
+  const bnsContract = useAtomValue(bnsContractState);
   const tx = useAtomValue(registerTxAtom); // TODO: use this to display some status of the tx
 
   useEffect(() => {
     async function checkAvailability() {
-      const { bnsV1 } = contracts;
-      const bnsContract = contractFactory(bnsV1, 'ST000000000000000000002AMW42H.bns');
-
       if (debouncedValue.length >= 2) {
         setIsLoading(true);
         const canNameBeRegistered = bnsContract.canNameBeRegistered({
@@ -78,7 +68,7 @@ export const BnsNameRow: React.FC<{
         const { value: isAvailable } = await clarigen.ro(canNameBeRegistered);
         setTimeout(() => {
           setIsAvailable(isAvailable as boolean);
-          setPrice(namePrice);
+          setPrice(computeNamePrice(name, namespace));
           setIsLoading(false);
         }, 500);
       } else {
@@ -121,7 +111,7 @@ export const BnsNameRow: React.FC<{
           <Stack isInline>
             {isAvailable ? (
               <Button variant="default" onClick={nameRegister}>
-                Claim
+                Register
               </Button>
             ) : (
               <Box display="flex" alignItems="center" opacity={0.5}>
