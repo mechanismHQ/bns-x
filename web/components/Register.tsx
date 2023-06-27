@@ -1,54 +1,13 @@
-import React, { useCallback, useMemo } from 'react';
-import { Stack, Box, Flex, SpaceBetween } from '@nelson-ui/react';
-import { ClarigenClient, contractFactory } from '@clarigen/core';
-import { asciiToBytes, hexToBytes, bytesToHex } from 'micro-stacks/common';
-import { networkAtom } from '@store/micro-stacks';
+import React, { useMemo } from 'react';
+import { NAMESPACES } from '@bns-x/core';
+import { Box } from '@nelson-ui/react';
 import { Input } from '@components/ui/input';
-import { Check, AlertCircle } from 'lucide-react';
-import { currentUserAddressNameStringsState, namePriceState } from '@store/names';
-import { useDebounce } from 'usehooks-ts';
-import { Text } from './text';
+import { currentUserAddressNameStringsState, availableNamespacesState } from '@store/names';
 import { useAtomValue } from 'jotai';
-import { waitForAll } from 'jotai/utils';
-import { useEffect } from 'react';
 import { Button } from '@components/ui/button';
-import { useRouter } from 'next/router';
-import { useGradient } from '@common/hooks/use-gradient';
-import { stxAddressAtom } from '@store/micro-stacks';
-import { truncateMiddle } from '@common/utils';
-import { BoxLink, Link, LinkText } from '@components/link';
-import { styled } from '@common/theme';
-import { usePunycode } from '@common/hooks/use-punycode';
-import { useAccountPath } from '@common/hooks/use-account-path';
-import { useOpenContractCall } from '@micro-stacks/react';
-import { hashFqn, contracts } from '@bns-x/core';
-import { PostConditionMode } from 'micro-stacks/transactions';
 import { useSwitchAccounts } from '@common/hooks/use-switch-accounts';
 import { BnsNameRow } from '@components/bns-name-row';
 import { Toaster } from 'sonner';
-
-const StyledName = styled(Text, {
-  // initial: {
-  fontSize: '28px',
-  lineHeight: '44px',
-  // },
-  '@bp1': {
-    fontSize: '22px',
-    lineHeight: '36px',
-  },
-});
-
-const StyledEditBox = styled(Box, {
-  display: 'block',
-  '@bp1': {
-    display: 'none',
-  },
-});
-
-const StyledAvatar = styled(Box, {
-  width: '86px',
-  height: '86px',
-});
 
 const Border: React.FC = () => {
   return (
@@ -62,21 +21,9 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
   const { switchAccounts } = useSwitchAccounts();
   const [bnsName, setBnsName] = React.useState('');
   const allNames = useAtomValue(currentUserAddressNameStringsState);
+  const availableNamespaces = useAtomValue(availableNamespacesState);
   const v1Name = allNames.coreName;
-  const availableNames = [
-    {
-      name: bnsName,
-      namespace: 'btc',
-    },
-    {
-      name: bnsName,
-      namespace: 'satoshi',
-    },
-    {
-      name: bnsName,
-      namespace: 'stx',
-    },
-  ];
+  const availableNames = availableNamespaces.map(namespace => ({ name: bnsName, namespace }));
 
   const rows = useMemo(() => {
     return (
