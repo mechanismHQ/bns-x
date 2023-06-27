@@ -54,14 +54,14 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
           <>
             <div className="space-y-10 text-center">
               <h1 className="text-gray-200 text-7xl font-open-sauce-one font-medium tracking-normal leading-10">
-                Claim your BNS
+                Register your BNS
               </h1>
               <div className="flex w-full max-w-xl mx-auto items-center space-x-3">
                 <div className="w-full relative">
                   <Input
                     className="h-12 text-md"
                     type="text"
-                    placeholder="Claim your BNS"
+                    placeholder="Register your BNS"
                     value={bnsName}
                     onChange={handleChange}
                   />
@@ -74,7 +74,7 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
           <div className="space-y-5 text-center">
             <div className="space-y-6">
               <h1 className="text-gray-200 text-7xl font-open-sauce-one font-medium tracking-normal leading-10">
-                Claim your BNS
+                Register your BNS
               </h1>
               <p className="text-gray-200 text-sm font-inter font-normal tracking-normal leading-6">
                 Looks like you registered {v1Name} for this account. Switch to an account that
