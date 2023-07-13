@@ -2806,7 +2806,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 3n,
+      wrapperIdVar: 2n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
@@ -3072,7 +3072,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 2n,
+      wrapperIdVar: 3n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
@@ -4266,8 +4266,8 @@ export const deployments = {
   nameRegistrar: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar',
-    testnet: null,
-    mainnet: null,
+    testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.name-registrar',
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.name-registrar',
   },
   nameWrapper: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-wrapper',

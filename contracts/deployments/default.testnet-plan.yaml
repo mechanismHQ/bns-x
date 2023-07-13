@@ -71,6 +71,13 @@ plan:
             path: contracts/testnet/wrapper-migrator-v1.clar
             anchor-block-only: true
             clarity-version: 1
+        - contract-publish:
+            contract-name: name-registrar
+            expected-sender: STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG
+            cost: 42663
+            path: contracts/testnet/name-registrar.clar
+            anchor-block-only: true
+            clarity-version: 1
       epoch: "2.0"
     - id: 1
       transactions:
