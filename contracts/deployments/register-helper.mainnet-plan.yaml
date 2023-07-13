@@ -1,0 +1,17 @@
+---
+id: 0
+name: Register helper - mainnet
+network: mainnet
+stacks-node: "https://stacks-node-api.mainnet.stacks.co"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: name-registrar
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 42663
+            path: contracts/name-registrar.clar
+            anchor-block-only: true
+            clarity-version: 1
