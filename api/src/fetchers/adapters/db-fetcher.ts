@@ -214,4 +214,19 @@ export class DbFetcher implements BaseFetcher {
   async getCoreName(address: string): Promise<string | null> {
     return fetchCoreNameByAddress(this.stacksDb, address);
   }
+
+  async getNameExists(fqn: string) {
+    const result = await this.stacksDb.names.findFirst({
+      where: {
+        name: fqn,
+        status: {
+          not: 'name-revoke',
+        },
+        canonical: true,
+        microblock_canonical: true,
+      },
+    });
+
+    return result !== null;
+  }
 }

@@ -18,4 +18,6 @@ export abstract class BaseFetcher {
   abstract getAddressNameStrings(address: string): Promise<NameStringsForAddressResponse>;
 
   abstract getCoreName(address: string): Promise<string | null>;
+
+  abstract getNameExists(fqn: string): Promise<boolean>;
 }
