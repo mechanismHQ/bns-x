@@ -107,4 +107,10 @@ export class ApiFetcher implements BaseFetcher {
   async getCoreName(address: string): Promise<string | null> {
     return fetchCoreName(address);
   }
+
+  async getNameExists(fqn: string) {
+    const { name, namespace } = parseFqn(fqn);
+    const details = await getNameDetailsApi(name, namespace);
+    return !('error' in details);
+  }
 }
