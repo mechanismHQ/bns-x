@@ -14,14 +14,6 @@ import { nameInputAtom } from '@store/register';
 import { Text } from '@components/text';
 import { Table, TableHeader, TableRow, TableHead, TableBody } from '@components/ui/table';
 
-const Border: React.FC = () => {
-  return (
-    <div className="flex items-center w-full px-29 min-w-0">
-      <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
-    </div>
-  );
-};
-
 export const Register: React.FC<{ children?: React.ReactNode }> = () => {
   const { switchAccounts } = useSwitchAccounts();
   const bnsName = useInput(useAtom(nameInputAtom));
@@ -38,17 +30,9 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
 
   const rows = useDeepMemo(() => {
     if (nameIsValid === false) return null;
-    return (
-      availableNames.map((nameDetails: { name: string; namespace: string }) => {
-        return (
-          <BnsNameRow key={`name-${nameDetails.namespace}`} {...nameDetails} />
-          // <Box key={`name-${nameDetails.namespace}`}>
-          //   <BnsNameRow {...nameDetails} />
-          //   <Border />
-          // </Box>
-        );
-      }) ?? null
-    );
+    return availableNames.map((nameDetails: { name: string; namespace: string }) => {
+      return <BnsNameRow key={`name-${nameDetails.namespace}`} {...nameDetails} />;
+    });
   }, [bnsName, availableNames]);
 
   const noNames = useMemo(() => {
@@ -99,7 +83,6 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
                 <TableBody>{rows}</TableBody>
               </Table>
             )}
-            {/* {rows} */}
           </>
         ) : (
           <div className="space-y-5 text-center">
