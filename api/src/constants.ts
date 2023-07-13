@@ -19,7 +19,9 @@ export function getNetwork(): StacksNetwork {
   const netConfig = upstream ? { url: upstream } : undefined;
   switch (networkKey) {
     case 'devnet':
-      return new StacksMocknet(netConfig);
+      return new StacksMocknet({
+        url: 'http://127.0.0.1:3999',
+      });
     case 'testnet':
       return new StacksTestnet(netConfig);
     case 'mainnet':

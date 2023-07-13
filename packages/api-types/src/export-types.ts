@@ -53,7 +53,84 @@ export type AppProcedures = {
     | {
         fqn: string;
       },
-    unknown
+    | {
+        /** The STX address of the owner of this name */
+        address: string;
+        /** The blockchain where this name is owned. Currently only "stacks" is supported */
+        blockchain: string;
+        /** The Bitcoin block when this name expires */
+        expire_block?: number | undefined;
+        grace_period?: number | undefined;
+        /** The last indexed transaction ID where an update to this name occurred */
+        last_txid: string;
+        resolver?: string | undefined;
+        status: string;
+        /** The user's full zonefile */
+        zonefile: string;
+        /** The sha256 hash of the user's zonefile */
+        zonefile_hash: string;
+        /** Returns a UTF-8-encoded version of the name. If the name is punycode, this will return the Unicode version of that name. */
+        decoded: string;
+        inscriptionId?: string | undefined;
+        inscription?:
+          | {
+              blockHeight: number;
+              timestamp: string;
+              txid: string;
+              sat: string;
+            }
+          | undefined;
+        /** Some records are parsed and returned from the user's zonefile for convenience */
+        zonefileRecords: {
+          [x: string]: string;
+        } & {
+          /** Returns the `_btc._addr` TXT record from the user's zonefile, if present. */
+          btcAddress?: string | undefined;
+          /** Returns the `_._nostr` TXT record from the user's zonefile, if present */
+          nostr?: string | undefined;
+        };
+        isBnsx: false;
+      }
+    | {
+        /** The STX address of the owner of this name */
+        address: string;
+        /** The blockchain where this name is owned. Currently only "stacks" is supported */
+        blockchain: string;
+        /** The Bitcoin block when this name expires */
+        expire_block?: number | undefined;
+        grace_period?: number | undefined;
+        /** The last indexed transaction ID where an update to this name occurred */
+        last_txid: string;
+        resolver?: string | undefined;
+        status: string;
+        /** The user's full zonefile */
+        zonefile: string;
+        /** The sha256 hash of the user's zonefile */
+        zonefile_hash: string;
+        /** Returns a UTF-8-encoded version of the name. If the name is punycode, this will return the Unicode version of that name. */
+        decoded: string;
+        inscriptionId?: string | undefined;
+        inscription?:
+          | {
+              blockHeight: number;
+              timestamp: string;
+              txid: string;
+              sat: string;
+            }
+          | undefined;
+        /** Some records are parsed and returned from the user's zonefile for convenience */
+        zonefileRecords: {
+          [x: string]: string;
+        } & {
+          /** Returns the `_btc._addr` TXT record from the user's zonefile, if present. */
+          btcAddress?: string | undefined;
+          /** Returns the `_._nostr` TXT record from the user's zonefile, if present */
+          nostr?: string | undefined;
+        };
+        isBnsx: true;
+        id: number;
+        wrapper: string;
+      }
   >;
   getDisplayName: AnyProc<
     'query',
