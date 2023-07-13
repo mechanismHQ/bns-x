@@ -78,6 +78,13 @@ The logic for determining name order in the \`names\` property is:
         name: displayName,
       };
     }),
+
+  getNameExists: procedure
+    .input(z.string())
+    .output(z.boolean())
+    .query(async ({ input, ctx }) => {
+      return ctx.fetcher.getNameExists(input);
+    }),
 });
 
 export type QueryHelperRouter = typeof queryHelperRouter;
