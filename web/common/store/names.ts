@@ -24,6 +24,8 @@ import { doesNamespaceExpire, parseFqn, NAMESPACES } from '@bns-x/core';
 import type { ZoneFileObject } from '@bns-x/client';
 import { ZoneFile } from '@bns-x/client';
 import { asciiToBytes } from 'micro-stacks/common';
+import { TRPCError } from '@trpc/server';
+import { TRPCClientError } from '@trpc/client';
 
 type NetworkKey = 'mainnet' | 'testnet' | 'devnet' | 'simnet';
 
@@ -132,8 +134,13 @@ export const nameDetailsAtom = atomFamily((name: string) => {
     async queryFn() {
       // const details = await bnsApi.getNameDetailsFromFqn(name);
       const nameParsed = parseFqn(name);
-      const details = await trpc.getNameDetails.query(nameParsed);
-      return details;
+      try {
+        const details = await trpc.getNameDetails.query(nameParsed);
+        return details;
+      } catch (error) {
+        // TODO: improve TRPCClientError handling
+        return null;
+      }
     },
   }))[0];
 });
@@ -155,6 +162,14 @@ export const nameExpirationBlockState = atomFamily((name: string) => {
       // return details.expire_block;
     },
   }))[0];
+});
+
+export const nameIsAvailableAtom = atomFamily((name: string) => {
+  return atom(get => {
+    if (name.startsWith('.')) return false;
+    const details = get(nameDetailsAtom(name));
+    return details === null;
+  });
 });
 
 export const resolvedNameState = atomFamily((name: string) => {
@@ -366,6 +381,8 @@ export const availableNamespacesState = atom(get => {
     'trajan',
     'crashpunk',
     'mega',
+    'satoshi',
+    'testable',
   ];
 
   const keyToValue: Record<NetworkKey, string[]> = {
@@ -375,5 +392,5 @@ export const availableNamespacesState = atom(get => {
     simnet: ['example'],
   };
 
-  return keyToValue[networkKey] || [];
+  return keyToValue[networkKey];
 });

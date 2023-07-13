@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { Layout } from '@components/layout';
-import { Register } from '@components/Register';
+import { Register } from '@components/p/register';
 import { withSSRProps } from '@common/page-utils';
 
 export const getServerSideProps = withSSRProps();
