@@ -1,13 +1,18 @@
-import React, { useMemo } from 'react';
-import { NAMESPACES } from '@bns-x/core';
-import { Box } from '@nelson-ui/react';
+import React, { memo, useMemo } from 'react';
+import { isNameValid } from '@bns-x/core';
+import { Box, Stack } from '@nelson-ui/react';
 import { Input } from '@components/ui/input';
 import { currentUserAddressNameStringsState, availableNamespacesState } from '@store/names';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { Button } from '@components/ui/button';
 import { useSwitchAccounts } from '@common/hooks/use-switch-accounts';
 import { BnsNameRow } from '@components/bns-name-row';
 import { Toaster } from 'sonner';
+import { useDeepMemo } from '@common/hooks/use-deep-memo';
+import { useInput } from '@common/hooks/use-input';
+import { nameInputAtom } from '@store/register';
+import { Text } from '@components/text';
+import { Table, TableHeader, TableRow, TableHead, TableBody } from '@components/ui/table';
 
 const Border: React.FC = () => {
   return (
@@ -19,32 +24,36 @@ const Border: React.FC = () => {
 
 export const Register: React.FC<{ children?: React.ReactNode }> = () => {
   const { switchAccounts } = useSwitchAccounts();
-  const [bnsName, setBnsName] = React.useState('');
+  const bnsName = useInput(useAtom(nameInputAtom));
   const allNames = useAtomValue(currentUserAddressNameStringsState);
   const availableNamespaces = useAtomValue(availableNamespacesState);
   const v1Name = allNames.coreName;
-  const availableNames = availableNamespaces.map(namespace => ({ name: bnsName, namespace }));
+  const availableNames = availableNamespaces.map(namespace => ({ name: bnsName.value, namespace }));
 
-  const rows = useMemo(() => {
+  const nameIsValid = useMemo(() => {
+    if (bnsName.value.length === 0) return true;
+    const isValid = isNameValid(bnsName.value);
+    return isValid;
+  }, [bnsName.value]);
+
+  const rows = useDeepMemo(() => {
+    if (nameIsValid === false) return null;
     return (
-      availableNames?.map((nameDetails: { name: string; namespace: string }) => {
+      availableNames.map((nameDetails: { name: string; namespace: string }) => {
         return (
-          <Box key={`name-${nameDetails.namespace}`}>
-            <BnsNameRow {...nameDetails} />
-            <Border />
-          </Box>
+          <BnsNameRow key={`name-${nameDetails.namespace}`} {...nameDetails} />
+          // <Box key={`name-${nameDetails.namespace}`}>
+          //   <BnsNameRow {...nameDetails} />
+          //   <Border />
+          // </Box>
         );
       }) ?? null
     );
-  }, [bnsName]);
+  }, [bnsName, availableNames]);
 
   const noNames = useMemo(() => {
     return allNames.coreName === null && allNames.bnsxNames.length === 0;
   }, [allNames.coreName, allNames.bnsxNames.length]);
-
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setBnsName(event.target.value);
-  }
 
   return (
     <>
@@ -62,13 +71,35 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
                     className="h-12 text-md"
                     type="text"
                     placeholder="Register your BNS"
-                    value={bnsName}
-                    onChange={handleChange}
+                    {...bnsName.props}
                   />
                 </div>
               </div>
+              {!nameIsValid && (
+                <div className="text-center">
+                  <Stack>
+                    <Text variant="Body02">The name you&apos;ve entered is not valid.</Text>
+                    <Text variant="Body02">
+                      Names can only have the characters a-z, `-`, and `_`.
+                    </Text>
+                  </Stack>
+                </div>
+              )}
             </div>
-            {rows}
+
+            {nameIsValid && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>{rows}</TableBody>
+              </Table>
+            )}
+            {/* {rows} */}
           </>
         ) : (
           <div className="space-y-5 text-center">
@@ -78,7 +109,7 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
               </h1>
               <p className="text-gray-200 text-sm font-inter font-normal tracking-normal leading-6">
                 Looks like you registered {v1Name} for this account. Switch to an account that
-                doesn't own any BNS or BNSx names.
+                doesn&apos;t own any BNS or BNSx names.
               </p>
             </div>
             <Button className="w-60 text-md" size="lg" onClick={() => switchAccounts()}>
