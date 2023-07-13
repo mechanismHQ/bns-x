@@ -139,6 +139,7 @@ export type AppProcedures = {
       name: string | null;
     }
   >;
+  getNameExists: AnyProc<'query', string, boolean>;
   getAddressNameStrings: AnyProc<
     'query',
     {
