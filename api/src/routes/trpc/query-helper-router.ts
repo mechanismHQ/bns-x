@@ -1,6 +1,10 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { displayNameResponseSchema, namesByAddressBnsxSchema } from '@bns-x/core';
+import {
+  displayNameResponseSchema,
+  nameDetailsSchema,
+  namesByAddressBnsxSchema,
+} from '@bns-x/core';
 import { router, procedure } from './base';
 
 export const queryHelperRouter = router({
@@ -47,6 +51,7 @@ The logic for determining name order in the \`names\` property is:
         }),
       ])
     )
+    .output(nameDetailsSchema)
     .query(async ({ ctx, input }) => {
       let fqn: string;
       if ('fqn' in input) {
