@@ -119,7 +119,7 @@ export function hash160(data: string) {
  * @param hex - The hexadecimal string to convert to a regular string.
  * @returns A regular string corresponding to the input hexadecimal string.
  */
-export function hexToString(hex: any) {
+export function hexToString(hex: string) {
   let str = '';
   for (let i = 0; i < hex.length; i += 2) {
     // Convert each pair of hexadecimal characters to a Unicode character.
@@ -180,4 +180,13 @@ export const NO_EXPIRATION_NAMESPACES = new Set([
  */
 export function doesNamespaceExpire(namespace: string) {
   return !NO_EXPIRATION_NAMESPACES.has(namespace);
+}
+
+const validAsciiCharsStr = 'abcdefghijklmnopqrstuvwxyz0123456789-_';
+const validAsciiChars = new Set(validAsciiCharsStr.split(''));
+
+export function isNameValid(name: string) {
+  const validChars = name.split('').every(c => validAsciiChars.has(c));
+  const validLength = name.length >= 1 && name.length <= 37;
+  return validChars && validLength;
 }
