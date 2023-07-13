@@ -1,4 +1,18 @@
 export const ALL_NAMESPACES = {
+  btc: {
+    canUpdatePriceFunction: true,
+    launchedAt: 0n,
+    lifetime: 262800n,
+    namespaceImport: 'SP24TC3Y58XKHZ7GX0N69X50BFYD9ECSR8PGAE3H6',
+    priceFunction: {
+      base: 1000n,
+      buckets: [1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n],
+      coeff: 200n,
+      noVowelDiscount: 1n,
+      nonalphaDiscount: 1n,
+    },
+    revealedAt: 0n,
+  },
   stx: {
     canUpdatePriceFunction: true,
     launchedAt: 0n,
@@ -52,20 +66,6 @@ export const ALL_NAMESPACES = {
       coeff: 10833n,
       noVowelDiscount: 4n,
       nonalphaDiscount: 4n,
-    },
-    revealedAt: 0n,
-  },
-  btc: {
-    canUpdatePriceFunction: true,
-    launchedAt: 0n,
-    lifetime: 262800n,
-    namespaceImport: 'SP24TC3Y58XKHZ7GX0N69X50BFYD9ECSR8PGAE3H6',
-    priceFunction: {
-      base: 1000n,
-      buckets: [1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n, 1n],
-      coeff: 200n,
-      noVowelDiscount: 1n,
-      nonalphaDiscount: 1n,
     },
     revealedAt: 0n,
   },
