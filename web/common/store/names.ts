@@ -165,11 +165,14 @@ export const nameExpirationBlockState = atomFamily((name: string) => {
 });
 
 export const nameIsAvailableAtom = atomFamily((name: string) => {
-  return atom(get => {
-    if (name.startsWith('.')) return false;
-    const details = get(nameDetailsAtom(name));
-    return details === null;
-  });
+  return atomsWithQuery(() => ({
+    queryKey: ['name-is-available', name],
+    queryFn: async () => {
+      if (name.startsWith('.')) return false;
+      const exists = await trpc.getNameExists.query(name);
+      return !exists;
+    },
+  }))[0];
 });
 
 export const resolvedNameState = atomFamily((name: string) => {

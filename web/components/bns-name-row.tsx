@@ -12,6 +12,7 @@ import { computeNamePrice } from '@bns-x/core';
 import { useNameRegister } from '@common/hooks/use-name-register';
 import { loadable } from 'jotai/utils';
 import { nameIsAvailableAtom } from '@store/names';
+import { nameInputAtom } from '@store/register';
 import { useDeepMemo } from '@common/hooks/use-deep-memo';
 import { TableCell, TableRow } from '@components/ui/table';
 import { cva } from 'class-variance-authority';
@@ -28,27 +29,27 @@ const nameVariants = cva('', {
 });
 
 export const BnsNameRow: React.FC<{
-  name: string;
   namespace: string;
-}> = ({ name, namespace }) => {
+}> = ({ namespace }) => {
+  const name = useAtomValue(nameInputAtom.debouncedValueAtom);
   const fqn = `${name.toLowerCase()}.${namespace}`;
-  const debouncedValue = useDebounce<string>(fqn, 1000);
+  const isDebouncing = useAtomValue(nameInputAtom.isDebouncingAtom);
   const price = useMemo(() => {
     if (name.length === 0) return 0n;
     return computeNamePrice(name, namespace);
-  }, [name, namespace]);
+  }, [namespace, name]);
   const { nameRegister } = useNameRegister(name, namespace, price);
 
   // const tx = useAtomValue(registerTxAtom); // TODO: use this to display some status of the tx
 
-  const nameAvailabilityLoader = useAtomValue(loadable(nameIsAvailableAtom(debouncedValue)));
+  const nameAvailabilityLoader = useAtomValue(loadable(nameIsAvailableAtom(fqn)));
 
   const isLoading = useMemo(() => {
-    if (debouncedValue !== fqn) return true;
+    if (isDebouncing) return true;
     if (nameAvailabilityLoader.state === 'loading') return true;
     if (nameAvailabilityLoader.state === 'hasError') return true;
     return false;
-  }, [debouncedValue, nameAvailabilityLoader.state, fqn]);
+  }, [nameAvailabilityLoader.state, isDebouncing]);
 
   const isAvailable = useDeepMemo(() => {
     if (nameAvailabilityLoader.state === 'hasData') {
@@ -66,12 +67,24 @@ export const BnsNameRow: React.FC<{
   return (
     <TableRow>
       <TableCell>
-        <span className={cn('text-lg', nameVariants({ availability: nameVariant }))}>{fqn}</span>
+        <div className="flex flex-row gap-3 items-baseline">
+          <div>
+            <span className={cn('text-lg', nameVariants({ availability: nameVariant }))}>
+              {fqn}
+            </span>
+          </div>
+          <div>
+            {isAvailable && (
+              <span className="text-neutral-300 text-sm">
+                <span className="text-emerald-500 font-bold">
+                  {ustxToStx(price).toFormat()} STX
+                </span>
+              </span>
+            )}
+          </div>
+        </div>
       </TableCell>
-      <TableCell>
-        <Text variant="Body01">{ustxToStx(price).toFormat()} STX</Text>
-      </TableCell>
-      <TableCell className="text-right h-[75px]">
+      <TableCell className="text-right h-[75px] max-w-[200px]">
         <div className="flex items-end flex-col">
           <div>
             {isLoading ? (
