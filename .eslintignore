@@ -3,6 +3,8 @@ tests
 contracts/dscripts
 contracts/tests
 contracts/dep-tests
+contracts/deno
+contracts/vendor
 dep-tests
 *.d.ts
 dist

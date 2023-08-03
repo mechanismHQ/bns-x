@@ -89,3 +89,27 @@ plan:
             parameters:
               - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-bootstrap"
       epoch: "2.0"
+    - id: 2
+      transactions:
+        - contract-publish:
+            contract-name: wrapper-migrator-v2
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 83190
+            path: contracts/testnet/wrapper-migrator-v2.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: proposal-migrator-v2
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 13970
+            path: contracts/proposals/proposal-migrator-v2.clar
+            anchor-block-only: true
+            # clarity-version: 1
+        - contract-call:
+            contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-extensions
+            method: execute
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 100000
+            anchor_block_only: false
+            parameters:
+              - "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-migrator-v2"

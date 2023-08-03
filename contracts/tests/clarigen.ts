@@ -20,8 +20,10 @@ export const {
   nftTrait,
   proposal2,
   proposalBootstrap,
+  proposalMigratorV2,
   proposalTrait,
   queryHelper,
   testUtils,
-  wrapperMigrator
+  wrapperMigrator,
+  wrapperMigratorV2
 } = contracts;
