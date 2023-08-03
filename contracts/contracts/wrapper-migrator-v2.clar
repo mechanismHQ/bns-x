@@ -78,7 +78,7 @@
 
 ;; Migration
 
-;; Upgrade a name to BNSx
+;; Migrate a name to BNSx
 ;; 
 ;; This function has three main steps:
 ;; 
@@ -94,7 +94,7 @@
   (let
     (
       ;; #[filter(wrapper)]
-      (wrapper-ok (try! (verify-wrapper wrapper signature)))
+      (wrapper-ok (try! (verify-wrapper wrapper recipient signature)))
       (properties (try! (resolve-and-transfer wrapper)))
       (name (get name properties))
       (namespace (get namespace properties))
@@ -124,8 +124,9 @@
 
 ;; Verify a wrapper principal.
 ;; 
-;; The message being signed is the Clarity-serialized representation of the `wrapper`
-;; principal.
+;; The message being signed is the Clarity-serialized representation of a tuple with: 
+;; - `wrapper`: the principal of the wrapper contract
+;; - `recipient`: the recipient of this migration
 ;; 
 ;; The pubkey is recovered from the signature. The `hash160` of this pubkey is then checked
 ;; to ensure that pubkey hash is stored as a valid signer.
@@ -135,10 +136,10 @@
 ;; @throws if the pubkey is not a valid verifier
 ;; 
 ;; #[filter(wrapper)]
-(define-read-only (verify-wrapper (wrapper principal) (signature (buff 65)))
+(define-read-only (verify-wrapper (wrapper principal) (recipient principal) (signature (buff 65)))
   (let
     (
-      (msg (sha256 (unwrap-panic (to-consensus-buff? wrapper))))
+      (msg (hash-migration-data wrapper recipient))
       (pubkey (unwrap! (secp256k1-recover? msg signature) ERR_RECOVER))
       ;; (addr (unwrap-panic (principal-of? pubkey)))
       ;; (pubkey-hash (get hash-bytes (unwrap-panic (principal-destruct? addr))))
@@ -147,29 +148,6 @@
     ;; (ok pubkey-hash)
     (asserts! (default-to false (map-get? migrator-signers-map pubkey-hash)) ERR_UNAUTHORIZED)
     (ok true)
-  )
-)
-
-(define-read-only (debug-signature (wrapper principal) (signature (buff 65)))
-  (let
-    (
-      (pubkey-hash (try! (recover-pubkey-hash wrapper signature)))
-    )
-    (ok {
-      pubkey-hash: pubkey-hash,
-      valid-signer: (default-to false (map-get? migrator-signers-map pubkey-hash)),
-      signer: (unwrap-panic (principal-construct? network-addr-version pubkey-hash))
-    })
-  )
-)
-
-(define-read-only (recover-pubkey-hash (wrapper principal) (signature (buff 65)))
-  (let
-    (
-      (msg (sha256 (unwrap-panic (to-consensus-buff? wrapper))))
-      (pubkey (unwrap! (secp256k1-recover? msg signature) ERR_RECOVER))
-    )
-    (ok (hash160 pubkey))
   )
 )
 
@@ -185,6 +163,13 @@
 
 (define-read-only (hash-principal (wrapper principal))
   (sha256 (unwrap-panic (to-consensus-buff? wrapper)))
+)
+
+(define-read-only (hash-migration-data (wrapper principal) (recipient principal))
+  (sha256 (unwrap-panic (to-consensus-buff? {
+    wrapper: wrapper,
+    recipient: recipient,
+  })))
 )
 
 (define-read-only (construct (hash-bytes (buff 20)))

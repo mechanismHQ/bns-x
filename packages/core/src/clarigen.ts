@@ -3149,6 +3149,32 @@ export const contracts = {
     clarity_version: 'Clarity1',
     contractName: 'proposal-bootstrap',
   },
+  proposalMigratorV2: {
+    functions: {
+      execute: {
+        name: 'execute',
+        access: 'public',
+        args: [{ name: 'sender', type: 'principal' }],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<[sender: TypedAbiArg<string, 'sender'>], Response<boolean, bigint>>,
+    },
+    maps: {},
+    variables: {
+      DEPLOYER: {
+        name: 'DEPLOYER',
+        type: 'principal',
+        access: 'constant',
+      } as TypedAbiVariable<string>,
+    },
+    constants: {
+      DEPLOYER: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+    },
+    non_fungible_tokens: [],
+    fungible_tokens: [],
+    epoch: 'Epoch21',
+    clarity_version: 'Clarity2',
+    contractName: 'proposal-migrator-v2',
+  },
   proposalTrait: {
     functions: {},
     maps: {},
@@ -4224,6 +4250,479 @@ export const contracts = {
     clarity_version: 'Clarity1',
     contractName: 'wrapper-migrator',
   },
+  wrapperMigratorV2: {
+    functions: {
+      resolveAndTransfer: {
+        name: 'resolve-and-transfer',
+        access: 'private',
+        args: [{ name: 'wrapper', type: 'principal' }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'lease-ending-at', type: { optional: 'uint128' } },
+                  { name: 'lease-started-at', type: 'uint128' },
+                  { name: 'name', type: { buffer: { length: 48 } } },
+                  { name: 'namespace', type: { buffer: { length: 20 } } },
+                  { name: 'owner', type: 'principal' },
+                  { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [wrapper: TypedAbiArg<string, 'wrapper'>],
+        Response<
+          {
+            leaseEndingAt: bigint | null;
+            leaseStartedAt: bigint;
+            name: Uint8Array;
+            namespace: Uint8Array;
+            owner: string;
+            zonefileHash: Uint8Array;
+          },
+          bigint
+        >
+      >,
+      setSignersIter: {
+        name: 'set-signers-iter',
+        access: 'private',
+        args: [
+          {
+            name: 'item',
+            type: {
+              tuple: [
+                { name: 'enabled', type: 'bool' },
+                { name: 'signer', type: 'principal' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 20 } } },
+      } as TypedAbiFunction<
+        [
+          item: TypedAbiArg<
+            {
+              enabled: boolean;
+              signer: string;
+            },
+            'item'
+          >
+        ],
+        Uint8Array
+      >,
+      isDaoOrExtension: {
+        name: 'is-dao-or-extension',
+        access: 'public',
+        args: [],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<[], Response<boolean, bigint>>,
+      migrate: {
+        name: 'migrate',
+        access: 'public',
+        args: [
+          { name: 'wrapper', type: 'principal' },
+          { name: 'signature', type: { buffer: { length: 65 } } },
+          { name: 'recipient', type: 'principal' },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'id', type: 'uint128' },
+                  { name: 'lease-ending-at', type: { optional: 'uint128' } },
+                  { name: 'lease-started-at', type: 'uint128' },
+                  { name: 'name', type: { buffer: { length: 48 } } },
+                  { name: 'namespace', type: { buffer: { length: 20 } } },
+                  { name: 'owner', type: 'principal' },
+                  { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          wrapper: TypedAbiArg<string, 'wrapper'>,
+          signature: TypedAbiArg<Uint8Array, 'signature'>,
+          recipient: TypedAbiArg<string, 'recipient'>
+        ],
+        Response<
+          {
+            id: bigint;
+            leaseEndingAt: bigint | null;
+            leaseStartedAt: bigint;
+            name: Uint8Array;
+            namespace: Uint8Array;
+            owner: string;
+            zonefileHash: Uint8Array;
+          },
+          bigint
+        >
+      >,
+      setSigners: {
+        name: 'set-signers',
+        access: 'public',
+        args: [
+          {
+            name: 'signers',
+            type: {
+              list: {
+                type: {
+                  tuple: [
+                    { name: 'enabled', type: 'bool' },
+                    { name: 'signer', type: 'principal' },
+                  ],
+                },
+                length: 50,
+              },
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: { list: { type: { buffer: { length: 20 } }, length: 50 } },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          signers: TypedAbiArg<
+            {
+              enabled: boolean;
+              signer: string;
+            }[],
+            'signers'
+          >
+        ],
+        Response<Uint8Array[], bigint>
+      >,
+      construct: {
+        name: 'construct',
+        access: 'read_only',
+        args: [{ name: 'hash-bytes', type: { buffer: { length: 20 } } }],
+        outputs: {
+          type: {
+            response: {
+              ok: 'principal',
+              error: {
+                tuple: [
+                  { name: 'error_code', type: 'uint128' },
+                  { name: 'value', type: { optional: 'principal' } },
+                ],
+              },
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [hashBytes: TypedAbiArg<Uint8Array, 'hashBytes'>],
+        Response<
+          string,
+          {
+            error_code: bigint;
+            value: string | null;
+          }
+        >
+      >,
+      debugSignature: {
+        name: 'debug-signature',
+        access: 'read_only',
+        args: [
+          { name: 'wrapper', type: 'principal' },
+          { name: 'recipient', type: 'principal' },
+          { name: 'signature', type: { buffer: { length: 65 } } },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'pubkey-hash', type: { buffer: { length: 20 } } },
+                  { name: 'signer', type: 'principal' },
+                  { name: 'valid-signer', type: 'bool' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          wrapper: TypedAbiArg<string, 'wrapper'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+          signature: TypedAbiArg<Uint8Array, 'signature'>
+        ],
+        Response<
+          {
+            pubkeyHash: Uint8Array;
+            signer: string;
+            validSigner: boolean;
+          },
+          bigint
+        >
+      >,
+      getLegacyName: {
+        name: 'get-legacy-name',
+        access: 'read_only',
+        args: [{ name: 'account', type: 'principal' }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'lease-ending-at', type: { optional: 'uint128' } },
+                  { name: 'lease-started-at', type: 'uint128' },
+                  { name: 'name', type: { buffer: { length: 48 } } },
+                  { name: 'namespace', type: { buffer: { length: 20 } } },
+                  { name: 'owner', type: 'principal' },
+                  { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [account: TypedAbiArg<string, 'account'>],
+        Response<
+          {
+            leaseEndingAt: bigint | null;
+            leaseStartedAt: bigint;
+            name: Uint8Array;
+            namespace: Uint8Array;
+            owner: string;
+            zonefileHash: Uint8Array;
+          },
+          bigint
+        >
+      >,
+      getNameWrapper: {
+        name: 'get-name-wrapper',
+        access: 'read_only',
+        args: [{ name: 'name', type: 'uint128' }],
+        outputs: { type: { optional: 'principal' } },
+      } as TypedAbiFunction<[name: TypedAbiArg<number | bigint, 'name'>], string | null>,
+      getWrapperName: {
+        name: 'get-wrapper-name',
+        access: 'read_only',
+        args: [{ name: 'wrapper', type: 'principal' }],
+        outputs: { type: { optional: 'uint128' } },
+      } as TypedAbiFunction<[wrapper: TypedAbiArg<string, 'wrapper'>], bigint | null>,
+      hashMigrationData: {
+        name: 'hash-migration-data',
+        access: 'read_only',
+        args: [
+          { name: 'wrapper', type: 'principal' },
+          { name: 'recipient', type: 'principal' },
+        ],
+        outputs: { type: { buffer: { length: 32 } } },
+      } as TypedAbiFunction<
+        [wrapper: TypedAbiArg<string, 'wrapper'>, recipient: TypedAbiArg<string, 'recipient'>],
+        Uint8Array
+      >,
+      hashPrincipal: {
+        name: 'hash-principal',
+        access: 'read_only',
+        args: [{ name: 'wrapper', type: 'principal' }],
+        outputs: { type: { buffer: { length: 32 } } },
+      } as TypedAbiFunction<[wrapper: TypedAbiArg<string, 'wrapper'>], Uint8Array>,
+      isValidSigner: {
+        name: 'is-valid-signer',
+        access: 'read_only',
+        args: [{ name: 'signer', type: 'principal' }],
+        outputs: { type: 'bool' },
+      } as TypedAbiFunction<[signer: TypedAbiArg<string, 'signer'>], boolean>,
+      recoverPubkeyHash: {
+        name: 'recover-pubkey-hash',
+        access: 'read_only',
+        args: [
+          { name: 'wrapper', type: 'principal' },
+          { name: 'recipient', type: 'principal' },
+          { name: 'signature', type: { buffer: { length: 65 } } },
+        ],
+        outputs: { type: { response: { ok: { buffer: { length: 20 } }, error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          wrapper: TypedAbiArg<string, 'wrapper'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+          signature: TypedAbiArg<Uint8Array, 'signature'>
+        ],
+        Response<Uint8Array, bigint>
+      >,
+      verifyWrapper: {
+        name: 'verify-wrapper',
+        access: 'read_only',
+        args: [
+          { name: 'wrapper', type: 'principal' },
+          { name: 'recipient', type: 'principal' },
+          { name: 'signature', type: { buffer: { length: 65 } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          wrapper: TypedAbiArg<string, 'wrapper'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+          signature: TypedAbiArg<Uint8Array, 'signature'>
+        ],
+        Response<boolean, bigint>
+      >,
+    },
+    maps: {
+      migratorSignersMap: {
+        name: 'migrator-signers-map',
+        key: { buffer: { length: 20 } },
+        value: 'bool',
+      } as TypedAbiMap<Uint8Array, boolean>,
+      nameWrapperMap: {
+        name: 'name-wrapper-map',
+        key: 'uint128',
+        value: 'principal',
+      } as TypedAbiMap<number | bigint, string>,
+      wrapperNameMap: {
+        name: 'wrapper-name-map',
+        key: 'principal',
+        value: 'uint128',
+      } as TypedAbiMap<string, bigint>,
+    },
+    variables: {
+      ERR_INVALID_CONTRACT_NAME: {
+        name: 'ERR_INVALID_CONTRACT_NAME',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_NAME_TRANSFER: {
+        name: 'ERR_NAME_TRANSFER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_NO_NAME: {
+        name: 'ERR_NO_NAME',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_RECOVER: {
+        name: 'ERR_RECOVER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_UNAUTHORIZED: {
+        name: 'ERR_UNAUTHORIZED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_WRAPPER_USED: {
+        name: 'ERR_WRAPPER_USED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ROLE: {
+        name: 'ROLE',
+        type: {
+          'string-ascii': {
+            length: 10,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<string>,
+      networkAddrVersion: {
+        name: 'network-addr-version',
+        type: {
+          buffer: {
+            length: 1,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Uint8Array>,
+      wrappedIdVar: {
+        name: 'wrapped-id-var',
+        type: 'uint128',
+        access: 'variable',
+      } as TypedAbiVariable<bigint>,
+      wrapperDeployer: {
+        name: 'wrapper-deployer',
+        type: {
+          buffer: {
+            length: 20,
+          },
+        },
+        access: 'variable',
+      } as TypedAbiVariable<Uint8Array>,
+    },
+    constants: {
+      ERR_INVALID_CONTRACT_NAME: {
+        isOk: false,
+        value: 6003n,
+      },
+      ERR_NAME_TRANSFER: {
+        isOk: false,
+        value: 6004n,
+      },
+      ERR_NO_NAME: {
+        isOk: false,
+        value: 6000n,
+      },
+      ERR_RECOVER: {
+        isOk: false,
+        value: 6002n,
+      },
+      ERR_UNAUTHORIZED: {
+        isOk: false,
+        value: 6001n,
+      },
+      ERR_WRAPPER_USED: {
+        isOk: false,
+        value: 6005n,
+      },
+      ROLE: 'mig-signer',
+      networkAddrVersion: Uint8Array.from([26]),
+      wrappedIdVar: 0n,
+      wrapperDeployer: Uint8Array.from([
+        109, 120, 222, 123, 6, 37, 223, 191, 193, 108, 58, 138, 87, 53, 246, 220, 61, 195, 242, 206,
+      ]),
+    },
+    non_fungible_tokens: [],
+    fungible_tokens: [],
+    epoch: 'Epoch21',
+    clarity_version: 'Clarity2',
+    contractName: 'wrapper-migrator-v2',
+  },
 } as const;
 
 export const deployments = {
@@ -4299,6 +4798,12 @@ export const deployments = {
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.proposal-bootstrap',
     mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.proposal-bootstrap',
   },
+  proposalMigratorV2: {
+    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-migrator-v2',
+    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-migrator-v2',
+    testnet: null,
+    mainnet: null,
+  },
   proposalTrait: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-trait',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-trait',
@@ -4322,6 +4827,12 @@ export const deployments = {
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator',
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.wrapper-migrator',
     mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.wrapper-migrator',
+  },
+  wrapperMigratorV2: {
+    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator-v2',
+    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator-v2',
+    testnet: null,
+    mainnet: null,
   },
 } as const;
 
