@@ -10,7 +10,9 @@
     "contracts/dep-tests",
     "contracts/deps.ts",
     "contracts/dscripts",
-    "contracts/tests"
+    "contracts/tests",
+    "contracts/deno",
+    "contracts/vendor",
   ],
   "files.eol": "\n",
   "typescript.preferences.importModuleSpecifier": "non-relative",

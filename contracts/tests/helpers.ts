@@ -125,6 +125,10 @@ export function deployWithNamespace() {
       deployer
     );
     registerAllNamespaces(chain);
+    chain.txOk(
+      contracts.bnsxExtensions.execute(contracts.proposalMigratorV2.identifier, deployer),
+      deployer
+    );
   });
 
   return deployment;
