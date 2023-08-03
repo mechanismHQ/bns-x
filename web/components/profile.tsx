@@ -152,13 +152,11 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
     );
   }, [allNames?.bnsxNames]);
 
+  const registerPath = useAccountPath('/register');
+
   const noNames = useMemo(() => {
     return allNames.coreName === null && allNames.bnsxNames.length === 0;
   }, [allNames.coreName, allNames.bnsxNames.length]);
-
-  const mintName = useCallback(() => {
-    window.open('https://btc.us', '_blank');
-  }, []);
 
   return (
     <>
@@ -173,9 +171,11 @@ export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
               Looks like this address doesn&apos;t own any BNS or BNSx names. Mint a name then come
               back.
             </Text>
-            <Button type="big" onClick={mintName} mx="auto" mt="49px">
-              Mint name
-            </Button>
+            <BoxLink href={registerPath}>
+              <Button type="big" mx="auto" mt="49px">
+                Register a name
+              </Button>
+            </BoxLink>
           </Stack>
         ) : (
           <>
