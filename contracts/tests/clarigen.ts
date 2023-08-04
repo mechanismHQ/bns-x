@@ -14,6 +14,8 @@ export const {
   extensionTrait,
   fakeFt,
   fakeNft,
+  l1BridgeV1,
+  l1Registry,
   nameRegistrar,
   nameWrapper,
   nameWrapperV2,

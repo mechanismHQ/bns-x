@@ -2873,6 +2873,318 @@ export const contracts = {
     'clarity_version': 'Clarity1',
     contractName: 'fake-nft',
   },
+  l1BridgeV1: {
+    'functions': {
+      getPubkeyHash: {
+        'name': 'get-pubkey-hash',
+        'access': 'private',
+        'args': [{ 'name': 'addr', 'type': 'principal' }],
+        'outputs': { 'type': { 'buffer': { 'length': 20 } } },
+      } as TypedAbiFunction<[addr: TypedAbiArg<string, 'addr'>], Uint8Array>,
+      setSignerInner: {
+        'name': 'set-signer-inner',
+        'access': 'private',
+        'args': [{ 'name': 'signer', 'type': 'principal' }],
+        'outputs': { 'type': 'bool' },
+      } as TypedAbiFunction<[signer: TypedAbiArg<string, 'signer'>], boolean>,
+      updateSigner: {
+        'name': 'update-signer',
+        'access': 'public',
+        'args': [{ 'name': 'signer', 'type': 'principal' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [signer: TypedAbiArg<string, 'signer'>],
+        Response<boolean, bigint>
+      >,
+      wrap: {
+        'name': 'wrap',
+        'access': 'public',
+        'args': [
+          { 'name': 'name-id', 'type': 'uint128' },
+          { 'name': 'inscription-id', 'type': { 'buffer': { 'length': 35 } } },
+          { 'name': 'height', 'type': 'uint128' },
+          { 'name': 'header-hash', 'type': { 'buffer': { 'length': 32 } } },
+          { 'name': 'signature', 'type': { 'buffer': { 'length': 65 } } },
+        ],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          nameId: TypedAbiArg<number | bigint, 'nameId'>,
+          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
+          height: TypedAbiArg<number | bigint, 'height'>,
+          headerHash: TypedAbiArg<Uint8Array, 'headerHash'>,
+          signature: TypedAbiArg<Uint8Array, 'signature'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      hashForHeight: {
+        'name': 'hash-for-height',
+        'access': 'read_only',
+        'args': [{ 'name': 'height', 'type': 'uint128' }],
+        'outputs': { 'type': { 'buffer': { 'length': 32 } } },
+      } as TypedAbiFunction<
+        [height: TypedAbiArg<number | bigint, 'height'>],
+        Uint8Array
+      >,
+      hashWrapData: {
+        'name': 'hash-wrap-data',
+        'access': 'read_only',
+        'args': [{ 'name': 'name-id', 'type': 'uint128' }, {
+          'name': 'inscription-id',
+          'type': { 'buffer': { 'length': 35 } },
+        }, { 'name': 'header-hash', 'type': { 'buffer': { 'length': 32 } } }],
+        'outputs': { 'type': { 'buffer': { 'length': 32 } } },
+      } as TypedAbiFunction<
+        [
+          nameId: TypedAbiArg<number | bigint, 'nameId'>,
+          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
+          headerHash: TypedAbiArg<Uint8Array, 'headerHash'>,
+        ],
+        Uint8Array
+      >,
+      validateBlockHash: {
+        'name': 'validate-block-hash',
+        'access': 'read_only',
+        'args': [{ 'name': 'height', 'type': 'uint128' }, {
+          'name': 'header-hash',
+          'type': { 'buffer': { 'length': 32 } },
+        }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          height: TypedAbiArg<number | bigint, 'height'>,
+          headerHash: TypedAbiArg<Uint8Array, 'headerHash'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      validateWrapSignature: {
+        'name': 'validate-wrap-signature',
+        'access': 'read_only',
+        'args': [
+          { 'name': 'name-id', 'type': 'uint128' },
+          { 'name': 'inscription-id', 'type': { 'buffer': { 'length': 35 } } },
+          { 'name': 'header-hash', 'type': { 'buffer': { 'length': 32 } } },
+          { 'name': 'signature', 'type': { 'buffer': { 'length': 65 } } },
+        ],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          nameId: TypedAbiArg<number | bigint, 'nameId'>,
+          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
+          headerHash: TypedAbiArg<Uint8Array, 'headerHash'>,
+          signature: TypedAbiArg<Uint8Array, 'signature'>,
+        ],
+        Response<boolean, bigint>
+      >,
+    },
+    'maps': {},
+    'variables': {
+      ERR_INVALID_BLOCK: {
+        name: 'ERR_INVALID_BLOCK',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_INVALID_SIGNER: {
+        name: 'ERR_INVALID_SIGNER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_RECOVER: {
+        name: 'ERR_RECOVER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      signerPubkeyHashVar: {
+        name: 'signer-pubkey-hash-var',
+        type: {
+          buffer: {
+            length: 20,
+          },
+        },
+        access: 'variable',
+      } as TypedAbiVariable<Uint8Array>,
+      signerVar: {
+        name: 'signer-var',
+        type: 'principal',
+        access: 'variable',
+      } as TypedAbiVariable<string>,
+    },
+    constants: {
+      ERR_INVALID_BLOCK: {
+        isOk: false,
+        value: 1200n,
+      },
+      ERR_INVALID_SIGNER: {
+        isOk: false,
+        value: 1202n,
+      },
+      ERR_RECOVER: {
+        isOk: false,
+        value: 1201n,
+      },
+      signerPubkeyHashVar: Uint8Array.from([
+        109,
+        120,
+        222,
+        123,
+        6,
+        37,
+        223,
+        191,
+        193,
+        108,
+        58,
+        138,
+        87,
+        53,
+        246,
+        220,
+        61,
+        195,
+        242,
+        206,
+      ]),
+      signerVar: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+    },
+    'non_fungible_tokens': [],
+    'fungible_tokens': [],
+    'epoch': 'Epoch21',
+    'clarity_version': 'Clarity2',
+    contractName: 'l1-bridge-v1',
+  },
+  l1Registry: {
+    'functions': {
+      bnsTransfer: {
+        'name': 'bns-transfer',
+        'access': 'private',
+        'args': [{ 'name': 'name-id', 'type': 'uint128' }, {
+          'name': 'sender',
+          'type': 'principal',
+        }, { 'name': 'recipient', 'type': 'principal' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          nameId: TypedAbiArg<number | bigint, 'nameId'>,
+          sender: TypedAbiArg<string, 'sender'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      isExtension: {
+        'name': 'is-extension',
+        'access': 'private',
+        'args': [],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<[], Response<boolean, bigint>>,
+      wrap: {
+        'name': 'wrap',
+        'access': 'public',
+        'args': [{ 'name': 'name-id', 'type': 'uint128' }, {
+          'name': 'owner',
+          'type': 'principal',
+        }, {
+          'name': 'inscription-id',
+          'type': { 'buffer': { 'length': 35 } },
+        }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          nameId: TypedAbiArg<number | bigint, 'nameId'>,
+          owner: TypedAbiArg<string, 'owner'>,
+          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      getInscriptionId: {
+        'name': 'get-inscription-id',
+        'access': 'read_only',
+        'args': [{ 'name': 'name-id', 'type': 'uint128' }],
+        'outputs': { 'type': { 'optional': { 'buffer': { 'length': 35 } } } },
+      } as TypedAbiFunction<
+        [nameId: TypedAbiArg<number | bigint, 'nameId'>],
+        Uint8Array | null
+      >,
+    },
+    'maps': {
+      inscriptionsMap: {
+        'name': 'inscriptions-map',
+        'key': 'uint128',
+        'value': { 'buffer': { 'length': 35 } },
+      } as TypedAbiMap<number | bigint, Uint8Array>,
+    },
+    'variables': {
+      ERR_TRANSFER: {
+        name: 'ERR_TRANSFER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_UNAUTHORIZED: {
+        name: 'ERR_UNAUTHORIZED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      extensionVar: {
+        name: 'extension-var',
+        type: 'principal',
+        access: 'variable',
+      } as TypedAbiVariable<string>,
+    },
+    constants: {
+      ERR_TRANSFER: {
+        isOk: false,
+        value: 1100n,
+      },
+      ERR_UNAUTHORIZED: {
+        isOk: false,
+        value: 4000n,
+      },
+      extensionVar: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.l1-bridge-v1',
+    },
+    'non_fungible_tokens': [],
+    'fungible_tokens': [],
+    'epoch': 'Epoch21',
+    'clarity_version': 'Clarity2',
+    contractName: 'l1-registry',
+  },
   nameRegistrar: {
     'functions': {
       nameRegister: {
@@ -4857,42 +5169,6 @@ export const contracts = {
           'value': string | null;
         }>
       >,
-      debugSignature: {
-        'name': 'debug-signature',
-        'access': 'read_only',
-        'args': [{ 'name': 'wrapper', 'type': 'principal' }, {
-          'name': 'recipient',
-          'type': 'principal',
-        }, { 'name': 'signature', 'type': { 'buffer': { 'length': 65 } } }],
-        'outputs': {
-          'type': {
-            'response': {
-              'ok': {
-                'tuple': [
-                  {
-                    'name': 'pubkey-hash',
-                    'type': { 'buffer': { 'length': 20 } },
-                  },
-                  { 'name': 'signer', 'type': 'principal' },
-                  { 'name': 'valid-signer', 'type': 'bool' },
-                ],
-              },
-              'error': 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          wrapper: TypedAbiArg<string, 'wrapper'>,
-          recipient: TypedAbiArg<string, 'recipient'>,
-          signature: TypedAbiArg<Uint8Array, 'signature'>,
-        ],
-        Response<{
-          'pubkeyHash': Uint8Array;
-          'signer': string;
-          'validSigner': boolean;
-        }, bigint>
-      >,
       getLegacyName: {
         'name': 'get-legacy-name',
         'access': 'read_only',
@@ -4982,29 +5258,6 @@ export const contracts = {
         'args': [{ 'name': 'signer', 'type': 'principal' }],
         'outputs': { 'type': 'bool' },
       } as TypedAbiFunction<[signer: TypedAbiArg<string, 'signer'>], boolean>,
-      recoverPubkeyHash: {
-        'name': 'recover-pubkey-hash',
-        'access': 'read_only',
-        'args': [{ 'name': 'wrapper', 'type': 'principal' }, {
-          'name': 'recipient',
-          'type': 'principal',
-        }, { 'name': 'signature', 'type': { 'buffer': { 'length': 65 } } }],
-        'outputs': {
-          'type': {
-            'response': {
-              'ok': { 'buffer': { 'length': 20 } },
-              'error': 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          wrapper: TypedAbiArg<string, 'wrapper'>,
-          recipient: TypedAbiArg<string, 'recipient'>,
-          signature: TypedAbiArg<Uint8Array, 'signature'>,
-        ],
-        Response<Uint8Array, bigint>
-      >,
       verifyWrapper: {
         'name': 'verify-wrapper',
         'access': 'read_only',
@@ -5244,6 +5497,8 @@ export const identifiers = {
   'extensionTrait': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.extension-trait',
   'fakeFt': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.fake-ft',
   'fakeNft': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.fake-nft',
+  'l1BridgeV1': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.l1-bridge-v1',
+  'l1Registry': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.l1-registry',
   'nameRegistrar': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar',
   'nameWrapper': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-wrapper',
   'nameWrapperV2': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-wrapper-v2',
