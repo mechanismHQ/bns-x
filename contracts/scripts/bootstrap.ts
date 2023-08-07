@@ -44,6 +44,7 @@ async function waitForConstruct(): Promise<void> {
       try {
         const isExtension = await clarigen.ro(contracts.bnsxExtensions.isExtension(controller));
         console.log(`Is extension (${controller}): ${String(isExtension)}`);
+        await clarigen.ro(contracts.wrapperMigratorV2.isDaoOrExtension());
         if (isExtension) return resolve();
       } catch (error) {
         console.log(`Failed to check for bootstrap status`);
