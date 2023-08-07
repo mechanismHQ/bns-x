@@ -106,6 +106,20 @@ plan:
             path: contracts/proposals/proposal-migrator-v2.clar
             anchor-block-only: true
             clarity-version: 2
+        - contract-publish:
+            contract-name: l1-registry
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 83190
+            path: contracts/l1/registry.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: l1-bridge-v1
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 83190
+            path: contracts/l1/bridge-v1.clar
+            anchor-block-only: true
+            clarity-version: 2
         # - contract-call:
         #     contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bnsx-extensions
         #     method: execute

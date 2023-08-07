@@ -10,22 +10,23 @@
 (define-constant ERR_INVALID_BLOCK (err u1200))
 (define-constant ERR_RECOVER (err u1201))
 (define-constant ERR_INVALID_SIGNER (err u1202))
+(define-constant ERR_NAME_NOT_MIGRATED (err u1203))
 
 ;; Public functions
 
 (define-public (wrap
-    (name-id uint)
+    (name (buff 48))
+    (namespace (buff 20))
     (inscription-id (buff 35))
-    (height uint)
-    (header-hash (buff 32))
     (signature (buff 65))
   )
   (let
     (
       ;; (block-hash (unwrap! (get-block-info? header-hash height) ERR_INVALID_BLOCK))
+      (name-id (unwrap! (contract-call? .bnsx-registry get-id-for-name { name: name, namespace: namespace }) ERR_NAME_NOT_MIGRATED))
     )
-    (try! (validate-block-hash height header-hash))
-    (try! (validate-wrap-signature name-id inscription-id header-hash signature))
+    ;; (try! (validate-block-hash height header-hash))
+    (try! (validate-wrap-signature name namespace inscription-id signature))
     (try! (contract-call? .l1-registry wrap name-id tx-sender inscription-id))
     (ok true)
   )
@@ -34,14 +35,14 @@
 ;; Signature validation
 
 (define-read-only (validate-wrap-signature
-    (name-id uint)
+    (name (buff 48))
+    (namespace (buff 20))
     (inscription-id (buff 35))
-    (header-hash (buff 32))
     (signature (buff 65))
   )
   (let
     (
-      (hash (hash-wrap-data name-id inscription-id header-hash))
+      (hash (hash-wrap-data name namespace inscription-id))
       (pubkey (unwrap! (secp256k1-recover? hash signature) ERR_RECOVER))
       (pubkey-hash (hash160 pubkey))
     )
@@ -65,14 +66,14 @@
 )
 
 (define-read-only (hash-wrap-data
-    (name-id uint)
+    (name (buff 48))
+    (namespace (buff 20))
     (inscription-id (buff 35))
-    (header-hash (buff 32))
   )
   (sha256 (unwrap-panic (to-consensus-buff? {
-    name-id: name-id,
+    name: name,
+    namespace: namespace,
     inscription-id: inscription-id,
-    header-hash: header-hash,
   })))
 )
 
