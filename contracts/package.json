@@ -2,11 +2,16 @@
   "name": "contracts",
   "private": true,
   "scripts": {
-    "r": "NODE_ENV=development dotenv -- node -r @swc-node/register"
+    "r": "NODE_ENV=development tsx",
+    "electrum_server": "docker run -it -p 50001:50001 -e COIN=\"Bitcoin\" -e NET=\"regtest\" -e DAEMON_URL=\"http://devnet:devnet@host.docker.internal:18443\" lukechilds/electrumx"
   },
   "dependencies": {
     "@bns-x/core": "workspace:*",
-    "@bns-x/client": "workspace:*"
+    "@bns-x/client": "workspace:*",
+    "@noble/curves": "1.1.0",
+    "@scure/base": "1.1.1",
+    "@scure/btc-signer": "1.0.1",
+    "micro-packed": "0.3.2"
   },
   "devDependencies": {
     "tsx": "^3.12.3"
