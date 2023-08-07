@@ -202,10 +202,18 @@ importers:
     specifiers:
       '@bns-x/client': workspace:*
       '@bns-x/core': workspace:*
+      '@noble/curves': 1.1.0
+      '@scure/base': 1.1.1
+      '@scure/btc-signer': 1.0.1
+      micro-packed: 0.3.2
       tsx: ^3.12.3
     dependencies:
       '@bns-x/client': link:../packages/client
       '@bns-x/core': link:../packages/core
+      '@noble/curves': 1.1.0
+      '@scure/base': 1.1.1
+      '@scure/btc-signer': 1.0.1
+      micro-packed: 0.3.2
     devDependencies:
       tsx: 3.12.3
 
@@ -3645,6 +3653,18 @@ packages:
       '@noble/hashes': 1.3.0
     dev: false
 
+  /@noble/curves/1.0.0:
+    resolution: {integrity: sha512-2upgEu0iLiDVDZkNLeFV2+ht0BAVgQnEmCk6JsOch9Rp8xfkMCbvbAZlA2pBHQc73dbl+vFOXfqkf4uemdn0bw==}
+    dependencies:
+      '@noble/hashes': 1.3.0
+    dev: false
+
+  /@noble/curves/1.1.0:
+    resolution: {integrity: sha512-091oBExgENk/kGj3AZmtBDMpxQPDtxQABR2B9lb1JbVTs6ytdzZNwvhxQ4MWasRNEzlbEH8jCWFCwhF/Obj5AA==}
+    dependencies:
+      '@noble/hashes': 1.3.1
+    dev: false
+
   /@noble/hashes/1.0.0:
     resolution: {integrity: sha512-DZVbtY62kc3kkBtMHqwCOfXrT/hnoORy5BJ4+HU1IR59X0KWAOqsfzQPcUl/lQLlG7qXbe/fZ3r/emxtAl+sqg==}
     dev: false
@@ -3658,6 +3678,11 @@ packages:
 
   /@noble/hashes/1.3.0:
     resolution: {integrity: sha512-ilHEACi9DwqJB0pw7kv+Apvh50jiiSyR/cQ3y4W7lOR5mhvn/50FLUfsnfJz0BDZtl/RR16kXvptiv6q1msYZg==}
+    dev: false
+
+  /@noble/hashes/1.3.1:
+    resolution: {integrity: sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==}
+    engines: {node: '>= 16'}
     dev: false
 
   /@noble/secp256k1/1.6.3:
@@ -4806,6 +4831,15 @@ packages:
     resolution: {integrity: sha512-T8ViYQEwAz79UNdfrdpxUeGuriYlvgxH2EouL7gTJZJ3jAqK/0ft3gL0VsOkrmYx8XfIX+p89tJFxuy/MXhgoA==}
     dependencies:
       '@noble/curves': 0.8.3
+      '@noble/hashes': 1.3.0
+      '@scure/base': 1.1.1
+      micro-packed: 0.3.2
+    dev: false
+
+  /@scure/btc-signer/1.0.1:
+    resolution: {integrity: sha512-sPGK7p+qHJSIs6zyzTjXCdt5mizEMelaYC3JPJGr1+NfVdYFfcRxGf9h4QfNVngHIHFSn39fzJhTBa5LSNpA4w==}
+    dependencies:
+      '@noble/curves': 1.0.0
       '@noble/hashes': 1.3.0
       '@scure/base': 1.1.1
       micro-packed: 0.3.2

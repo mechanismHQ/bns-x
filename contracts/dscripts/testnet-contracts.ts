@@ -4,6 +4,7 @@ const needsConverted = [
   'query-helper.clar',
   'name-wrapper-v2.clar',
   'name-registrar.clar',
+  'wrapper-migrator-v2.clar',
 ];
 
 await Promise.all(

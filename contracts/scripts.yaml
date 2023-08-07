@@ -39,6 +39,7 @@ scripts:
     cmd:
       - vr codegen
       - mkdir -p tmp/devnet
+      - rm -rf tmp/ord-data/regtest
       - clarinet integrate -d
 
   lt:
@@ -61,3 +62,10 @@ scripts:
     cmd:
       - clarinet deployments apply --devnet
       - pnpm r scripts/bootstrap.ts
+
+  ord:
+    desc: Run `ord` configured for Clarinet regtest
+    cmd: ord --bitcoin-rpc-user devnet --bitcoin-rpc-pass devnet --chain regtest --data-dir ./tmp/ord-data
+    # cmd: ord --bitcoin-rpc-user devnet --bitcoin-rpc-pass devnet --chain regtest --data-dir ./tmp/ord-data --rpc-url http://localhost:18443
+
+
