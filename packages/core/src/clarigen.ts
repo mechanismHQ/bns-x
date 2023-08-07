@@ -2603,19 +2603,17 @@ export const contracts = {
         name: 'wrap',
         access: 'public',
         args: [
-          { name: 'name-id', type: 'uint128' },
+          { name: 'name', type: { buffer: { length: 48 } } },
+          { name: 'namespace', type: { buffer: { length: 20 } } },
           { name: 'inscription-id', type: { buffer: { length: 35 } } },
-          { name: 'height', type: 'uint128' },
-          { name: 'header-hash', type: { buffer: { length: 32 } } },
           { name: 'signature', type: { buffer: { length: 65 } } },
         ],
         outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
       } as TypedAbiFunction<
         [
-          nameId: TypedAbiArg<number | bigint, 'nameId'>,
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
           inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
-          height: TypedAbiArg<number | bigint, 'height'>,
-          headerHash: TypedAbiArg<Uint8Array, 'headerHash'>,
           signature: TypedAbiArg<Uint8Array, 'signature'>
         ],
         Response<boolean, bigint>
@@ -2630,16 +2628,16 @@ export const contracts = {
         name: 'hash-wrap-data',
         access: 'read_only',
         args: [
-          { name: 'name-id', type: 'uint128' },
+          { name: 'name', type: { buffer: { length: 48 } } },
+          { name: 'namespace', type: { buffer: { length: 20 } } },
           { name: 'inscription-id', type: { buffer: { length: 35 } } },
-          { name: 'header-hash', type: { buffer: { length: 32 } } },
         ],
         outputs: { type: { buffer: { length: 32 } } },
       } as TypedAbiFunction<
         [
-          nameId: TypedAbiArg<number | bigint, 'nameId'>,
-          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
-          headerHash: TypedAbiArg<Uint8Array, 'headerHash'>
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>
         ],
         Uint8Array
       >,
@@ -2662,17 +2660,17 @@ export const contracts = {
         name: 'validate-wrap-signature',
         access: 'read_only',
         args: [
-          { name: 'name-id', type: 'uint128' },
+          { name: 'name', type: { buffer: { length: 48 } } },
+          { name: 'namespace', type: { buffer: { length: 20 } } },
           { name: 'inscription-id', type: { buffer: { length: 35 } } },
-          { name: 'header-hash', type: { buffer: { length: 32 } } },
           { name: 'signature', type: { buffer: { length: 65 } } },
         ],
         outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
       } as TypedAbiFunction<
         [
-          nameId: TypedAbiArg<number | bigint, 'nameId'>,
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
           inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
-          headerHash: TypedAbiArg<Uint8Array, 'headerHash'>,
           signature: TypedAbiArg<Uint8Array, 'signature'>
         ],
         Response<boolean, bigint>
@@ -2692,6 +2690,16 @@ export const contracts = {
       } as TypedAbiVariable<Response<null, bigint>>,
       ERR_INVALID_SIGNER: {
         name: 'ERR_INVALID_SIGNER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_NAME_NOT_MIGRATED: {
+        name: 'ERR_NAME_NOT_MIGRATED',
         type: {
           response: {
             ok: 'none',
@@ -2733,6 +2741,10 @@ export const contracts = {
       ERR_INVALID_SIGNER: {
         isOk: false,
         value: 1202n,
+      },
+      ERR_NAME_NOT_MIGRATED: {
+        isOk: false,
+        value: 1203n,
       },
       ERR_RECOVER: {
         isOk: false,
@@ -3076,7 +3088,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 3n,
+      wrapperIdVar: 2n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
@@ -3342,7 +3354,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 2n,
+      wrapperIdVar: 3n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
