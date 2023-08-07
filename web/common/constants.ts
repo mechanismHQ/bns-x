@@ -90,3 +90,11 @@ export function getTestnetNamespace() {
   if (getNetworkKey() === 'testnet') return 'testable';
   return 'satoshi';
 }
+
+export function ordinalsBaseUrl() {
+  const networkKey = getNetworkKey();
+  if (networkKey === 'mainnet') {
+    return 'https://ordinals.com';
+  }
+  return 'http://127.0.0.1:5002';
+}

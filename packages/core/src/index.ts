@@ -3,3 +3,4 @@ export * from './utils';
 export * from './types';
 export * from './namespaces';
 export * from './namespace-helpers';
+export * from './bridge';
