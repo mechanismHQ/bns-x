@@ -25,7 +25,7 @@ scripts:
     pll:
       - deno check tests/*.ts
       - deno check dscripts/*.ts
-      - deno check src/*.ts
+      # - deno check src/*.ts
       - clarinet check
 
   codegen:

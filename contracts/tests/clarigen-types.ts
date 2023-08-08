@@ -2887,19 +2887,8 @@ export const contracts = {
         'args': [{ 'name': 'signer', 'type': 'principal' }],
         'outputs': { 'type': 'bool' },
       } as TypedAbiFunction<[signer: TypedAbiArg<string, 'signer'>], boolean>,
-      updateSigner: {
-        'name': 'update-signer',
-        'access': 'public',
-        'args': [{ 'name': 'signer', 'type': 'principal' }],
-        'outputs': {
-          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
-        },
-      } as TypedAbiFunction<
-        [signer: TypedAbiArg<string, 'signer'>],
-        Response<boolean, bigint>
-      >,
-      wrap: {
-        'name': 'wrap',
+      bridgeToL1: {
+        'name': 'bridge-to-l1',
         'access': 'public',
         'args': [
           { 'name': 'name', 'type': { 'buffer': { 'length': 48 } } },
@@ -2917,6 +2906,48 @@ export const contracts = {
           inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
           signature: TypedAbiArg<Uint8Array, 'signature'>,
         ],
+        Response<boolean, bigint>
+      >,
+      migrateAndBridge: {
+        'name': 'migrate-and-bridge',
+        'access': 'public',
+        'args': [
+          { 'name': 'name', 'type': { 'buffer': { 'length': 48 } } },
+          { 'name': 'namespace', 'type': { 'buffer': { 'length': 20 } } },
+          { 'name': 'inscription-id', 'type': { 'buffer': { 'length': 35 } } },
+          {
+            'name': 'bridge-signature',
+            'type': { 'buffer': { 'length': 65 } },
+          },
+          { 'name': 'wrapper', 'type': 'principal' },
+          {
+            'name': 'migrate-signature',
+            'type': { 'buffer': { 'length': 65 } },
+          },
+        ],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
+          bridgeSignature: TypedAbiArg<Uint8Array, 'bridgeSignature'>,
+          wrapper: TypedAbiArg<string, 'wrapper'>,
+          migrateSignature: TypedAbiArg<Uint8Array, 'migrateSignature'>,
+        ],
+        Response<boolean, bigint>
+      >,
+      updateSigner: {
+        'name': 'update-signer',
+        'access': 'public',
+        'args': [{ 'name': 'signer', 'type': 'principal' }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [signer: TypedAbiArg<string, 'signer'>],
         Response<boolean, bigint>
       >,
       hashForHeight: {
