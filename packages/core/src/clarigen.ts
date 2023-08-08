@@ -2587,6 +2587,27 @@ export const contracts = {
         args: [{ name: 'addr', type: 'principal' }],
         outputs: { type: { buffer: { length: 20 } } },
       } as TypedAbiFunction<[addr: TypedAbiArg<string, 'addr'>], Uint8Array>,
+      handleBridgeToV1: {
+        name: 'handle-bridge-to-v1',
+        access: 'private',
+        args: [
+          { name: 'name-id', type: 'uint128' },
+          { name: 'name', type: { buffer: { length: 48 } } },
+          { name: 'namespace', type: { buffer: { length: 20 } } },
+          { name: 'inscription-id', type: { buffer: { length: 35 } } },
+          { name: 'signature', type: { buffer: { length: 65 } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          nameId: TypedAbiArg<number | bigint, 'nameId'>,
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
+          signature: TypedAbiArg<Uint8Array, 'signature'>
+        ],
+        Response<boolean, bigint>
+      >,
       setSignerInner: {
         name: 'set-signer-inner',
         access: 'private',
@@ -2741,6 +2762,16 @@ export const contracts = {
         },
         access: 'constant',
       } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_TRANSFER: {
+        name: 'ERR_TRANSFER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
       signerPubkeyHashVar: {
         name: 'signer-pubkey-hash-var',
         type: {
@@ -2772,6 +2803,10 @@ export const contracts = {
       ERR_RECOVER: {
         isOk: false,
         value: 1201n,
+      },
+      ERR_TRANSFER: {
+        isOk: false,
+        value: 1204n,
       },
       signerPubkeyHashVar: Uint8Array.from([
         109, 120, 222, 123, 6, 37, 223, 191, 193, 108, 58, 138, 87, 53, 246, 220, 61, 195, 242, 206,
@@ -2832,6 +2867,15 @@ export const contracts = {
         args: [{ name: 'name-id', type: 'uint128' }],
         outputs: { type: { optional: { buffer: { length: 35 } } } },
       } as TypedAbiFunction<[nameId: TypedAbiArg<number | bigint, 'nameId'>], Uint8Array | null>,
+      validateNameOwnedByRegistry: {
+        name: 'validate-name-owned-by-registry',
+        access: 'read_only',
+        args: [{ name: 'name-id', type: 'uint128' }],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [nameId: TypedAbiArg<number | bigint, 'nameId'>],
+        Response<boolean, bigint>
+      >,
     },
     maps: {
       inscriptionsMap: {
@@ -2841,6 +2885,36 @@ export const contracts = {
       } as TypedAbiMap<number | bigint, Uint8Array>,
     },
     variables: {
+      ERR_DUPLICATE_INSCRIPTION: {
+        name: 'ERR_DUPLICATE_INSCRIPTION',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_INVALID_NAME: {
+        name: 'ERR_INVALID_NAME',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_NOT_OWNED_BY_REGISTRY: {
+        name: 'ERR_NOT_OWNED_BY_REGISTRY',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
       ERR_TRANSFER: {
         name: 'ERR_TRANSFER',
         type: {
@@ -2868,6 +2942,18 @@ export const contracts = {
       } as TypedAbiVariable<string>,
     },
     constants: {
+      ERR_DUPLICATE_INSCRIPTION: {
+        isOk: false,
+        value: 1103n,
+      },
+      ERR_INVALID_NAME: {
+        isOk: false,
+        value: 1102n,
+      },
+      ERR_NOT_OWNED_BY_REGISTRY: {
+        isOk: false,
+        value: 1101n,
+      },
       ERR_TRANSFER: {
         isOk: false,
         value: 1100n,
@@ -4788,11 +4874,11 @@ export const contracts = {
         access: 'read_only',
         args: [
           { name: 'wrapper', type: 'principal' },
-          { name: 'recipient', type: 'principal' },
+          { name: 'sender', type: 'principal' },
         ],
         outputs: { type: { buffer: { length: 32 } } },
       } as TypedAbiFunction<
-        [wrapper: TypedAbiArg<string, 'wrapper'>, recipient: TypedAbiArg<string, 'recipient'>],
+        [wrapper: TypedAbiArg<string, 'wrapper'>, sender: TypedAbiArg<string, 'sender'>],
         Uint8Array
       >,
       hashPrincipal: {
@@ -4812,14 +4898,14 @@ export const contracts = {
         access: 'read_only',
         args: [
           { name: 'wrapper', type: 'principal' },
-          { name: 'recipient', type: 'principal' },
+          { name: 'sender', type: 'principal' },
           { name: 'signature', type: { buffer: { length: 65 } } },
         ],
         outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
       } as TypedAbiFunction<
         [
           wrapper: TypedAbiArg<string, 'wrapper'>,
-          recipient: TypedAbiArg<string, 'recipient'>,
+          sender: TypedAbiArg<string, 'sender'>,
           signature: TypedAbiArg<Uint8Array, 'signature'>
         ],
         Response<boolean, bigint>

@@ -183,7 +183,7 @@ describe('l1-bridge-v1', () => {
         }),
         bob
       );
-      assertEquals(receipt.value, registry.constants.ERR_TRANSFER.value);
+      assertEquals(receipt.value, contract.constants.ERR_TRANSFER.value);
     });
   });
 
@@ -205,7 +205,7 @@ describe('l1-bridge-v1', () => {
     it('calls `migrate-and-wrap` successfully', () => {
       const migrateData = chain.rov(
         migrator.hashMigrationData({
-          recipient: bob,
+          sender: bob,
           wrapper: wrapperId,
         })
       );
@@ -236,16 +236,6 @@ describe('l1-bridge-v1', () => {
       nameId = id;
       bridgeEvents.expectNonFungibleTokenMintEvent(
         `u${id}`,
-        bob,
-        bnsx.identifier,
-        bnsx.non_fungible_tokens[0].name
-      );
-    });
-
-    it('moved bob.btc to bridge', () => {
-      bridgeEvents.expectNonFungibleTokenTransferEvent(
-        `u${nameId}`,
-        bob,
         registry.identifier,
         bnsx.identifier,
         bnsx.non_fungible_tokens[0].name

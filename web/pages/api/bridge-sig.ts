@@ -22,20 +22,16 @@ export type BridgeSignerResponse = { error: string } | BridgeSignerResponseOk;
 export type BridgeSignerRequest = {
   name: string;
   inscriptionId: string;
-  recipient: string;
+  sender: string;
 };
 
 export async function bridgeSignerApi(
   req: NextApiRequest,
   res: NextApiResponse<BridgeSignerResponse>
 ) {
-  const { recipient, name: fqn, inscriptionId } = req.query as BridgeSignerRequest;
+  const { sender, name: fqn, inscriptionId } = req.query as BridgeSignerRequest;
   console.log('req.query', req.query);
-  if (
-    typeof inscriptionId !== 'string' ||
-    typeof fqn !== 'string' ||
-    typeof recipient !== 'string'
-  ) {
+  if (typeof inscriptionId !== 'string' || typeof fqn !== 'string' || typeof sender !== 'string') {
     return res.status(500).send({ error: 'Invalid inscription param' });
   }
   const baseUrl = ordinalsBaseUrl();
@@ -60,7 +56,7 @@ export async function bridgeSignerApi(
   const sig = await signWithKey(signerKey, hash);
   const signature = signatureVrsToRsv(sig.data);
 
-  const migrateData = await createWrapperV2Signature(recipient, fqn);
+  const migrateData = await createWrapperV2Signature(sender, fqn);
 
   return res.status(200).send({
     signature,
