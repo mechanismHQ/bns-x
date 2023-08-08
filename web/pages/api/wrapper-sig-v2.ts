@@ -1,0 +1,75 @@
+import { parseFqn } from '@bns-x/core';
+import { getContracts } from '@common/constants';
+import { signatureVrsToRsv } from '@common/utils';
+import { contractPrincipalCV, principalCV, tupleCV } from 'micro-stacks/clarity';
+import { asciiToBytes, bytesToHex } from 'micro-stacks/common';
+import { makeClarityHash } from 'micro-stacks/connect';
+import { hashRipemd160 } from 'micro-stacks/crypto';
+import { createStacksPrivateKey, signWithKey } from 'micro-stacks/transactions';
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+export type WrapperV2ResponseOk = {
+  signature: string;
+  wrapperId: string;
+};
+
+export type WrapperV2ResponseError = {
+  error: string;
+};
+
+export type WrapperV2Response = WrapperV2ResponseOk | WrapperV2ResponseError;
+
+export async function createWrapperV2Signature(recipient: string, fqn: string) {
+  const { name, namespace } = parseFqn(fqn);
+
+  const nameBytes = new Uint8Array([
+    ...asciiToBytes(name),
+    ...asciiToBytes('.'),
+    ...asciiToBytes(namespace),
+  ]);
+
+  const nameHash = hashRipemd160(nameBytes);
+
+  const contracts = getContracts();
+
+  // TODO: variable deployer
+  const deployer = contracts.bnsxRegistry.identifier.split('.')[0]!;
+
+  const wrapperId = `${deployer}.nw-${bytesToHex(nameHash)}`;
+
+  const recipientCv = principalCV(recipient);
+
+  const hashData = bytesToHex(
+    makeClarityHash(
+      tupleCV({
+        wrapper: contractPrincipalCV(wrapperId),
+        recipient: recipientCv,
+      })
+    )
+  );
+
+  const signerKey = createStacksPrivateKey(process.env.WRAPPER_SIGNER_KEY!);
+
+  const sig = await signWithKey(signerKey, hashData);
+  const signature = signatureVrsToRsv(sig.data);
+
+  return {
+    signature,
+    wrapperId,
+  };
+}
+
+export async function wrapperSignerV2Api(
+  req: NextApiRequest,
+  res: NextApiResponse<WrapperV2Response>
+) {
+  const fqn = req.query.name;
+  const recipient = req.query.recipient;
+  if (typeof fqn !== 'string' || typeof recipient !== 'string') {
+    return res.status(500).send({ error: 'Invalid params' });
+  }
+
+  const sigData = await createWrapperV2Signature(recipient, fqn);
+
+  return res.status(200).send(sigData);
+}

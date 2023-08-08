@@ -163,6 +163,21 @@ async function run() {
       nonce: nonce,
     })
   );
+  nonce += 1;
+
+  await broadcast(
+    await makeContractCall({
+      ...contracts.bnsxExtensions.execute({
+        proposal: contracts.proposalMigratorV2.identifier,
+        sender: deployer,
+      }),
+      network,
+      nonce,
+      senderKey: privateKey,
+      anchorMode: AnchorMode.Any,
+      postConditionMode: PostConditionMode.Allow,
+    })
+  );
 }
 
 run()
