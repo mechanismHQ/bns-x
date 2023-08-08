@@ -8,28 +8,53 @@ import {
   deployments,
   parseFqn,
 } from '@bns-x/core';
+import type { ContractCallTyped, TypedAbiArg } from '@clarigen/core';
 import { contractFactory } from '@clarigen/core';
-import { bridgeInscriptionIdAtom, fetchSignatureForInscriptionId } from '@store/bridge';
+import {
+  bridgeInscriptionIdAtom,
+  bridgeWrapTxAtom,
+  fetchSignatureForInscriptionId,
+} from '@store/bridge';
 import { useAtom, useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { loadable, useAtomCallback } from 'jotai/utils';
 import { useInput } from '@common/hooks/use-input';
 import { CodeBlock } from '@components/code';
 import { Beutton } from '@components/ui/beutton';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { Input } from '@components/form';
-import { clarigenAtom, contractsState } from '@store/index';
+import { bridgeContractState, clarigenAtom, contractsState } from '@store/index';
 import { asciiToBytes, hexToBytes } from 'micro-stacks/common';
+import {
+  currentAccountAtom,
+  networkAtom,
+  stxAddressAtom,
+  useCurrentAccountValue,
+} from '@store/micro-stacks';
+import { nameDetailsAtom } from '@store/names';
+import { useAccountOpenContractCall } from '@common/hooks/use-account-open-contract-call';
+import { PostConditionMode } from 'micro-stacks/transactions';
 
 export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
   const name = router.query.name as string;
   const inscriptionId = useInput(useAtom(bridgeInscriptionIdAtom));
+  const { openContractCall } = useAccountOpenContractCall();
 
   const inscriptionContent = useMemo(() => {
     return inscriptionContentForName(name);
   }, [name]);
 
   const [_, copyInscription] = useCopyToClipboard();
+  // prefetch:
+  useAtomValue(loadable(nameDetailsAtom(name)));
+
+  // const account = useCurrentAccountValue();
+  const account = useAtomValue(currentAccountAtom);
+
+  if (typeof account === 'undefined') {
+    throw new Error('Must be logged in');
+  }
+  const stxAddress = account.stxAddress;
 
   const copyToClipboard = useCallback(async () => {
     await copyInscription(inscriptionContent);
@@ -39,22 +64,55 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
     useCallback(
       async (get, set) => {
         const inscriptionId = get(bridgeInscriptionIdAtom);
-        const signature = await fetchSignatureForInscriptionId(inscriptionId, name);
-        console.log('signature', signature);
+        const bridgeData = await fetchSignatureForInscriptionId({
+          inscriptionId,
+          fqn: name,
+          recipient: stxAddress,
+        });
+        console.log('signature', bridgeData);
+        const nameDetails = get(nameDetailsAtom(name))!;
         const clarigen = get(clarigenAtom);
         const fqnParts = parseFqn(name);
-        const bridge = contractFactory(contracts.l1BridgeV1, deployments.l1BridgeV1.devnet);
-        const isValid = await clarigen.ro(
-          bridge.validateWrapSignature({
-            signature: hexToBytes(signature),
-            name: asciiToBytes(fqnParts.name),
-            namespace: asciiToBytes(fqnParts.namespace),
-            inscriptionId: hexToBytes(inscriptionId),
-          })
-        );
-        console.log('isValid', isValid);
+        const bridge = get(bridgeContractState);
+        const nameBytes = asciiToBytes(fqnParts.name);
+        const namespaceBytes = asciiToBytes(fqnParts.namespace);
+        const baseParams = {
+          name: nameBytes,
+          namespace: namespaceBytes,
+          inscriptionId: hexToBytes(inscriptionId),
+        };
+        let tx: ContractCallTyped<TypedAbiArg<any, string>[], any>;
+        if (nameDetails.isBnsx) {
+          tx = bridge.bridgeToL1({
+            ...baseParams,
+            signature: hexToBytes(bridgeData.signature),
+          });
+        } else {
+          tx = bridge.migrateAndBridge({
+            ...baseParams,
+            bridgeSignature: hexToBytes(bridgeData.signature),
+            migrateSignature: hexToBytes(bridgeData.migrateSignature),
+            wrapper: bridgeData.wrapperId,
+          });
+        }
+        const network = get(networkAtom);
+        await openContractCall({
+          ...tx,
+          // todo: post conditions
+          postConditionMode: PostConditionMode.Allow,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          network: {
+            ...network,
+            coreApiUrl: network.getCoreApiUrl(),
+          },
+          onFinish(payload) {
+            console.log(payload);
+            set(bridgeWrapTxAtom, payload.txId);
+          },
+        });
       },
-      [name]
+      [name, stxAddress, openContractCall]
     )
   );
 
