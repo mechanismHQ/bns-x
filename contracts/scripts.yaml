@@ -68,4 +68,11 @@ scripts:
     cmd: ord --bitcoin-rpc-user devnet --bitcoin-rpc-pass devnet --chain regtest --data-dir ./tmp/ord-data
     # cmd: ord --bitcoin-rpc-user devnet --bitcoin-rpc-pass devnet --chain regtest --data-dir ./tmp/ord-data --rpc-url http://localhost:18443
 
+  setup-ord:
+    desc: Set up local `ord` for Clarinet regtest
+    cmd:
+      - vr ord wallet restore "sell invite acquire kitten bamboo drastic jelly vivid peace spawn twice guilt pave pen trash pretty park cube fragile unaware remain midnight betray rebuild"
+      - pnpm r scripts/send-ord-btc.ts
+      - bitcoin-cli -rpcpassword=devnet -rpcuser=devnet -rpcport=18443 unloadwallet ord
+      - echo "Wait for another block to be mined, and then verify with \`vr ord wallet balance\`"
 

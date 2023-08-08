@@ -1,4 +1,4 @@
-import type { DeploymentNetwork } from '@clarigen/core';
+import type { DeploymentNetwork, FullContractWithIdentifier } from '@clarigen/core';
 import { clientState, networkAtom } from '@store/micro-stacks';
 import { atom, useAtomValue } from 'jotai';
 import type { ContractCall } from '@clarigen/core';
@@ -11,7 +11,8 @@ import { atomFamily } from 'jotai/utils';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { getNetworkKey, ONLY_INSCRIPTIONS } from '@common/constants';
 import { dequal } from 'dequal';
-import { BnsContractsClient } from '@bns-x/client';
+import type { project } from '@bns-x/client';
+import { BnsContractsClient, BnsxContracts } from '@bns-x/client';
 
 export const networkKeyAtom = atom<DeploymentNetwork>(() => {
   return getNetworkKey();
@@ -75,6 +76,15 @@ export const bnsAssetInfoState = atom(get => {
   const [addr, name] = getContractParts(bns.identifier);
   const asset = bns.non_fungible_tokens[0].name;
   return createAssetInfo(addr, name, asset);
+});
+
+type BridgeContract = FullContractWithIdentifier<
+  (typeof project)['contracts']['l1BridgeV1'],
+  string
+>;
+
+export const bridgeContractState = atom<BridgeContract>(get => {
+  return ensure(get(contractsState).l1BridgeV1) as unknown as BridgeContract;
 });
 
 function callToQueryKey(contractCall: ContractCall<any>) {

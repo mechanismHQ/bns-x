@@ -43,9 +43,9 @@ export function getNetwork(): StacksNetwork {
   const netConfig = upstream ? { url: upstream } : undefined;
   switch (networkKey) {
     case 'devnet':
-      const devHost = typeof window === 'undefined' ? '127.0.0.1' : 'localhost';
+      const devnetHost = typeof window === 'undefined' ? '127.0.0.1' : 'localhost';
       return new StacksMocknet({
-        url: `http://${devHost}:3999`,
+        url: `http://${devnetHost}:3999`,
       });
     case 'testnet':
       return new StacksTestnet(netConfig);
