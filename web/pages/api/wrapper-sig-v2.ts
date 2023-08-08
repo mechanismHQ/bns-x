@@ -19,7 +19,7 @@ export type WrapperV2ResponseError = {
 
 export type WrapperV2Response = WrapperV2ResponseOk | WrapperV2ResponseError;
 
-export async function createWrapperV2Signature(recipient: string, fqn: string) {
+export async function createWrapperV2Signature(sender: string, fqn: string) {
   const { name, namespace } = parseFqn(fqn);
 
   const nameBytes = new Uint8Array([
@@ -37,13 +37,13 @@ export async function createWrapperV2Signature(recipient: string, fqn: string) {
 
   const wrapperId = `${deployer}.nw-${bytesToHex(nameHash)}`;
 
-  const recipientCv = principalCV(recipient);
+  const senderCv = principalCV(sender);
 
   const hashData = bytesToHex(
     makeClarityHash(
       tupleCV({
         wrapper: contractPrincipalCV(wrapperId),
-        recipient: recipientCv,
+        sender: senderCv,
       })
     )
   );
@@ -64,12 +64,12 @@ export async function wrapperSignerV2Api(
   res: NextApiResponse<WrapperV2Response>
 ) {
   const fqn = req.query.name;
-  const recipient = req.query.recipient;
-  if (typeof fqn !== 'string' || typeof recipient !== 'string') {
+  const sender = req.query.sender;
+  if (typeof fqn !== 'string' || typeof sender !== 'string') {
     return res.status(500).send({ error: 'Invalid params' });
   }
 
-  const sigData = await createWrapperV2Signature(recipient, fqn);
+  const sigData = await createWrapperV2Signature(sender, fqn);
 
   return res.status(200).send(sigData);
 }

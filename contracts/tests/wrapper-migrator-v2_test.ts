@@ -28,8 +28,8 @@ describe('wrapper-migrator', () => {
   const { chain } = deployWithNamespace();
   const migrator = contracts.wrapperMigratorV2;
 
-  function signWrapper(wrapper: string, recipient: string, signer: Uint8Array) {
-    const hash = chain.rov(migrator.hashMigrationData(wrapper, recipient));
+  function signWrapper(wrapper: string, sender: string, signer: Uint8Array) {
+    const hash = chain.rov(migrator.hashMigrationData(wrapper, sender));
     const signature = signWithKey(hash, signer);
     return signature;
   }
@@ -46,7 +46,7 @@ describe('wrapper-migrator', () => {
     const error = chain.rovErr(
       migrator.verifyWrapper({
         signature: signWrapperForBob(contract.id, alicePK),
-        recipient: bob,
+        sender: bob,
         wrapper: contract.id,
       })
     );
@@ -93,7 +93,7 @@ describe('wrapper-migrator', () => {
       migrator.verifyWrapper({
         // signature: signWrapperForBob(contract.id, alicePK),
         signature: signWrapper(contract.id, bob, alicePK),
-        recipient: bob,
+        sender: bob,
         wrapper: contract.id,
       })
     );
@@ -103,12 +103,12 @@ describe('wrapper-migrator', () => {
   it('testing different recipients', () => {
     const contractId = contracts.nameWrapperV2.identifier;
     Object.entries(accounts).forEach(([key, account]) => {
-      const recipient = account.address;
-      const signature = signWrapper(contractId, recipient, alicePK);
+      const sender = account.address;
+      const signature = signWrapper(contractId, sender, alicePK);
       const res = chain.rov(
         migrator.verifyWrapper({
           wrapper: contractId,
-          recipient,
+          sender,
           signature,
         })
       );
@@ -121,21 +121,21 @@ describe('wrapper-migrator', () => {
     const res = chain.rovOk(
       migrator.verifyWrapper({
         signature: signWrapper(contract.id, alice, alicePK),
-        recipient: alice,
+        sender: alice,
         wrapper: contract.id,
       })
     );
     assertEquals(res, true);
   });
 
-  it('fails if recipient is different than from signature', () => {
+  it('fails if sender is different than from signature', () => {
     const [contract] = signedContracts;
     const signature = signWrapper(contract.id, alice, alicePK);
     const error = chain.rovErr(
       migrator.verifyWrapper({
         signature,
         wrapper: contract.id,
-        recipient: bob,
+        sender: bob,
       })
     );
     assertEquals(error, 6001n);
@@ -145,7 +145,7 @@ describe('wrapper-migrator', () => {
     const [contract] = signedContracts;
     const signature = signWrapper(contract.id, alice, bobPK);
     const error = chain.rovErr(
-      migrator.verifyWrapper({ signature, wrapper: contract.id, recipient: alice })
+      migrator.verifyWrapper({ signature, wrapper: contract.id, sender: alice })
     );
     assertEquals(error, 6001n);
   });
@@ -265,7 +265,7 @@ describe('wrapper-migrator', () => {
 
   it('cannot migrate if you dont own a v1 name', () => {
     const signed = signedContracts[1];
-    const signature = signWrapper(signed.id, bob, alicePK);
+    const signature = signWrapper(signed.id, charlie, alicePK);
     const receipt = chain.txErr(
       migrator.migrate({
         recipient: bob,

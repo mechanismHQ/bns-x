@@ -7,13 +7,13 @@ export const bridgeInscriptionIdAtom = atom('');
 export async function fetchSignatureForInscriptionId({
   inscriptionId,
   fqn,
-  recipient,
+  sender,
 }: {
   inscriptionId: string;
   fqn: string;
-  recipient: string;
+  sender: string;
 }) {
-  const url = `/api/bridge-sig?inscriptionId=${inscriptionId}&name=${fqn}&recipient=${recipient}`;
+  const url = `/api/bridge-sig?inscriptionId=${inscriptionId}&name=${fqn}&sender=${sender}`;
   const res = await fetch(url);
   const data = (await res.json()) as BridgeSignerResponse;
   if ('error' in data) {
