@@ -29,6 +29,7 @@ const alicePK = hexToBytes('7287ba251d44a4d3fd9276c88ce34c5c52a038955511cccaf77e
 const contract = contracts.l1BridgeV1;
 const registry = contracts.l1Registry;
 const bnsx = contracts.bnsxRegistry;
+const migrator = contracts.wrapperMigratorV2;
 
 const namespace = btcBytes;
 
@@ -81,11 +82,10 @@ describe('l1-bridge-v1', () => {
     it('calls `wrap` method', () => {
       const signature = signWrap(name, btcBytes, inscriptionId);
       const receipt = chain.txOk(
-        contract.wrap({
+        contract.bridgeToL1({
           name,
           namespace,
           inscriptionId,
-          height,
           signature,
         }),
         alice
@@ -133,11 +133,11 @@ describe('l1-bridge-v1', () => {
 
       const signature = signWrap(name, namespace, inscriptionId, alicePK);
       const receipt = chain.txErr(
-        contract.wrap({
+        contract.bridgeToL1({
           name,
           namespace,
           inscriptionId,
-          height,
+          // height,
           // headerHash: hash,
           signature,
         }),
@@ -153,7 +153,7 @@ describe('l1-bridge-v1', () => {
     //   const hash = chain.rov(contract.hashForHeight(height - 1n));
     //   const signature = signWrap(name, namespace, inscriptionId, alicePK);
     //   const receipt = chain.txErr(
-    //     contract.wrap({
+    //     contract.bridgeToL1({
     //       name,
     //       namespace,
     //       inscriptionId,
@@ -173,17 +173,83 @@ describe('l1-bridge-v1', () => {
 
       const signature = signWrap(name, namespace, inscriptionId);
       const receipt = chain.txErr(
-        contract.wrap({
+        contract.bridgeToL1({
           name,
           namespace,
           inscriptionId,
-          height,
+          // height,
           // headerHash: hash,
           signature,
         }),
         bob
       );
       assertEquals(receipt.value, registry.constants.ERR_TRANSFER.value);
+    });
+  });
+
+  describe('migrate-and-bridge', () => {
+    const name = asciiToBytes('bob');
+    const inscriptionId = randomBytes(33);
+    let bridgeEvents: unknown[];
+    const wrapperId = `${deployer}.name-wrapper-xx`;
+    let nameId: bigint;
+
+    beforeAll(() => {
+      registerNameV1({
+        chain,
+        owner: bob,
+        name: 'bob',
+      });
+    });
+
+    it('calls `migrate-and-wrap` successfully', () => {
+      const migrateData = chain.rov(
+        migrator.hashMigrationData({
+          recipient: bob,
+          wrapper: wrapperId,
+        })
+      );
+      const migrateSignature = signWithKey(migrateData, deployerPK);
+      const bridgeSignature = signWrap(name, btcBytes, inscriptionId);
+
+      const receipt = chain.txOk(
+        contract.migrateAndBridge({
+          name,
+          namespace: btcBytes,
+          inscriptionId,
+          bridgeSignature,
+          wrapper: wrapperId,
+          migrateSignature,
+        }),
+        bob
+      );
+      bridgeEvents = receipt.events;
+    });
+
+    it('moved bob.btc to bnsx', () => {
+      const id = chain.rov(
+        bnsx.getIdForName({
+          name,
+          namespace: btcBytes,
+        })
+      )!;
+      nameId = id;
+      bridgeEvents.expectNonFungibleTokenMintEvent(
+        `u${id}`,
+        bob,
+        bnsx.identifier,
+        bnsx.non_fungible_tokens[0].name
+      );
+    });
+
+    it('moved bob.btc to bridge', () => {
+      bridgeEvents.expectNonFungibleTokenTransferEvent(
+        `u${nameId}`,
+        bob,
+        registry.identifier,
+        bnsx.identifier,
+        bnsx.non_fungible_tokens[0].name
+      );
     });
   });
 });

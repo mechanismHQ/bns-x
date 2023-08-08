@@ -14,7 +14,7 @@
 
 ;; Public functions
 
-(define-public (wrap
+(define-public (bridge-to-l1
     (name (buff 48))
     (namespace (buff 20))
     (inscription-id (buff 35))
@@ -29,6 +29,20 @@
     (try! (validate-wrap-signature name namespace inscription-id signature))
     (try! (contract-call? .l1-registry wrap name-id tx-sender inscription-id))
     (ok true)
+  )
+)
+
+(define-public (migrate-and-bridge
+    (name (buff 48))
+    (namespace (buff 20))
+    (inscription-id (buff 35))
+    (bridge-signature (buff 65))
+    (wrapper principal)
+    (migrate-signature (buff 65))
+  )
+  (begin
+    (try! (contract-call? .wrapper-migrator-v2 migrate wrapper migrate-signature tx-sender))
+    (bridge-to-l1 name namespace inscription-id bridge-signature)
   )
 )
 
