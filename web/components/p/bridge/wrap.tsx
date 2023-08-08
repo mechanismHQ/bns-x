@@ -9,7 +9,7 @@ import {
   parseFqn,
 } from '@bns-x/core';
 import type { ContractCallTyped, TypedAbiArg } from '@clarigen/core';
-import { contractFactory } from '@clarigen/core';
+import { contractFactory, makeNonFungiblePostCondition } from '@clarigen/core';
 import {
   bridgeInscriptionIdAtom,
   bridgeWrapTxAtom,
@@ -22,7 +22,13 @@ import { CodeBlock } from '@components/code';
 import { Beutton } from '@components/ui/beutton';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { Input } from '@components/form';
-import { bridgeContractState, clarigenAtom, contractsState } from '@store/index';
+import {
+  bnsContractState,
+  bridgeContractState,
+  clarigenAtom,
+  contractsState,
+  nameRegistryState,
+} from '@store/index';
 import { asciiToBytes, hexToBytes } from 'micro-stacks/common';
 import {
   currentAccountAtom,
@@ -32,7 +38,9 @@ import {
 } from '@store/micro-stacks';
 import { nameDetailsAtom } from '@store/names';
 import { useAccountOpenContractCall } from '@common/hooks/use-account-open-contract-call';
-import { PostConditionMode } from 'micro-stacks/transactions';
+import type { PostCondition } from 'micro-stacks/transactions';
+import { NonFungibleConditionCode, PostConditionMode } from 'micro-stacks/transactions';
+import { nameToTupleBytes } from '@common/utils';
 
 export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
@@ -67,27 +75,45 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
         const bridgeData = await fetchSignatureForInscriptionId({
           inscriptionId,
           fqn: name,
-          recipient: stxAddress,
+          sender: stxAddress,
         });
         console.log('signature', bridgeData);
         const nameDetails = get(nameDetailsAtom(name))!;
-        const clarigen = get(clarigenAtom);
         const fqnParts = parseFqn(name);
         const bridge = get(bridgeContractState);
         const nameBytes = asciiToBytes(fqnParts.name);
         const namespaceBytes = asciiToBytes(fqnParts.namespace);
+        const bnsx = get(nameRegistryState);
         const baseParams = {
           name: nameBytes,
           namespace: namespaceBytes,
           inscriptionId: hexToBytes(inscriptionId),
         };
         let tx: ContractCallTyped<TypedAbiArg<any, string>[], any>;
+        const postConditions: PostCondition[] = [];
         if (nameDetails.isBnsx) {
+          const bnsxPostCondition = makeNonFungiblePostCondition(
+            bnsx,
+            stxAddress,
+            NonFungibleConditionCode.DoesNotOwn,
+            BigInt(nameDetails.id)
+          );
+          postConditions.push(bnsxPostCondition);
           tx = bridge.bridgeToL1({
             ...baseParams,
             signature: hexToBytes(bridgeData.signature),
           });
         } else {
+          const bns = get(bnsContractState);
+          const nameTupleId = nameToTupleBytes(name);
+          // moves bns to wrapper
+          const bnsPostCondition = makeNonFungiblePostCondition(
+            bns,
+            stxAddress,
+            NonFungibleConditionCode.DoesNotOwn,
+            nameTupleId
+          );
+          postConditions.push(bnsPostCondition);
           tx = bridge.migrateAndBridge({
             ...baseParams,
             bridgeSignature: hexToBytes(bridgeData.signature),
@@ -98,8 +124,8 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
         const network = get(networkAtom);
         await openContractCall({
           ...tx,
-          // todo: post conditions
-          postConditionMode: PostConditionMode.Allow,
+          postConditionMode: PostConditionMode.Deny,
+          postConditions,
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           network: {

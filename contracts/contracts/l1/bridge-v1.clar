@@ -11,6 +11,7 @@
 (define-constant ERR_RECOVER (err u1201))
 (define-constant ERR_INVALID_SIGNER (err u1202))
 (define-constant ERR_NAME_NOT_MIGRATED (err u1203))
+(define-constant ERR_TRANSFER (err u1204))
 
 ;; Public functions
 
@@ -22,13 +23,25 @@
   )
   (let
     (
-      ;; (block-hash (unwrap! (get-block-info? header-hash height) ERR_INVALID_BLOCK))
+      ;; #[filter(name, namespace, inscription-id, signature)]
       (name-id (unwrap! (contract-call? .bnsx-registry get-id-for-name { name: name, namespace: namespace }) ERR_NAME_NOT_MIGRATED))
     )
-    ;; (try! (validate-block-hash height header-hash))
-    (try! (validate-wrap-signature name namespace inscription-id signature))
-    (try! (contract-call? .l1-registry wrap name-id tx-sender inscription-id))
-    (ok true)
+    (match (contract-call? .bnsx-registry transfer name-id tx-sender .l1-registry)
+      res (handle-bridge-to-v1
+        name-id
+        name
+        namespace
+        inscription-id
+        signature
+      )
+      e (begin
+        (print {
+          topic: "transfer-error",
+          error: e,
+        })
+        ERR_TRANSFER
+      )
+    )
   )
 )
 
@@ -40,14 +53,33 @@
     (wrapper principal)
     (migrate-signature (buff 65))
   )
+  (let
+    (
+      (name-details (try! (contract-call? .wrapper-migrator-v2 migrate wrapper migrate-signature .l1-registry)))
+      (name-id (get id name-details))
+    )
+    ;; #[allow(unchecked_data)]
+    (handle-bridge-to-v1 name-id name namespace inscription-id bridge-signature)
+  )
+)
+
+(define-private (handle-bridge-to-v1
+    (name-id uint)
+    (name (buff 48))
+    (namespace (buff 20))
+    (inscription-id (buff 35))
+    (signature (buff 65))
+  )
   (begin
-    (try! (contract-call? .wrapper-migrator-v2 migrate wrapper migrate-signature tx-sender))
-    (bridge-to-l1 name namespace inscription-id bridge-signature)
+    (try! (validate-wrap-signature name namespace inscription-id signature))
+    (try! (contract-call? .l1-registry wrap name-id tx-sender inscription-id))
+    (ok true)
   )
 )
 
 ;; Signature validation
 
+;; #[filter(signature)]
 (define-read-only (validate-wrap-signature
     (name (buff 48))
     (namespace (buff 20))

@@ -94,7 +94,7 @@
   (let
     (
       ;; #[filter(wrapper)]
-      (wrapper-ok (try! (verify-wrapper wrapper recipient signature)))
+      (wrapper-ok (try! (verify-wrapper wrapper tx-sender signature)))
       (properties (try! (resolve-and-transfer wrapper)))
       (name (get name properties))
       (namespace (get namespace properties))
@@ -126,7 +126,7 @@
 ;; 
 ;; The message being signed is the Clarity-serialized representation of a tuple with: 
 ;; - `wrapper`: the principal of the wrapper contract
-;; - `recipient`: the recipient of this migration
+;; - `sender`: the sender of this migration
 ;; 
 ;; The pubkey is recovered from the signature. The `hash160` of this pubkey is then checked
 ;; to ensure that pubkey hash is stored as a valid signer.
@@ -136,16 +136,13 @@
 ;; @throws if the pubkey is not a valid verifier
 ;; 
 ;; #[filter(wrapper)]
-(define-read-only (verify-wrapper (wrapper principal) (recipient principal) (signature (buff 65)))
+(define-read-only (verify-wrapper (wrapper principal) (sender principal) (signature (buff 65)))
   (let
     (
-      (msg (hash-migration-data wrapper recipient))
+      (msg (hash-migration-data wrapper sender))
       (pubkey (unwrap! (secp256k1-recover? msg signature) ERR_RECOVER))
-      ;; (addr (unwrap-panic (principal-of? pubkey)))
-      ;; (pubkey-hash (get hash-bytes (unwrap-panic (principal-destruct? addr))))
       (pubkey-hash (hash160 pubkey))
     )
-    ;; (ok pubkey-hash)
     (asserts! (default-to false (map-get? migrator-signers-map pubkey-hash)) ERR_UNAUTHORIZED)
     (ok true)
   )
@@ -165,10 +162,10 @@
   (sha256 (unwrap-panic (to-consensus-buff? wrapper)))
 )
 
-(define-read-only (hash-migration-data (wrapper principal) (recipient principal))
+(define-read-only (hash-migration-data (wrapper principal) (sender principal))
   (sha256 (unwrap-panic (to-consensus-buff? {
     wrapper: wrapper,
-    recipient: recipient,
+    sender: sender,
   })))
 )
 
