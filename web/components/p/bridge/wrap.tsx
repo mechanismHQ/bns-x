@@ -19,7 +19,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { loadable, useAtomCallback } from 'jotai/utils';
 import { useInput } from '@common/hooks/use-input';
 import { CodeBlock } from '@components/code';
-import { Beutton } from '@components/ui/beutton';
+import { Button } from '@components/ui/button';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { Input } from '@components/form';
 import {
@@ -151,8 +151,8 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
       <Text variant="Body01">Create a new inscription with the following content:</Text>
       <CodeBlock>{inscriptionContent}</CodeBlock>
       <div className="flex gap-5">
-        <Beutton onClick={copyToClipboard}>Copy to Clipboard</Beutton>
-        <Beutton>Download file</Beutton>
+        <Button onClick={copyToClipboard}>Copy to Clipboard</Button>
+        <Button>Download file</Button>
       </div>
       <Text variant="Heading035">Step 2: Submit your inscription</Text>
       <Text variant="Body01">
@@ -160,7 +160,7 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
       </Text>
       <Input placeholder="Enter your inscription ID" {...inscriptionId.props}></Input>
       <div className="flex">
-        <Beutton onClick={fetchSignature}>Submit</Beutton>
+        <Button onClick={fetchSignature}>Submit</Button>
       </div>
     </div>
   );
