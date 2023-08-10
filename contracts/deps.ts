@@ -26,3 +26,5 @@ export {
   assertArrayIncludes,
 } from 'https://deno.land/std@0.90.0/testing/asserts.ts';
 export { crypto } from 'https://deno.land/std@0.162.0/crypto/mod.ts';
+export * as btc from './vendor/scure-btc-signer.ts';
+export * as P from './vendor/micro-packed.ts';
