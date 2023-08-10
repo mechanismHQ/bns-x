@@ -22,6 +22,8 @@ import { signWithKey } from '../deno/signatures.ts';
 import { accounts } from './clarigen-types.ts';
 import { randomBytes } from '../vendor/noble-hashes/utils.ts';
 import { beforeAll, beforeEach } from 'https://deno.land/std@0.159.0/testing/bdd.ts';
+import { btc, P } from '../deps.ts';
+import { sha256 } from '../vendor/noble-hashes/sha256.ts';
 
 const deployerPK = hexToBytes('753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a6');
 const alicePK = hexToBytes('7287ba251d44a4d3fd9276c88ce34c5c52a038955511cccaf77e61068649c178');
@@ -58,13 +60,34 @@ describe('l1-bridge-v1', () => {
     return signature;
   }
 
+  function hashUnwrapData(inscriptionId: Uint8Array, owner: Uint8Array) {
+    return chain.rov(
+      contract.hashUnwrapData({
+        inscriptionId,
+        owner,
+      })
+    );
+  }
+
+  function signUnwrap(
+    inscriptionId: Uint8Array,
+    owner: Uint8Array,
+    signer: Uint8Array = deployerPK
+  ) {
+    const hash = hashUnwrapData(inscriptionId, owner);
+    const signature = signWithKey(hash, signer);
+    return signature;
+  }
+
+  const aliceInscriptionId = randomBytes(33);
+
   describe('successful wrap', () => {
     let height: bigint;
     const name = asciiToBytes('alice');
     let nameId: bigint;
     let header: Uint8Array;
     let hash: Uint8Array;
-    const inscriptionId = randomBytes(33);
+    const inscriptionId = aliceInscriptionId;
     let wrapEvents: unknown[];
 
     beforeAll(() => {
@@ -240,6 +263,76 @@ describe('l1-bridge-v1', () => {
         bnsx.identifier,
         bnsx.non_fungible_tokens[0].name
       );
+    });
+  });
+
+  describe('bridging back to l2', () => {
+    it('can generate a burn script and output', () => {
+      const burnScript = chain.rov(contract.generateBurnScript(alice));
+
+      const decodedScript = btc.Script.decode(burnScript);
+      const hashData = chain.rov(contract.hashBurnScriptData(alice));
+      assertEquals(P.equalBytes(hashData, decodedScript[0] as Uint8Array), true);
+      assertEquals(decodedScript[1], 'DROP');
+      assertEquals(decodedScript[2], 0);
+
+      const burnOutput = chain.rov(contract.generateBurnOutput(alice));
+      const parsedOutput = btc.OutScript.decode(burnOutput);
+      assertEquals(parsedOutput.type, 'wsh');
+      if (parsedOutput.type !== 'wsh') throw new Error('Invalid output');
+
+      const expectedHash = sha256(burnScript);
+      assertEquals(P.equalBytes(expectedHash, parsedOutput.hash), true);
+    });
+
+    it('can validate unwrap signatures', () => {
+      const burnScript = chain.rov(contract.generateBurnOutput(alice));
+      const signature = signUnwrap(aliceInscriptionId, burnScript);
+
+      const isValid = chain.rovOk(
+        contract.validateUnwrapSignature({
+          recipient: alice,
+          owner: burnScript,
+          inscriptionId: aliceInscriptionId,
+          signature,
+        })
+      );
+
+      assertEquals(isValid, true);
+    });
+
+    it('invalidates unwrap sig with wrong signer', () => {
+      const burnScript = chain.rov(contract.generateBurnOutput(alice));
+      // different signer:
+      const signature = signUnwrap(aliceInscriptionId, burnScript, alicePK);
+
+      const err = chain.rovErr(
+        contract.validateUnwrapSignature({
+          recipient: alice,
+          owner: burnScript,
+          inscriptionId: aliceInscriptionId,
+          signature,
+        })
+      );
+
+      assertEquals(err, contract.constants.ERR_INVALID_SIGNER.value);
+    });
+
+    it('invalidates unwrap sig with wrong owner', () => {
+      // different address:
+      const burnScript = chain.rov(contract.generateBurnOutput(deployer));
+      const signature = signUnwrap(aliceInscriptionId, burnScript);
+
+      const err = chain.rovErr(
+        contract.validateUnwrapSignature({
+          recipient: alice,
+          owner: burnScript,
+          inscriptionId: aliceInscriptionId,
+          signature,
+        })
+      );
+
+      assertEquals(err, contract.constants.ERR_INVALID_BURN_ADDRESS.value);
     });
   });
 });

@@ -19,13 +19,26 @@
   (let
     (
       (self (as-contract tx-sender))
+      (name-details (try! (validate-name-owned-by-registry name-id)))
     )
     ;; #[filter(inscription-id, name-id)]
     (try! (is-extension))
-    ;; (try! (bns-transfer name-id owner self))
-    (try! (validate-name-owned-by-registry name-id))
     (asserts! (map-insert inscriptions-map name-id inscription-id) ERR_DUPLICATE_INSCRIPTION)
-    (ok true)
+    (ok name-details)
+  )
+)
+
+(define-public (unwrap (name-id uint) (recipient principal))
+  (let
+    (
+      (inscription-id (unwrap! (map-get? inscriptions-map name-id) ERR_INVALID_NAME))
+      (name-details (try! (get-name-properties name-id)))
+    )
+    ;; #[filter(name-id, recipient)]
+    (try! (is-extension))
+    (map-delete inscriptions-map name-id)
+    (try! (as-contract (bns-transfer name-id tx-sender recipient)))
+    (ok name-details)
   )
 )
 
@@ -57,9 +70,12 @@
   (let
     (
       (self (as-contract tx-sender))
-      (owner (unwrap! (contract-call? .bnsx-registry get-name-owner name-id) ERR_INVALID_NAME))
+      (name-details (try! (get-name-properties name-id)))
     )
-    (asserts! (is-eq self owner) ERR_NOT_OWNED_BY_REGISTRY)
+    (asserts! (is-eq self (get owner name-details)) ERR_NOT_OWNED_BY_REGISTRY)
     (ok true)
   )
 )
+
+(define-read-only (get-name-properties (name-id uint))
+  (ok (unwrap! (contract-call? .bnsx-registry get-name-properties-by-id name-id) ERR_INVALID_NAME)))

@@ -12,6 +12,7 @@
 (define-constant ERR_INVALID_SIGNER (err u1202))
 (define-constant ERR_NAME_NOT_MIGRATED (err u1203))
 (define-constant ERR_TRANSFER (err u1204))
+(define-constant ERR_INVALID_BURN_ADDRESS (err u1205))
 
 ;; Public functions
 
@@ -77,6 +78,14 @@
   )
 )
 
+;; (define-public (bridge-to-l2
+;;     (name-id uint)
+;;     (inscription-owner (buff 34))
+
+;;     (signature (buff 65))
+;;   )
+;; )
+
 ;; Signature validation
 
 ;; #[filter(signature)]
@@ -123,6 +132,32 @@
   })))
 )
 
+(define-read-only (hash-unwrap-data (inscription-id (buff 35)) (owner (buff 34)))
+  (sha256 (unwrap-panic (to-consensus-buff? {
+    inscription-id: inscription-id,
+    owner: owner
+  })))
+)
+
+(define-read-only (validate-unwrap-signature
+    (inscription-id (buff 35))
+    (recipient principal)
+    (owner (buff 34))
+    (signature (buff 65))
+  )
+  (let
+    (
+      (hash (hash-unwrap-data inscription-id owner))
+      (pubkey (unwrap! (secp256k1-recover? hash signature) ERR_RECOVER))
+      (pubkey-hash (hash160 pubkey))
+      (expected-output (generate-burn-output recipient))
+    )
+    (asserts! (is-eq pubkey-hash (var-get signer-pubkey-hash-var)) ERR_INVALID_SIGNER)
+    (asserts! (is-eq expected-output owner) ERR_INVALID_BURN_ADDRESS)
+    (ok true)
+  )
+)
+
 ;; Signer management functions
 
 ;; #[allow(unchecked_data)]
@@ -151,5 +186,38 @@
     (asserts! (is-eq current-signer tx-sender) ERR_INVALID_SIGNER)
     (set-signer-inner signer)
     (ok true)
+  )
+)
+
+;; Burn script helpers
+
+(define-read-only (burn-script-data (recipient principal))
+  (unwrap-panic (to-consensus-buff? {
+    recipient: recipient,
+    topic: "burn",
+    bridge: (as-contract tx-sender),
+  }))
+)
+
+(define-read-only (hash-burn-script-data (recipient principal))
+  (hash160 (burn-script-data recipient))
+)
+
+(define-read-only (generate-burn-script (recipient principal))
+  (let
+    (
+      (data-hash (hash-burn-script-data recipient))
+      (pushdata (concat 0x14 data-hash))
+    )
+    (concat pushdata 0x7500) ;; OP_DROP, OP_FALSE
+  )
+)
+
+(define-read-only (generate-burn-output (recipient principal))
+  (let
+    (
+      (script (generate-burn-script recipient))
+    )
+    (concat 0x0020 (sha256 script))
   )
 )

@@ -2973,6 +2973,42 @@ export const contracts = {
         [signer: TypedAbiArg<string, 'signer'>],
         Response<boolean, bigint>
       >,
+      burnScriptData: {
+        'name': 'burn-script-data',
+        'access': 'read_only',
+        'args': [{ 'name': 'recipient', 'type': 'principal' }],
+        'outputs': { 'type': { 'buffer': { 'length': 339 } } },
+      } as TypedAbiFunction<
+        [recipient: TypedAbiArg<string, 'recipient'>],
+        Uint8Array
+      >,
+      generateBurnOutput: {
+        'name': 'generate-burn-output',
+        'access': 'read_only',
+        'args': [{ 'name': 'recipient', 'type': 'principal' }],
+        'outputs': { 'type': { 'buffer': { 'length': 34 } } },
+      } as TypedAbiFunction<
+        [recipient: TypedAbiArg<string, 'recipient'>],
+        Uint8Array
+      >,
+      generateBurnScript: {
+        'name': 'generate-burn-script',
+        'access': 'read_only',
+        'args': [{ 'name': 'recipient', 'type': 'principal' }],
+        'outputs': { 'type': { 'buffer': { 'length': 23 } } },
+      } as TypedAbiFunction<
+        [recipient: TypedAbiArg<string, 'recipient'>],
+        Uint8Array
+      >,
+      hashBurnScriptData: {
+        'name': 'hash-burn-script-data',
+        'access': 'read_only',
+        'args': [{ 'name': 'recipient', 'type': 'principal' }],
+        'outputs': { 'type': { 'buffer': { 'length': 20 } } },
+      } as TypedAbiFunction<
+        [recipient: TypedAbiArg<string, 'recipient'>],
+        Uint8Array
+      >,
       hashForHeight: {
         'name': 'hash-for-height',
         'access': 'read_only',
@@ -2980,6 +3016,21 @@ export const contracts = {
         'outputs': { 'type': { 'buffer': { 'length': 32 } } },
       } as TypedAbiFunction<
         [height: TypedAbiArg<number | bigint, 'height'>],
+        Uint8Array
+      >,
+      hashUnwrapData: {
+        'name': 'hash-unwrap-data',
+        'access': 'read_only',
+        'args': [{
+          'name': 'inscription-id',
+          'type': { 'buffer': { 'length': 35 } },
+        }, { 'name': 'owner', 'type': { 'buffer': { 'length': 34 } } }],
+        'outputs': { 'type': { 'buffer': { 'length': 32 } } },
+      } as TypedAbiFunction<
+        [
+          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
+          owner: TypedAbiArg<Uint8Array, 'owner'>,
+        ],
         Uint8Array
       >,
       hashWrapData: {
@@ -3018,6 +3069,27 @@ export const contracts = {
         ],
         Response<boolean, bigint>
       >,
+      validateUnwrapSignature: {
+        'name': 'validate-unwrap-signature',
+        'access': 'read_only',
+        'args': [
+          { 'name': 'inscription-id', 'type': { 'buffer': { 'length': 35 } } },
+          { 'name': 'recipient', 'type': 'principal' },
+          { 'name': 'owner', 'type': { 'buffer': { 'length': 34 } } },
+          { 'name': 'signature', 'type': { 'buffer': { 'length': 65 } } },
+        ],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          inscriptionId: TypedAbiArg<Uint8Array, 'inscriptionId'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+          owner: TypedAbiArg<Uint8Array, 'owner'>,
+          signature: TypedAbiArg<Uint8Array, 'signature'>,
+        ],
+        Response<boolean, bigint>
+      >,
       validateWrapSignature: {
         'name': 'validate-wrap-signature',
         'access': 'read_only',
@@ -3044,6 +3116,16 @@ export const contracts = {
     'variables': {
       ERR_INVALID_BLOCK: {
         name: 'ERR_INVALID_BLOCK',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_INVALID_BURN_ADDRESS: {
+        name: 'ERR_INVALID_BURN_ADDRESS',
         type: {
           response: {
             ok: 'none',
@@ -3111,6 +3193,10 @@ export const contracts = {
       ERR_INVALID_BLOCK: {
         isOk: false,
         value: 1200n,
+      },
+      ERR_INVALID_BURN_ADDRESS: {
+        isOk: false,
+        value: 1205n,
       },
       ERR_INVALID_SIGNER: {
         isOk: false,
@@ -3186,6 +3272,23 @@ export const contracts = {
           'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
         },
       } as TypedAbiFunction<[], Response<boolean, bigint>>,
+      unwrap: {
+        'name': 'unwrap',
+        'access': 'public',
+        'args': [{ 'name': 'name-id', 'type': 'uint128' }, {
+          'name': 'recipient',
+          'type': 'principal',
+        }],
+        'outputs': {
+          'type': { 'response': { 'ok': 'bool', 'error': 'uint128' } },
+        },
+      } as TypedAbiFunction<
+        [
+          nameId: TypedAbiArg<number | bigint, 'nameId'>,
+          recipient: TypedAbiArg<string, 'recipient'>,
+        ],
+        Response<boolean, bigint>
+      >,
       wrap: {
         'name': 'wrap',
         'access': 'public',
@@ -3215,6 +3318,32 @@ export const contracts = {
       } as TypedAbiFunction<
         [nameId: TypedAbiArg<number | bigint, 'nameId'>],
         Uint8Array | null
+      >,
+      getNameProperties: {
+        'name': 'get-name-properties',
+        'access': 'read_only',
+        'args': [{ 'name': 'name-id', 'type': 'uint128' }],
+        'outputs': {
+          'type': {
+            'optional': {
+              'tuple': [{ 'name': 'id', 'type': 'uint128' }, {
+                'name': 'name',
+                'type': { 'buffer': { 'length': 48 } },
+              }, {
+                'name': 'namespace',
+                'type': { 'buffer': { 'length': 20 } },
+              }, { 'name': 'owner', 'type': 'principal' }],
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [nameId: TypedAbiArg<number | bigint, 'nameId'>],
+        {
+          'id': bigint;
+          'name': Uint8Array;
+          'namespace': Uint8Array;
+          'owner': string;
+        } | null
       >,
       validateNameOwnedByRegistry: {
         'name': 'validate-name-owned-by-registry',
@@ -3552,7 +3681,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 2n,
+      wrapperIdVar: 3n,
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
@@ -3828,7 +3957,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 3n,
+      wrapperIdVar: 2n,
     },
     'non_fungible_tokens': [],
     'fungible_tokens': [],
