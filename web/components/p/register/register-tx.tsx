@@ -8,11 +8,12 @@ import { DoneRow, PendingRow } from '@components/upgrade/rows';
 export const RegistrationTx: React.FC<{ children?: React.ReactNode }> = () => {
   const registrationTx = useAtomValue(registrationTxAtom);
   const name = useAtomValue(nameBeingRegisteredAtom);
+  const status = registrationTx?.tx_status;
   const pending = useMemo(() => {
-    if (typeof registrationTx?.tx_status === 'undefined') return true;
-    if (registrationTx.tx_status === 'pending') return true;
+    if (typeof status === 'undefined') return true;
+    if (status === 'pending') return true;
     return false;
-  }, [registrationTx?.tx_status]);
+  }, [status]);
 
   if (registrationTx === null) return null;
   return (
