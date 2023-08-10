@@ -9,10 +9,17 @@ import { useSwitchAccounts } from '@common/hooks/use-switch-accounts';
 import { BnsNameRow } from '@components/bns-name-row';
 import { Toaster } from 'sonner';
 import { useDeepMemo } from '@common/hooks/use-deep-memo';
-import { nameInputAtom, registrationNameState, registrationTxAtom } from '@store/register';
+import {
+  nameInputAtom,
+  registerTxIdAtom,
+  registrationNameState,
+  registrationTxAtom,
+} from '@store/register';
 import { Text } from '@components/text';
 import { Table, TableHeader, TableRow, TableHead, TableBody } from '@components/ui/table';
 import { Link } from '@components/link';
+import { RegisterNoName } from '@components/p/register/no-name';
+import { RegistrationTx } from '@components/p/register/register-tx';
 
 // TODO: success state
 // const RegistrationTx: React.FC = () => {
@@ -30,7 +37,6 @@ import { Link } from '@components/link';
 // }
 
 export const Register: React.FC<{ children?: React.ReactNode }> = () => {
-  const { switchAccounts } = useSwitchAccounts();
   const bnsNameValue = useAtomValue(nameInputAtom.currentValueAtom);
   const setName = useSetAtom(nameInputAtom.debouncedValueAtom);
   const transformedName = useAtomValue(registrationNameState);
@@ -38,6 +44,7 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
   const availableNamespaces = useAtomValue(availableNamespacesState);
   const v1Name = allNames.coreName;
   const noNames = v1Name === null;
+  const registrationTxid = useAtomValue(registerTxIdAtom);
   const registrationTx = useAtomValue(registrationTxAtom);
 
   const emptyInput = bnsNameValue.length === 0;
@@ -60,7 +67,9 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
     <>
       <Box flexGrow={1} />
       <div className="w-full space-y-6">
-        {noNames ? (
+        {registrationTxid ? (
+          <RegistrationTx />
+        ) : noNames ? (
           <>
             <div className="space-y-10 text-center">
               {/* <div className="max-w-lg mx-auto"> */}
@@ -102,23 +111,7 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
             )}
           </>
         ) : (
-          <div className="space-y-5 text-center">
-            <div className="flex flex-col gap-10 items-center">
-              <div>
-                <h1 className="text-gray-200 text-7xl font-open-sauce-one font-medium tracking-normal leading-10 max-w-lg">
-                  Register your BNS name
-                </h1>
-              </div>
-              <p className="text-gray-200 text-sm font-inter font-normal tracking-normal leading-6 max-w-lg">
-                Looks like you registered {v1Name} for this account. Switch to an account that
-                doesn&apos;t own any names, or{' '}
-                <Link href="/upgrade">migrate your name to BNSx</Link>.
-              </p>
-              <Button className="w-60 text-md" size="lg" onClick={() => switchAccounts()}>
-                Switch accounts
-              </Button>
-            </div>
-          </div>
+          <RegisterNoName />
         )}
       </div>
       <Box flexGrow={1} />

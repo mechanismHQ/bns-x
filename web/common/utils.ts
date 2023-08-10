@@ -46,7 +46,7 @@ export function fqn(name: Name) {
 export function getTxUrl(txId: string, network: StacksNetwork) {
   const coreUrl = network.getCoreApiUrl();
   const id = getTxId(txId);
-  if (coreUrl.includes('http://localhost')) {
+  if (coreUrl.includes('http://localhost') || coreUrl.includes('127.0.0.1')) {
     return `http://localhost:8000/txid/${id}?chain=testnet`;
   }
   const chain = coreUrl.includes('testnet') ? 'testnet' : 'mainnet';
