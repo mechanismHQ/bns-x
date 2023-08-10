@@ -21,3 +21,5 @@ export const nameIsPunyState = atom(get => {
 });
 
 export const nameInputAtom = atomWithDebounce('');
+
+export const nameBeingRegisteredAtom = hashAtom('registrationName');

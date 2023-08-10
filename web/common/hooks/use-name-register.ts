@@ -4,7 +4,7 @@ import { useAtomCallback } from 'jotai/utils';
 import { hashFqn, randomSalt } from '@bns-x/core';
 import { networkAtom } from '@store/micro-stacks';
 import { contractsState } from '@store/index';
-import { registerTxAtom, registerTxIdAtom } from '@store/register';
+import { registrationTxAtom, registerTxIdAtom, nameBeingRegisteredAtom } from '@store/register';
 import { getTxUrl } from '@common/utils';
 import { useAccountOpenContractCall } from '@common/hooks/use-account-open-contract-call';
 import { stxAddressAtom } from '@store/micro-stacks';
@@ -17,21 +17,22 @@ import {
 import { toast } from 'sonner';
 
 export function useNameRegister(name: string, namespace: string, price: bigint) {
-  const network = useAtomValue(networkAtom);
-  const stxAddress = useAtomValue(stxAddressAtom);
   const { openContractCall, isRequestPending } = useAccountOpenContractCall();
-  const stxPostCondition = makeStandardSTXPostCondition(
-    stxAddress as string,
-    FungibleConditionCode.Equal,
-    price
-  );
 
   const nameRegister = useAtomCallback(
     React.useCallback(
       async (get, set) => {
         try {
-          const contracts = get(contractsState) as any; // TODO: fix typing: getting a possibly undefined error when pulling in nameRegistrar contract only
+          set(nameBeingRegisteredAtom, `${name}.${namespace}`);
+          const contracts = get(contractsState);
           const nameRegistrar = contracts.nameRegistrar;
+          const network = get(networkAtom);
+          const stxAddress = get(stxAddressAtom);
+          const stxPostCondition = makeStandardSTXPostCondition(
+            stxAddress as string,
+            FungibleConditionCode.Equal,
+            price
+          );
           await openContractCall({
             ...nameRegistrar.nameRegister({
               name: asciiToBytes(name),
@@ -42,10 +43,10 @@ export function useNameRegister(name: string, namespace: string, price: bigint) 
             }),
             postConditionMode: PostConditionMode.Deny,
             postConditions: [stxPostCondition],
-            async onCancel() {
+            onCancel() {
               console.log('Cancelled tx');
             },
-            async onFinish(payload) {
+            onFinish(payload) {
               const url = getTxUrl(payload.txId, network);
               set(registerTxIdAtom, payload.txId);
               toast('Transaction submitted', {
@@ -67,7 +68,7 @@ export function useNameRegister(name: string, namespace: string, price: bigint) 
 
   return {
     nameRegister,
-    registerTxAtom,
+    registerTxIdAtom,
     isRequestPending,
   };
 }
