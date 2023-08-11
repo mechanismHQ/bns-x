@@ -87,4 +87,36 @@ export const bridgeRouter = router({
         inscriptionId: inscribedName.inscription_id,
       };
     }),
+
+  getNameByInscription: procedure
+    .input(z.object({ inscriptionId: z.string() }))
+    .output(
+      z.object({
+        name: z.nullable(z.string()),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      expectDb(ctx.bnsxDb);
+
+      const inscribedName = await ctx.bnsxDb.inscribedNames.findFirst({
+        where: {
+          inscription_id: input.inscriptionId,
+        },
+        select: {
+          name: true,
+        },
+      });
+
+      if (inscribedName === null || inscribedName.name === null) {
+        return {
+          name: null,
+        };
+      }
+
+      const name = convertDbName(inscribedName.name);
+
+      return {
+        name: name.combined,
+      };
+    }),
 });
