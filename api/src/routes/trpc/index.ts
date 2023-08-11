@@ -3,6 +3,7 @@ import { mergeRouters, router } from './base';
 import { inscriptionRouter } from './inscription-router';
 import { queryHelperRouter } from './query-helper-router';
 import { addressRouter } from '@routes/trpc/address-router';
+import { bridgeRouter } from './bridge-router';
 
 export const appRouter = mergeRouters(
   queryHelperRouter,
@@ -10,6 +11,7 @@ export const appRouter = mergeRouters(
   router({
     inscriptions: inscriptionRouter,
     zonefiles: zonefileRouter,
+    bridgeRouter,
   })
 );
 
