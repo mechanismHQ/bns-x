@@ -22,8 +22,9 @@ import { signWithKey } from '../deno/signatures.ts';
 import { accounts } from './clarigen-types.ts';
 import { randomBytes } from '../vendor/noble-hashes/utils.ts';
 import { beforeAll, beforeEach } from 'https://deno.land/std@0.159.0/testing/bdd.ts';
-import { btc, P } from '../deps.ts';
+import { btc, P, types, valueToCV } from '../deps.ts';
 import { sha256 } from '../vendor/noble-hashes/sha256.ts';
+import { contracts as contractDefs } from './clarigen-types.ts';
 
 const deployerPK = hexToBytes('753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a6');
 const alicePK = hexToBytes('7287ba251d44a4d3fd9276c88ce34c5c52a038955511cccaf77e61068649c178');
@@ -80,6 +81,7 @@ describe('l1-bridge-v1', () => {
   }
 
   const aliceInscriptionId = randomBytes(33);
+  let aliceNameId: bigint;
 
   describe('successful wrap', () => {
     let height: bigint;
@@ -97,12 +99,13 @@ describe('l1-bridge-v1', () => {
         chain,
       });
       nameId = nameRes.value;
+      aliceNameId = nameId;
       height = BigInt(chain.blockHeight - 1);
 
       hash = chain.rov(contract.hashForHeight(height));
     });
 
-    it('calls `wrap` method', () => {
+    it('calls `bridgeToL1` method', () => {
       const signature = signWrap(name, btcBytes, inscriptionId);
       const receipt = chain.txOk(
         contract.bridgeToL1({
@@ -134,6 +137,28 @@ describe('l1-bridge-v1', () => {
     it('inscription ID saved in registry', () => {
       const id = chain.rov(registry.getInscriptionId(nameId));
       assertEquals(id, inscriptionId);
+
+      const registeredInscriptionId = chain.rov(registry.getInscriptionId(nameId));
+      assertEquals(registeredInscriptionId, inscriptionId);
+
+      const nameDetails = chain.rovOk(registry.getInscriptionNameProperties(inscriptionId));
+      assertEquals(nameDetails.name, asciiToBytes('alice'));
+      assertEquals(nameDetails.namespace, btcBytes);
+    });
+
+    it('prints log info', () => {
+      const pd = types
+        .tuple({
+          account: alice,
+          id: types.uint(aliceNameId),
+          'inscription-id': types.buff(aliceInscriptionId),
+          name: types.buff(asciiToBytes('alice')),
+          namespace: types.buff(btcBytes),
+          owner: registry.identifier,
+          topic: types.ascii('wrap'),
+        })
+        .slice(2, -2);
+      wrapEvents.expectPrintEvent(registry.identifier, `{${pd}}`);
     });
   });
 
@@ -160,8 +185,6 @@ describe('l1-bridge-v1', () => {
           name,
           namespace,
           inscriptionId,
-          // height,
-          // headerHash: hash,
           signature,
         }),
         alice
@@ -333,6 +356,63 @@ describe('l1-bridge-v1', () => {
       );
 
       assertEquals(err, contract.constants.ERR_INVALID_BURN_ADDRESS.value);
+    });
+
+    describe('successful bridge to l2', () => {
+      let unwrapEvents: unknown[];
+
+      it('successfully bridges to l2', () => {
+        const burnScript = chain.rov(contract.generateBurnOutput(alice));
+        const signature = signUnwrap(aliceInscriptionId, burnScript);
+
+        const receipt = chain.txOk(
+          contract.bridgeToL2({
+            recipient: alice,
+            signature,
+            inscriptionId: aliceInscriptionId,
+          }),
+          alice
+        );
+        unwrapEvents = receipt.events;
+      });
+
+      it('bnsx name is transferred to alice', () => {
+        unwrapEvents.expectNonFungibleTokenTransferEvent(
+          `u${aliceNameId}`,
+          registry.identifier,
+          alice,
+          bnsx.identifier,
+          bnsx.non_fungible_tokens[0].name
+        );
+      });
+
+      it('alice owns bnsx name', () => {
+        const owner = chain.rov(bnsx.getNameOwner(aliceNameId));
+        assertEquals(owner, alice);
+      });
+
+      it('details are removed from registry', () => {
+        const inscriptionId = chain.rov(registry.getInscriptionId(aliceNameId));
+        assertEquals(inscriptionId, null);
+
+        const nameId = chain.rov(registry.getNameId(aliceInscriptionId));
+        assertEquals(nameId, null);
+      });
+
+      it('logs unwrap event', () => {
+        const pd = types
+          .tuple({
+            account: alice,
+            id: types.uint(aliceNameId),
+            'inscription-id': types.buff(aliceInscriptionId),
+            name: types.buff(asciiToBytes('alice')),
+            namespace: types.buff(btcBytes),
+            owner: registry.identifier,
+            topic: types.ascii('unwrap'),
+          })
+          .slice(2, -2);
+        unwrapEvents.expectPrintEvent(registry.identifier, `{${pd}}`);
+      });
     });
   });
 });

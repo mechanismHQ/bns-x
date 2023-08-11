@@ -78,13 +78,20 @@
   )
 )
 
-;; (define-public (bridge-to-l2
-;;     (name-id uint)
-;;     (inscription-owner (buff 34))
-
-;;     (signature (buff 65))
-;;   )
-;; )
+(define-public (bridge-to-l2
+    (inscription-id (buff 35))
+    (recipient principal)
+    (signature (buff 65))
+  )
+  (let
+    (
+      (expected-output (generate-burn-output recipient))
+    )
+    (try! (validate-unwrap-signature inscription-id recipient expected-output signature))
+    (try! (contract-call? .l1-registry unwrap inscription-id recipient))
+    (ok true)
+  )
+)
 
 ;; Signature validation
 
@@ -106,15 +113,15 @@
   )
 )
 
-(define-read-only (validate-block-hash (height uint) (header-hash (buff 32)))
-  (let
-    (
-      (block-hash (unwrap! (get-block-info? header-hash height) ERR_INVALID_BLOCK))
-    )
-    (asserts! (is-eq block-hash header-hash) ERR_INVALID_BLOCK)
-    (ok true)
-  )
-)
+;; (define-read-only (validate-block-hash (height uint) (header-hash (buff 32)))
+;;   (let
+;;     (
+;;       (block-hash (unwrap! (get-block-info? header-hash height) ERR_INVALID_BLOCK))
+;;     )
+;;     (asserts! (is-eq block-hash header-hash) ERR_INVALID_BLOCK)
+;;     (ok true)
+;;   )
+;; )
 
 (define-read-only (hash-for-height (height uint))
   (unwrap-panic (get-block-info? header-hash height))
