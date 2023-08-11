@@ -52,11 +52,12 @@ model InscriptionZonefiles {
 }
 
 view Name {
-  id            BigInt          @id @unique
-  name          String
-  namespace     String
-  NameOwnership NameOwnership[]
-  PrimaryName   PrimaryName[]
+  id             BigInt          @id @unique
+  name           String
+  namespace      String
+  NameOwnership  NameOwnership[]
+  PrimaryName    PrimaryName[]
+  InscribedNames InscribedNames?
 
   @@unique([name, namespace])
   @@map("names")
@@ -76,6 +77,14 @@ view NameOwnership {
   name    Name?  @relation(fields: [id], references: [id])
 
   @@map("name_ownership")
+}
+
+view InscribedNames {
+  id             BigInt @id @unique
+  inscription_id String
+  name           Name?  @relation(fields: [id], references: [id])
+
+  @@map("inscribed_names")
 }
 
 // OLD:

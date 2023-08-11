@@ -234,6 +234,31 @@ export type AppProcedures = {
       >;
     }
   >;
+  bridgeRouter: TrpcServer.CreateRouterInner<
+    TrpcServer.AnyRootConfig,
+    {
+      inscribedNames: AnyProc<
+        'query',
+        unknown,
+        {
+          results: {
+            inscriptionId: string;
+            id: number;
+            name: string;
+          }[];
+        }
+      >;
+      getInscriptionByName: AnyProc<
+        'query',
+        {
+          name: string;
+        },
+        {
+          inscriptionId: string;
+        }
+      >;
+    }
+  >;
 };
 
 type AnyProc<Type extends 'query' | 'mutation', Input, Output> = TrpcServer.BuildProcedure<
