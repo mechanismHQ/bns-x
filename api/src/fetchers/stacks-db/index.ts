@@ -36,7 +36,7 @@ export async function getAssetIds(address: string, db: StacksDb) {
   return ids;
 }
 
-function deserializeTuple<T>(row: { value: Buffer }): T {
+export function deserializeTuple<T>(row: { value: Buffer }): T {
   return cvToJSON<T>(deserializeCV(decodeClarityValue(row.value).hex));
 }
 

@@ -1,5 +1,7 @@
 import type { StacksDb } from '@db';
+import { deserializeTuple } from '@fetchers/stacks-db';
 import { getNetwork } from '~/constants';
+import { convertNameBuff } from '~/contracts/utils';
 import { DbQueryTag, dbQuerySummary, observeQuery } from '~/metrics';
 
 export function getBnsSmartContractId(): string {
@@ -11,27 +13,20 @@ export function getBnsSmartContractId(): string {
 
 export async function fetchNameByAddressCore(db: StacksDb, address: string) {
   const done = observeQuery(DbQueryTag.NAME_BY_ADDRESS);
-  const names = await db.names.findFirst({
-    select: {
-      name: true,
-    },
+  const nameNft = await db.nftCustody.findFirst({
     where: {
-      address,
-      status: {
-        not: 'name-revoke',
-      },
-      canonical: true,
-      microblock_canonical: true,
+      recipient: address,
+      assetIdentifier: getBnsSmartContractId(),
     },
-    orderBy: [
-      { registered_at: 'desc' },
-      { microblock_sequence: 'desc' },
-      { tx_index: 'desc' },
-      { event_index: 'desc' },
-    ],
   });
   done();
-  return names?.name ?? null;
+  if (nameNft === null) return null;
+  const nameData = deserializeTuple<{
+    name: string;
+    namespace: string;
+  }>(nameNft);
+  const name = convertNameBuff(nameData);
+  return name.combined;
 }
 
 export async function fetchSubdomainsByAddress(db: StacksDb, address: string) {
