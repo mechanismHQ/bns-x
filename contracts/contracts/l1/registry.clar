@@ -3,8 +3,10 @@
 (define-constant ERR_NOT_OWNED_BY_REGISTRY (err u1101))
 (define-constant ERR_INVALID_NAME (err u1102))
 (define-constant ERR_DUPLICATE_INSCRIPTION (err u1103))
+(define-constant ERR_INSCRIPTION_NOT_REGISTERED (err u1104))
 
-(define-map inscriptions-map uint (buff 35))
+(define-map inscriptions-name-map (buff 35) uint)
+(define-map name-inscriptions-map uint (buff 35))
 
 (define-data-var extension-var principal .l1-bridge-v1)
 
@@ -23,45 +25,41 @@
     )
     ;; #[filter(inscription-id, name-id)]
     (try! (is-extension))
-    (asserts! (map-insert inscriptions-map name-id inscription-id) ERR_DUPLICATE_INSCRIPTION)
+    (asserts! (map-insert name-inscriptions-map name-id inscription-id) ERR_DUPLICATE_INSCRIPTION)
+    (asserts! (map-insert inscriptions-name-map inscription-id name-id) ERR_DUPLICATE_INSCRIPTION)
+    (log-bridge-action "wrap" inscription-id owner name-details)
     (ok name-details)
   )
 )
 
-(define-public (unwrap (name-id uint) (recipient principal))
+(define-public (unwrap (inscription-id (buff 35)) (recipient principal))
   (let
     (
-      (inscription-id (unwrap! (map-get? inscriptions-map name-id) ERR_INVALID_NAME))
+      (name-id (unwrap! (map-get? inscriptions-name-map inscription-id) ERR_INSCRIPTION_NOT_REGISTERED))
       (name-details (try! (get-name-properties name-id)))
     )
-    ;; #[filter(name-id, recipient)]
+    ;; #[filter(name-id, recipient, inscription-id)]
     (try! (is-extension))
-    (map-delete inscriptions-map name-id)
-    (try! (as-contract (bns-transfer name-id tx-sender recipient)))
+    (map-delete name-inscriptions-map name-id)
+    (map-delete inscriptions-name-map inscription-id)
+    (unwrap-panic (as-contract (contract-call? .bnsx-registry transfer name-id tx-sender recipient)))
+    (log-bridge-action "unwrap" inscription-id recipient name-details)
     (ok name-details)
-  )
-)
-
-;; Helpers
-
-;; #[allow(unchecked_data)]
-(define-private (bns-transfer (name-id uint) (sender principal) (recipient principal))
-  (match (contract-call? .bnsx-registry transfer name-id sender recipient)
-    res (ok res)
-    e (begin
-      (print {
-        topic: "transfer-error",
-        error: e,
-      })
-      ERR_TRANSFER
-    )
   )
 )
 
 ;; Getters
 
 (define-read-only (get-inscription-id (name-id uint))
-  (map-get? inscriptions-map name-id)
+  (map-get? name-inscriptions-map name-id)
+)
+
+(define-read-only (get-name-id (inscription-id (buff 35)))
+  (map-get? inscriptions-name-map inscription-id)
+)
+
+(define-read-only (get-inscription-name-properties (inscription-id (buff 35)))
+  (get-name-properties (unwrap! (map-get? inscriptions-name-map inscription-id) ERR_INSCRIPTION_NOT_REGISTERED))
 )
 
 ;; Validation
@@ -73,9 +71,26 @@
       (name-details (try! (get-name-properties name-id)))
     )
     (asserts! (is-eq self (get owner name-details)) ERR_NOT_OWNED_BY_REGISTRY)
-    (ok true)
+    (ok name-details)
   )
 )
 
 (define-read-only (get-name-properties (name-id uint))
   (ok (unwrap! (contract-call? .bnsx-registry get-name-properties-by-id name-id) ERR_INVALID_NAME)))
+
+;; Logging
+
+;; #[allow(unchecked_data)]
+(define-private (log-bridge-action 
+    (topic (string-ascii 10))
+    (inscription-id (buff 35))
+    (account principal)
+    (name-details {
+      id: uint,
+      owner: principal,
+      name: (buff 48),
+      namespace: (buff 20),
+    })
+  )
+  (print (merge { topic: topic, inscription-id: inscription-id, account: account } name-details))
+)
