@@ -9,6 +9,7 @@ import type { ClassValue } from 'clsx';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { c32address, StacksNetworkVersion } from 'micro-stacks/crypto';
+import { ordinalsBaseUrl } from '@common/constants';
 
 export function intToString(int: IntegerType) {
   const str = typeof int === 'bigint' ? int.toString() : String(int);
@@ -132,4 +133,9 @@ export function createStacksAddress({
   const version = network.isMainnet() ? address[0] : StacksNetworkVersion.testnetP2PKH;
   const hash = typeof address[1] === 'string' ? hexToBytes(address[1]) : address[1];
   return c32address(version, hash);
+}
+
+export function getInscriptionUrl(inscriptionId: string) {
+  const baseUrl = ordinalsBaseUrl();
+  return `${baseUrl}/inscription/${inscriptionId}`;
 }

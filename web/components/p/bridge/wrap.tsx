@@ -12,8 +12,9 @@ import type { ContractCallTyped, TypedAbiArg } from '@clarigen/core';
 import { contractFactory, makeNonFungiblePostCondition } from '@clarigen/core';
 import {
   bridgeInscriptionIdAtom,
-  bridgeWrapTxAtom,
+  bridgeWrapTxidAtom,
   fetchSignatureForInscriptionId,
+  inscribedNamesAtom,
 } from '@store/bridge';
 import { useAtom, useAtomValue } from 'jotai';
 import { loadable, useAtomCallback } from 'jotai/utils';
@@ -41,12 +42,20 @@ import { useAccountOpenContractCall } from '@common/hooks/use-account-open-contr
 import type { PostCondition } from 'micro-stacks/transactions';
 import { NonFungibleConditionCode, PostConditionMode } from 'micro-stacks/transactions';
 import { nameToTupleBytes } from '@common/utils';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+import { WrapTx } from '@components/p/bridge/wrap-tx';
 
 export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
   const name = router.query.name as string;
   const inscriptionId = useInput(useAtom(bridgeInscriptionIdAtom));
   const { openContractCall } = useAccountOpenContractCall();
+  const inscribedNames = useAtomValue(inscribedNamesAtom);
+  const wrapTxid = useAtomValue(bridgeWrapTxidAtom);
+
+  useDeepCompareEffect(() => {
+    console.log(inscribedNames);
+  }, [inscribedNames]);
 
   const inscriptionContent = useMemo(() => {
     return inscriptionContentForName(name);
@@ -134,7 +143,7 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
           },
           onFinish(payload) {
             console.log(payload);
-            set(bridgeWrapTxAtom, payload.txId);
+            set(bridgeWrapTxidAtom, payload.txId);
           },
         });
       },
@@ -144,24 +153,31 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
 
   return (
     <div className="flex gap-5 flex-col px-[29px]">
-      <Text variant="Heading02">
-        Bridge <span className="font-mono">{name}</span> to L1
-      </Text>
-      <Text variant="Heading035">Step 1: Inscribe your name</Text>
-      <Text variant="Body01">Create a new inscription with the following content:</Text>
-      <CodeBlock>{inscriptionContent}</CodeBlock>
-      <div className="flex gap-5">
-        <Button onClick={copyToClipboard}>Copy to Clipboard</Button>
-        <Button>Download file</Button>
-      </div>
-      <Text variant="Heading035">Step 2: Submit your inscription</Text>
-      <Text variant="Body01">
-        Once your inscription is created, submit it to the bridge by entering the inscription ID:
-      </Text>
-      <Input placeholder="Enter your inscription ID" {...inscriptionId.props}></Input>
-      <div className="flex">
-        <Button onClick={fetchSignature}>Submit</Button>
-      </div>
+      {wrapTxid ? (
+        <WrapTx />
+      ) : (
+        <>
+          <Text variant="Heading02">
+            Bridge <span className="font-mono">{name}</span> to L1
+          </Text>
+          <Text variant="Heading035">Step 1: Inscribe your name</Text>
+          <Text variant="Body01">Create a new inscription with the following content:</Text>
+          <CodeBlock>{inscriptionContent}</CodeBlock>
+          <div className="flex gap-5">
+            <Button onClick={copyToClipboard}>Copy to Clipboard</Button>
+            <Button>Download file</Button>
+          </div>
+          <Text variant="Heading035">Step 2: Submit your inscription</Text>
+          <Text variant="Body01">
+            Once your inscription is created, submit it to the bridge by entering the inscription
+            ID:
+          </Text>
+          <Input placeholder="Enter your inscription ID" {...inscriptionId.props}></Input>
+          <div className="flex">
+            <Button onClick={fetchSignature}>Submit</Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
