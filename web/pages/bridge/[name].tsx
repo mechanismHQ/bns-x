@@ -1,16 +1,16 @@
 import type { NextPage } from 'next';
 import { Layout } from '@components/layout';
-import { BridgeWrap } from '@components/p/bridge/wrap';
+import { BridgeName } from '@components/p/bridge/bridge';
 import { withSSRProps } from '@common/page-utils';
 
 export const getServerSideProps = withSSRProps();
 
-const BridgeWrapPage: NextPage = () => {
+const BridgeNamePage: NextPage = () => {
   return (
     <Layout centerBox={false}>
-      <BridgeWrap />
+      <BridgeName />
     </Layout>
   );
 };
 
-export default BridgeWrapPage;
+export default BridgeNamePage;
