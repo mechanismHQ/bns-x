@@ -8,82 +8,39 @@ template.innerHTML = `
 }
 
 .container {
-  // aspect-ratio: 1;
   display: flex;
-  // height: 100%;
   flex-direction: column;
   align-items: center;
-  /* padding: 10vh 0; */
-  /* max-height: 100vh; */
-  /* max-height: 300px; */
   box-sizing: border-box;
-  /* border: 1px solid white; */
+  width: 100%;
+  height: 100%;
   container: bns-card / inline-size;
+  justify-content: space-evenly;
 }
 
 .icon-container {
-  width: 724px; 
-  /* height: 724px;  */
-  max-width: 70%;
+  max-width: 50%;
+  max-height: 50%;
+  flex-grow: 1;
   aspect-ratio: 1;
-  height: auto;
-  overflow: hidden; 
-  position: relative;
-}
-
-
-.icon {
-  position: absolute;
-  ttop: -238px; /* Move the image up by 200px to show the center */
-  lleft: -238px; /* Move the image left by 200px to show the center */
-  width: 724px; 
-  height: 724px;
-  object-fit: cover;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: url(./bns-icon.webp) no-repeat center center;
+  background-size: 160%;
 }
 
 #name {
   color: white;
-  font-size: 64px;
+  font-size: 10cqw;
   max-width: 80%;
   text-align: center;
   overflow-wrap: anywhere;
 }
-
-.grow {
-  flex-grow: 1;
-}
-
-@container bns-card (width < 700px) {
-  #name {
-    font-size: 48px;
-  }
-}
-
-@container bns-card (width < 400px) {
-  #name {
-    font-size: 32px;
-  }
-}
-
-@container bns-card (width < 250px) {
-  #name {
-    font-size: 16px;
-  }
-}
-
-@container bns-card (width < 200px) {
-  #name {
-    font-size: 12px;
-  }
-}
 </style>
 
 <div class="container">
-  /**<div class="icon-container">*/
-    <img src="./bns-icon.webp" alt="BNS Icon" class="icon">
-  </div>
+  <div class="icon-container"></div>
   <span id="name"></span>
-  <div class="grow"></div>
 </div>
 `;
 
@@ -96,7 +53,15 @@ class BnsCard extends HTMLElement {
   connectedCallback() {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     const name = this.getAttribute('n');
-    this.shadowRoot.getElementById('name').innerText = name;
+    const nameEl = this.shadowRoot.getElementById('name');
+    const container = this.shadowRoot.querySelector('.container');
+    nameEl.innerText = name;
+    const cw = container.clientWidth;
+    let baseSize = 10;
+    while (nameEl.clientWidth / cw > 0.7 && baseSize > 4) {
+      baseSize -= 0.1;
+      nameEl.style.fontSize = `${baseSize}cqw`;
+    }
   }
 }
 
