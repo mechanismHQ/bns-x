@@ -10,6 +10,7 @@ export async function refreshMaterializedViews(db: BnsDb) {
     await db.$executeRaw`REFRESH MATERIALIZED VIEW CONCURRENTLY names`;
     await db.$executeRaw`REFRESH MATERIALIZED VIEW CONCURRENTLY primary_names`;
     await db.$executeRaw`REFRESH MATERIALIZED VIEW CONCURRENTLY name_ownership`;
+    await db.$executeRaw`REFRESH MATERIALIZED VIEW CONCURRENTLY inscribed_names`;
   } catch (error) {
     logger.error({
       error,
