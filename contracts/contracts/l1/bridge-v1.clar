@@ -185,14 +185,20 @@
 )
 
 (define-public (update-signer (signer principal))
-  (let
-    (
-      (current-signer (var-get signer-var))
-    )
-    ;; #[filter(signer)]
-    (asserts! (is-eq current-signer tx-sender) ERR_INVALID_SIGNER)
+  (begin
+    (asserts! (is-eq (var-get signer-var) tx-sender) ERR_INVALID_SIGNER)
     (set-signer-inner signer)
     (ok true)
+  )
+)
+
+(define-read-only (get-signer) (var-get signer-var))
+
+(define-public (update-registry-extension (new-extension principal))
+  (begin
+    (asserts! (is-eq (var-get signer-var) tx-sender) ERR_INVALID_SIGNER)
+    (try! (contract-call? .l1-registry update-extension new-extension))
+    (ok new-extension)
   )
 )
 
