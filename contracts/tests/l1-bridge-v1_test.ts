@@ -193,26 +193,6 @@ describe('l1-bridge-v1', () => {
       assertEquals(receipt.value, contract.constants.ERR_INVALID_SIGNER.value);
     });
 
-    // it('fails if invalid header hash at height', () => {
-    //   const height = BigInt(chain.blockHeight - 1);
-    //   // different height:
-    //   const hash = chain.rov(contract.hashForHeight(height - 1n));
-    //   const signature = signWrap(name, namespace, inscriptionId, alicePK);
-    //   const receipt = chain.txErr(
-    //     contract.bridgeToL1({
-    //       name,
-    //       namespace,
-    //       inscriptionId,
-    //       height,
-    //       // headerHash: hash,
-    //       signature,
-    //     }),
-    //     alice
-    //   );
-
-    //   assertEquals(receipt.value, contract.constants.ERR_INVALID_BLOCK.value);
-    // });
-
     it('fails if sending other name than owned', () => {
       const height = BigInt(chain.blockHeight - 1);
       const hash = chain.rov(contract.hashForHeight(height));
@@ -412,6 +392,79 @@ describe('l1-bridge-v1', () => {
           })
           .slice(2, -2);
         unwrapEvents.expectPrintEvent(registry.identifier, `{${pd}}`);
+      });
+    });
+  });
+
+  describe('authorization', () => {
+    it('only existing signer can update', () => {
+      const result = chain.txErr(contract.updateSigner({ signer: alice }), alice);
+      assertEquals(result.value, contract.constants.ERR_INVALID_SIGNER.value);
+    });
+
+    it('existing signer can update', () => {
+      const result = chain.txOk(contract.updateSigner(alice), deployer);
+      const signer = chain.rov(contract.getSigner());
+      assertEquals(signer, alice);
+    });
+
+    it('old signer is invalid now', () => {
+      const inscriptionId = randomBytes(33);
+      const signature = signWrap(asciiToBytes('alice'), btcBytes, randomBytes(33), deployerPK);
+      const result = chain.rovErr(
+        contract.validateWrapSignature({
+          name: asciiToBytes('alice'),
+          namespace: btcBytes,
+          inscriptionId,
+          signature,
+        })
+      );
+      assertEquals(result, contract.constants.ERR_INVALID_SIGNER.value);
+
+      const output = randomBytes(33);
+      const unwrapSig = signUnwrap(inscriptionId, output, deployerPK);
+      const unwrapErr = chain.rovErr(
+        contract.validateUnwrapSignature({
+          inscriptionId,
+          owner: output,
+          recipient: alice,
+          signature: unwrapSig,
+        })
+      );
+      assertEquals(unwrapErr, contract.constants.ERR_INVALID_SIGNER.value);
+    });
+
+    it('new signer can update signer', () => {
+      chain.txOk(contract.updateSigner(deployer), alice);
+      const signer = chain.rov(contract.getSigner());
+      assertEquals(signer, deployer);
+    });
+
+    describe('updating registry extension', () => {
+      it('only extension can update extension', () => {
+        const result = chain.txErr(registry.updateExtension(alice), deployer);
+        assertEquals(result.value, registry.constants.ERR_UNAUTHORIZED.value);
+      });
+
+      it('only signer can update extension from bridge-v1', () => {
+        const result = chain.txErr(contract.updateRegistryExtension(deployer), alice);
+        assertEquals(result.value, contract.constants.ERR_INVALID_SIGNER.value);
+      });
+
+      it('signer can update extension from bridge-v1', () => {
+        const result = chain.txOk(contract.updateRegistryExtension(deployer), deployer);
+        assertEquals(result.value, deployer);
+
+        const extension = chain.rov(registry.getExtension());
+        assertEquals(extension, deployer);
+      });
+
+      it('new extension can update extension', () => {
+        const result = chain.txOk(registry.updateExtension(contract.identifier), deployer);
+        assertEquals(result.value, contract.identifier);
+
+        const extension = chain.rov(registry.getExtension());
+        assertEquals(extension, contract.identifier);
       });
     });
   });

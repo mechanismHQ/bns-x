@@ -2673,6 +2673,15 @@ export const contracts = {
         ],
         Response<boolean, bigint>
       >,
+      updateRegistryExtension: {
+        name: 'update-registry-extension',
+        access: 'public',
+        args: [{ name: 'new-extension', type: 'principal' }],
+        outputs: { type: { response: { ok: 'principal', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [newExtension: TypedAbiArg<string, 'newExtension'>],
+        Response<string, bigint>
+      >,
       updateSigner: {
         name: 'update-signer',
         access: 'public',
@@ -2697,6 +2706,12 @@ export const contracts = {
         args: [{ name: 'recipient', type: 'principal' }],
         outputs: { type: { buffer: { length: 23 } } },
       } as TypedAbiFunction<[recipient: TypedAbiArg<string, 'recipient'>], Uint8Array>,
+      getSigner: {
+        name: 'get-signer',
+        access: 'read_only',
+        args: [],
+        outputs: { type: 'principal' },
+      } as TypedAbiFunction<[], string>,
       hashBurnScriptData: {
         name: 'hash-burn-script-data',
         access: 'read_only',
@@ -2995,6 +3010,15 @@ export const contracts = {
           bigint
         >
       >,
+      updateExtension: {
+        name: 'update-extension',
+        access: 'public',
+        args: [{ name: 'new-extension', type: 'principal' }],
+        outputs: { type: { response: { ok: 'principal', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [newExtension: TypedAbiArg<string, 'newExtension'>],
+        Response<string, bigint>
+      >,
       wrap: {
         name: 'wrap',
         access: 'public',
@@ -3034,6 +3058,12 @@ export const contracts = {
           bigint
         >
       >,
+      getExtension: {
+        name: 'get-extension',
+        access: 'read_only',
+        args: [],
+        outputs: { type: 'principal' },
+      } as TypedAbiFunction<[], string>,
       getInscriptionId: {
         name: 'get-inscription-id',
         access: 'read_only',
@@ -3482,7 +3512,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 2n,
+      wrapperIdVar: 3n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
@@ -3748,7 +3778,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 3n,
+      wrapperIdVar: 2n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],

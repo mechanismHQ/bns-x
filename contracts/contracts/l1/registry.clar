@@ -94,3 +94,16 @@
   )
   (print (merge { topic: topic, inscription-id: inscription-id, account: account } name-details))
 )
+
+;; Extension management
+
+(define-public (update-extension (new-extension principal))
+  (begin
+    ;; #[filter(new-extension)]
+    (try! (is-extension))
+    (var-set extension-var new-extension)
+    (ok new-extension)
+  )
+)
+
+(define-read-only (get-extension) (var-get extension-var))
