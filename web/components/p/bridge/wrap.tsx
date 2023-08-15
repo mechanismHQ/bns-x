@@ -1,57 +1,34 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Text } from '@components/text';
-import {
-  inscriptionContentForName,
-  inscriptionContentType,
-  contracts,
-  deployments,
-  parseFqn,
-} from '@bns-x/core';
-import type { ContractCallTyped, TypedAbiArg } from '@clarigen/core';
-import { contractFactory, makeNonFungiblePostCondition } from '@clarigen/core';
+import { inscriptionContentForName } from '@bns-x/core';
 import {
   bridgeInscriptionIdAtom,
   bridgeWrapTxidAtom,
   fetchSignatureForInscriptionId,
   inscribedNamesAtom,
+  inscriptionIdForNameAtom,
 } from '@store/bridge';
 import { useAtom, useAtomValue } from 'jotai';
-import { loadable, useAtomCallback } from 'jotai/utils';
+import { loadable } from 'jotai/utils';
 import { useInput } from '@common/hooks/use-input';
 import { CodeBlock } from '@components/code';
 import { Button } from '@components/ui/button';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { Input } from '@components/form';
-import {
-  bnsContractState,
-  bridgeContractState,
-  clarigenAtom,
-  contractsState,
-  nameRegistryState,
-} from '@store/index';
-import { asciiToBytes, hexToBytes } from 'micro-stacks/common';
-import {
-  currentAccountAtom,
-  networkAtom,
-  stxAddressAtom,
-  useCurrentAccountValue,
-} from '@store/micro-stacks';
 import { nameDetailsAtom } from '@store/names';
-import { useAccountOpenContractCall } from '@common/hooks/use-account-open-contract-call';
-import type { PostCondition } from 'micro-stacks/transactions';
-import { NonFungibleConditionCode, PostConditionMode } from 'micro-stacks/transactions';
-import { nameToTupleBytes } from '@common/utils';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { WrapTx } from '@components/p/bridge/wrap-tx';
+import { useBridgeWrap } from '@common/hooks/use-bridge-wrap';
 
 export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
   const name = router.query.name as string;
   const inscriptionId = useInput(useAtom(bridgeInscriptionIdAtom));
-  const { openContractCall } = useAccountOpenContractCall();
   const inscribedNames = useAtomValue(inscribedNamesAtom);
   const wrapTxid = useAtomValue(bridgeWrapTxidAtom);
+
+  const existingInscription = useAtomValue(inscriptionIdForNameAtom(name));
 
   useDeepCompareEffect(() => {
     console.log(inscribedNames);
@@ -65,92 +42,11 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   // prefetch:
   useAtomValue(loadable(nameDetailsAtom(name)));
 
-  // const account = useCurrentAccountValue();
-  const account = useAtomValue(currentAccountAtom);
-
-  if (typeof account === 'undefined') {
-    throw new Error('Must be logged in');
-  }
-  const stxAddress = account.stxAddress;
-
   const copyToClipboard = useCallback(async () => {
     await copyInscription(inscriptionContent);
   }, [inscriptionContent, copyInscription]);
 
-  const fetchSignature = useAtomCallback(
-    useCallback(
-      async (get, set) => {
-        const inscriptionId = get(bridgeInscriptionIdAtom);
-        const bridgeData = await fetchSignatureForInscriptionId({
-          inscriptionId,
-          fqn: name,
-          sender: stxAddress,
-        });
-        console.log('signature', bridgeData);
-        const nameDetails = get(nameDetailsAtom(name))!;
-        const fqnParts = parseFqn(name);
-        const bridge = get(bridgeContractState);
-        const nameBytes = asciiToBytes(fqnParts.name);
-        const namespaceBytes = asciiToBytes(fqnParts.namespace);
-        const bnsx = get(nameRegistryState);
-        const baseParams = {
-          name: nameBytes,
-          namespace: namespaceBytes,
-          inscriptionId: hexToBytes(inscriptionId),
-        };
-        let tx: ContractCallTyped<TypedAbiArg<any, string>[], any>;
-        const postConditions: PostCondition[] = [];
-        if (nameDetails.isBnsx) {
-          const bnsxPostCondition = makeNonFungiblePostCondition(
-            bnsx,
-            stxAddress,
-            NonFungibleConditionCode.DoesNotOwn,
-            BigInt(nameDetails.id)
-          );
-          postConditions.push(bnsxPostCondition);
-          tx = bridge.bridgeToL1({
-            ...baseParams,
-            signature: hexToBytes(bridgeData.signature),
-          });
-        } else {
-          const bns = get(bnsContractState);
-          const nameTupleId = nameToTupleBytes(name);
-          // moves bns to wrapper
-          const bnsPostCondition = makeNonFungiblePostCondition(
-            bns,
-            stxAddress,
-            NonFungibleConditionCode.DoesNotOwn,
-            nameTupleId
-          );
-          postConditions.push(bnsPostCondition);
-          tx = bridge.migrateAndBridge({
-            ...baseParams,
-            bridgeSignature: hexToBytes(bridgeData.signature),
-            migrateSignature: hexToBytes(bridgeData.migrateSignature),
-            wrapper: bridgeData.wrapperId,
-          });
-        }
-        const network = get(networkAtom);
-        await openContractCall({
-          ...tx,
-          postConditionMode: PostConditionMode.Deny,
-          postConditions,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          network: {
-            ...network,
-            coreApiUrl: network.getCoreApiUrl(),
-          },
-          onFinish(payload) {
-            console.log(payload);
-            set(bridgeWrapTxidAtom, payload.txId);
-          },
-        });
-      },
-      [name, stxAddress, openContractCall]
-    )
-  );
-
+  const { fetchSignature } = useBridgeWrap();
   return (
     <div className="flex gap-5 flex-col px-[29px]">
       {wrapTxid ? (
