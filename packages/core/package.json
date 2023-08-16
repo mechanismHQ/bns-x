@@ -7,8 +7,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "typecheck": "tsc --noEmit",
-    "build:ord-card": "tsup bridge-card/card-v2.js -d tmp"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@bns-x/punycode": "workspace:*",
