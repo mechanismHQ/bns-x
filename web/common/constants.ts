@@ -4,6 +4,7 @@ import { DEPLOYMENT_NETWORKS, projectFactory } from '@clarigen/core';
 import { ClarigenNodeClient } from '@clarigen/node';
 import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMocknet, StacksMainnet, StacksTestnet } from 'micro-stacks/network';
+import { BTCNetwork, BitcoinNetwork } from 'magic-protocol';
 
 export function getAppUrl() {
   if (typeof location !== 'undefined') {
@@ -97,4 +98,16 @@ export function ordinalsBaseUrl() {
     return 'https://ordinals.com';
   }
   return 'http://127.0.0.1:5002';
+}
+
+export function getBtcNetwork() {
+  const networkKey = getNetworkKey();
+  switch (networkKey) {
+    case 'mainnet':
+      return BitcoinNetwork.Mainnet;
+    case 'testnet':
+      return BitcoinNetwork.Testnet;
+    default:
+      return BitcoinNetwork.Regtest;
+  }
 }

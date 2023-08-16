@@ -14,7 +14,7 @@ function getOrdJs(template: string) {
 async function run() {
   const template = await getOrdTemplate();
   const js = getOrdJs(template);
-  await writeFile('./src/bridge/card.ts', js, { encoding: 'utf8' });
+  await writeFile('./src/card.ts', js, { encoding: 'utf8' });
 }
 
 run()
