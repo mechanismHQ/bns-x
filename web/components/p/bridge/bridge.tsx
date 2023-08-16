@@ -1,10 +1,9 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { BridgeWrap } from './wrap';
 import { useRouter } from 'next/router';
-import { Text } from '@components/text';
-import { inscriptionContentForName } from '@bns-x/core';
 import {
   bridgeInscriptionIdAtom,
+  bridgeUnwrapTxidAtom,
   bridgeWrapTxidAtom,
   fetchSignatureForInscriptionId,
   inscribedNamesAtom,
@@ -29,12 +28,16 @@ export const BridgeName: React.FC<{ children?: React.ReactNode }> = () => {
 
   const existingInscription = useAtomValue(inscriptionIdForNameAtom(name));
   const inscribedNames = useAtomValue(inscribedNamesAtom);
+  const wrapTxid = useAtomValue(bridgeWrapTxidAtom);
+  const unwrapTxid = useAtomValue(bridgeUnwrapTxidAtom);
 
   useDeepCompareEffect(() => {
     console.log(inscribedNames);
   }, [inscribedNames]);
 
-  if (existingInscription === null) {
+  if (unwrapTxid) return <BridgeUnwrap />;
+
+  if (existingInscription === null || wrapTxid) {
     return <BridgeWrap />;
   }
 

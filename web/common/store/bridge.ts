@@ -17,6 +17,7 @@ import { OutScript, Address } from '@scure/btc-signer';
 import { getBtcNetwork } from '@common/constants';
 import { equalBytes } from 'micro-packed';
 import { bytesToHex } from 'micro-stacks/common';
+import type { BridgeUnwrapSignerResponse } from '@pages/api/bridge-unwrap-sig';
 
 export const bridgeInscriptionIdAtom = atom('');
 
@@ -38,11 +39,23 @@ export async function fetchSignatureForInscriptionId({
   return data;
 }
 
+export async function fetchUnwrapSignature({ inscriptionId }: { inscriptionId: string }) {
+  const url = `/api/bridge-unwrap-sig?inscriptionId=${inscriptionId}`;
+  const res = await fetch(url);
+  const data = (await res.json()) as BridgeUnwrapSignerResponse;
+  if ('error' in data) {
+    throw new Error(data.error);
+  }
+  return data;
+}
+
 export const bridgeSignatureAtom = atom('');
 
 export const bridgeWrapTxidAtom = hashAtom('bridgeTx');
+export const bridgeUnwrapTxidAtom = hashAtom('bridgeUnwrapTx');
 
 export const bridgeWrapTxState = txidQueryAtom(bridgeWrapTxidAtom)[0];
+export const bridgeUnwrapTxState = txidQueryAtom(bridgeUnwrapTxidAtom)[0];
 export const submittedBridgeInscriptionIdAtom = hashAtom('bridgeInscription');
 
 export const inscribedNamesAtom = atomsWithQuery(_get => ({
@@ -53,18 +66,25 @@ export const inscribedNamesAtom = atomsWithQuery(_get => ({
   },
 }))[0];
 
-export const inscriptionIdForNameAtom = atomFamily((fqn: string) => {
+export const inscriptionForNameAtom = atomFamily((fqn: string) => {
   return atomsWithQuery(() => ({
-    queryKey: ['inscriptionIdForName', fqn],
+    queryKey: ['inscriptionForName', fqn],
+    refetchInterval: 10000,
     queryFn: async () => {
       try {
         const result = await trpc.bridgeRouter.getInscriptionByName.query({ name: fqn });
-        return result.inscriptionId;
+        return result;
       } catch (error) {
         return null;
       }
     },
   }))[0];
+});
+
+export const inscriptionIdForNameAtom = atomFamily((fqn: string) => {
+  return atom(get => {
+    return get(inscriptionForNameAtom(fqn))?.inscriptionId ?? null;
+  });
 });
 
 export const bridgeBurnAddressForRecipientState = atomFamily((recipient: string) => {

@@ -7,6 +7,7 @@ import {
   bridgeWrapTxidAtom,
   fetchSignatureForInscriptionId,
   inscribedNamesAtom,
+  submittedBridgeInscriptionIdAtom,
 } from '@store/bridge';
 import { currentAccountAtom, networkAtom } from '@store/micro-stacks';
 import { nameDetailsAtom } from '@store/names';
@@ -84,6 +85,7 @@ export function useBridgeWrap() {
           });
         }
         const network = get(networkAtom);
+        set(submittedBridgeInscriptionIdAtom, inscriptionId);
         await openContractCall({
           ...tx,
           postConditionMode: PostConditionMode.Deny,

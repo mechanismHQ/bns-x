@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { inscriptionContentForName, parseFqn, contracts, deployments } from '@bns-x/core';
+import { parseFqn, contracts, deployments } from '@bns-x/core';
 import { getClarigenNodeClient, getNetwork, ordinalsBaseUrl } from '@common/constants';
 import { contractFactory } from '@clarigen/core';
 import { fetchBlocks } from 'micro-stacks/api';
@@ -10,6 +10,7 @@ import { signWithKey, createStacksPrivateKey } from 'micro-stacks/transactions';
 import { signatureVrsToRsv } from '@common/utils';
 import { bnsApi } from '@store/api';
 import { createWrapperV2Signature } from '@pages/api/wrapper-sig-v2';
+import { inscriptionContentForName } from '@bns-x/bridge';
 
 export type BridgeSignerResponseOk = {
   signature: string;
@@ -39,6 +40,7 @@ export async function bridgeSignerApi(
   const contentReq = await fetch(url);
   const content = await contentReq.text();
   if (content !== inscriptionContentForName(fqn)) {
+    console.log('content', content);
     return res.status(400).send({ error: 'Invalid inscription' });
   }
 
