@@ -8,6 +8,9 @@ import { getZonefileInfo } from './zonefile';
 import { verifyMessageSignature, hashMessage } from 'micro-stacks/connect';
 import { publicKeyToStxAddress } from 'micro-stacks/crypto';
 import { z } from 'zod';
+import { getNetworkKey } from '~/constants';
+import { bytesToHex } from 'micro-stacks/common';
+import { bytesToInscriptionId } from '@bns-x/bridge';
 
 export interface InscriptionMeta {
   id: string;
@@ -43,10 +46,20 @@ export const inscriptionSchema = z.object({
 
 export type Inscription = z.infer<typeof inscriptionSchema>;
 
+export function ordinalsBaseUrl() {
+  const networkKey = getNetworkKey();
+  if (networkKey === 'mainnet') {
+    return 'https://ordinals.com';
+  }
+  return 'http://0.0.0.0:5002';
+}
+
 export async function fetchInscription(inscriptionId: string): Promise<Inscription> {
-  const res = await fetch(`https://ordinals.com/inscription/${inscriptionId}`);
+  const res = await fetch(`${ordinalsBaseUrl()}/inscription/${inscriptionId}`);
+  console.log(`${ordinalsBaseUrl()}/inscription/${inscriptionId}`);
 
   const body = await res.text();
+  console.log('body', body);
 
   const html = parse(body);
 
@@ -139,4 +152,155 @@ export async function verifyInscriptionZonefile(content: string) {
     intro,
     zonefileInfo,
   };
+}
+
+export type HiroInscriptionResponse = {
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  id: string;
+  /**
+   *
+   * @type {number}
+   * @memberof InscriptionResponse
+   */
+  number: number;
+  /**
+   *
+   * @type {string | null}
+   * @memberof InscriptionResponse
+   */
+  address: string | null;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  genesis_address: string;
+  /**
+   *
+   * @type {number}
+   * @memberof InscriptionResponse
+   */
+  genesis_block_height: number;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  genesis_block_hash: string;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  genesis_tx_id: string;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  genesis_fee: string;
+  /**
+   *
+   * @type {number}
+   * @memberof InscriptionResponse
+   */
+  genesis_timestamp: number;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  tx_id: string;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  location: string;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  output: string;
+  /**
+   *
+   * @type {string | null}
+   * @memberof InscriptionResponse
+   */
+  value: string | null;
+  /**
+   *
+   * @type {string | null}
+   * @memberof InscriptionResponse
+   */
+  offset: string | null;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  sat_ordinal: string;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  sat_rarity: string;
+  /**
+   *
+   * @type {number}
+   * @memberof InscriptionResponse
+   */
+  sat_coinbase_height: number;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  mime_type: string;
+  /**
+   *
+   * @type {string}
+   * @memberof InscriptionResponse
+   */
+  content_type: string;
+  /**
+   *
+   * @type {number}
+   * @memberof InscriptionResponse
+   */
+  content_length: number;
+  /**
+   *
+   * @type {number}
+   * @memberof InscriptionResponse
+   */
+  timestamp: number;
+};
+
+export async function fetchHiroInscription(
+  inscriptionId: string
+): Promise<HiroInscriptionResponse> {
+  const res = await fetch(`https://api.hiro.so/ordinals/v1/inscriptions/${inscriptionId}`);
+  const data = (await res.json()) as HiroInscriptionResponse;
+  return data;
+}
+
+export async function fetchInscriptionOwner(inscriptionId: string) {
+  const networkKey = getNetworkKey();
+  if (networkKey === 'mainnet') {
+    const { address } = await fetchHiroInscription(inscriptionId);
+    return address;
+  }
+  const { address } = await fetchInscription(inscriptionId);
+  return address;
+}
+
+export function inscriptionBuffToId(id: Uint8Array) {
+  return bytesToInscriptionId(id);
 }

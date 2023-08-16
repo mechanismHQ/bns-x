@@ -48,11 +48,15 @@ const _larry =
   '$ORIGIN larry.btc.\n$TTL 3600\n_redirect\tIN\tURI\t10\t1\t"https://larrysalibra.com/"\n\n@\tIN\tA\t161.35.228.61\n\n_._nostr\tIN\tTXT\t"8a9cf8235533cf755be661170eed18e6a2006ec76a88c3fd7d21e6c13bb7b69d"\n\n';
 
 async function run() {
-  const inscription = await fetchInscription(id);
-  console.log(inscription);
+  const inscription = await fetchInscription(
+    'ff450cf1c81ecda5a4edc1da9eb555a51469c0e3bb65449eb908ea98e21c83e5i0'
+  );
+  console.log('inscription', inscription);
+  // const inscription = awaitt fetchInscription(id);
+  // console.log(inscription);
 
-  const zonefileInfo = await verifyInscriptionZonefile(inscription.content);
-  console.log('zonefileInfo', zonefileInfo);
+  // const zonefileInfo = await verifyInscriptionZonefile(inscription.content);
+  // console.log('zonefileInfo', zonefileInfo);
 
   // console.log(parseZoneFile(_zonefileTrue));
   // console.log(parseZoneFile(_larry));

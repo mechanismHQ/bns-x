@@ -75,6 +75,7 @@ importers:
 
   api:
     specifiers:
+      '@bns-x/bridge': workspace:*
       '@bns-x/core': workspace:*
       '@bns-x/punycode': workspace:*
       '@clarigen/core': 1.0.14
@@ -136,6 +137,7 @@ importers:
       zod: 3.20.6
       zod-to-ts: ^1.1.4
     dependencies:
+      '@bns-x/bridge': link:../packages/bridge
       '@bns-x/core': link:../packages/core
       '@bns-x/punycode': link:../packages/punycode
       '@clarigen/core': 1.0.14

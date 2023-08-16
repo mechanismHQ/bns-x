@@ -87,6 +87,15 @@ export const bridgeContractState = atom<BridgeContract>(get => {
   return ensure(get(contractsState).l1BridgeV1) as unknown as BridgeContract;
 });
 
+type BridgeRegistryContract = FullContractWithIdentifier<
+  (typeof project)['contracts']['l1Registry'],
+  string
+>;
+
+export const bridgeRegistryContractState = atom<BridgeRegistryContract>(get => {
+  return ensure(get(contractsState).l1Registry) as unknown as BridgeRegistryContract;
+});
+
 function callToQueryKey(contractCall: ContractCall<any>) {
   return [
     contractCall.contractAddress,

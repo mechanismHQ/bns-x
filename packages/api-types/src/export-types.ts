@@ -255,6 +255,25 @@ export type AppProcedures = {
         },
         {
           inscriptionId: string;
+          owner: string;
+        }
+      >;
+      getNameByInscription: AnyProc<
+        'query',
+        {
+          inscriptionId: string;
+        },
+        {
+          name: string | null;
+        }
+      >;
+      getInscriptionOwner: AnyProc<
+        'query',
+        {
+          inscriptionId: string;
+        },
+        {
+          owner: string;
         }
       >;
     }
