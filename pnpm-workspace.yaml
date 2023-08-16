@@ -6,4 +6,5 @@ packages:
   - "packages/punycode"
   - "packages/api-types"
   - "packages/png-ztxt"
+  - "packages/bridge"
   - "contracts"

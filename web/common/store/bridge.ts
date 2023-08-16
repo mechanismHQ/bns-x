@@ -4,6 +4,19 @@ import { hashAtom, txidQueryAtom } from '@store/migration';
 import { atomsWithQuery } from 'jotai-tanstack-query';
 import { trpc } from '@store/api';
 import { atomFamily } from 'jotai/utils';
+import { makeClarityHash } from 'micro-stacks/connect';
+import { principalCV, stringAsciiCV, tupleCV } from 'micro-stacks/clarity';
+import { currentAccountAtom, stxAddressAtom } from '@store/micro-stacks';
+import { bridgeContractState, clarigenAtom, networkKeyAtom } from '@store/index';
+import {
+  getBurnAddressForRecipient,
+  getBurnOutputForRecipient,
+  getBurnRedeemScriptForRecipient,
+} from '@bns-x/bridge';
+import { OutScript, Address } from '@scure/btc-signer';
+import { getBtcNetwork } from '@common/constants';
+import { equalBytes } from 'micro-packed';
+import { bytesToHex } from 'micro-stacks/common';
 
 export const bridgeInscriptionIdAtom = atom('');
 
@@ -52,4 +65,64 @@ export const inscriptionIdForNameAtom = atomFamily((fqn: string) => {
       }
     },
   }))[0];
+});
+
+export const bridgeBurnAddressForRecipientState = atomFamily((recipient: string) => {
+  return atom(get => {
+    const networkKey = get(networkKeyAtom);
+    return getBurnAddressForRecipient(recipient, networkKey);
+  });
+});
+
+export const bridgeBurnScriptState = atom(get => {
+  const account = get(currentAccountAtom);
+  if (!account) return null;
+  const address = account.stxAddress;
+  return get(bridgeBurnAddressForRecipientState(address));
+});
+
+export const bridgeBurnAddressFromContract = atomFamily((recipient: string) => {
+  return atomsWithQuery(get => ({
+    queryKey: ['bridgeBurnAddressFromContract'],
+    queryFn: async () => {
+      const bridge = get(bridgeContractState);
+      const clarigen = get(clarigenAtom);
+      const output = await clarigen.ro(bridge.generateBurnOutput(recipient));
+      const address = Address(getBtcNetwork()).encode(OutScript.decode(output));
+      return address;
+    },
+  }))[0];
+});
+
+// dev tool for verifying client-side burn address generation
+export const verifiedBurnAddressState = atom(async get => {
+  const burn = get(bridgeBurnScriptState);
+  const address = get(stxAddressAtom);
+  const networkKey = get(networkKeyAtom);
+  const bridge = get(bridgeContractState);
+  if (!address || !burn) return null;
+  const clarigen = get(clarigenAtom);
+  const fromContract = get(bridgeBurnAddressFromContract(address));
+  try {
+    const output = getBurnOutputForRecipient(address, networkKey);
+    if (burn !== fromContract) {
+      const redeemContract = await clarigen.ro(bridge.generateBurnScript(address));
+      const redeem = getBurnRedeemScriptForRecipient(address, networkKey);
+      console.log('redeem', bytesToHex(redeem));
+      console.log('redeemContract', bytesToHex(redeemContract));
+      console.log('redeem equal?', equalBytes(redeem, redeemContract));
+      console.log('redeem decoded', OutScript.decode(output));
+      // const output = getBurnOutputForRecipient(address);
+      // const outFromContract = await clarigen.ro(bridge.generateBurnOutput(address));
+
+      // console.log('Output', bytesToHex(output));
+      console.log('burn address mismatch', burn, fromContract);
+    } else {
+      // console.log('ok');
+    }
+    return null;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 });
