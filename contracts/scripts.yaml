@@ -81,3 +81,6 @@ scripts:
       - vr ord wallet inscribe --fee-rate 1 ./tmp/ordinal.html
       - bitcoin-cli -rpcpassword=devnet -rpcuser=devnet -rpcport=18443 unloadwallet ord
 
+  ord-burn:
+    cmd:
+      - vr ord wallet send --fee-rate 1 bcrt1qw4acvf5d5jfm05nax4gpzrr4tkt897plu9ysdk87u4wqp8t2afasj4txl5

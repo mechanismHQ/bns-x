@@ -6,6 +6,8 @@ import { convertDbName } from '~/contracts/utils';
 import { parseFqn } from '@bns-x/core';
 import { nameObjectToHex } from '~/utils';
 import { TRPCError } from '@trpc/server';
+import { fetchInscriptionOwner, inscriptionBuffToId } from '@fetchers/inscriptions';
+import { hexToBytes } from 'micro-stacks/common';
 
 const inscribedNameResult = z.object({
   inscriptionId: z.string(),
@@ -56,6 +58,7 @@ export const bridgeRouter = router({
     .output(
       z.object({
         inscriptionId: z.string(),
+        owner: z.string(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -83,8 +86,13 @@ export const bridgeRouter = router({
         });
       }
 
+      const inscriptionId = inscriptionBuffToId(hexToBytes(inscribedName.inscription_id));
+
+      const owner = await fetchInscriptionOwner(inscriptionId);
+
       return {
-        inscriptionId: inscribedName.inscription_id,
+        inscriptionId,
+        owner: owner || '',
       };
     }),
 
@@ -117,6 +125,16 @@ export const bridgeRouter = router({
 
       return {
         name: name.combined,
+      };
+    }),
+
+  getInscriptionOwner: procedure
+    .input(z.object({ inscriptionId: z.string() }))
+    .output(z.object({ owner: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const owner = await fetchInscriptionOwner(input.inscriptionId);
+      return {
+        owner: owner ?? '',
       };
     }),
 });
