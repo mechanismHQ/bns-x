@@ -26,6 +26,9 @@ import { namesRoutes } from '@routes/names-routes';
 import { txRoutes } from '@routes/tx-routes';
 // import { trpcOpenApiRouter } from '@routes/trpc-openapi';
 import { getFastifyPlugin } from 'trpc-playground/handlers/fastify';
+import { fastifySchedule } from '@fastify/schedule';
+import { getDeployerAddress, isDeployerEnabled } from '~/deployer';
+import { makeDeployerJob } from '~/deployer/jobs';
 
 const options: FastifyServerOptions = {
   logger,
@@ -122,6 +125,14 @@ export async function makeApp({
   app.get('/', (req, res) => {
     return res.send({ success: true });
   });
+
+  if (isDeployerEnabled() && app.stacksPrisma) {
+    logger.info({ deployer: getDeployerAddress() }, 'Deployer enabled, adding deployer job');
+    await app.register(fastifySchedule);
+    app.scheduler.addIntervalJob(makeDeployerJob(app.stacksPrisma));
+  } else {
+    logger.info('Deployer disabled');
+  }
 
   return app;
 }

@@ -56,10 +56,8 @@ export function ordinalsBaseUrl() {
 
 export async function fetchInscription(inscriptionId: string): Promise<Inscription> {
   const res = await fetch(`${ordinalsBaseUrl()}/inscription/${inscriptionId}`);
-  console.log(`${ordinalsBaseUrl()}/inscription/${inscriptionId}`);
 
   const body = await res.text();
-  console.log('body', body);
 
   const html = parse(body);
 

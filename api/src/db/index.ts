@@ -13,7 +13,7 @@ export async function refreshMaterializedViews(db: BnsDb) {
     await db.$executeRaw`REFRESH MATERIALIZED VIEW CONCURRENTLY inscribed_names`;
   } catch (error) {
     logger.error({
-      error,
+      err: error,
       topic: 'refresh-materialized-views',
     });
   }

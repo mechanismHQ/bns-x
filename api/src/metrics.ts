@@ -25,7 +25,7 @@ export function observeQuery(query: DbQueryTag) {
   const timer = dbQuerySummary.startTimer();
   return () => {
     const duration = timer({ query });
-    logger.debug({
+    logger.trace({
       query,
       duration,
       type: 'db-query',

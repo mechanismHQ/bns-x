@@ -28,7 +28,7 @@ export async function createWrapperV2Signature(sender: string, fqn: string) {
     ...asciiToBytes(namespace),
   ]);
 
-  const nameHash = hashRipemd160(nameBytes);
+  const nameHash = hashRipemd160(nameBytes).slice(0, 10);
 
   const contracts = getContracts();
 
