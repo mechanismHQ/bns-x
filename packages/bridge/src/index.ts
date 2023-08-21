@@ -5,7 +5,8 @@ export * from './btc-networks';
 export * from './burn-address';
 export { ordCardTemplate } from './card';
 
-export const inscriptionJsSrc = '/content/TODO';
+export const inscriptionJsSrc =
+  '/content/488975d21f3d113ec5158b871b54a69f5a26c26f26e842d6f050099135827e97i0';
 
 export const inscriptionContentType = 'text/plain';
 export const inscriptionContentForName = (name: string) => {
