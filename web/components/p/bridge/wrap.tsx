@@ -1,14 +1,8 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Text } from '@components/text';
 import { inscriptionContentForName } from '@bns-x/bridge';
-import {
-  bridgeInscriptionIdAtom,
-  bridgeWrapTxidAtom,
-  fetchSignatureForInscriptionId,
-  inscribedNamesAtom,
-  inscriptionIdForNameAtom,
-} from '@store/bridge';
+import { bridgeInscriptionIdAtom, bridgeWrapTxidAtom, inscribedNamesAtom } from '@store/bridge';
 import { useAtom, useAtomValue } from 'jotai';
 import { loadable } from 'jotai/utils';
 import { useInput } from '@common/hooks/use-input';

@@ -76,12 +76,14 @@ importers:
   api:
     specifiers:
       '@bns-x/bridge': workspace:*
+      '@bns-x/client': workspace:*
       '@bns-x/core': workspace:*
       '@bns-x/punycode': workspace:*
       '@clarigen/core': 1.0.14
       '@clarigen/node': 1.0.14
       '@fastify/cors': ^8.2.0
       '@fastify/http-proxy': 8.4.0
+      '@fastify/schedule': ^4.1.1
       '@fastify/static': ^6.6.1
       '@fastify/swagger': ^8.3.1
       '@fastify/swagger-ui': ^1.4.0
@@ -126,6 +128,7 @@ importers:
       shx: ^0.3.4
       socket.io-client: ^4.4.1
       stacks-encoding-native-js: 1.0.0
+      toad-scheduler: ^3.0.0
       trpc-openapi: ^1.1.2
       trpc-openapi-fork-fastify-pr-177: ^1.1.2
       trpc-playground: ^1.0.4
@@ -138,12 +141,14 @@ importers:
       zod-to-ts: ^1.1.4
     dependencies:
       '@bns-x/bridge': link:../packages/bridge
+      '@bns-x/client': link:../packages/client
       '@bns-x/core': link:../packages/core
       '@bns-x/punycode': link:../packages/punycode
       '@clarigen/core': 1.0.14
       '@clarigen/node': 1.0.14
       '@fastify/cors': 8.2.0
       '@fastify/http-proxy': 8.4.0
+      '@fastify/schedule': 4.1.1_hirezsdv5xbat2uux2qpou226a
       '@fastify/static': 6.6.1
       '@fastify/swagger': 8.3.1
       '@fastify/swagger-ui': 1.4.0
@@ -178,6 +183,7 @@ importers:
       punycode: 2.1.1
       socket.io-client: 4.6.0
       stacks-encoding-native-js: 1.0.0
+      toad-scheduler: 3.0.0
       trpc-openapi: 1.1.2_5fl3jfufksvbt2p3nmzm3cbz6y
       trpc-openapi-fork-fastify-pr-177: 1.1.2_5fl3jfufksvbt2p3nmzm3cbz6y
       trpc-playground: 1.0.4_5wcctoylvdny6d5k4fcokljdg4
@@ -593,8 +599,8 @@ packages:
       js-yaml: 4.1.0
     dev: true
 
-  /@artilleryio/int-commons/2.0.0:
-    resolution: {integrity: sha512-GmTLcdHoYTObhv9pQlisLtam08y0V09cIcUAT6FDX1lyFSTqiU/uEPtAmeEQdOBOF6yqWMnwZkc351mM1FlE8A==}
+  /@artilleryio/int-commons/2.0.1:
+    resolution: {integrity: sha512-iRaUAapHHY2LQB7z3SQF97rDTf2Or7M7tI/61XBZgby3rQ0sl0+Jt0R8HFmLstBTKcSQ99ItAZYb+583/CZuzg==}
     dependencies:
       async: 2.6.4
       cheerio: 1.0.0-rc.12
@@ -607,10 +613,10 @@ packages:
       - supports-color
     dev: true
 
-  /@artilleryio/int-core/2.0.10:
-    resolution: {integrity: sha512-04TyRC/Q3uWdh+VBKwBukG5ePk0DVqtqGdN7s28aE/xr2hIAd5bELc/ZtwsKj/mO/cnz0yTeUanWLgQnDa+m0w==}
+  /@artilleryio/int-core/2.0.11:
+    resolution: {integrity: sha512-QDiudPJcwHjqb2YkH8dPH/1XvpPCmuxPRnlAB1LW3JHVwU5vSEUZuAOgC1DZZoJtFjGhB5FZcLutu/CAc/szcw==}
     dependencies:
-      '@artilleryio/int-commons': 2.0.0
+      '@artilleryio/int-commons': 2.0.1
       '@artilleryio/sketches-js': 2.1.1
       agentkeepalive: 4.2.1
       arrivals: 2.1.2
@@ -2956,6 +2962,17 @@ packages:
       pump: 3.0.0
       tiny-lru: 10.0.1
       undici: 5.14.0
+    dev: false
+
+  /@fastify/schedule/4.1.1_hirezsdv5xbat2uux2qpou226a:
+    resolution: {integrity: sha512-riIh+eumfpoDDpNqMqzHdzYofWVhaHJYxH69OMQyVzGUJikF5luvr4LMx/uxedE1VJfmHJCUjBuMVcPLB7KsZg==}
+    peerDependencies:
+      fastify: ^4.0.0
+      toad-scheduler: '>= 2.0.0 < 4'
+    dependencies:
+      fastify: 4.13.0
+      fastify-plugin: 4.4.0
+      toad-scheduler: 3.0.0
     dev: false
 
   /@fastify/send/1.0.0:
@@ -6855,8 +6872,8 @@ packages:
       - supports-color
     dev: true
 
-  /artillery-plugin-ensure/1.1.4:
-    resolution: {integrity: sha512-lmRy6Y6ilRTazLJa/+8IxrubXebzQ0rOI4aRwqw2KkMS+27hcyVgF6ZO4yuj5/G3r35rfBjSje1RFbmiDcRTag==}
+  /artillery-plugin-ensure/1.1.5:
+    resolution: {integrity: sha512-6z2/t/en2LgpeSMrlNCx1qrSnaVAJypoklx3k4xw+2sGBekCty2VT5nzFBKQ39O6UpmOG86R7REHEXIfKpCrUg==}
     dependencies:
       debug: 4.3.4
       filtrex: 2.2.3
@@ -6864,8 +6881,8 @@ packages:
       - supports-color
     dev: true
 
-  /artillery-plugin-expect/2.3.1:
-    resolution: {integrity: sha512-jsdebUgqwfa3rS7Cp2I2ItZk3u0KG8cFHxIatn8Y8v/6iMnuDEq+X93UA5xnnNDHNUomsXFUZwM7GdGN3jYuJw==}
+  /artillery-plugin-expect/2.3.2:
+    resolution: {integrity: sha512-LesFFTAZr1ncU0f16h4CCDVXBN9QSrilw8U1uITDV9GXQv2oPPtskFjcLRQTqErTmY+ZqdfQjY55kGcJAD3GbQ==}
     engines: {node: '>= 14.17.6'}
     dependencies:
       chalk: 4.1.2
@@ -6884,8 +6901,8 @@ packages:
       - supports-color
     dev: true
 
-  /artillery-plugin-publish-metrics/2.5.1:
-    resolution: {integrity: sha512-8Fj4ieEh48FDzh5FsSqVySfbkWm5ZCeyEfxjiUSc7APY8X7oL/Iy5t0319VIHApmRNzB67btTrsM+2RcOX4l2Q==}
+  /artillery-plugin-publish-metrics/2.6.0:
+    resolution: {integrity: sha512-ptN16qcibvnjrtvW5QgRs79HOhWxaIMDEU71f8HCS5WGV+XloETXrbTKT2tIoinHX1TSlnYs6zf5phOd09Fyzw==}
     dependencies:
       '@aws-sdk/client-cloudwatch': 3.388.0
       async: 2.6.4
@@ -6912,18 +6929,18 @@ packages:
     engines: {node: '>= 16.15.0'}
     hasBin: true
     dependencies:
-      '@artilleryio/int-commons': 2.0.0
-      '@artilleryio/int-core': 2.0.10
+      '@artilleryio/int-commons': 2.0.1
+      '@artilleryio/int-core': 2.0.11
       '@aws-sdk/credential-providers': 3.264.0
       '@oclif/command': 1.8.22
       '@oclif/config': 1.18.8
       '@oclif/plugin-help': 3.3.1
       '@oclif/plugin-not-found': 2.3.18
       archiver: 5.3.1
-      artillery-plugin-ensure: 1.1.4
-      artillery-plugin-expect: 2.3.1
+      artillery-plugin-ensure: 1.1.5
+      artillery-plugin-expect: 2.3.2
       artillery-plugin-metrics-by-endpoint: 1.2.0
-      artillery-plugin-publish-metrics: 2.5.1
+      artillery-plugin-publish-metrics: 2.6.0
       async: 2.6.4
       aws-sdk: 2.1356.0
       chalk: 2.4.2
@@ -7088,7 +7105,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: true
@@ -7096,7 +7113,7 @@ packages:
   /axios/0.25.0_debug@4.3.4:
     resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: false
@@ -7104,7 +7121,7 @@ packages:
   /axios/0.27.2_debug@4.3.4:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -7113,7 +7130,7 @@ packages:
   /axios/1.3.3:
     resolution: {integrity: sha512-eYq77dYIFS77AQlhzEL937yUBSepBfPIe8FcgEDN35vMNZKMrs81pgnyrQpwfy4NF4b4XWX1Zgx7yX+25w8QJA==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -9722,6 +9739,18 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
+
+  /follow-redirects/1.15.2_debug@4.3.4:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.4
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -14762,6 +14791,10 @@ packages:
     dependencies:
       is-number: 7.0.0
 
+  /toad-scheduler/3.0.0:
+    resolution: {integrity: sha512-BYmrORvaGmjziir/ra8qD3qAKczJveqK5ZOO/wn7oS5qLI4iibOza3DBGgu+EwNp9zdlBTKSeZPmxZxzGy1dxw==}
+    dev: false
+
   /toidentifier/1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
@@ -14901,7 +14934,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.3.1
+      jest: 29.3.1_@types+node@18.11.9
       jest-util: 29.3.1
       json5: 2.2.3
       lodash.memoize: 4.1.2

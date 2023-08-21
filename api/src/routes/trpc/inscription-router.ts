@@ -58,7 +58,6 @@ export const inscriptionRouter = router({
           genesisTransaction: inscription.genesisTransaction,
           outputValue: inscription.outputValue,
         };
-        console.log(dbData);
         const model = await db.inscriptionZonefiles.upsert({
           where: {
             inscriptionId: inscription.id,
@@ -66,13 +65,13 @@ export const inscriptionRouter = router({
           create: dbData,
           update: dbData,
         });
-        console.log('New zonefile inscription!', model);
+        logger.info('New zonefile inscription!', model);
         return {
           success: true,
           inscriptionId,
         };
       } catch (error) {
-        logger.error({ error }, `Unable to fetch details for ${inscriptionId}`);
+        logger.error({ err: error }, `Unable to fetch details for ${inscriptionId}`);
         throw new TRPCError({
           message: `Unable to fetch details for ${inscriptionId}`,
           code: 'NOT_FOUND',
@@ -109,7 +108,7 @@ export const inscriptionRouter = router({
           zonefile: content,
         };
       } catch (error) {
-        logger.error({ error }, `Unable to fetch details for ${inscriptionId}`);
+        logger.error({ err: error }, `Unable to fetch details for ${inscriptionId}`);
         throw new TRPCError({
           message: `Unable to fetch details for ${inscriptionId}`,
           code: 'NOT_FOUND',
