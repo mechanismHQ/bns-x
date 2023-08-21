@@ -12,7 +12,8 @@ const devTarget = {
 if (process.env.NODE_ENV === 'development') {
   logger = pino({
     transport: devTarget,
-    level: 'trace',
+    // level: 'trace',
+    level: 'debug',
   });
 } else if (process.env.NODE_ENV === 'test') {
   logger = pino({

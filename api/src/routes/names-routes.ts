@@ -65,7 +65,6 @@ The logic for determining name order in the \`names\` property is:
     async (req, res) => {
       const { fetcher } = req.server;
       if (DbFetcher.isDb(fetcher)) {
-        console.log(bnsContractAsset());
         const nfts = await fetcher.stacksDb.nftCustody.count({
           where: {
             assetIdentifier: bnsContractAsset(),

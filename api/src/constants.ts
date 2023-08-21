@@ -1,6 +1,7 @@
 import { DEPLOYMENT_NETWORKS } from '@clarigen/core';
 import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMainnet, StacksMocknet, StacksTestnet } from 'micro-stacks/network';
+import { BnsContractsClient } from '@bns-x/client';
 
 type NetworkKey = (typeof DEPLOYMENT_NETWORKS)[number];
 export function getNetworkKey(): NetworkKey {
@@ -33,4 +34,9 @@ export function getNetwork(): StacksNetwork {
 
 export function getNodeUrl() {
   return getNetwork().getCoreApiUrl();
+}
+
+export function getContractsClient() {
+  const networkKey = getNetworkKey();
+  return new BnsContractsClient(networkKey);
 }

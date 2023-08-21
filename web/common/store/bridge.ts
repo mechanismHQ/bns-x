@@ -7,7 +7,12 @@ import { atomFamily } from 'jotai/utils';
 import { makeClarityHash } from 'micro-stacks/connect';
 import { principalCV, stringAsciiCV, tupleCV } from 'micro-stacks/clarity';
 import { currentAccountAtom, stxAddressAtom } from '@store/micro-stacks';
-import { bridgeContractState, clarigenAtom, networkKeyAtom } from '@store/index';
+import {
+  bridgeContractState,
+  bridgeRegistryContractState,
+  clarigenAtom,
+  networkKeyAtom,
+} from '@store/index';
 import {
   getBurnAddressForRecipient,
   getBurnOutputForRecipient,
@@ -113,6 +118,16 @@ export const bridgeBurnAddressFromContract = atomFamily((recipient: string) => {
     },
   }))[0];
 });
+
+export const registryExtensionState = atomsWithQuery(get => ({
+  queryKey: ['registryExtension'],
+  queryFn: async () => {
+    const registry = get(bridgeRegistryContractState);
+    const clarigen = get(clarigenAtom);
+    const ext = await clarigen.ro(registry.getExtension());
+    return ext;
+  },
+}))[0];
 
 // dev tool for verifying client-side burn address generation
 export const verifiedBurnAddressState = atom(async get => {

@@ -61,6 +61,11 @@ export const WrapTx: React.FC<{ children?: React.ReactNode }> = () => {
         {status === 'success' && (
           <DoneRow txidAtom={bridgeWrapTxidAtom}>{name} bridged to Bitcoin L1</DoneRow>
         )}
+        {status !== 'pending' && status !== 'success' && (
+          <DoneRow txidAtom={bridgeWrapTxidAtom}>
+            <span className="text-red-400">Error bridging {name}</span>
+          </DoneRow>
+        )}
       </CenterBox>
       {status === 'success' && (
         <Button type="big" onClick={viewOnGamma}>

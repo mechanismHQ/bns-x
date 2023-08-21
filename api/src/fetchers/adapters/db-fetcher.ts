@@ -87,7 +87,7 @@ export class DbFetcher implements BaseFetcher {
       };
     } catch (error) {
       logger.error(
-        { name, namespace, error },
+        { name, namespace, err: error },
         `Error fetching name details for ${name}.${namespace}`
       );
       return null;
