@@ -76,6 +76,12 @@ scripts:
       - bitcoin-cli -rpcpassword=devnet -rpcuser=devnet -rpcport=18443 unloadwallet ord
       - echo "Wait for another block to be mined, and then verify with \`vr ord wallet balance\`"
   
+  ord-card:
+    cmd:
+      # - vr ord wallet inscribe --fee-rate 1 ../packages/bridge/bridge-card/bns-icon.webp
+      - vr ord wallet inscribe --fee-rate 1 ../packages/bridge/tmp/card.js
+      - bitcoin-cli -rpcpassword=devnet -rpcuser=devnet -rpcport=18443 unloadwallet ord
+
   ord-inscribe:
     cmd:
       - vr ord wallet inscribe --fee-rate 1 ./tmp/ordinal.html
