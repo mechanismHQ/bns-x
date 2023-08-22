@@ -25,6 +25,7 @@ import {
   getControllerAddress,
   testnetNamespace,
   namespacePrice,
+  deployer,
 } from './script-utils';
 
 const privateKey = process.env.DEPLOYER_KEY!;
@@ -44,7 +45,7 @@ async function waitForConstruct(): Promise<void> {
       try {
         const isExtension = await clarigen.ro(contracts.bnsxExtensions.isExtension(controller));
         console.log(`Is extension (${controller}): ${String(isExtension)}`);
-        await clarigen.ro(contracts.wrapperMigratorV2.isDaoOrExtension());
+        // await clarigen.ro(contracts.wrapperMigratorV2.isDaoOrExtension());
         if (isExtension) return resolve();
       } catch (error) {
         console.log(`Failed to check for bootstrap status`);
@@ -55,14 +56,27 @@ async function waitForConstruct(): Promise<void> {
   });
 }
 
-async function run() {
-  console.log('Waiting until network setup.');
+async function waitForProposal(): Promise<void> {
+  return new Promise(function (resolve, reject) {
+    void (async function tryExecute() {
+      try {
+        await clarigen.ro(contracts.wrapperMigratorV2.isValidSigner(controller), { latest: false });
+        console.log(`Proposal contract is ready`);
+      } catch (error) {
+        console.log(`Failed to check for proposal contract status`);
+        // console.error(error);
+      }
+      setTimeout(() => void tryExecute(), 3000);
+    })();
+  });
+}
+
+async function setup() {
   await waitForConstruct();
   const namespace = asciiToBytes(testnetNamespace);
   const saltHex = '01';
   const salt = hexToBytes(saltHex);
   const salted = hashRipemd160(hashSha256(hexToBytes(bytesToHex(namespace) + saltHex)));
-  const deployer = contracts.bnsxExtensions.identifier.split('.')[0];
   // console.log("salted", bytesToHex(hashRipemd160(salted)));
   const nonces = await fetchAccountNonces({
     url: network.getCoreApiUrl(),
@@ -163,8 +177,16 @@ async function run() {
       nonce: nonce,
     })
   );
-  nonce += 1;
+}
 
+async function executeProposal2() {
+  await waitForProposal();
+  const nonces = await fetchAccountNonces({
+    url: network.getCoreApiUrl(),
+    // principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+    principal: deployer,
+  });
+  const nonce = nonces.possible_next_nonce;
   await broadcast(
     await makeContractCall({
       ...contracts.bnsxExtensions.execute({
@@ -178,6 +200,13 @@ async function run() {
       postConditionMode: PostConditionMode.Allow,
     })
   );
+}
+
+async function run() {
+  console.log('Waiting until network setup.');
+  // await waitForConstruct();
+  await setup();
+  await executeProposal2();
 }
 
 run()
