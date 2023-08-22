@@ -123,6 +123,10 @@ export default {
         ...tokenColors,
       },
       fontSize: fontSizes,
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+        'open-sauce': ['Open Sauce One', 'sans-serif'],
+      },
     },
   },
   plugins: [tailwindAnimate],
