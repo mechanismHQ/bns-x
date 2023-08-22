@@ -149,18 +149,18 @@ export function makeNewTheme() {
 }
 
 export type OldTextVariant =
-  | keyof typeof figma['Body']
-  | keyof typeof figma['Caption']
-  | keyof typeof figma['Heading']
-  | keyof typeof figma['Label']
-  | keyof typeof figma['Display'];
+  | keyof (typeof figma)['Body']
+  | keyof (typeof figma)['Caption']
+  | keyof (typeof figma)['Heading']
+  | keyof (typeof figma)['Label']
+  | keyof (typeof figma)['Display'];
 
 export type NewTextVariant =
-  | Capitalize<keyof typeof tokens['font']['body']>
-  | Capitalize<keyof typeof tokens['font']['caption']>
-  | Capitalize<keyof typeof tokens['font']['heading']>
-  | Capitalize<keyof typeof tokens['font']['label']>
-  | Capitalize<keyof typeof tokens['font']['display']>;
+  | Capitalize<keyof (typeof tokens)['font']['body']>
+  | Capitalize<keyof (typeof tokens)['font']['caption']>
+  | Capitalize<keyof (typeof tokens)['font']['heading']>
+  | Capitalize<keyof (typeof tokens)['font']['label']>
+  | Capitalize<keyof (typeof tokens)['font']['display']>;
 
 export type TextVariant = OldTextVariant | NewTextVariant;
 

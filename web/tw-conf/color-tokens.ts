@@ -1,6 +1,6 @@
 /**
  * Do not edit directly
- * Generated on Tue, 22 Aug 2023 17:23:47 GMT
+ * Generated on Tue, 22 Aug 2023 18:06:01 GMT
  */
 
 export const ColorSurfaceError = "#140b0a";
