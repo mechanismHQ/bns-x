@@ -28,6 +28,8 @@ export const namespacePrice = networkKey === 'testnet' ? 640000000 : 6400000000;
 
 export const contracts = projectFactory(project, networkKey as unknown as 'devnet');
 
+export const deployer = contracts.bnsxExtensions.identifier.split('.')[0];
+
 export const bns = contractFactory(_contracts.bnsV1, 'ST000000000000000000002AMW42H.bns');
 
 export function getControllerAddress(privateKey: string) {
