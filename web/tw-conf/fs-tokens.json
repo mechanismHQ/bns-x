@@ -2287,6 +2287,28 @@
           }
         }
       },
+      "heading022": {
+        "type": "custom-fontStyle",
+        "value": {
+          "fontSize": 22,
+          "textDecoration": "none",
+          "fontFamily": "Open Sauce One",
+          "fontWeight": 500,
+          "fontStyle": "normal",
+          "fontStretch": "normal",
+          "letterSpacing": -0.64,
+          "lineHeight": 36,
+          "paragraphIndent": 0,
+          "paragraphSpacing": 0,
+          "textCase": "none"
+        },
+        "extensions": {
+          "org.lukasoppermann.figmaDesignTokens": {
+            "styleId": "S:eac6c3505b6537559b56514fa303e4a0f97b1ad4,",
+            "exportKey": "font"
+          }
+        }
+      },
       "heading03": {
         "type": "custom-fontStyle",
         "value": {
@@ -2297,6 +2319,28 @@
           "fontStyle": "normal",
           "fontStretch": "normal",
           "letterSpacing": -0.64,
+          "lineHeight": 44,
+          "paragraphIndent": 0,
+          "paragraphSpacing": 0,
+          "textCase": "none"
+        },
+        "extensions": {
+          "org.lukasoppermann.figmaDesignTokens": {
+            "styleId": "S:ed4565ae1d6a885232ed3a6e5c9abe0c1a37e6cf,",
+            "exportKey": "font"
+          }
+        }
+      },
+      "heading035": {
+        "type": "custom-fontStyle",
+        "value": {
+          "fontSize": 28,
+          "textDecoration": "none",
+          "fontFamily": "Open Sauce One",
+          "fontWeight": 500,
+          "fontStyle": "normal",
+          "fontStretch": "normal",
+          "letterSpacing": -0.24,
           "lineHeight": 44,
           "paragraphIndent": 0,
           "paragraphSpacing": 0,
