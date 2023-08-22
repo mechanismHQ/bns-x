@@ -8,3 +8,4 @@ contracts/vendor
 dep-tests
 *.d.ts
 dist
+web/tw-conf
