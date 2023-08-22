@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "r": "NODE_ENV=development tsx",
-    "electrum_server": "docker run -it -p 50001:50001 -e COIN=\"Bitcoin\" -e NET=\"regtest\" -e DAEMON_URL=\"http://devnet:devnet@host.docker.internal:18443\" lukechilds/electrumx"
+    "electrum_server": "docker run --rm -it -p 50001:50001 -e COIN=\"Bitcoin\" -e NET=\"regtest\" -e DAEMON_URL=\"http://devnet:devnet@host.docker.internal:18443\" lukechilds/electrumx"
   },
   "dependencies": {
     "@bns-x/core": "workspace:*",
