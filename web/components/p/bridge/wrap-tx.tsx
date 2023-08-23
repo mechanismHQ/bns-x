@@ -63,7 +63,7 @@ export const WrapTx: React.FC<{ children?: React.ReactNode }> = () => {
         )}
         {status !== 'pending' && status !== 'success' && (
           <DoneRow txidAtom={bridgeWrapTxidAtom}>
-            <span className="text-text-error">Error bridging {name}</span>
+            <span className="!text-text-error">Error bridging {name}</span>
           </DoneRow>
         )}
       </CenterBox>

@@ -4,6 +4,8 @@ import { useAtom, useAtomValue } from 'jotai';
 import { loadable, useAtomCallback } from 'jotai/utils';
 import {
   bridgeInscriptionIdAtom,
+  bridgeWrapErrorAtom,
+  bridgeWrapLoadingAtom,
   bridgeWrapTxidAtom,
   fetchSignatureForInscriptionId,
   inscribedNamesAtom,
@@ -24,7 +26,8 @@ import type { ContractCallTyped, TypedAbiArg } from '@clarigen/core';
 export function useBridgeWrap() {
   const router = useRouter();
   const name = router.query.name as string;
-  const { openContractCall } = useAccountOpenContractCall();
+  const { openContractCall, isRequestPending } = useAccountOpenContractCall();
+  const bridgeWrapLoading = useAtomValue(bridgeWrapLoadingAtom);
 
   const fetchSignature = useAtomCallback(
     useCallback(
@@ -33,14 +36,21 @@ export function useBridgeWrap() {
         if (!currentAccount) {
           throw new Error('Must be logged in');
         }
+        set(bridgeWrapLoadingAtom, true);
         const stxAddress = currentAccount.stxAddress;
         const inscriptionId = get(bridgeInscriptionIdAtom);
-        const bridgeData = await fetchSignatureForInscriptionId({
+        const bridgeResponse = await fetchSignatureForInscriptionId({
           inscriptionId,
           fqn: name,
           sender: stxAddress,
         });
-        console.log('signature', bridgeData);
+        if (bridgeResponse.isErr()) {
+          console.debug('Error fetching signature', bridgeResponse.error);
+          set(bridgeWrapErrorAtom, bridgeResponse.error);
+          set(bridgeWrapLoadingAtom, false);
+          return;
+        }
+        const bridgeData = bridgeResponse.value;
         const nameDetails = get(nameDetailsAtom(name))!;
         const fqnParts = parseFqn(name);
         const bridge = get(bridgeContractState);
@@ -97,8 +107,11 @@ export function useBridgeWrap() {
             coreApiUrl: network.getCoreApiUrl(),
           },
           onFinish(payload) {
-            console.log(payload);
             set(bridgeWrapTxidAtom, payload.txId);
+            set(bridgeWrapLoadingAtom, false);
+          },
+          onCancel() {
+            set(bridgeWrapLoadingAtom, false);
           },
         });
       },
@@ -108,5 +121,6 @@ export function useBridgeWrap() {
 
   return {
     fetchSignature,
+    isPending: isRequestPending || bridgeWrapLoading,
   };
 }

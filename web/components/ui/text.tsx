@@ -3,13 +3,13 @@ import type { VariantProps } from 'class-variance-authority';
 import { cva } from 'class-variance-authority';
 import { cn } from '@common/utils';
 
-const textVariants = cva('!text-text block', {
+const textVariants = cva('text-text block', {
   variants: {
     variant: {
       Body01: 'text-body01',
       Body02: 'text-body02',
-      Caption01: '!text-text-subdued text-caption01',
-      Caption02: '!text-text-subdued text-caption02',
+      Caption01: 'text-text-subdued text-caption01',
+      Caption02: 'text-text-subdued text-caption02',
       Heading01: 'text-heading01',
       Heading02: 'text-heading02',
       Heading03: 'text-heading03',
@@ -33,6 +33,8 @@ export interface TextProps
 
 const Text = React.forwardRef<HTMLSpanElement, TextProps>(
   ({ className, variant, ...props }, ref) => {
+    const styles = textVariants({ variant, className });
+    console.log(variant, styles, cn(textVariants({ variant, className })));
     return <span className={cn(textVariants({ variant, className }))} ref={ref} {...props} />;
   }
 );
