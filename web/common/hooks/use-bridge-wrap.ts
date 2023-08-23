@@ -37,6 +37,7 @@ export function useBridgeWrap() {
           throw new Error('Must be logged in');
         }
         set(bridgeWrapLoadingAtom, true);
+        set(bridgeWrapErrorAtom, '');
         const stxAddress = currentAccount.stxAddress;
         const inscriptionId = get(bridgeInscriptionIdAtom);
         const bridgeResponse = await fetchSignatureForInscriptionId({

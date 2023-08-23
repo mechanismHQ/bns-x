@@ -7,12 +7,14 @@ import { parseFqn } from '@bns-x/core';
 import { nameObjectToHex } from '~/utils';
 import { TRPCError } from '@trpc/server';
 import { fetchInscriptionOwner, inscriptionBuffToId } from '@fetchers/inscriptions';
-import { hexToBytes } from 'micro-stacks/common';
+import { hexToBytes, bytesToHex } from 'micro-stacks/common';
 
 const inscribedNameResult = z.object({
   inscriptionId: z.string(),
   id: z.number(),
   name: z.string(),
+  blockHeight: z.number(),
+  txid: z.string(),
 });
 
 export const bridgeRouter = router({
@@ -28,10 +30,11 @@ export const bridgeRouter = router({
 
       const inscribedNames = (
         await ctx.bnsxDb.inscribedNames.findMany({
-          select: {
+          include: {
             name: true,
-            id: true,
-            inscription_id: true,
+          },
+          orderBy: {
+            blockHeight: 'desc',
           },
         })
       )
@@ -41,9 +44,11 @@ export const bridgeRouter = router({
           const name = convertDbName(row.name);
 
           return {
-            inscriptionId: row.inscription_id,
+            inscriptionId: inscriptionBuffToId(hexToBytes(row.inscription_id)),
             id: Number(row.id),
             name: name.combined,
+            blockHeight: row.blockHeight,
+            txid: bytesToHex(row.txid),
           };
         })
         .filter((n): n is NonNullable<typeof n> => n !== null);
@@ -131,7 +136,7 @@ export const bridgeRouter = router({
   getInscriptionOwner: procedure
     .input(z.object({ inscriptionId: z.string() }))
     .output(z.object({ owner: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ input }) => {
       const owner = await fetchInscriptionOwner(input.inscriptionId);
       return {
         owner: owner ?? '',
