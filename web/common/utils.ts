@@ -5,11 +5,9 @@ import { bytesToAscii, hexToBytes } from 'micro-stacks/common';
 import type { Name, NameBuff, WithCombined } from '@common/types';
 import type { StacksNetwork } from 'micro-stacks/network';
 import { bufferCV, tupleCV } from 'micro-stacks/clarity';
-import type { ClassValue } from 'clsx';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { c32address, StacksNetworkVersion } from 'micro-stacks/crypto';
 import { ordinalsBaseUrl } from '@common/constants';
+export { cn } from './ui-utils';
 
 export function intToString(int: IntegerType) {
   const str = typeof int === 'bigint' ? int.toString() : String(int);
@@ -117,10 +115,6 @@ export function nameToTupleBytes(fqn: string) {
     name: asciiToBytes(name),
     namespace: asciiToBytes(namespace),
   };
-}
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
 }
 
 export function createStacksAddress({

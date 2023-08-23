@@ -9,6 +9,7 @@
     (try! (contract-call? .bnsx-extensions set-extension-roles
       (list
         { extension: .wrapper-migrator, enabled: true, role: "registry" }
+        { extension: .wrapper-migrator-v2, enabled: true, role: "registry" }
       )
     ))
 
