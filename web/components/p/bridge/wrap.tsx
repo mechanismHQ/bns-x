@@ -1,10 +1,15 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { Text } from '@components/text';
+import { Text } from '@components/ui/text';
 import { inscriptionContentForName } from '@bns-x/bridge';
-import { bridgeInscriptionIdAtom, bridgeWrapTxidAtom, inscribedNamesAtom } from '@store/bridge';
+import {
+  bridgeInscriptionIdAtom,
+  bridgeWrapErrorAtom,
+  bridgeWrapTxidAtom,
+  inscribedNamesAtom,
+} from '@store/bridge';
 import { useAtom, useAtomValue } from 'jotai';
-import { loadable } from 'jotai/utils';
+import { loadable, useAtomCallback } from 'jotai/utils';
 import { useInput } from '@common/hooks/use-input';
 import { CodeBlock } from '@components/code';
 import { Button } from '@components/ui/button';
@@ -14,6 +19,7 @@ import { nameDetailsAtom } from '@store/names';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { WrapTx } from '@components/p/bridge/wrap-tx';
 import { useBridgeWrap } from '@common/hooks/use-bridge-wrap';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
@@ -21,6 +27,7 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const inscriptionId = useInput(useAtom(bridgeInscriptionIdAtom));
   const inscribedNames = useAtomValue(inscribedNamesAtom);
   const wrapTxid = useAtomValue(bridgeWrapTxidAtom);
+  const wrapError = useAtomValue(bridgeWrapErrorAtom);
 
   useDeepCompareEffect(() => {
     console.log(inscribedNames);
@@ -38,7 +45,20 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
     await copyInscription(inscriptionContent);
   }, [inscriptionContent, copyInscription]);
 
-  const { fetchSignature } = useBridgeWrap();
+  const download = useAtomCallback(
+    useCallback(() => {
+      const lines = inscriptionContent.replace(/\n/g, '\r\n');
+      const file = new Blob([lines], { type: 'text/html' });
+      const element = document.createElement('a');
+      element.href = URL.createObjectURL(file);
+      element.download = `${name}-inscription.html`;
+      // element.style.position = 'abolute';
+      document.body.appendChild(element);
+      element.click();
+    }, [inscriptionContent, name])
+  );
+
+  const { fetchSignature, isPending } = useBridgeWrap();
   return (
     <div className="flex gap-5 flex-col px-[29px]">
       {wrapTxid ? (
@@ -53,7 +73,7 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
           <CodeBlock>{inscriptionContent}</CodeBlock>
           <div className="flex gap-5">
             <Button onClick={copyToClipboard}>Copy to Clipboard</Button>
-            <Button>Download file</Button>
+            <Button onClick={download}>Download file</Button>
           </div>
           <Text variant="Heading035">Step 2: Submit your inscription</Text>
           <Text variant="Body01">
@@ -61,8 +81,16 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
             ID:
           </Text>
           <Input placeholder="Enter your inscription ID" {...inscriptionId.props}></Input>
+          {wrapError && (
+            <Text variant="Caption01" className="!text-text-error">
+              Error: {wrapError}
+            </Text>
+          )}
           <div className="flex">
-            <Button onClick={fetchSignature}>Submit</Button>
+            <Button size="xl" disabled={isPending} onClick={fetchSignature}>
+              {isPending && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+              Submit
+            </Button>
           </div>
         </>
       )}

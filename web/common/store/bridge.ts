@@ -23,6 +23,7 @@ import { getBtcNetwork } from '@common/constants';
 import { equalBytes } from 'micro-packed';
 import { bytesToHex } from 'micro-stacks/common';
 import type { BridgeUnwrapSignerResponse } from '@pages/api/bridge-unwrap-sig';
+import { ok, err } from 'neverthrow';
 
 export const bridgeInscriptionIdAtom = atom('');
 
@@ -36,12 +37,18 @@ export async function fetchSignatureForInscriptionId({
   sender: string;
 }) {
   const url = `/api/bridge-sig?inscriptionId=${inscriptionId}&name=${fqn}&sender=${sender}`;
-  const res = await fetch(url);
-  const data = (await res.json()) as BridgeSignerResponse;
-  if ('error' in data) {
-    throw new Error(data.error);
+  try {
+    const res = await fetch(url);
+    const data = (await res.json()) as BridgeSignerResponse;
+    if ('error' in data) {
+      return err(data.error);
+      // throw new Error(data.error);
+    }
+    return ok(data);
+    // return data;
+  } catch (error) {
+    return err('Error fetching inscription data');
   }
-  return data;
 }
 
 export async function fetchUnwrapSignature({ inscriptionId }: { inscriptionId: string }) {
@@ -55,6 +62,9 @@ export async function fetchUnwrapSignature({ inscriptionId }: { inscriptionId: s
 }
 
 export const bridgeSignatureAtom = atom('');
+
+export const bridgeWrapErrorAtom = atom('');
+export const bridgeWrapLoadingAtom = atom(false);
 
 export const bridgeWrapTxidAtom = hashAtom('bridgeTx');
 export const bridgeUnwrapTxidAtom = hashAtom('bridgeUnwrapTx');

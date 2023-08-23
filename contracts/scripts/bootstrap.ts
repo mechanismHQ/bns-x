@@ -39,6 +39,8 @@ async function broadcast(tx: StacksTransaction) {
 
 const controller = getControllerAddress(privateKey);
 
+let nonce = 0;
+
 async function waitForConstruct(): Promise<void> {
   return new Promise(function (resolve, reject) {
     void (async function tryConstruct() {
@@ -48,10 +50,10 @@ async function waitForConstruct(): Promise<void> {
         // await clarigen.ro(contracts.wrapperMigratorV2.isDaoOrExtension());
         if (isExtension) return resolve();
       } catch (error) {
-        console.log(`Failed to check for bootstrap status`);
+        console.log(`Waiting for contracts`);
         // console.error(error);
       }
-      setTimeout(() => void tryConstruct(), 3000);
+      setTimeout(() => void tryConstruct(), 15000);
     })();
   });
 }
@@ -62,6 +64,7 @@ async function waitForProposal(): Promise<void> {
       try {
         await clarigen.ro(contracts.wrapperMigratorV2.isValidSigner(controller), { latest: false });
         console.log(`Proposal contract is ready`);
+        resolve();
       } catch (error) {
         console.log(`Failed to check for proposal contract status`);
         // console.error(error);
@@ -73,6 +76,7 @@ async function waitForProposal(): Promise<void> {
 
 async function setup() {
   await waitForConstruct();
+  await waitForProposal();
   const namespace = asciiToBytes(testnetNamespace);
   const saltHex = '01';
   const salt = hexToBytes(saltHex);
@@ -83,7 +87,7 @@ async function setup() {
     // principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
     principal: deployer,
   });
-  let nonce = nonces.possible_next_nonce;
+  nonce = nonces.possible_next_nonce;
 
   console.log(network.getCoreApiUrl());
   console.log(deployer);
@@ -177,16 +181,11 @@ async function setup() {
       nonce: nonce,
     })
   );
+  nonce += 1;
 }
 
 async function executeProposal2() {
-  await waitForProposal();
-  const nonces = await fetchAccountNonces({
-    url: network.getCoreApiUrl(),
-    // principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-    principal: deployer,
-  });
-  const nonce = nonces.possible_next_nonce;
+  // await waitForProposal();
   await broadcast(
     await makeContractCall({
       ...contracts.bnsxExtensions.execute({
@@ -206,7 +205,7 @@ async function run() {
   console.log('Waiting until network setup.');
   // await waitForConstruct();
   await setup();
-  await executeProposal2();
+  // await executeProposal2();
 }
 
 run()
