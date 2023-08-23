@@ -107,7 +107,7 @@ export const BoxLink: React.FC<
 > = ({ children, ...props }) => {
   return (
     <NextLink {...props} passHref>
-      <LinkContainer>{children}</LinkContainer>
+      <LinkContainer target={props.target}>{children}</LinkContainer>
     </NextLink>
   );
 };

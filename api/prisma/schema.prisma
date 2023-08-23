@@ -83,6 +83,8 @@ view InscribedNames {
   id             BigInt @id @unique
   inscription_id String
   name           Name?  @relation(fields: [id], references: [id])
+  blockHeight    Int    @map("block_height")
+  txid           Bytes
 
   @@map("inscribed_names")
 }
