@@ -73,6 +73,10 @@ export const bridgeWrapTxState = txidQueryAtom(bridgeWrapTxidAtom)[0];
 export const bridgeUnwrapTxState = txidQueryAtom(bridgeUnwrapTxidAtom)[0];
 export const submittedBridgeInscriptionIdAtom = hashAtom('bridgeInscription');
 
+export type InscribedNamesResult = Awaited<
+  ReturnType<typeof trpc.bridgeRouter.inscribedNames.query>
+>['results'][0];
+
 export const inscribedNamesAtom = atomsWithQuery(_get => ({
   queryKey: ['inscribedNames'],
   queryFn: async () => {

@@ -9,6 +9,7 @@ CREATE MATERIALIZED VIEW inscribed_names as
       , "microblockSequence" as microblock_sequence
       , "txIndex" as tx_index
       , "eventIndex" as event_index
+      , txid
     FROM "PrintEvent"
     where "contractId" like '%.l1-registry'
       and value->>'topic' = 'wrap'
@@ -43,6 +44,8 @@ CREATE MATERIALIZED VIEW inscribed_names as
     distinct on (p1.id::bigint)
     p1.id::bigint as id
     , p1.inscription_id as inscription_id
+    , p1.block_height as block_height
+    , p1.txid
   from last_ids p1
   left outer join unwraps as p2 on p1.id = p2.id
   where p2.id is null

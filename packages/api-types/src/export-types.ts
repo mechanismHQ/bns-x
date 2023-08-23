@@ -245,6 +245,8 @@ export type AppProcedures = {
             inscriptionId: string;
             id: number;
             name: string;
+            blockHeight: number;
+            txid: string;
           }[];
         }
       >;
