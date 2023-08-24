@@ -5,6 +5,7 @@ import { SafeSuspense } from '../safe-suspense';
 import { Header } from '@components/layout/header';
 import { Footer } from '@components/layout/footer';
 import { Head } from '@components/head';
+import { Toaster } from '@components/ui/toaster';
 
 export const CenterBox: React.FC<{ children: React.ReactNode } & BoxProps> = ({
   children,
@@ -45,6 +46,7 @@ export const Layout: React.FC<{ children: React.ReactNode; centerBox?: boolean }
         </Flex>
       )}
       <Footer />
+      <Toaster />
     </SpaceBetween>
   );
 };
