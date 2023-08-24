@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Flex, Box, Stack } from '@nelson-ui/react';
 import { Text } from '@components/text';
-import { ProfileRow } from '@components/profile';
+import { ProfileRow } from '@components/p/profile';
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator';
 import { ProgressBar } from '@components/progress-bar';
 import { DropdownMenu, PopoverOption } from '@components/account-menu';
