@@ -95,7 +95,7 @@ export const LinkContainer: React.FC<{
 }> = React.forwardRef(({ children, ...props }, ref) => {
   return (
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    <Box ref={ref as any} as="a" {...props}>
+    <Box ref={ref as any} as="a" {...props} cursor="pointer">
       {children}
     </Box>
   );

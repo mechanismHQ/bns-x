@@ -34,7 +34,7 @@ import {
   TitleBox,
   useSetEditing,
 } from '@components/p/name/row';
-import { Link, LinkInner, LinkText } from '@components/link';
+import { BoxLink, Link, LinkInner, LinkText } from '@components/link';
 import { ProfileActions } from '@components/p/name/actions';
 import { useWatchPendingZonefile } from '@common/hooks/use-watch-pending-zonefile';
 import { useAccountPath } from '@common/hooks/use-account-path';
@@ -88,6 +88,8 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
     await router.push(upgradePath);
   }, [router, upgradePath]);
 
+  const bridgePath = useAccountPath('/bridge/[name]', { name });
+
   if (nameDetails === null) {
     return (
       <>
@@ -122,6 +124,9 @@ export const Name: React.FC<{ children?: React.ReactNode }> = () => {
             </Stack>
           </SpaceBetween>
           <Stack pt="20px" spacing="14px" width="280px">
+            <BoxLink href={bridgePath}>
+              <Button width="100%">Bridge to L1</Button>
+            </BoxLink>
             {isBnsx ? (
               <>
                 <Button

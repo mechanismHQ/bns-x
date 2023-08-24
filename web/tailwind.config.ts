@@ -57,6 +57,9 @@ Object.entries(tokens).forEach(([key, value]) => {
       tokenColors[colorStr] = value;
       colorToken = colorStr.slice('dark-onsurface-'.length);
     }
+    if (colorToken.startsWith('dark-surface')) {
+      colorToken = colorToken.slice('dark-'.length);
+    }
     tokenColors[colorToken] = value;
   }
 });

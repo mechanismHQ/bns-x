@@ -1,20 +1,58 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import type { BoxProps } from '@nelson-ui/react';
+import React, { useCallback } from 'react';
 import { Stack, Box, Flex, SpaceBetween } from '@nelson-ui/react';
-import { currentUserV1NameState, currentUserAddressNameStringsState } from '@store/names';
-import type { ResponsiveVariant } from './text';
-import { Text } from './text';
+import { Text } from '../../text';
 import { useAtomValue } from 'jotai';
-import { useEffect } from 'react';
 import { Button } from '@components/button';
+import { Button as Beutton } from '@components/ui/button';
 import { useRouter } from 'next/router';
 import { useGradient } from '@common/hooks/use-gradient';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { truncateMiddle } from '@common/utils';
-import { BoxLink, Link, LinkText } from '@components/link';
+import { BoxLink, LinkText } from '@components/link';
 import { styled } from '@common/theme';
 import { usePunycode } from '@common/hooks/use-punycode';
 import { useAccountPath } from '@common/hooks/use-account-path';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
+
+export const ProfileActions: React.FC<{
+  children?: React.ReactNode;
+  v1?: boolean;
+  name: string;
+}> = ({ name, v1 = false }) => {
+  const upgradePath = useAccountPath('/upgrade');
+  const namePath = useAccountPath(`/names/[name]`, { name });
+  const bridgePath = useAccountPath('/bridge/[name]', { name });
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Beutton size="lg">
+          Actions
+          <ChevronDown className="ml-1 w-3" />
+        </Beutton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <BoxLink href={bridgePath}>
+          <DropdownMenuItem className="cursor-pointer">Bridge to L1</DropdownMenuItem>
+        </BoxLink>
+        {v1 && (
+          <BoxLink href={upgradePath}>
+            <DropdownMenuItem className="cursor-pointer">Upgrade</DropdownMenuItem>
+          </BoxLink>
+        )}
+        <BoxLink href={namePath}>
+          <DropdownMenuItem className="cursor-pointer">Manage</DropdownMenuItem>
+        </BoxLink>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const StyledName = styled(Text, {
   // initial: {
@@ -101,7 +139,8 @@ export const ProfileRow: React.FC<{
         </Stack>
       </Stack>
       <StyledEditBox>
-        <Stack isInline>
+        <ProfileActions v1={v1} name={name} />
+        {/* <Stack isInline>
           <BoxLink href={namePath}>
             <Button secondary={v1}>Edit</Button>
           </BoxLink>
@@ -115,85 +154,9 @@ export const ProfileRow: React.FC<{
               Upgrade
             </Button>
           )}
-        </Stack>
+        </Stack> */}
         {/* {v1 ? <Button onClick={upgrade}>Upgrade</Button> : <Button disabled>Edit</Button>} */}
       </StyledEditBox>
     </SpaceBetween>
-  );
-};
-
-const Border: React.FC = () => {
-  return (
-    <Flex width="100%" px="29px" alignItems="center">
-      <Box width="100%" height="1px" borderTop="1px solid $onSurface-border-subdued" />
-    </Flex>
-  );
-};
-
-export const Profile: React.FC<{ children?: React.ReactNode }> = () => {
-  const allNames = useAtomValue(currentUserAddressNameStringsState);
-  const v1Name = allNames.coreName;
-
-  useEffect(() => {
-    console.log('All names:', allNames);
-  }, [allNames]);
-
-  const rows = useMemo(() => {
-    return (
-      allNames?.bnsxNames.map((name, index) => {
-        return (
-          <Box key={`name-${name.id}`}>
-            {index === 0 && <Border />}
-            <ProfileRow name={name.name} />
-            <Border />
-          </Box>
-        );
-      }) ?? null
-    );
-  }, [allNames?.bnsxNames]);
-
-  const registerPath = useAccountPath('/register');
-
-  const noNames = useMemo(() => {
-    return allNames.coreName === null && allNames.bnsxNames.length === 0;
-  }, [allNames.coreName, allNames.bnsxNames.length]);
-
-  return (
-    <>
-      <Box flexGrow={1} />
-      <Stack width="100%" spacing="0px">
-        {noNames ? (
-          <Stack spacing="0" alignContent="center" width="100%" textAlign="center">
-            <Text width="100%" variant="Display02">
-              No names here
-            </Text>
-            <Text width="100%" mt="15px" variant="Body02">
-              Looks like this address doesn&apos;t own any BNS or BNSx names. Mint a name then come
-              back.
-            </Text>
-            <BoxLink href={registerPath}>
-              <Button type="big" mx="auto" mt="49px">
-                Register a name
-              </Button>
-            </BoxLink>
-          </Stack>
-        ) : (
-          <>
-            {v1Name !== null ? (
-              <>
-                <Border />
-                <ProfileRow v1 name={v1Name} />
-                {rows?.length === 0 && <Border />}
-              </>
-            ) : null}
-            {rows}
-            <Flex py="25px" justifyContent="center">
-              <Text variant="Caption01">You can send many BNSx names to this address</Text>
-            </Flex>
-          </>
-        )}
-      </Stack>
-      <Box flexGrow={1} />
-    </>
   );
 };

@@ -5,7 +5,7 @@ import { Button } from '@components/button';
 import { Link } from '@components/link';
 import { useAuth } from '@micro-stacks/react';
 import { useRouter } from 'next/router';
-import { Profile } from '@components/profile';
+import { Profile } from '@components/p/profile';
 import { ONLY_INSCRIPTIONS } from '@common/constants';
 import { Inscribe } from '@components/p/inscribe';
 import { useConnect } from '@common/hooks/use-connect';
