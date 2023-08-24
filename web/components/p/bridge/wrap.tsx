@@ -20,6 +20,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { WrapTx } from '@components/p/bridge/wrap-tx';
 import { useBridgeWrap } from '@common/hooks/use-bridge-wrap';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { useToast } from '@common/hooks/use-toast';
 
 export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
@@ -40,10 +41,14 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const [_, copyInscription] = useCopyToClipboard();
   // prefetch:
   useAtomValue(loadable(nameDetailsAtom(name)));
+  const { toast } = useToast();
 
   const copyToClipboard = useCallback(async () => {
     await copyInscription(inscriptionContent);
-  }, [inscriptionContent, copyInscription]);
+    toast({
+      title: 'Copied to clipboard',
+    });
+  }, [inscriptionContent, copyInscription, toast]);
 
   const download = useAtomCallback(
     useCallback(() => {
@@ -60,40 +65,42 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
 
   const { fetchSignature, isPending } = useBridgeWrap();
   return (
-    <div className="flex gap-5 flex-col px-[29px]">
-      {wrapTxid ? (
-        <WrapTx />
-      ) : (
-        <>
-          <Text variant="Heading02">
-            Bridge <span className="font-mono">{name}</span> to L1
-          </Text>
-          <Text variant="Heading035">Step 1: Inscribe your name</Text>
-          <Text variant="Body01">Create a new inscription with the following content:</Text>
-          <CodeBlock>{inscriptionContent}</CodeBlock>
-          <div className="flex gap-5">
-            <Button onClick={copyToClipboard}>Copy to Clipboard</Button>
-            <Button onClick={download}>Download file</Button>
-          </div>
-          <Text variant="Heading035">Step 2: Submit your inscription</Text>
-          <Text variant="Body01">
-            Once your inscription is created, submit it to the bridge by entering the inscription
-            ID:
-          </Text>
-          <Input placeholder="Enter your inscription ID" {...inscriptionId.props}></Input>
-          {wrapError && (
-            <Text variant="Caption01" className="!text-text-error">
-              Error: {wrapError}
+    <div className="w-full px-[29px] flex justify-center">
+      <div className="flex gap-5 flex-col w-full max-w-[800px]">
+        {wrapTxid ? (
+          <WrapTx />
+        ) : (
+          <>
+            <Text variant="Heading02">
+              Bridge <span className="font-mono">{name}</span> to Bitcoin
             </Text>
-          )}
-          <div className="flex">
-            <Button size="xl" disabled={isPending} onClick={fetchSignature}>
-              {isPending && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-              Submit
-            </Button>
-          </div>
-        </>
-      )}
+            <Text variant="Heading035">Step 1: Inscribe your name</Text>
+            <Text variant="Body01">Create a new inscription with the following content:</Text>
+            <CodeBlock className="p-3">{inscriptionContent}</CodeBlock>
+            <div className="flex gap-5">
+              <Button onClick={copyToClipboard}>Copy to Clipboard</Button>
+              <Button onClick={download}>Download file</Button>
+            </div>
+            <Text variant="Heading035">Step 2: Submit your inscription</Text>
+            <Text variant="Body01">
+              Once your inscription is created, submit it to the bridge by entering the inscription
+              ID:
+            </Text>
+            <Input placeholder="Enter your inscription ID" {...inscriptionId.props}></Input>
+            {wrapError && (
+              <Text variant="Caption01" className="!text-text-error">
+                Error: {wrapError}
+              </Text>
+            )}
+            <div className="flex">
+              <Button size="xl" disabled={isPending} onClick={fetchSignature}>
+                {isPending && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                Submit
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
