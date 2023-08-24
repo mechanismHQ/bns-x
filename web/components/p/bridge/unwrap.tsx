@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { Text } from '@components/text';
+import { Text } from '@components/ui/text';
 import {
   bridgeBurnScriptState,
   bridgeInscriptionIdAtom,
@@ -36,7 +36,6 @@ export const BridgeUnwrap: React.FC<{ children?: React.ReactNode }> = () => {
   const inscription = useAtomValue(inscriptionForNameAtom(name));
   const inscriptionId = inscription?.inscriptionId ?? null;
   const burnAddress = useAtomValue(bridgeBurnScriptState);
-  useAtomValue(loadable(verifiedBurnAddressState));
   const unwrapTxid = useAtomValue(bridgeUnwrapTxidAtom);
 
   const { unwrap } = useBridgeUnwrap();
@@ -59,8 +58,8 @@ export const BridgeUnwrap: React.FC<{ children?: React.ReactNode }> = () => {
   if (burnAddress === null) return null; // logged out
 
   return (
-    <div className="flex gap-5 flex-col px-[29px]">
-      <Text variant="Heading035">Bridge {name} to L2</Text>
+    <div className="flex gap-5 flex-col px-[29px] w-full max-w-[800px] mx-auto">
+      <Text variant="Heading035">Bridge {name} to Stacks</Text>
       <CodeBlock py="12px">
         <div className="flex justify-between w-full items-center">
           <span>{inscriptionId}</span>
