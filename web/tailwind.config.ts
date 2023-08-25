@@ -108,6 +108,9 @@ export default {
       },
     },
     extend: {
+      spacing: {
+        sidewall: '29px',
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },

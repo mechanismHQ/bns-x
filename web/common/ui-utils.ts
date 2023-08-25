@@ -21,6 +21,8 @@ export const twMerge = extendTailwindMerge({
           'display02',
           'caption01',
           'caption02',
+          'label01',
+          'label02',
         ],
       },
     ],
