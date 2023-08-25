@@ -21,7 +21,7 @@ export const UnwrapTx: React.FC<{ children?: React.ReactNode }> = () => {
     return unwrapTx.data.tx_status;
   }, [unwrapTx]);
 
-  const namePath = useAccountPath(`/names/[name]`, { name });
+  const namePath = useAccountPath(`/manage/[name]`, { name });
 
   const done = useCallback(async () => {
     await router.push(namePath);
