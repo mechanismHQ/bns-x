@@ -33,18 +33,18 @@ import {
   RowDescription,
   TitleBox,
   useSetEditing,
-} from '@components/p/name/row';
+} from '@components/p/manage/row';
 import { BoxLink, Link, LinkInner, LinkText } from '@components/link';
-import { ProfileActions } from '@components/p/name/actions';
+import { ProfileActions } from '@components/p/manage/actions';
 import { useWatchPendingZonefile } from '@common/hooks/use-watch-pending-zonefile';
 import { useAccountPath } from '@common/hooks/use-account-path';
 import { useAccount } from '@micro-stacks/react';
-import { RenewButton } from '@components/p/name/renew-button';
+import { RenewButton } from '@components/p/manage/renew-button';
 import { useDeepMemo } from '@common/hooks/use-deep-memo';
 import format from 'date-fns/format';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@components/ui/tooltip';
 
-export const Name: React.FC<{ children?: React.ReactNode }> = () => {
+export const ManageName: React.FC<{ children?: React.ReactNode }> = () => {
   useWatchPendingZonefile();
   const router = useRouter();
   const name = router.query.name as string;
