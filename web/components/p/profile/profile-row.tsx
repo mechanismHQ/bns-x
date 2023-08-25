@@ -26,7 +26,7 @@ export const ProfileActions: React.FC<{
   name: string;
 }> = ({ name, v1 = false }) => {
   const upgradePath = useAccountPath('/upgrade');
-  const namePath = useAccountPath(`/names/[name]`, { name });
+  const namePath = useAccountPath(`/manage/[name]`, { name });
   const bridgePath = useAccountPath('/bridge/[name]', { name });
 
   return (
@@ -95,7 +95,7 @@ export const ProfileRow: React.FC<{
     await router.push(upgradePath);
   }, [router, upgradePath]);
 
-  const namePath = useAccountPath(`/names/[name]`, { name });
+  const namePath = useAccountPath(`/manage/[name]`, { name });
 
   const manage = useCallback(async () => {
     await router.push(namePath);
@@ -140,22 +140,6 @@ export const ProfileRow: React.FC<{
       </Stack>
       <StyledEditBox>
         <ProfileActions v1={v1} name={name} />
-        {/* <Stack isInline>
-          <BoxLink href={namePath}>
-            <Button secondary={v1}>Edit</Button>
-          </BoxLink>
-          {v1 && (
-            <Button
-              onClick={upgrade}
-              // secondary
-              // backgroundColor="$dark-primary-action-primary"
-              // color="$text-onPrimary"
-            >
-              Upgrade
-            </Button>
-          )}
-        </Stack> */}
-        {/* {v1 ? <Button onClick={upgrade}>Upgrade</Button> : <Button disabled>Edit</Button>} */}
       </StyledEditBox>
     </SpaceBetween>
   );

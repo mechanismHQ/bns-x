@@ -44,7 +44,7 @@ export const Renew: React.FC<{ children?: React.ReactNode }> = () => {
   );
   const { renew, txid, isRequestPending } = useRenewName(name);
   const renewTx = useAtomValue(loadable(renewalTxAtom));
-  const donePath = useAccountPath('/names/[name]', { name });
+  const donePath = useAccountPath('/manage/[name]', { name });
 
   const duration = useMemo(() => {
     // const stxPrice = stxAmount.toFormat();
