@@ -82,7 +82,7 @@ export const ManageName: React.FC<{ children?: React.ReactNode }> = () => {
         </Tooltip>
       </TooltipProvider>
     );
-  }, [expBlocks]);
+  }, [expBlocks, expBlock]);
 
   const upgrade = useCallback(async () => {
     await router.push(upgradePath);

@@ -20,6 +20,8 @@ const textVariants = cva('text-text block font-inter', {
       Heading022: 'text-heading022 font-open-sauce',
       Display01: 'text-display01',
       Display02: 'text-display02',
+      Label01: 'text-label01',
+      Label02: 'text-label02',
     },
   },
   defaultVariants: {
