@@ -397,3 +397,7 @@ export const availableNamespacesState = atom(get => {
 
   return keyToValue[networkKey];
 });
+
+// Name page
+
+export const currentNameAtom = atom('');
