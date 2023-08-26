@@ -113,4 +113,10 @@ export class ApiFetcher implements BaseFetcher {
     const details = await getNameDetailsApi(name, namespace);
     return !('error' in details);
   }
+
+  async searchNames(query: string) {
+    const exists = await this.getNameExists(query);
+    if (exists) return [query];
+    return [];
+  }
 }
