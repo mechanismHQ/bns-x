@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { Menu } from '@components/layout/menu';
 import { btnShiftActiveProps, btnShiftAnimation } from '@components/button';
 import Link from 'next/link';
+import { Search } from '@components/layout/search';
 
 export const TokenBalance: React.FC = () => {
   const stxAddress = useAtomValue(stxAddressAtom);
@@ -47,7 +48,8 @@ export const Header: React.FC<{ children?: React.ReactNode }> = () => {
         />
       </Link>
 
-      <Stack isInline spacing="8px">
+      <Stack isInline spacing="8px" justifyContent="stretch">
+        <Search />
         {isSSR ? null : (
           <Suspense fallback={<></>}>
             <TokenBalance />
