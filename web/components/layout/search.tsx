@@ -17,10 +17,14 @@ import { Command as CommandPrimitive } from 'cmdk';
 import { Text } from '@components/ui/text';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/router';
+import { useDeepMemo } from '@common/hooks/use-deep-memo';
 
 export const Search: React.FC<{ children?: React.ReactNode }> = () => {
   const searchResults = useAtomValue(loadable(searchResultsAtom));
-  const [searchInput, setSearchInput] = useAtom(searchInputAtom);
+  const searchInput = useAtomValue(searchInputAtom.currentValueAtom);
+  const [debouncedSearch, setSearchInput] = useAtom(searchInputAtom.debouncedValueAtom);
+  // const debouncedSearch = useAtomValue(searchInputAtom.debouncedValueAtom);
+  // const [searchInput, setSearchInput] = useAtom(searchInputAtom.currentValueAtom);
   const [isOpen, setOpen] = React.useState(false);
   const router = useRouter();
 
@@ -46,6 +50,18 @@ export const Search: React.FC<{ children?: React.ReactNode }> = () => {
     [setOpen]
   );
 
+  const names = useDeepMemo(() => {
+    if (searchResults.state === 'hasData') {
+      return searchResults.data.map(r => r.name);
+    }
+    return [];
+  }, [searchResults]);
+
+  const isLoading = React.useMemo(() => {
+    if (searchResults.state === 'loading') return true;
+    return debouncedSearch !== searchInput;
+  }, [searchResults.state, debouncedSearch, searchInput]);
+
   return (
     <>
       <div className="">
@@ -66,29 +82,15 @@ export const Search: React.FC<{ children?: React.ReactNode }> = () => {
           placeholder="Search for a name"
           value={searchInput}
           onValueChange={setSearchInput}
+          isLoading={isLoading}
         />
         <CommandList>
-          {searchResults.state === 'loading' && (
-            <CommandPrimitive.Loading>
-              <div className="w-full px-2 py-2 flex items-center">
-                <ReloadIcon className="mr-2 h-3 w-3 animate-spin" />
-                <Text variant="Caption01">Searching...</Text>
-              </div>
-            </CommandPrimitive.Loading>
-          )}
-          {/* <CommandGroup> */}
-          {searchResults.state === 'hasData' && (
-            <>
-              {searchResults.data.length === 0 && <CommandEmpty>No names found</CommandEmpty>}
-              {searchResults.data.map(result => {
-                return (
-                  <CommandItem key={result.name} onSelect={() => searchName(result.name)}>
-                    {result.name}
-                  </CommandItem>
-                );
-              })}
-            </>
-          )}
+          {names.length === 0 && <CommandEmpty>No names found</CommandEmpty>}
+          {names.map(name => (
+            <CommandItem key={name} onSelect={() => searchName(name)}>
+              {name}
+            </CommandItem>
+          ))}
         </CommandList>
       </CommandDialog>
     </>

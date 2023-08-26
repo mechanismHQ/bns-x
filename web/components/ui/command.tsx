@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 
 import { cn } from '@common/ui-utils';
 import { Dialog, DialogContent } from '@components/ui/dialog';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -37,10 +38,10 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
 
 const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> & { isLoading?: boolean }
+>(({ className, isLoading, ...props }, ref) => (
   // eslint-disable-next-line react/no-unknown-property
-  <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
+  <div className="flex items-center border-b px-3 relative" cmdk-input-wrapper="">
     <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       ref={ref}
@@ -50,6 +51,9 @@ const CommandInput = React.forwardRef<
       )}
       {...props}
     />
+    {isLoading && (
+      <ReloadIcon className="absolute right-[40px] ml-2 !h-4 !w-4 animate-spin text-muted-foreground" />
+    )}
   </div>
 ));
 
