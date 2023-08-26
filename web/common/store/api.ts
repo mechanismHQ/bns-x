@@ -96,3 +96,15 @@ export const contractSrcState = atomFamily((contractId: string) => {
     },
   }))[0];
 });
+
+export const searchInputAtom = atom('');
+
+export const searchResultsAtom = atomsWithQuery<{ name: string }[]>(get => ({
+  queryKey: ['search', get(searchInputAtom)],
+  queryFn: async () => {
+    const query = get(searchInputAtom);
+    if (query === '') return [];
+    const { results } = await trpc.searchRouter.searchNames.query({ query });
+    return results;
+  },
+}))[0];
