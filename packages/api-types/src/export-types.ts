@@ -280,6 +280,22 @@ export type AppProcedures = {
       >;
     }
   >;
+  searchRouter: TrpcServer.CreateRouterInner<
+    TrpcServer.AnyRootConfig,
+    {
+      searchNames: AnyProc<
+        'query',
+        {
+          query: string;
+        },
+        {
+          results: {
+            name: string;
+          }[];
+        }
+      >;
+    }
+  >;
 };
 
 type AnyProc<Type extends 'query' | 'mutation', Input, Output> = TrpcServer.BuildProcedure<
