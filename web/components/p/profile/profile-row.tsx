@@ -32,7 +32,7 @@ export const ProfileActions: React.FC<{
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Beutton size="lg">
+        <Beutton size="lg" variant="outline">
           Actions
           <ChevronDown className="ml-1 w-3" />
         </Beutton>
