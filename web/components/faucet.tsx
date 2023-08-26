@@ -7,7 +7,7 @@ import { useInput } from '../common/hooks/use-input';
 import { Input } from './form';
 import { loadable, useAtomCallback } from 'jotai/utils';
 import { adjectives, animals, uniqueNamesGenerator } from 'unique-names-generator';
-import { Button } from './button';
+import { Button } from '@components/ui/button';
 import { addressCoreNameQueryKey, currentUserV1NameState } from '@store/names';
 import { useRouter } from 'next/router';
 import { useAccountPath } from '@common/hooks/use-account-path';
@@ -44,7 +44,7 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
   const name = useInput(useAtom(nameAtom));
   const bnsName = useAtomValue(currentUserV1NameState);
   const router = useRouter();
-  const submitting = useAtomValue(submittingAtom);
+  const [submitting, setSubmitting] = useAtom(submittingAtom);
   const txStatus = useAtomValue(loadable(txStatusAtom));
   const queryClient = useAtomValue(queryClientAtom);
   useFakeName();
@@ -52,12 +52,16 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
   useDeepCompareEffect(() => {
     if (txStatus.state !== 'hasData') return;
     if (txStatus.data?.tx_status === 'success') {
-      const timer = setTimeout(() => {
-        void queryClient.invalidateQueries([addressCoreNameQueryKey('')[0]]);
-      }, 1000);
-      return () => {
-        clearTimeout(timer);
-      };
+      if (txStatus.data.tx_status === 'success') {
+        const timer = setTimeout(() => {
+          void queryClient.invalidateQueries([addressCoreNameQueryKey('')[0]]);
+        }, 1000);
+        return () => {
+          clearTimeout(timer);
+        };
+      } else if (txStatus.data.tx_status !== 'pending') {
+        setSubmitting(false);
+      }
     }
   }, [txStatus]);
 
@@ -89,31 +93,40 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
   }, [bnsName]);
 
   return (
-    <Stack p="30px">
-      <Box>
-        <Text variant="Heading03">BNS Faucet</Text>
-      </Box>
-      <Text variant="Body01">Get a name and some STX for testing</Text>
-      <Stack spacing="$1">
-        <Text variant="Body01" as="label">
-          Name
-        </Text>
-        <Text variant="Caption01" color="$text-dim">
-          You&apos;ll get the name &quot;{name.value}.{namespace}&quot;
-        </Text>
-        <Input autoFocus {...name.props} />
-      </Stack>
-      {submitting ? (
+    <form
+      action=""
+      onSubmit={async e => {
+        e.preventDefault();
+        await submit();
+      }}
+    >
+      <Stack p="30px">
         <Box>
-          <Text variant="Body01">Request submitted - you&apos;ll be redirected soon.</Text>
+          <Text variant="Heading035">BNS Faucet</Text>
         </Box>
-      ) : (
-        <Box width="100%">
-          <Button maxWidth="100%" onClick={submit}>
-            Submit
-          </Button>
-        </Box>
-      )}
-    </Stack>
+        <Text variant="Body01">Get a name and some STX for testing</Text>
+
+        <Stack spacing="$1">
+          <Text variant="Body01" as="label">
+            Name
+          </Text>
+          <Text variant="Caption01" color="$text-dim">
+            You&apos;ll get the name &quot;{name.value}.{namespace}&quot;
+          </Text>
+          <Input autoFocus {...name.props} />
+        </Stack>
+        {submitting ? (
+          <Box>
+            <Text variant="Body01">Request submitted - you&apos;ll be redirected soon.</Text>
+          </Box>
+        ) : (
+          <Box width="100%">
+            <Button className="w-full" type="submit" onClick={submit}>
+              Submit
+            </Button>
+          </Box>
+        )}
+      </Stack>
+    </form>
   );
 };
