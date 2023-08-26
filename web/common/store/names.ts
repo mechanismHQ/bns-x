@@ -188,7 +188,6 @@ export const resolvedNameState = atomFamily((name: string) => {
           namespace: asciiToBytes(nameParts.namespace),
         })
       );
-      console.log('props', props);
       if (props.isOk) {
         return props.value;
       }

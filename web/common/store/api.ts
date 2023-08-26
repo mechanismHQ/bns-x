@@ -8,6 +8,7 @@ import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import type { AppRouter } from '@bns-x/api-types';
 import { fetchContractSource, fetchCoreApiInfo } from 'micro-stacks/api';
 import { networkAtom } from '@store/micro-stacks';
+import { atomWithDebounce } from '@store/atom-utils';
 
 export const trpc = createTRPCProxyClient<AppRouter>({
   links: [
@@ -97,12 +98,12 @@ export const contractSrcState = atomFamily((contractId: string) => {
   }))[0];
 });
 
-export const searchInputAtom = atom('');
+export const searchInputAtom = atomWithDebounce('');
 
 export const searchResultsAtom = atomsWithQuery<{ name: string }[]>(get => ({
-  queryKey: ['search', get(searchInputAtom)],
+  queryKey: ['search', get(searchInputAtom.debouncedValueAtom)],
   queryFn: async () => {
-    const query = get(searchInputAtom);
+    const query = get(searchInputAtom.debouncedValueAtom);
     if (query === '') return [];
     const { results } = await trpc.searchRouter.searchNames.query({ query });
     return results;
