@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { Box, Flex, SpaceBetween, Stack } from '@nelson-ui/react';
 import { Text } from '../../text';
 import { useRouter } from 'next/router';
-import { Button } from '@components/button';
+import { Button } from '@components/ui/button';
 import { useAtom, useAtomValue } from 'jotai';
 import { nameDetailsAtom, nameExpirationBlockState } from '@store/names';
 import { getTxUrl } from '@common/utils';
@@ -125,12 +125,15 @@ export const ManageName: React.FC<{ children?: React.ReactNode }> = () => {
           </SpaceBetween>
           <Stack pt="20px" spacing="14px" width="280px">
             <BoxLink href={bridgePath}>
-              <Button width="100%">Bridge to L1</Button>
+              <Button size="lg" className="w-full">
+                Bridge to L1
+              </Button>
             </BoxLink>
             {isBnsx ? (
               <>
                 <Button
-                  width="100%"
+                  size="lg"
+                  className="w-full"
                   onClick={async () => {
                     await router.push(unwrapPath);
                   }}
@@ -140,11 +143,11 @@ export const ManageName: React.FC<{ children?: React.ReactNode }> = () => {
               </>
             ) : (
               <>
-                <Button width="100%" onClick={upgrade}>
+                <Button size="lg" className="w-full" onClick={upgrade}>
                   Upgrade to BNSx
                 </Button>
                 {!isEditing && (
-                  <Button tertiary width="100%" onClick={() => setEditing()}>
+                  <Button variant="tertiary" className="w-full" onClick={() => setEditing()}>
                     Edit
                   </Button>
                 )}
@@ -167,7 +170,7 @@ export const ManageName: React.FC<{ children?: React.ReactNode }> = () => {
               </Text>
               <Box mt="20px">
                 <Button
-                  type="big"
+                  size="lg"
                   onClick={async () => {
                     await router.push(accountPath);
                   }}

@@ -92,6 +92,7 @@ export const LinkContainer: React.FC<{
   children: React.ReactNode;
   href?: string;
   target?: string;
+  className?: string;
 }> = React.forwardRef(({ children, ...props }, ref) => {
   return (
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -104,10 +105,12 @@ LinkContainer.displayName = 'LinkContainer';
 
 export const BoxLink: React.FC<
   { children: React.ReactNode } & React.ComponentProps<typeof NextLink>
-> = ({ children, ...props }) => {
+> = ({ children, className, ...props }) => {
   return (
     <NextLink {...props} passHref>
-      <LinkContainer target={props.target}>{children}</LinkContainer>
+      <LinkContainer target={props.target} className={className}>
+        {children}
+      </LinkContainer>
     </NextLink>
   );
 };

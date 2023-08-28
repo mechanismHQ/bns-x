@@ -16,7 +16,8 @@ import { ExternalTx } from '@components/icons/external-tx';
 import { CheckIcon } from '@components/icons/check';
 import { getInscriptionUrl } from '@common/utils';
 import { ExternalLinkIcon } from '@components/icons/external-link';
-import { Button } from '@components/button';
+import { Button } from '@components/ui/button';
+import { BoxLink } from '@components/link';
 
 export const WrapTx: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
@@ -32,10 +33,6 @@ export const WrapTx: React.FC<{ children?: React.ReactNode }> = () => {
 
   const inscriptionUrl = useMemo(() => {
     return getInscriptionUrl(inscriptionId || '');
-  }, [inscriptionId]);
-
-  const viewOnGamma = useCallback(() => {
-    window.open(`https://gamma.io/inscription/${inscriptionId || ''}`, '_blank');
   }, [inscriptionId]);
 
   return (
@@ -68,9 +65,25 @@ export const WrapTx: React.FC<{ children?: React.ReactNode }> = () => {
         )}
       </CenterBox>
       {status === 'success' && (
-        <Button type="big" onClick={viewOnGamma}>
-          View on Gamma
-        </Button>
+        <>
+          <BoxLink
+            href={{ pathname: '/names/[name]', query: { name } }}
+            className="w-full max-w-[300px]"
+          >
+            <Button size="lg" className="w-full">
+              View name details
+            </Button>
+          </BoxLink>
+          <BoxLink
+            href={`https://gamma.io/inscription/${inscriptionId || ''}`}
+            className="w-full max-w-[300px]"
+            target="_blank"
+          >
+            <Button size="lg" variant="secondary" className="w-full">
+              View on Gamma
+            </Button>
+          </BoxLink>
+        </>
       )}
     </div>
   );

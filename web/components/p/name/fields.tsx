@@ -8,7 +8,7 @@ export const Divider: React.FC<{ children?: React.ReactNode }> = () => {
 };
 
 export const Row: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
-  return <div className="flex flex-col gap-3 py-7">{children}</div>;
+  return <div className="flex flex-col gap-0 py-7">{children}</div>;
 };
 
 export const FieldHeader: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
@@ -31,7 +31,7 @@ export const Truncated: React.FC<{ children: string }> = ({ children }) => {
 };
 
 export const FieldValueRow: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
-  return <div className="flex gap-7 items-center">{children}</div>;
+  return <div className="flex gap-3 items-center min-h-[40px]">{children}</div>;
 };
 
 export const FieldValue: React.FC<{ children: React.ReactNode; copyText?: string }> = ({
