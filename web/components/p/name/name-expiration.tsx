@@ -40,7 +40,7 @@ export const NameExpirationInner: React.FC<{ children?: React.ReactNode; name: s
   }
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
       <Tooltip>
         <TooltipTrigger>
           <Text variant="Label02" className="text-text-subdued">

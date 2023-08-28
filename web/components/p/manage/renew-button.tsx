@@ -1,5 +1,5 @@
 import { useAccountPath } from '@common/hooks/use-account-path';
-import { Button } from '@components/button';
+import { Button } from '@components/ui/button';
 import { BoxLink } from '@components/link';
 import { canNameBeRenewedState } from '@store/names';
 import { useAtomValue } from 'jotai';
@@ -15,7 +15,7 @@ export const RenewButton: React.FC<{ children?: React.ReactNode; name: string }>
 
   return (
     <BoxLink href={renewPath}>
-      <Button width="100%" tertiary>
+      <Button size="lg" className="w-full" variant="tertiary">
         Renew
       </Button>
     </BoxLink>

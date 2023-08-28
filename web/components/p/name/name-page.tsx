@@ -17,7 +17,7 @@ import {
   Truncated,
 } from './fields';
 import { computeNamePrice, parseFqn } from '@bns-x/core';
-import { ustxToStx } from '@common/utils';
+import { getInscriptionUrl, ustxToStx } from '@common/utils';
 import { ExternalLink } from 'lucide-react';
 import { ExternalTx } from '@components/icons/external-tx';
 import { ExternalLinkIcon } from '@components/icons/external-link';
@@ -36,6 +36,12 @@ import { ZonefileTable } from '@components/p/name/name-zonefile';
 import Link from 'next/link';
 import { badgeVariants } from '@components/ui/badge';
 import { cn } from '@common/ui-utils';
+import { Button } from '@components/ui/button';
+import { BoxLink } from '@components/link';
+import { useDeepMemo } from '@common/hooks/use-deep-memo';
+import { stxAddressAtom } from '@store/micro-stacks';
+import { useAccountPath } from '@common/hooks/use-account-path';
+import { inscriptionForNameAtom } from '@store/bridge';
 
 export const NotFound: React.FC<{ children?: React.ReactNode }> = () => {
   const name = useAtomValue(currentNameAtom);
@@ -59,15 +65,31 @@ export const NotFound: React.FC<{ children?: React.ReactNode }> = () => {
 export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> = () => {
   const namePuny = useAtomValue(currentNameAtom);
   const nameDetails = useAtomValue(nameDetailsAtom(namePuny));
+  const inscription = useAtomValue(inscriptionForNameAtom(namePuny));
   const name = usePunycode(namePuny);
   const gradient = useGradient(namePuny);
   const isBnsx = nameDetails?.isBnsx ?? false;
+  const stxAddress = useAtomValue(stxAddressAtom);
+
+  const isOwnName = stxAddress === nameDetails?.address;
+  const managePath = useAccountPath('/manage/[name]', { name: namePuny });
 
   const registrationPrice = useMemo(() => {
     const { name, namespace } = parseFqn(namePuny);
     const ustx = computeNamePrice(name, namespace);
     return ustxToStx(ustx);
   }, [namePuny]);
+
+  const gammaLink = useDeepMemo(() => {
+    if (nameDetails === null) return null;
+    if (inscription?.inscriptionId) {
+      return `https://gamma.io/inscription/${inscription.inscriptionId}`;
+    }
+    if (nameDetails.isBnsx) {
+      return `https://stacks.gamma.io/collections/bnsx/${nameDetails.id}`;
+    }
+    return `https://stacks.gamma.io/collections/bns/${namePuny}`;
+  }, [nameDetails, namePuny]);
 
   if (nameDetails === null) return <NotFound />;
 
@@ -87,6 +109,20 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
             <NameExpiration name={namePuny} />
             <DuplicateIcon clipboardText={namePuny} copyLabel="Copy Name" />
           </div>
+        </div>
+        <div className="flex flex-col gap-4 w-[280px]">
+          {isOwnName && (
+            <BoxLink href={managePath}>
+              <Button size="lg" className="w-full">
+                Manage
+              </Button>
+            </BoxLink>
+          )}
+          <BoxLink href={gammaLink ?? ''} target="_blank">
+            <Button size="lg" variant="secondary" className="w-full">
+              View on Gamma
+            </Button>
+          </BoxLink>
         </div>
       </div>
       <div className="flex flex-col gap-y-0 flex-basis-[450px] grow-[3]">

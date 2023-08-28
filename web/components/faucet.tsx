@@ -50,18 +50,16 @@ export const Faucet: React.FC<{ children?: React.ReactNode }> = () => {
   useFakeName();
 
   useDeepCompareEffect(() => {
-    if (txStatus.state !== 'hasData') return;
-    if (txStatus.data?.tx_status === 'success') {
-      if (txStatus.data.tx_status === 'success') {
-        const timer = setTimeout(() => {
-          void queryClient.invalidateQueries([addressCoreNameQueryKey('')[0]]);
-        }, 1000);
-        return () => {
-          clearTimeout(timer);
-        };
-      } else if (txStatus.data.tx_status !== 'pending') {
-        setSubmitting(false);
-      }
+    if (txStatus.state !== 'hasData' || txStatus.data === null) return;
+    if (txStatus.data.tx_status === 'success') {
+      const timer = setTimeout(() => {
+        void queryClient.invalidateQueries([addressCoreNameQueryKey('')[0]]);
+      }, 1000);
+      return () => {
+        clearTimeout(timer);
+      };
+    } else if (txStatus.data.tx_status !== 'pending') {
+      setSubmitting(false);
     }
   }, [txStatus]);
 
