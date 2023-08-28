@@ -21,6 +21,8 @@ import { WrapTx } from '@components/p/bridge/wrap-tx';
 import { useBridgeWrap } from '@common/hooks/use-bridge-wrap';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { useToast } from '@common/hooks/use-toast';
+import { Copy, Download, AlertCircle } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from '@components/ui/alert';
 
 export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
@@ -75,11 +77,34 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
               Bridge <span className="font-mono">{name}</span> to Bitcoin
             </Text>
             <Text variant="Heading035">Step 1: Inscribe your name</Text>
+            <Alert variant="warning">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Heads up!</AlertTitle>
+              <AlertDescription>
+                Inscriptions must be uploaded as HTML file types in order to be valid. The content
+                type must be{' '}
+                <span
+                  className="font-mono py-px px-1 bg-surface-surface-selected rounded-sm"
+                  // tabIndex={3}
+                >
+                  text/html;charset=utf-8
+                </span>{' '}
+                to work properly.
+              </AlertDescription>
+            </Alert>
             <Text variant="Body01">Create a new inscription with the following content:</Text>
-            <CodeBlock className="p-3">{inscriptionContent}</CodeBlock>
+            <CodeBlock tabIndex={0} className="p-3 select-all focus:animate-select">
+              {inscriptionContent}
+            </CodeBlock>
             <div className="flex gap-5">
-              <Button onClick={copyToClipboard}>Copy to Clipboard</Button>
-              <Button onClick={download}>Download file</Button>
+              <Button variant="secondary" onClick={copyToClipboard}>
+                <Copy className="w-3 h-3 mr-2" />
+                Copy to Clipboard
+              </Button>
+              <Button variant="secondary" onClick={download}>
+                <Download className="w-3 h-3 mr-2" />
+                Download file
+              </Button>
             </div>
             <Text variant="Heading035">Step 2: Submit your inscription</Text>
             <Text variant="Body01">

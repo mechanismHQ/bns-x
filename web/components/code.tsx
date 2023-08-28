@@ -15,7 +15,9 @@ export const CodeBlock: React.FC<BoxProps & { children?: React.ReactNode }> = ({
       {...props}
     >
       <Text variant="Body01" whiteSpace="pre-line" wordBreak="break-all">
-        <pre style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}>{children}</pre>
+        <pre style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}>
+          <code>{children}</code>
+        </pre>
       </Text>
     </Box>
   );
