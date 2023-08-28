@@ -131,13 +131,44 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
         </div>
         <Divider />
 
+        {inscription && (
+          <>
+            <Row>
+              <FieldHeader>Inscription ID</FieldHeader>
+              <FieldValueRow>
+                <Text variant="Label02">
+                  <Truncated>{inscription.inscriptionId}</Truncated>
+                </Text>
+                <div className="flex gap-0 items-center">
+                  <DuplicateIcon clipboardText={inscription.inscriptionId} />
+                  {/* <ExternalTx txId={inscription.inscriptionId} /> */}
+                </div>
+              </FieldValueRow>
+            </Row>
+            <Divider />
+            <Row>
+              <FieldHeader>Bitcoin Address</FieldHeader>
+              <FieldValueRow>
+                <Text variant="Label02">
+                  <Truncated>{inscription.owner}</Truncated>
+                </Text>
+                <div className="flex gap-0 items-center">
+                  <DuplicateIcon clipboardText={inscription.owner} />
+                  <ExternalLinkIcon href={`https://mempool.space/address/${inscription.owner}`} />
+                </div>
+              </FieldValueRow>
+            </Row>
+            <Divider />
+          </>
+        )}
+
         <Row>
           <FieldHeader>Stacks Address</FieldHeader>
           <FieldValueRow>
             <Text variant="Label02">
               <Truncated>{nameDetails.address}</Truncated>
             </Text>
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-0 items-center">
               <DuplicateIcon clipboardText={nameDetails.address} />
               <ExternalLinkIcon
                 href={`https://explorer.stacks.co/address/${nameDetails.address}?chain=mainnet`}
@@ -145,23 +176,26 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
             </div>
           </FieldValueRow>
         </Row>
-        {nameDetails.zonefileRecords.btcAddress && (
-          <Row>
-            <FieldHeader>Bitcoin Address</FieldHeader>
-            <FieldValueRow>
-              <Text variant="Label02">
-                <Truncated>{nameDetails.zonefileRecords.btcAddress}</Truncated>
-              </Text>
-              <div className="flex gap-3 items-center">
-                <DuplicateIcon clipboardText={nameDetails.zonefileRecords.btcAddress} />
-                <ExternalLinkIcon
-                  href={`https://mempool.space/address/${nameDetails.zonefileRecords.btcAddress}`}
-                />
-              </div>
-            </FieldValueRow>
-          </Row>
-        )}
         <Divider />
+        {nameDetails.zonefileRecords.btcAddress && (
+          <>
+            <Row>
+              <FieldHeader>Bitcoin Address</FieldHeader>
+              <FieldValueRow>
+                <Text variant="Label02">
+                  <Truncated>{nameDetails.zonefileRecords.btcAddress}</Truncated>
+                </Text>
+                <div className="flex gap-0 items-center">
+                  <DuplicateIcon clipboardText={nameDetails.zonefileRecords.btcAddress} />
+                  <ExternalLinkIcon
+                    href={`https://mempool.space/address/${nameDetails.zonefileRecords.btcAddress}`}
+                  />
+                </div>
+              </FieldValueRow>
+            </Row>
+            <Divider />
+          </>
+        )}
         <Row>
           <FieldHeader>Registration price</FieldHeader>
           <FieldValueRow>
@@ -177,8 +211,8 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
             <Text variant="Label02">
               <Truncated>{nameDetails.last_txid}</Truncated>
             </Text>
-            <div className="flex gap-3 items-center">
-              <DuplicateIcon clipboardText={nameDetails.address} />
+            <div className="flex gap-0 items-center">
+              <DuplicateIcon clipboardText={nameDetails.last_txid} />
               <ExternalTx txId={nameDetails.last_txid} />
             </div>
           </FieldValueRow>
