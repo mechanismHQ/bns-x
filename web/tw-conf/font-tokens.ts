@@ -1,6 +1,6 @@
 /**
  * Do not edit directly
- * Generated on Tue, 22 Aug 2023 19:52:59 GMT
+ * Generated on Wed, 30 Aug 2023 19:03:49 GMT
  */
 
 export const FontDisplayDisplay01 = {
