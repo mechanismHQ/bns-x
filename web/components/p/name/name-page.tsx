@@ -125,7 +125,7 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
           </BoxLink>
         </div>
       </div>
-      <div className="flex flex-col gap-y-0 flex-basis-[450px] grow-[3]">
+      <div className="flex flex-col gap-y-0 flex-basis-[450px]">
         <div className="flex-col flex gap-2 pb-5">
           <Text variant="Heading04">Name Details</Text>
         </div>

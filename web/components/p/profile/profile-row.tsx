@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
+import { L1_ENABLED } from '@common/constants';
 
 export const ProfileActions: React.FC<{
   children?: React.ReactNode;
@@ -38,9 +39,11 @@ export const ProfileActions: React.FC<{
         </Beutton>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <BoxLink href={bridgePath}>
-          <DropdownMenuItem className="cursor-pointer">Bridge to L1</DropdownMenuItem>
-        </BoxLink>
+        {L1_ENABLED && (
+          <BoxLink href={bridgePath}>
+            <DropdownMenuItem className="cursor-pointer">Bridge to L1</DropdownMenuItem>
+          </BoxLink>
+        )}
         {v1 && (
           <BoxLink href={upgradePath}>
             <DropdownMenuItem className="cursor-pointer">Upgrade</DropdownMenuItem>

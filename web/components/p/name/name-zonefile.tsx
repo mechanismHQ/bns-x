@@ -21,7 +21,7 @@ const CopyableRow: React.FC<{ type: string; label: string; value: string }> = ({
       <TableCell>{type}</TableCell>
       <TableCell>{label}</TableCell>
       <TableCell>
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center break-words">
           <Truncated>{value}</Truncated>
           <DuplicateIcon clipboardText={value} />
         </div>

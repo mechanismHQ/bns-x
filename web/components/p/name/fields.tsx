@@ -22,6 +22,15 @@ export const FieldHeader: React.FC<{ children?: React.ReactNode }> = ({ children
 export const Truncated: React.FC<{ children: string }> = ({ children }) => {
   if (children.length <= 40) return <>{children}</>;
   const truncated = truncateMiddle(children, 8);
+  if (children.length > 60) {
+    const truncatedBig = truncateMiddle(children, 20);
+    return (
+      <>
+        <span className="hidden sm:inline-block">{truncatedBig}</span>
+        <span className="sm:hidden">{truncated}</span>
+      </>
+    );
+  }
   return (
     <>
       <span className="hidden sm:inline-block">{children}</span>

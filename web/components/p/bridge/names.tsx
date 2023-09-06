@@ -18,7 +18,6 @@ export const BridgeNames: React.FC<{ children?: React.ReactNode }> = () => {
   const names = useAtomValue(inscribedNamesAtom);
 
   const nameRows = useMemo(() => {
-    console.log('names', names);
     return names.map(name => {
       return <BridgedNameRow name={name} key={name.name} />;
     });

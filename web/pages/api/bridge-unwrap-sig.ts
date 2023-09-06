@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getBtcNetwork } from '@common/constants';
+import { L1_ENABLED, getBtcNetwork } from '@common/constants';
 import { tupleCV, bufferCV } from 'micro-stacks/clarity';
 import { bytesToHex } from 'micro-stacks/common';
 import { makeClarityHash } from 'micro-stacks/connect';
@@ -26,6 +26,9 @@ export async function bridgeSignerApi(
   const { inscriptionId } = req.query as BridgeUnwrapSignerRequest;
   if (typeof inscriptionId !== 'string') {
     return res.status(500).send({ error: 'Invalid inscription param' });
+  }
+  if (!L1_ENABLED) {
+    return res.status(500).send({ error: 'L1 is not enabled' });
   }
   const { owner } = await trpc.bridgeRouter.getInscriptionOwner.query({ inscriptionId });
   const output = OutScript.encode(Address(getBtcNetwork()).decode(owner));

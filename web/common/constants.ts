@@ -87,6 +87,8 @@ export function testUtilsContract() {
 
 export const ONLY_INSCRIPTIONS = process.env.NEXT_PUBLIC_INSCRIPTIONS === 'true';
 
+export const L1_ENABLED = process.env.NEXT_PUBLIC_L1_ENABLED === 'true';
+
 export function getTestnetNamespace() {
   if (getNetworkKey() === 'testnet') return 'testable';
   return 'satoshi';
