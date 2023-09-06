@@ -16,6 +16,8 @@ COPY web/package.json web/
 COPY packages/core/package.json packages/core/
 COPY packages/client/package.json packages/client/
 COPY packages/api-types/package.json packages/api-types/
+COPY packages/bridge/package.json packages/bridge/
+COPY packages/punycode/package.json packages/punycode/
 COPY web/patches web/patches
 
 COPY . .
