@@ -1,28 +1,10 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Text } from '@components/ui/text';
-import {
-  bridgeBurnScriptState,
-  bridgeInscriptionIdAtom,
-  bridgeUnwrapTxidAtom,
-  bridgeWrapTxidAtom,
-  fetchSignatureForInscriptionId,
-  inscribedNamesAtom,
-  inscriptionForNameAtom,
-  inscriptionIdForNameAtom,
-  verifiedBurnAddressState,
-} from '@store/bridge';
+import { bridgeBurnScriptState, bridgeUnwrapTxidAtom, inscriptionForNameAtom } from '@store/bridge';
 import { useAtom, useAtomValue } from 'jotai';
-import { loadable } from 'jotai/utils';
-import { useInput } from '@common/hooks/use-input';
 import { CodeBlock } from '@components/code';
 import { Button } from '@components/ui/button';
-import { useCopyToClipboard } from 'usehooks-ts';
-import { Input } from '@components/form';
-import { nameDetailsAtom } from '@store/names';
-import useDeepCompareEffect from 'use-deep-compare-effect';
-import { WrapTx } from '@components/p/bridge/wrap-tx';
-import { useBridgeWrap } from '@common/hooks/use-bridge-wrap';
 import { Link } from '@components/link';
 import { getInscriptionUrl, truncateMiddle } from '@common/utils';
 import { DuplicateIcon } from '@components/icons/duplicate';

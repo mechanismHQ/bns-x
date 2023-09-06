@@ -35,7 +35,7 @@ export const ZonefileTable: React.FC<{ children?: React.ReactNode; zonefile?: st
 }) => {
   const zonefile = new ZoneFile(_zf).zoneFile;
   return (
-    <Table>
+    <Table className="w-full">
       <TableHeader>
         <TableRow>
           <TableHead>Type</TableHead>
