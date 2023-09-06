@@ -21,6 +21,9 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { WrapTx } from '@components/p/bridge/wrap-tx';
 import { useBridgeWrap } from '@common/hooks/use-bridge-wrap';
 import { BridgeUnwrap } from '@components/p/bridge/unwrap';
+import { L1_ENABLED } from '@common/constants';
+import { Text } from '@components/ui/text';
+import { FileWarning } from 'lucide-react';
 
 export const BridgeName: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
@@ -35,6 +38,8 @@ export const BridgeName: React.FC<{ children?: React.ReactNode }> = () => {
     console.log(inscribedNames);
   }, [inscribedNames]);
 
+  if (!L1_ENABLED) return <BridgeDisabled />;
+
   if (unwrapTxid) return <BridgeUnwrap />;
 
   if (existingInscription === null || wrapTxid) {
@@ -47,4 +52,20 @@ export const BridgeName: React.FC<{ children?: React.ReactNode }> = () => {
   //     <Text variant="Body01">{existingInscription}</Text>
   //   </>
   // );
+};
+
+export const BridgeDisabled: React.FC<{ children?: React.ReactNode }> = () => {
+  return (
+    <>
+      <div className="flex-grow"></div>
+      <div className="text-center max-w-xl mx-auto flex flex-col gap-8 items-center">
+        <FileWarning className="w-[100px] h-[100px] text-dark-warning-icon-warning" />
+        <Text variant="Heading03">BNS Inscriptions aren&apos;t live yet!</Text>
+        <Text variant="Body01" className="text-text-subdued">
+          Check back soon.
+        </Text>
+      </div>
+      <div className="flex-grow"></div>
+    </>
+  );
 };

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { parseFqn } from '@bns-x/core';
-import { ordinalsBaseUrl } from '@common/constants';
+import { L1_ENABLED, ordinalsBaseUrl } from '@common/constants';
 import { tupleCV, bufferCV, uintCV } from 'micro-stacks/clarity';
 import { asciiToBytes, bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { makeClarityHash } from 'micro-stacks/connect';
@@ -44,6 +44,9 @@ export async function bridgeSignerApi(
   // console.log('req.query', req.query);
   if (typeof inscriptionId !== 'string' || typeof fqn !== 'string' || typeof sender !== 'string') {
     return res.status(500).send({ error: 'Invalid inscription param' });
+  }
+  if (!L1_ENABLED) {
+    return res.status(500).send({ error: 'L1 is not enabled' });
   }
   const contentResult = await fetchInscriptionContent(inscriptionId);
   if (contentResult.isErr()) {

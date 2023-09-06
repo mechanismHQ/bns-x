@@ -43,6 +43,7 @@ import { RenewButton } from '@components/p/manage/renew-button';
 import { useDeepMemo } from '@common/hooks/use-deep-memo';
 import format from 'date-fns/format';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@components/ui/tooltip';
+import { L1_ENABLED } from '@common/constants';
 
 export const ManageName: React.FC<{ children?: React.ReactNode }> = () => {
   useWatchPendingZonefile();
@@ -124,11 +125,13 @@ export const ManageName: React.FC<{ children?: React.ReactNode }> = () => {
             </Stack>
           </SpaceBetween>
           <Stack pt="20px" spacing="14px" width="280px">
-            <BoxLink href={bridgePath}>
-              <Button size="lg" className="w-full">
-                Bridge to L1
-              </Button>
-            </BoxLink>
+            {L1_ENABLED && (
+              <BoxLink href={bridgePath}>
+                <Button size="lg" className="w-full">
+                  Bridge to L1
+                </Button>
+              </BoxLink>
+            )}
             {isBnsx ? (
               <>
                 <Button

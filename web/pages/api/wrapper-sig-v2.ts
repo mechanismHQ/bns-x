@@ -1,5 +1,5 @@
 import { parseFqn } from '@bns-x/core';
-import { getContracts } from '@common/constants';
+import { L1_ENABLED, getContracts } from '@common/constants';
 import { signatureVrsToRsv } from '@common/utils';
 import { contractPrincipalCV, principalCV, tupleCV } from 'micro-stacks/clarity';
 import { asciiToBytes, bytesToHex } from 'micro-stacks/common';
@@ -67,6 +67,9 @@ export async function wrapperSignerV2Api(
   const sender = req.query.sender;
   if (typeof fqn !== 'string' || typeof sender !== 'string') {
     return res.status(500).send({ error: 'Invalid params' });
+  }
+  if (!L1_ENABLED) {
+    return res.status(500).send({ error: 'L1 is not enabled' });
   }
 
   const sigData = await createWrapperV2Signature(sender, fqn);
