@@ -223,7 +223,7 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
             <FieldHeader>Zonefile</FieldHeader>
             {nameDetails.zonefile && <DuplicateIcon clipboardText={nameDetails.zonefile} />}
           </div>
-          <div>
+          <div className="mb-4">
             <a
               href="https://docs.bns.xyz/docs/zonefiles/"
               target="_blank"
