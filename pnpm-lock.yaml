@@ -109,9 +109,6 @@ importers:
 
   api:
     dependencies:
-      '@bns-x/bridge':
-        specifier: workspace:*
-        version: link:../packages/bridge
       '@bns-x/client':
         specifier: workspace:*
         version: link:../packages/client

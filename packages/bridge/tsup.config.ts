@@ -1,7 +1,7 @@
 import type { Options } from 'tsup';
 
 export const defaultOptions: Options = {
-  target: 'es2022',
+  target: 'node16',
   entry: ['src/index.ts'],
   minify: false,
   clean: true,

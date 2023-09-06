@@ -30,7 +30,6 @@
   "author": "Hank Stoever",
   "license": "ISC",
   "dependencies": {
-    "@bns-x/bridge": "workspace:*",
     "@bns-x/client": "workspace:*",
     "@bns-x/core": "workspace:*",
     "@bns-x/punycode": "workspace:*",

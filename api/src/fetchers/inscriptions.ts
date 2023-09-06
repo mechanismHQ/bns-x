@@ -9,8 +9,7 @@ import { verifyMessageSignature, hashMessage } from 'micro-stacks/connect';
 import { publicKeyToStxAddress } from 'micro-stacks/crypto';
 import { z } from 'zod';
 import { getNetworkKey } from '~/constants';
-import { bytesToHex } from 'micro-stacks/common';
-import { bytesToInscriptionId } from '@bns-x/bridge';
+import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 
 export interface InscriptionMeta {
   id: string;
@@ -301,4 +300,19 @@ export async function fetchInscriptionOwner(inscriptionId: string) {
 
 export function inscriptionBuffToId(id: Uint8Array) {
   return bytesToInscriptionId(id);
+}
+
+export function inscriptionIdToBytes(inscriptionId: string) {
+  const [txid, outIndexStr] = inscriptionId.split('i');
+  if (!txid || !outIndexStr) throw new Error('Invalid inscription id');
+  const outIndex = parseInt(outIndexStr, 10);
+  if (outIndex > 255) throw new Error('Inscription index must be less than 256');
+  return new Uint8Array([...hexToBytes(txid), outIndex]);
+}
+
+export function bytesToInscriptionId(bytes: Uint8Array) {
+  const txid = bytes.slice(0, 32);
+  const outIndex = bytes[32];
+  if (typeof outIndex === 'undefined') throw new Error('Invalid inscription bytes');
+  return `${bytesToHex(txid)}i${outIndex}`;
 }
