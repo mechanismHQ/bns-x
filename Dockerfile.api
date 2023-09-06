@@ -26,7 +26,7 @@ RUN CI=true pnpm install --frozen-lockfile --shamefully-hoist
 
 RUN pnpm --filter @bns-x/api prebuild
 
-RUN pnpm turbo run build --filter @bns-x/api
+RUN pnpm build:packages
 
 COPY api/scripts/docker-entrypoint.sh docker-entrypoint.sh
 
