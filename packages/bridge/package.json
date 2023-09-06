@@ -9,9 +9,8 @@
   "repository": "https://github.com/mechanismHQ/bns-x/tree/main/packages/png-ztxt",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "import": "./dist/index.js",
-  "type": "module",
+  "module": "./dist/index.mjs",
+  "import": "./dist/index.mjs",
   "sideEffects": false,
   "files": [
     "dist"
