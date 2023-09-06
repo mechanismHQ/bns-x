@@ -16,7 +16,6 @@ export const Nostr: React.FC = () => {
           <Stack isInline alignItems={'center'}>
             <Text variant="Heading035">{name.name}</Text>
             <ExternalLinkIcon
-              cursor="pointer"
               onClick={() => {
                 window.open(`https://nostr.directory/p/${name.nostr}`, '_blank');
               }}
