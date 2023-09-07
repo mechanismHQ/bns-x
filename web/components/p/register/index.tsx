@@ -1,40 +1,17 @@
-import React, { memo, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { isNameValid } from '@bns-x/core';
 import { Box, Stack } from '@nelson-ui/react';
 import { Input } from '@components/ui/input';
 import { currentUserAddressNameStringsState, availableNamespacesState } from '@store/names';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { Button } from '@components/ui/button';
-import { useSwitchAccounts } from '@common/hooks/use-switch-accounts';
 import { BnsNameRow } from '@components/bns-name-row';
 import { Toaster } from 'sonner';
 import { useDeepMemo } from '@common/hooks/use-deep-memo';
-import {
-  nameInputAtom,
-  registerTxIdAtom,
-  registrationNameState,
-  registrationTxAtom,
-} from '@store/register';
+import { nameInputAtom, registerTxIdAtom, registrationNameState } from '@store/register';
 import { Text } from '@components/text';
 import { Table, TableHeader, TableRow, TableHead, TableBody } from '@components/ui/table';
-import { Link } from '@components/link';
 import { RegisterNoName } from '@components/p/register/no-name';
 import { RegistrationTx } from '@components/p/register/register-tx';
-
-// TODO: success state
-// const RegistrationTx: React.FC = () => {
-//   const registrationTx = useAtomValue(registrationTxAtom);
-//   return (
-//     <>
-//       <div className="grow"></div>
-//       <div className="w-full space-y-6">
-//         <div className="flex flex-col gap-10 items-center">
-
-//         </div>
-//       </div>
-//     </>
-//   )
-// }
 
 export const Register: React.FC<{ children?: React.ReactNode }> = () => {
   const bnsNameValue = useAtomValue(nameInputAtom.currentValueAtom);
@@ -45,7 +22,6 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
   const v1Name = allNames.coreName;
   const noNames = v1Name === null;
   const registrationTxid = useAtomValue(registerTxIdAtom);
-  const registrationTx = useAtomValue(registrationTxAtom);
 
   const emptyInput = bnsNameValue.length === 0;
 

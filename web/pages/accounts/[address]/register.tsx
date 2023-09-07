@@ -5,12 +5,13 @@ import { withSSRProps } from '@common/page-utils';
 
 export const getServerSideProps = withSSRProps();
 
-const RegisterPage: NextPage = () => {
+const RegisterPage: NextPage & { authRequired?: boolean } = () => {
   return (
     <Layout centerBox={false}>
       <Register />
     </Layout>
   );
 };
+RegisterPage.authRequired = true;
 
 export default RegisterPage;

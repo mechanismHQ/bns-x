@@ -115,7 +115,10 @@ export const addressNameStringsAtom = atomFamily((address: string) => {
 export const currentUserAddressNameStringsState = atom(get => {
   const addr = get(stxAddressAtom);
   if (typeof addr === 'undefined') {
-    throw new Error('Unable to get current user address');
+    return {
+      coreName: null,
+      bnsxNames: [],
+    };
   }
   return get(addressNameStringsAtom(addr));
 });

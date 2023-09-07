@@ -3,6 +3,7 @@ import type { GetServerSidePropsContext } from 'next';
 import { trpc, bnsApi } from '@store/api';
 import { getNetwork } from '@common/constants';
 import { findAccountIndexForAddress } from '@store/micro-stacks';
+import type { PageProps } from '@pages/_app';
 
 type GetProps = (
   ctx: GetServerSidePropsContext
@@ -15,8 +16,8 @@ export function withSSRProps(cb?: GetProps) {
       console.log(`Auth: ${user}`);
     }
     const { dehydratedState, primaryAccountIndex } = await getDehydratedStateFromSession(ctx);
-    let baseProps: Record<string, any> = {
-      dehydratedState,
+    let baseProps: Partial<PageProps> = {
+      dehydratedState: dehydratedState,
     };
     if (dehydratedState !== null) {
       const client = getSessionClient(dehydratedState)!;
