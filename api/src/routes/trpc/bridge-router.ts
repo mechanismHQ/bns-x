@@ -61,10 +61,12 @@ export const bridgeRouter = router({
   getInscriptionByName: procedure
     .input(z.object({ name: z.string() }))
     .output(
-      z.object({
-        inscriptionId: z.string(),
-        owner: z.string(),
-      })
+      z.nullable(
+        z.object({
+          inscriptionId: z.string(),
+          owner: z.string(),
+        })
+      )
     )
     .query(async ({ ctx, input }) => {
       expectDb(ctx.prisma);
@@ -85,10 +87,7 @@ export const bridgeRouter = router({
       });
 
       if (inscribedName === null) {
-        throw new TRPCError({
-          message: `Unable to fetch inscription for ${input.name}`,
-          code: 'NOT_FOUND',
-        });
+        return null;
       }
 
       const inscriptionId = inscriptionBuffToId(hexToBytes(inscribedName.inscription_id));

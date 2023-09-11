@@ -23,6 +23,7 @@
     "typecheck": "turbo run typecheck --continue",
     "api:prod": "pnpm --filter @bns-x/api prod",
     "build:packages": "turbo run build --filter=@bns-x/client --filter=@bns-x/api-types --filter=@bns-x/bridge",
+    "build:trpc": "pnpm --filter @bns-x/api build:trpc && pnpm build:packages",
     "publish-local": "pnpm build:packages && pnpm publish -r",
     "test": "turbo run test"
   },
@@ -41,7 +42,7 @@
     "prettier": "^2.8.7",
     "start-server-and-test": "^1.15.2",
     "tsup": "^6.5.0",
-    "turbo": "^1.7.0",
+    "turbo": "^1.10.13",
     "typescript": "4.9.5"
   },
   "devDependencies": {

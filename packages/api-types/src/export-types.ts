@@ -258,7 +258,7 @@ export type AppProcedures = {
         {
           inscriptionId: string;
           owner: string;
-        }
+        } | null
       >;
       getNameByInscription: AnyProc<
         'query',
