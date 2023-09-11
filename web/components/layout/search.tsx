@@ -77,7 +77,7 @@ export const Search: React.FC<{ children?: React.ReactNode }> = () => {
           </kbd>
         </Button>
       </div>
-      <CommandDialog open={isOpen} onOpenChange={setOpen}>
+      <CommandDialog open={isOpen} onOpenChange={setOpen} command={{ shouldFilter: false }}>
         <CommandInput
           placeholder="Search for a name"
           value={searchInput}
