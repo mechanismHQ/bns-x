@@ -79,6 +79,7 @@
     "neverthrow": "^6.0.0",
     "next": "12.2.2",
     "nostr-tools": "^1.7.4",
+    "nprogress": "^0.2.0",
     "punycode": "^2.1.1",
     "random-gradient": "^0.0.2",
     "react": "18.2.0",
@@ -100,6 +101,7 @@
   },
   "devDependencies": {
     "@bns-x/api-types": "workspace:*",
+    "@types/nprogress": "^0.2.0",
     "autoprefixer": "^10.4.14",
     "eslint": "8.20.0",
     "eslint-config-next": "12.2.2",

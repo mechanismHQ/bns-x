@@ -1,8 +1,9 @@
 import '../styles/globals.css';
 import { ClientProvider } from '@micro-stacks/react';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { destroySession, saveSession } from '../common/fetchers';
 import '../public/fonts.css';
+import '../public/nprogress.css';
 import { JotaiClientProvider } from '@components/jotai-provider';
 import { queryClientAtom } from 'jotai-tanstack-query';
 import { queryClient } from '@store/query-client';
@@ -20,6 +21,7 @@ import { AccountProvider } from '@components/account-provider';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AuthGuard } from '@components/logged-out';
+import nProgress from 'nprogress';
 
 export interface PageProps {
   dehydratedState: string | null;
@@ -62,6 +64,12 @@ function MyApp({ Component, pageProps }: AppCustomProps) {
     );
   }
 
+  useEffect(() => {
+    router.events.on('routeChangeStart', () => nProgress.start());
+    router.events.on('routeChangeComplete', () => nProgress.done());
+    router.events.on('routeChangeError', () => nProgress.done());
+  }, [router]);
+
   const hydratedAtoms: AtomPair[] = [[queryClientAtom, queryClient]];
 
   if (pageProps?.meta) {
@@ -72,10 +80,6 @@ function MyApp({ Component, pageProps }: AppCustomProps) {
   }
 
   const showAuthGuard = !!(!pageProps?.stxAddress && Component.authRequired);
-
-  console.log('showAuthGuard', showAuthGuard);
-  console.log('Component.authRequired', Component.authRequired);
-  console.log('Component', Component);
 
   return (
     <ClientProvider
