@@ -1,5 +1,13 @@
 # @bns-x/client
 
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [b3d7adb]
+- Updated dependencies [8c9135e]
+  - @bns-x/core@0.3.0
+
 ## 0.3.3
 
 ### Patch Changes

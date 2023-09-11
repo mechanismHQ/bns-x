@@ -1,5 +1,18 @@
 # @bns-x/api-types
 
+## 0.3.4
+
+### Patch Changes
+
+- 667c359: Updates the search API to support address searching
+- 8a8ae84: Fixes an issue where the name owned by an address was wrong when the BNS name had been transferred away from the address
+- 7b47087: Adds DB schema and trpc endpoints to fetch bridged names, as well as to lookup an inscription ID for a given name.
+- 9814f88: Includes explicit types for `getNameDetails` TRPC endpoint
+- Updated dependencies [b3d7adb]
+- Updated dependencies [8c9135e]
+  - @bns-x/core@0.3.0
+  - @bns-x/client@0.3.4
+
 ## 0.3.3
 
 ### Patch Changes

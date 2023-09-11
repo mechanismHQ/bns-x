@@ -1,5 +1,19 @@
 # web
 
+## 0.3.0
+
+### Minor Changes
+
+- 9814f88: Dots now includes a "registration" page, where you can easily register a name on any namespace.
+
+### Patch Changes
+
+- Updated dependencies [b3d7adb]
+- Updated dependencies [8c9135e]
+  - @bns-x/core@0.3.0
+  - @bns-x/bridge@0.2.6
+  - @bns-x/client@0.3.4
+
 ## 0.2.6
 
 ### Patch Changes
