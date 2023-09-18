@@ -39,13 +39,17 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
     ));
   }, [availableNamespaces, emptyInput, nameIsValid, transformedName]);
 
+  if (!noNames) {
+    return <RegisterNoName />;
+  }
+
   return (
     <>
       <Box flexGrow={1} />
       <div className="w-full space-y-6">
         {registrationTxid ? (
           <RegistrationTx />
-        ) : noNames ? (
+        ) : (
           <>
             <div className="space-y-10 text-center">
               {/* <div className="max-w-lg mx-auto"> */}
@@ -86,8 +90,6 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
               </Table>
             )}
           </>
-        ) : (
-          <RegisterNoName />
         )}
       </div>
       <Box flexGrow={1} />
