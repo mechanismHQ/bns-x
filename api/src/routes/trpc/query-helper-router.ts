@@ -6,6 +6,7 @@ import {
   namesByAddressBnsxSchema,
 } from '@bns-x/core';
 import { router, procedure } from './base';
+import { toPunycode } from '@bns-x/punycode';
 
 export const queryHelperRouter = router({
   getAddressNames: procedure
@@ -83,7 +84,8 @@ The logic for determining name order in the \`names\` property is:
     .input(z.string())
     .output(z.boolean())
     .query(async ({ input, ctx }) => {
-      return ctx.fetcher.getNameExists(input);
+      const puny = toPunycode(input);
+      return ctx.fetcher.getNameExists(puny);
     }),
 });
 

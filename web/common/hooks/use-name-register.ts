@@ -15,6 +15,7 @@ import {
   PostConditionMode,
 } from 'micro-stacks/transactions';
 import { toast } from 'sonner';
+import { toPunycode } from '@bns-x/punycode';
 
 export function useNameRegister(name: string, namespace: string, price: bigint) {
   const { openContractCall, isRequestPending } = useAccountOpenContractCall();
@@ -33,9 +34,10 @@ export function useNameRegister(name: string, namespace: string, price: bigint) 
             FungibleConditionCode.Equal,
             price
           );
+          const namePuny = toPunycode(name);
           await openContractCall({
             ...nameRegistrar.nameRegister({
-              name: asciiToBytes(name),
+              name: asciiToBytes(namePuny),
               namespace: asciiToBytes(namespace),
               amount: Number(price),
               hashedFqn: hashFqn(name, namespace, hexToBytes('00')), // TODO: get `randomSalt()` function to work for both pre-order and register
