@@ -4,7 +4,7 @@ import { Box, Stack } from '@nelson-ui/react';
 import { Input } from '@components/ui/input';
 import { currentUserAddressNameStringsState, availableNamespacesState } from '@store/names';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { BnsNameRow } from '@components/bns-name-row';
+import { RegisterNameRow } from '@components/p/register/register-name-row';
 import { Toaster } from 'sonner';
 import { useDeepMemo } from '@common/hooks/use-deep-memo';
 import { nameInputAtom, registerTxIdAtom, registrationNameState } from '@store/register';
@@ -35,7 +35,7 @@ export const Register: React.FC<{ children?: React.ReactNode }> = () => {
     if (nameIsValid === false) return null;
     if (emptyInput) return null;
     return availableNamespaces.map(namespace => (
-      <BnsNameRow key={namespace} namespace={namespace} />
+      <RegisterNameRow key={namespace} namespace={namespace} />
     ));
   }, [availableNamespaces, emptyInput, nameIsValid, transformedName]);
 

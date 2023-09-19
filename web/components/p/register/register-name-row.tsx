@@ -4,7 +4,7 @@ import { Box } from '@nelson-ui/react';
 import { Check, AlertCircle } from 'lucide-react';
 import { Spinner } from '@components/spinner';
 import { useDebounce } from 'usehooks-ts';
-import { Text } from './text';
+import { Text } from '../../text';
 import { useAtomValue } from 'jotai';
 import { Button } from '@components/ui/button';
 import { ustxToStx } from '@common/utils';
@@ -17,6 +17,16 @@ import { useDeepMemo } from '@common/hooks/use-deep-memo';
 import { TableCell, TableRow } from '@components/ui/table';
 import { cva } from 'class-variance-authority';
 import { cn } from '@common/ui-utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@components/ui/dialog';
+import { useConnect } from '@common/hooks/use-connect';
 
 const nameVariants = cva('', {
   variants: {
@@ -28,7 +38,7 @@ const nameVariants = cva('', {
   },
 });
 
-export const BnsNameRow: React.FC<{
+export const RegisterNameRow: React.FC<{
   namespace: string;
 }> = ({ namespace }) => {
   const name = useAtomValue(nameInputAtom.debouncedValueAtom);
@@ -39,6 +49,7 @@ export const BnsNameRow: React.FC<{
     return computeNamePrice(name, namespace);
   }, [namespace, name]);
   const { nameRegister } = useNameRegister(name, namespace, price);
+  const { isSignedIn, openAuthRequest } = useConnect();
 
   // const tx = useAtomValue(registerTxAtom); // TODO: use this to display some status of the tx
 
@@ -63,6 +74,39 @@ export const BnsNameRow: React.FC<{
     if (isAvailable) return 'available';
     return 'unavailable';
   }, [isLoading, isAvailable]);
+
+  const action = useMemo(() => {
+    if (isSignedIn) {
+      return (
+        <Button variant="default" onClick={nameRegister}>
+          Register
+        </Button>
+      );
+    }
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="default">Sign in</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Sign in to register</DialogTitle>
+            <DialogDescription>To register a name, connect your Stacks wallet</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="submit"
+              onClick={async () => {
+                await openAuthRequest();
+              }}
+            >
+              Connect wallet
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }, [isSignedIn, nameRegister, openAuthRequest]);
 
   return (
     <TableRow>
@@ -90,9 +134,7 @@ export const BnsNameRow: React.FC<{
             {isLoading ? (
               <Spinner size={16} color="currentColor" />
             ) : isAvailable ? (
-              <Button variant="default" onClick={nameRegister}>
-                Register
-              </Button>
+              action
             ) : (
               <Box display="flex" alignItems="center" opacity={0.5}>
                 <AlertCircle size={16} />{' '}

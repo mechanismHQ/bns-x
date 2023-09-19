@@ -79,6 +79,7 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
   }, []);
   const isMainnet = useAtomValue(isMainnetState);
   const faucetPath = useAccountPath('/faucet');
+  const registerPath = useAccountPath('/register');
   return (
     <FooterContainer
       // isInline
@@ -119,15 +120,8 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
           </>
         )}
 
-        <HeaderLink
-          onClick={() => {
-            window.open('https://btc.us', '_blank');
-          }}
-          href="https://btc.us"
-          target="_blank"
-          color="$onSurface-text-subdued"
-        >
-          Mint BNS names
+        <HeaderLink onClick={() => {}} href={registerPath} color="$onSurface-text-subdued">
+          Register BNS names
         </HeaderLink>
         {!isMainnet && (
           <HeaderLink href={faucetPath} color="$onSurface-text-subdued">

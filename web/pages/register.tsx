@@ -19,6 +19,5 @@ const RegisterPage: NextPage & { authRequired?: boolean } = () => {
     </Layout>
   );
 };
-RegisterPage.authRequired = true;
 
 export default RegisterPage;
