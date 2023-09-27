@@ -17,46 +17,44 @@ const inscribedNameResult = z.object({
   txid: z.string(),
 });
 
+export const inscribedNamesResultsSchema = z.object({
+  results: z.array(inscribedNameResult),
+});
+
 export const bridgeRouter = router({
-  inscribedNames: procedure
-    .output(
-      z.object({
-        results: z.array(inscribedNameResult),
+  inscribedNames: procedure.output(inscribedNamesResultsSchema).query(async ({ ctx }) => {
+    expectDb(ctx.prisma);
+    expectDb(ctx.bnsxDb);
+
+    const inscribedNames = (
+      await ctx.bnsxDb.inscribedNames.findMany({
+        include: {
+          name: true,
+        },
+        orderBy: {
+          blockHeight: 'desc',
+        },
       })
     )
-    .query(async ({ ctx }) => {
-      expectDb(ctx.prisma);
-      expectDb(ctx.bnsxDb);
+      .map(row => {
+        if (row.name === null) return null;
 
-      const inscribedNames = (
-        await ctx.bnsxDb.inscribedNames.findMany({
-          include: {
-            name: true,
-          },
-          orderBy: {
-            blockHeight: 'desc',
-          },
-        })
-      )
-        .map(row => {
-          if (row.name === null) return null;
+        const name = convertDbName(row.name);
 
-          const name = convertDbName(row.name);
+        return {
+          inscriptionId: inscriptionBuffToId(hexToBytes(row.inscription_id)),
+          id: Number(row.id),
+          name: name.combined,
+          blockHeight: row.blockHeight,
+          txid: bytesToHex(row.txid),
+        };
+      })
+      .filter((n): n is NonNullable<typeof n> => n !== null);
 
-          return {
-            inscriptionId: inscriptionBuffToId(hexToBytes(row.inscription_id)),
-            id: Number(row.id),
-            name: name.combined,
-            blockHeight: row.blockHeight,
-            txid: bytesToHex(row.txid),
-          };
-        })
-        .filter((n): n is NonNullable<typeof n> => n !== null);
-
-      return {
-        results: inscribedNames,
-      };
-    }),
+    return {
+      results: inscribedNames,
+    };
+  }),
 
   getInscriptionByName: procedure
     .input(z.object({ name: z.string() }))

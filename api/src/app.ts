@@ -4,6 +4,7 @@ import { prismaPlugin } from './prisma-plugin';
 import { aliasRoutes } from './routes/alias-routes';
 import { metadataRoutes } from './routes/metadata-routes';
 import { appRouter } from './routes/trpc';
+import { bridgeRoutes } from './routes/bridge-routes';
 import cors from '@fastify/cors';
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { createContext } from './routes/trpc/context';
@@ -120,6 +121,10 @@ export async function makeApp({
 
   await app.register(aliasRoutes, {
     prefix: '/v1',
+  });
+
+  await app.register(bridgeRoutes, {
+    prefix: '/l1',
   });
 
   app.get('/', (req, res) => {

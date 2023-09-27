@@ -22,6 +22,7 @@ export const OpenApiOptions: SwaggerOptions = {
     tags: [
       { name: 'BNS', description: 'BNS Endpoints' },
       { name: 'Backwards Compatible', description: 'Stacks API compatible Endpoints' },
+      { name: 'L1', description: 'Endpoints for querying the BNS-L1 bridge' },
     ],
   },
   hideUntagged: true,
