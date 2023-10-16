@@ -3,7 +3,7 @@ import { getContractsClient, getNetwork } from '~/constants';
 import { getDeployerAddress, getDeployerKey, getUndeployedWrappers } from './index';
 import { AnchorMode, makeContractDeploy, broadcastTransaction } from 'micro-stacks/transactions';
 import { getContractParts } from '~/utils';
-import { fetchAccountNonces } from 'micro-stacks/api';
+import { fetchAccountNonces, fetchAccountBalances } from 'micro-stacks/api';
 import { logger as _logger } from '~/logger';
 
 export const logger = _logger.child({
@@ -24,6 +24,22 @@ export async function getDeployerNonce() {
   return nonces.possible_next_nonce;
 }
 
+export async function getDeployerBalance() {
+  const address = getDeployerAddress();
+  // const client = getContractsClient();
+  const url = `${getNetwork().getCoreApiUrl()}/extended/v1/address/${address}/balances`;
+  const res = await fetch(url);
+  const data = (await res.json()) as {
+    stx: {
+      balance: string;
+    };
+  };
+  const balance = BigInt(data.stx.balance);
+  return balance;
+}
+
+const DEPLOY_FEE = 100000n;
+
 export async function deployWrapper({ wrapperId, nonce }: { wrapperId: string; nonce: number }) {
   const code = getNameWrapperCode();
   const [_, contractName] = getContractParts(wrapperId);
@@ -34,7 +50,7 @@ export async function deployWrapper({ wrapperId, nonce }: { wrapperId: string; n
     senderKey: getDeployerKey(),
     nonce,
     anchorMode: AnchorMode.Any,
-    fee: 300000,
+    fee: DEPLOY_FEE,
     network,
   });
   const result = await broadcastTransaction(tx, network);
@@ -75,15 +91,30 @@ export async function deployWrapper({ wrapperId, nonce }: { wrapperId: string; n
 
 export async function deployWrappers(db: StacksDb) {
   const undeployedWrappers = await getUndeployedWrappers(db);
-  let nonce = await getDeployerNonce();
+  const state = await Promise.all([getDeployerNonce(), getDeployerBalance()]);
+  let [nonce] = state;
+  const balance = state[1];
   logger.debug(
     {
       wrappers: undeployedWrappers.map(w => w.wrapper_id),
       total: undeployedWrappers.length,
+      balance: Number(balance),
       nonce,
     },
     'Deploying wrappers'
   );
+  if (balance < DEPLOY_FEE * BigInt(undeployedWrappers.length)) {
+    logger.error(
+      {
+        total: undeployedWrappers.length,
+        balance: Number(balance),
+        nonce,
+        topic: 'insufficient-deployer-balance',
+      },
+      'Insufficient balance to deploy wrappers'
+    );
+    return;
+  }
   for (const wrapper of undeployedWrappers) {
     const ok = await deployWrapper({ wrapperId: wrapper.wrapper_id, nonce });
     if (ok) {
