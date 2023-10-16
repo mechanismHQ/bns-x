@@ -58,7 +58,7 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
       const file = new Blob([lines], { type: 'text/html' });
       const element = document.createElement('a');
       element.href = URL.createObjectURL(file);
-      element.download = `${name}-inscription.html`;
+      element.download = `${name.replaceAll('.', '-')}-inscription.html`;
       // element.style.position = 'abolute';
       document.body.appendChild(element);
       element.click();

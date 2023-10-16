@@ -361,6 +361,9 @@ importers:
       '@bns-x/core':
         specifier: workspace:*
         version: link:../core
+      '@bns-x/punycode':
+        specifier: workspace:*
+        version: link:../punycode
       '@noble/hashes':
         specifier: 1.3.0
         version: 1.3.0
@@ -4245,6 +4248,7 @@ packages:
   /@opentelemetry/api@1.5.0:
     resolution: {integrity: sha512-636km3y3pVyJldKGp9qM+lPvxuOvhThUED9cHNPsERkp+APbdtCtj0sALW+mZsbQqnqQkNRHqoGw/Uc82UP6fQ==}
     engines: {node: '>=8.0.0'}
+    deprecated: Version 1.5.0 of @opentelemetry/api mistakenly contained a breaking change for some users. Please update to 1.6.0 or later.
     dev: true
 
   /@opentelemetry/core@1.15.2(@opentelemetry/api@1.5.0):

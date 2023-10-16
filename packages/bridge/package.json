@@ -19,11 +19,12 @@
     "typecheck": "tsc --noEmit",
     "build": "pnpm build:ord-card && pnpm build:ord-template && tsup",
     "test": "vitest",
-    "build:ord-card": "tsup bridge-card/card.js -d tmp --minify --sourcemap false",
+    "build:ord-card": "tsup --config tsup-card.config.ts",
     "build:ord-template": "tsx scripts/ord-template.ts"
   },
   "dependencies": {
     "@bns-x/core": "workspace:*",
+    "@bns-x/punycode": "workspace:*",
     "@noble/hashes": "1.3.0",
     "micro-packed": "^0.3.2",
     "micro-stacks": "^1.2.1",

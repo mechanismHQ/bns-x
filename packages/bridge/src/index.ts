@@ -4,14 +4,22 @@ import { bytesToHex } from 'micro-stacks/common';
 export * from './btc-networks';
 export * from './burn-address';
 export { ordCardTemplate } from './card';
+import { fullDisplayName } from '@bns-x/punycode';
 
 export const inscriptionJsSrc =
-  '/content/488975d21f3d113ec5158b871b54a69f5a26c26f26e842d6f050099135827e97i0';
+  '/content/1c0e770e0b28207a4e1b7f577b68940b36837f9046b95eef2694ab671a1dfdeei0';
 
-export const inscriptionContentType = 'text/plain';
-export const inscriptionContentForName = (name: string) => {
+export const inscriptionContentType = 'text/html;charset=utf-8';
+
+/**
+ *
+ * @param namePuny the punycode fully-qualified name
+ * @returns valid HTML to be used in an inscription
+ */
+export const inscriptionContentForName = (namePuny: string, customCardSource?: string) => {
   let template = ordCardTemplate;
-  template = template.replace(/{{CARD_SRC}}/g, inscriptionJsSrc);
+  const name = fullDisplayName(namePuny);
+  template = template.replace(/{{CARD_SRC}}/g, customCardSource ?? inscriptionJsSrc);
   template = template.replace(/{{CARD_NAME}}/g, name);
   return template;
 };
