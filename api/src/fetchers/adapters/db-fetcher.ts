@@ -1,5 +1,5 @@
 import { fetchBnsxDisplayName, fetchBnsxName, fetchBnsxNamesByAddressRows } from '@db/names';
-import type { BnsDb, StacksDb } from '@db';
+import type { BnsDb, StacksDb, BnsDbTypes } from '@db';
 import { fetchCoreName, getNameDetailsApi, getNameDetailsFqnApi } from '@fetchers/stacks-api';
 import type {
   NameInfoResponse,
@@ -17,6 +17,8 @@ import { fetchCoreNameByAddress } from '@db/bns-core';
 import { DbQueryTag, observeQuery } from '~/metrics';
 import { c32addressDecode } from 'micro-stacks/crypto';
 import { searchNamesFuzzy } from '@fetchers/search';
+import { inscriptionBuffToId } from '@fetchers/inscriptions';
+import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 
 export class DbFetcher implements BaseFetcher {
   bnsDb: BnsDb;
@@ -245,5 +247,39 @@ export class DbFetcher implements BaseFetcher {
       const results = await searchNamesFuzzy({ query, db: this.stacksDb });
       return results;
     }
+  }
+
+  async fetchInscribedNames(cursor?: number) {
+    const rows = await this.bnsDb.inscribedNames.findMany({
+      include: {
+        name: true,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      cursor:
+        typeof cursor === 'undefined'
+          ? undefined
+          : {
+              id: cursor,
+            },
+      take: -100,
+      skip: typeof cursor === 'undefined' ? undefined : 1,
+    });
+    return rows
+      .map(row => {
+        if (row.name === null) return null;
+
+        const name = convertDbName(row.name);
+
+        return {
+          inscriptionId: inscriptionBuffToId(hexToBytes(row.inscription_id)),
+          id: Number(row.id),
+          name: name.combined,
+          blockHeight: row.blockHeight,
+          txid: bytesToHex(row.txid),
+        };
+      })
+      .filter((n): n is NonNullable<typeof n> => n !== null);
   }
 }

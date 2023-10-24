@@ -17,6 +17,8 @@ import {
 import { ChevronDown } from 'lucide-react';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { useToast } from '@common/hooks/use-toast';
+import { BoxLink } from '@components/link';
+import { useAccountPath } from '@common/hooks/use-account-path';
 
 export const BridgedNameRow: React.FC<{
   children?: React.ReactNode;
@@ -37,6 +39,10 @@ export const BridgedNameRow: React.FC<{
     });
   }, [name.inscriptionId, copy, toast]);
 
+  const unwrapPath = useAccountPath('/bridge/[name]', {
+    name: name.name,
+  });
+
   return (
     <TableRow className="items-center">
       <TableCell className="text-heading05">{name.name}</TableCell>
@@ -50,18 +56,14 @@ export const BridgedNameRow: React.FC<{
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <DropdownMenuItem disabled>Name details</DropdownMenuItem>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <Text variant="Body01" className="text-text-subdued">
-                      Coming soon
-                    </Text>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <DropdownMenuItem>
+                <BoxLink href={{ query: { name: name.name }, pathname: '/names/[name]' }}>
+                  Name Details
+                </BoxLink>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <BoxLink href={unwrapPath}>Bridge to L2</BoxLink>
+              </DropdownMenuItem>
               <DropdownMenuExternalLink href={txUrl}>Stacks Transaction</DropdownMenuExternalLink>
               <DropdownMenuExternalLink href={inscriptionUrl}>Inscription</DropdownMenuExternalLink>
               <DropdownMenuItem onClick={copyToClipboard}>Copy to clipboard</DropdownMenuItem>

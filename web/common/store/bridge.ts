@@ -80,7 +80,7 @@ export type InscribedNamesResult = Awaited<
 export const inscribedNamesAtom = atomsWithQuery(_get => ({
   queryKey: ['inscribedNames'],
   queryFn: async () => {
-    const { results } = await trpc.bridgeRouter.inscribedNames.query();
+    const { results } = await trpc.bridgeRouter.inscribedNames.query({});
     return results;
   },
 }))[0];

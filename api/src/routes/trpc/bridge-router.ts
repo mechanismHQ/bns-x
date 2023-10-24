@@ -8,6 +8,7 @@ import { nameObjectToHex } from '~/utils';
 import { TRPCError } from '@trpc/server';
 import { fetchInscriptionOwner, inscriptionBuffToId } from '@fetchers/inscriptions';
 import { hexToBytes, bytesToHex } from 'micro-stacks/common';
+import { DbFetcher } from '@fetchers/adapters/db-fetcher';
 
 const inscribedNameResult = z.object({
   inscriptionId: z.string(),
@@ -27,43 +28,40 @@ export const nameByInscriptionResult = z.object({
 });
 
 export const inscribedNamesResultsSchema = z.object({
+  total: z.number(),
   results: z.array(inscribedNameResult),
 });
 
+export const inscribedNamesOptionsSchema = z.object({
+  cursor: z
+    .optional(z.number())
+    .describe('Optionally, an ID to fetch results after. Use this to paginate results'),
+});
+
 export const bridgeRouter = router({
-  inscribedNames: procedure.output(inscribedNamesResultsSchema).query(async ({ ctx }) => {
-    expectDb(ctx.prisma);
-    expectDb(ctx.bnsxDb);
+  inscribedNames: procedure
+    .input(inscribedNamesOptionsSchema)
+    .output(inscribedNamesResultsSchema)
+    .query(async ({ ctx, input }) => {
+      expectDb(ctx.prisma);
+      expectDb(ctx.bnsxDb);
+      const { fetcher } = ctx;
+      if (!DbFetcher.isDb(fetcher)) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Fetcher is not a DbFetcher',
+        });
+      }
+      const [inscribedNames, total] = await Promise.all([
+        fetcher.fetchInscribedNames(input?.cursor),
+        ctx.bnsxDb.inscribedNames.count(),
+      ]);
 
-    const inscribedNames = (
-      await ctx.bnsxDb.inscribedNames.findMany({
-        include: {
-          name: true,
-        },
-        orderBy: {
-          blockHeight: 'desc',
-        },
-      })
-    )
-      .map(row => {
-        if (row.name === null) return null;
-
-        const name = convertDbName(row.name);
-
-        return {
-          inscriptionId: inscriptionBuffToId(hexToBytes(row.inscription_id)),
-          id: Number(row.id),
-          name: name.combined,
-          blockHeight: row.blockHeight,
-          txid: bytesToHex(row.txid),
-        };
-      })
-      .filter((n): n is NonNullable<typeof n> => n !== null);
-
-    return {
-      results: inscribedNames,
-    };
-  }),
+      return {
+        results: inscribedNames,
+        total,
+      };
+    }),
 
   getInscriptionByName: procedure
     .input(z.object({ name: z.string() }))

@@ -74,6 +74,10 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
   const isOwnName = stxAddress === nameDetails?.address;
   const managePath = useAccountPath('/manage/[name]', { name: namePuny });
 
+  const bridgeToL2Path = useAccountPath('/bridge/[name]', {
+    name: namePuny,
+  });
+
   const registrationPrice = useMemo(() => {
     const { name, namespace } = parseFqn(namePuny);
     const ustx = computeNamePrice(name, namespace);
@@ -115,6 +119,13 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
             <BoxLink href={managePath}>
               <Button size="lg" className="w-full">
                 Manage
+              </Button>
+            </BoxLink>
+          )}
+          {inscription && (
+            <BoxLink href={bridgeToL2Path}>
+              <Button size="lg" className="w-full" variant="secondary">
+                Bridge to L2
               </Button>
             </BoxLink>
           )}

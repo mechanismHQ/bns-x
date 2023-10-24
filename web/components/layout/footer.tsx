@@ -7,7 +7,7 @@ import { Link } from '@components/link';
 import { styled } from '@common/theme';
 import { useAtomValue } from 'jotai';
 import { isMainnetState } from '@store/index';
-import { ONLY_INSCRIPTIONS } from '@common/constants';
+import { L1_ENABLED, ONLY_INSCRIPTIONS } from '@common/constants';
 import { btnShiftActiveProps } from '@components/button';
 import { useAccountPath } from '@common/hooks/use-account-path';
 
@@ -118,6 +118,11 @@ export const Footer: React.FC<{ children?: React.ReactNode }> = () => {
               Docs
             </HeaderLink>
           </>
+        )}
+        {L1_ENABLED && (
+          <HeaderLink href="/l1-names" color="$onSurface-text-subdued">
+            BNS names on L1
+          </HeaderLink>
         )}
 
         <HeaderLink onClick={() => {}} href={registerPath} color="$onSurface-text-subdued">

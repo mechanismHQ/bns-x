@@ -2,6 +2,7 @@ import { createContext } from '@routes/trpc/context';
 import type { FastifyPlugin } from './api-types';
 import {
   bridgeRouter,
+  inscribedNamesOptionsSchema,
   inscribedNamesResultsSchema,
   inscriptionByNameResult,
   nameByInscriptionResult,
@@ -17,14 +18,22 @@ export const bridgeRoutes: FastifyPlugin = (fastify, opts, done) => {
         description: 'Fetch all BNS names inscribed and bridge to L1',
         summary: 'Fetch all inscribed names',
         tags: ['L1'],
+        querystring: z.object({
+          cursor: z
+            .optional(z.string())
+            .describe(
+              'An optional ID to use for pagination. If included, only results after this ID will be returned'
+            ),
+        }),
         response: {
           200: inscribedNamesResultsSchema,
         },
       },
     },
     async (req, res) => {
+      const cursor = req.query?.cursor ? parseInt(req.query.cursor, 10) : undefined;
       const caller = bridgeRouter.createCaller(createContext({ req, res }));
-      const inscribedNames = await caller.inscribedNames();
+      const inscribedNames = await caller.inscribedNames({ cursor });
       return res.status(200).send(inscribedNames);
     }
   );

@@ -19,6 +19,10 @@ scripts:
   clarigen:
     cmd:
       - pnpm --filter contracts exec clarigen
+  
+  ord:
+    cmd:
+      - pnpm --filter contracts exec vr ord
 
   lt:
     pll:

@@ -8,7 +8,6 @@ import {
   bridgeWrapLoadingAtom,
   bridgeWrapTxidAtom,
   fetchSignatureForInscriptionId,
-  inscribedNamesAtom,
   submittedBridgeInscriptionIdAtom,
 } from '@store/bridge';
 import { currentAccountAtom, networkAtom } from '@store/micro-stacks';

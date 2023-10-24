@@ -86,6 +86,7 @@ scripts:
     cmd:
       - vr ord wallet inscribe --fee-rate 1 ./tmp/ordinal.html
       - bitcoin-cli -rpcpassword=devnet -rpcuser=devnet -rpcport=18443 unloadwallet ord
+      - echo "Mine a new block to confirm"
 
   ord-burn:
     cmd:

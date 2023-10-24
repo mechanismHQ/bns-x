@@ -239,8 +239,12 @@ export type AppProcedures = {
     {
       inscribedNames: AnyProc<
         'query',
-        unknown,
         {
+          /** Optionally, an ID to fetch results after. Use this to paginate results */
+          cursor?: number | undefined;
+        },
+        {
+          total: number;
           results: {
             inscriptionId: string;
             id: number;
