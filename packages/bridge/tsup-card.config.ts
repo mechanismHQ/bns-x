@@ -10,6 +10,7 @@ export const defaultOptions: Options = {
   splitting: false,
   sourcemap: false,
   format: ['cjs'],
+  onSuccess: `cp tmp/card.js ../../web/public/bridge-card.js`,
 };
 
 export default defaultOptions;

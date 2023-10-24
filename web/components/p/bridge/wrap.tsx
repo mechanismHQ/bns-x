@@ -23,6 +23,7 @@ import { ReloadIcon } from '@radix-ui/react-icons';
 import { useToast } from '@common/hooks/use-toast';
 import { Copy, Download, AlertCircle } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@components/ui/alert';
+import { BridgeCardPreview } from '@components/p/bridge/preview';
 
 export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
   const router = useRouter();
@@ -77,35 +78,45 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
               Bridge <span className="font-mono">{name}</span> to Bitcoin
             </Text>
             <Text variant="Heading035">Step 1: Inscribe your name</Text>
-            <Alert variant="warning">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Heads up!</AlertTitle>
-              <AlertDescription>
-                Inscriptions must be uploaded as HTML file types in order to be valid. The content
-                type must be{' '}
-                <span
-                  className="font-mono py-px px-1 bg-surface-surface-selected rounded-sm"
-                  // tabIndex={3}
-                >
-                  text/html;charset=utf-8
-                </span>{' '}
-                to work properly.
-              </AlertDescription>
-            </Alert>
-            <Text variant="Body01">Create a new inscription with the following content:</Text>
-            <CodeBlock tabIndex={0} className="p-3 select-all focus:animate-select">
-              {inscriptionContent}
-            </CodeBlock>
-            <div className="flex gap-5">
-              <Button variant="secondary" onClick={copyToClipboard}>
-                <Copy className="w-3 h-3 mr-2" />
-                Copy to Clipboard
-              </Button>
-              <Button variant="secondary" onClick={download}>
-                <Download className="w-3 h-3 mr-2" />
-                Download file
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-5">
+              <div className="flex flex-col gap-5 w-full sm:w-3/4">
+                <Alert variant="warning">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Heads up!</AlertTitle>
+                  <AlertDescription>
+                    Inscriptions must be uploaded as HTML file types in order to be valid. The
+                    content type must be{' '}
+                    <span className="font-mono py-px px-1 bg-surface-surface-selected rounded-sm">
+                      text/html;charset=utf-8
+                    </span>{' '}
+                    to work properly.
+                  </AlertDescription>
+                </Alert>
+                <Text variant="Body01">Create a new inscription with the following content:</Text>
+                <CodeBlock tabIndex={0} className="p-3 select-all focus:animate-select">
+                  {inscriptionContent}
+                </CodeBlock>
+                <div className="flex gap-5">
+                  <Button variant="secondary" onClick={copyToClipboard}>
+                    <Copy className="w-3 h-3 mr-2" />
+                    <span className="hidden sm:inline-block">Copy to Clipboard</span>
+                    <span className="inline-block sm:hidden">Copy</span>
+                  </Button>
+                  <Button variant="secondary" onClick={download}>
+                    <Download className="w-3 h-3 mr-2" />
+                    <span className="hidden sm:inline-block">Download file</span>
+                    <span className="inline-block sm:hidden">Download</span>
+                  </Button>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 w-full sm:w-1/4">
+                <div className="w-full aspect-square rounded-sm overflow-hidden">
+                  <BridgeCardPreview name={name} />
+                </div>
+                <Text variant="Caption02">Preview of the inscription</Text>
+              </div>
             </div>
+
             <Text variant="Heading035">Step 2: Submit your inscription</Text>
             <Text variant="Body01">
               Once your inscription is created, submit it to the bridge by entering the inscription

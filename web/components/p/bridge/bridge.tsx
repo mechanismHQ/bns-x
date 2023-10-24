@@ -30,13 +30,8 @@ export const BridgeName: React.FC<{ children?: React.ReactNode }> = () => {
   const name = router.query.name as string;
 
   const existingInscription = useAtomValue(inscriptionIdForNameAtom(name));
-  const inscribedNames = useAtomValue(inscribedNamesAtom);
   const wrapTxid = useAtomValue(bridgeWrapTxidAtom);
   const unwrapTxid = useAtomValue(bridgeUnwrapTxidAtom);
-
-  useDeepCompareEffect(() => {
-    console.log(inscribedNames);
-  }, [inscribedNames]);
 
   if (!L1_ENABLED) return <BridgeDisabled />;
 
@@ -47,11 +42,6 @@ export const BridgeName: React.FC<{ children?: React.ReactNode }> = () => {
   }
 
   return <BridgeUnwrap />;
-  // return (
-  //   <>
-  //     <Text variant="Body01">{existingInscription}</Text>
-  //   </>
-  // );
 };
 
 export const BridgeDisabled: React.FC<{ children?: React.ReactNode }> = () => {
