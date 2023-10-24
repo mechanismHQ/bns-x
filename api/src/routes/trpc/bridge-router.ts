@@ -17,6 +17,15 @@ const inscribedNameResult = z.object({
   txid: z.string(),
 });
 
+export const inscriptionByNameResult = z.object({
+  inscriptionId: z.string(),
+  owner: z.string(),
+});
+
+export const nameByInscriptionResult = z.object({
+  name: z.nullable(z.string()),
+});
+
 export const inscribedNamesResultsSchema = z.object({
   results: z.array(inscribedNameResult),
 });
@@ -58,14 +67,7 @@ export const bridgeRouter = router({
 
   getInscriptionByName: procedure
     .input(z.object({ name: z.string() }))
-    .output(
-      z.nullable(
-        z.object({
-          inscriptionId: z.string(),
-          owner: z.string(),
-        })
-      )
-    )
+    .output(z.nullable(inscriptionByNameResult))
     .query(async ({ ctx, input }) => {
       expectDb(ctx.prisma);
       expectDb(ctx.bnsxDb);
@@ -100,11 +102,7 @@ export const bridgeRouter = router({
 
   getNameByInscription: procedure
     .input(z.object({ inscriptionId: z.string() }))
-    .output(
-      z.object({
-        name: z.nullable(z.string()),
-      })
-    )
+    .output(nameByInscriptionResult)
     .query(async ({ ctx, input }) => {
       expectDb(ctx.bnsxDb);
 
