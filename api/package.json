@@ -61,6 +61,7 @@
     "graphql-scalars": "1.20.1",
     "graphql-yoga": "3.1.1",
     "lodash-es": "^4.17.21",
+    "lru-cache": "10.0.1",
     "micro-stacks": "1.1.4",
     "node-html-parser": "^6.1.4",
     "p-queue": "6.6.2",

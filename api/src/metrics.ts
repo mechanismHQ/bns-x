@@ -4,6 +4,9 @@ import type { FastifyPluginAsync } from './routes/api-types';
 import { getTotalNames } from './fetchers/stacks-db';
 import fp from 'fastify-plugin';
 import { logger } from '~/logger';
+import { getUndeployedWrappers, isDeployerEnabled } from '~/deployer';
+import { DEPLOY_FEE, getDeployerBalance } from '~/deployer/deploy';
+import { LRUCache } from 'lru-cache';
 
 export enum DbQueryTag {
   NAME_BY_ADDRESS = 'name_by_address',
@@ -20,6 +23,12 @@ export const dbQuerySummary = new Summary({
   help: 'Summary metric for DB query time',
   labelNames: ['query'] as const,
 });
+
+enum CacheTags {
+  total_names = 'total_names',
+  deployer_balance = 'deployer_balance',
+  undeployed_wrappers = 'undeployed_wrappers',
+}
 
 export function observeQuery(query: DbQueryTag) {
   const timer = dbQuerySummary.startTimer();
@@ -42,13 +51,62 @@ export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, _option
 
   const db = server.stacksPrisma;
   if (typeof db !== 'undefined') {
+    const cache = new LRUCache({
+      max: 1000,
+      ttl: 1000 * 60 * 2,
+      async fetchMethod(key: string) {
+        if (key === CacheTags.total_names) {
+          return await getTotalNames(db);
+        }
+        if (key === CacheTags.deployer_balance) {
+          return Number(await getDeployerBalance());
+        }
+        if (key === CacheTags.undeployed_wrappers) {
+          return (await getUndeployedWrappers(db)).length;
+        }
+        return 0;
+      },
+    });
     new Gauge({
       help: 'Total number of BNSx names',
       name: 'bnsx_names_total',
       async collect() {
-        this.set(await getTotalNames(db));
+        this.set((await cache.fetch(CacheTags.total_names)) ?? -1);
       },
     });
+
+    if (isDeployerEnabled()) {
+      new Gauge({
+        help: 'Wrapper deployer balance',
+        name: 'wrapper_deployer_balance',
+        async collect() {
+          const balance = await cache.fetch(CacheTags.deployer_balance);
+          this.set(balance ?? -1);
+        },
+      });
+
+      new Gauge({
+        help: 'Total number of undeployed wrappers',
+        name: 'undeployed_wrappers_total',
+        async collect() {
+          const count = await cache.fetch(CacheTags.undeployed_wrappers);
+          this.set(count ?? -1);
+        },
+      });
+
+      new Gauge({
+        help: 'Available STX for deployments',
+        name: 'available_deployer_contract',
+        async collect() {
+          const balance = await cache.fetch(CacheTags.deployer_balance);
+          if (typeof balance === 'undefined') {
+            return;
+          }
+          const available = balance / Number(DEPLOY_FEE);
+          this.set(available);
+        },
+      });
+    }
   }
 
   const reqSummaryRolling = new Summary({
