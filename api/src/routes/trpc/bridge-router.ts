@@ -6,7 +6,11 @@ import { convertDbName } from '~/contracts/utils';
 import { parseFqn } from '@bns-x/core';
 import { nameObjectToHex } from '~/utils';
 import { TRPCError } from '@trpc/server';
-import { fetchInscriptionOwner, inscriptionBuffToId } from '@fetchers/inscriptions';
+import {
+  fetchInscriptionOwner,
+  inscriptionBuffToId,
+  inscriptionIdToBytes,
+} from '@fetchers/inscriptions';
 import { hexToBytes, bytesToHex } from 'micro-stacks/common';
 import { DbFetcher } from '@fetchers/adapters/db-fetcher';
 
@@ -106,7 +110,7 @@ export const bridgeRouter = router({
 
       const inscribedName = await ctx.bnsxDb.inscribedNames.findFirst({
         where: {
-          inscription_id: input.inscriptionId,
+          inscription_id: bytesToHex(inscriptionIdToBytes(input.inscriptionId)),
         },
         select: {
           name: true,
