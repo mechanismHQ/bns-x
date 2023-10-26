@@ -2422,6 +2422,253 @@ export const contracts = {
     clarity_version: 'Clarity1',
     contractName: 'bnsx-registry',
   },
+  communityHandlesV2: {
+    functions: {
+      bulkNameRegisterIter: {
+        name: 'bulk-name-register-iter',
+        access: 'private',
+        args: [
+          {
+            name: 'entry',
+            type: {
+              tuple: [
+                { name: 'name', type: { buffer: { length: 48 } } },
+                { name: 'owner', type: 'principal' },
+                { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
+              ],
+            },
+          },
+          { name: 'prev', type: { response: { ok: 'bool', error: 'uint128' } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          entry: TypedAbiArg<
+            {
+              name: Uint8Array;
+              owner: string;
+              zonefileHash: Uint8Array;
+            },
+            'entry'
+          >,
+          prev: TypedAbiArg<Response<boolean, number | bigint>, 'prev'>
+        ],
+        Response<boolean, bigint>
+      >,
+      isContractCallerNamespaceController: {
+        name: 'is-contract-caller-namespace-controller',
+        access: 'private',
+        args: [{ name: 'namespace', type: { buffer: { length: 20 } } }],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [namespace: TypedAbiArg<Uint8Array, 'namespace'>],
+        Response<boolean, bigint>
+      >,
+      toBoolResponse: {
+        name: 'to-bool-response',
+        access: 'private',
+        args: [{ name: 'value', type: { response: { ok: 'bool', error: 'int128' } } }],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [value: TypedAbiArg<Response<boolean, number | bigint>, 'value'>],
+        Response<boolean, bigint>
+      >,
+      toUintResponse: {
+        name: 'to-uint-response',
+        access: 'private',
+        args: [{ name: 'value', type: { response: { ok: 'uint128', error: 'int128' } } }],
+        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [value: TypedAbiArg<Response<number | bigint, number | bigint>, 'value'>],
+        Response<bigint, bigint>
+      >,
+      bulkNameRegister: {
+        name: 'bulk-name-register',
+        access: 'public',
+        args: [
+          { name: 'namespace', type: { buffer: { length: 20 } } },
+          {
+            name: 'names',
+            type: {
+              list: {
+                type: {
+                  tuple: [
+                    { name: 'name', type: { buffer: { length: 48 } } },
+                    { name: 'owner', type: 'principal' },
+                    { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
+                  ],
+                },
+                length: 1000,
+              },
+            },
+          },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          names: TypedAbiArg<
+            {
+              name: Uint8Array;
+              owner: string;
+              zonefileHash: Uint8Array;
+            }[],
+            'names'
+          >
+        ],
+        Response<boolean, bigint>
+      >,
+      nameRegister: {
+        name: 'name-register',
+        access: 'public',
+        args: [
+          { name: 'namespace', type: { buffer: { length: 20 } } },
+          { name: 'name', type: { buffer: { length: 48 } } },
+          { name: 'owner', type: 'principal' },
+          { name: 'zonefile-hash', type: { buffer: { length: 20 } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          owner: TypedAbiArg<string, 'owner'>,
+          zonefileHash: TypedAbiArg<Uint8Array, 'zonefileHash'>
+        ],
+        Response<boolean, bigint>
+      >,
+      nameRenewal: {
+        name: 'name-renewal',
+        access: 'public',
+        args: [
+          { name: 'namespace', type: { buffer: { length: 20 } } },
+          { name: 'name', type: { buffer: { length: 48 } } },
+          { name: 'new-owner', type: { optional: 'principal' } },
+          { name: 'zonefile-hash', type: { optional: { buffer: { length: 20 } } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          name: TypedAbiArg<Uint8Array, 'name'>,
+          newOwner: TypedAbiArg<string | null, 'newOwner'>,
+          zonefileHash: TypedAbiArg<Uint8Array | null, 'zonefileHash'>
+        ],
+        Response<boolean, bigint>
+      >,
+      namespacePreorder: {
+        name: 'namespace-preorder',
+        access: 'public',
+        args: [
+          { name: 'hashed-salted-namespace', type: { buffer: { length: 20 } } },
+          { name: 'stx-to-burn', type: 'uint128' },
+        ],
+        outputs: { type: { response: { ok: 'uint128', error: 'int128' } } },
+      } as TypedAbiFunction<
+        [
+          hashedSaltedNamespace: TypedAbiArg<Uint8Array, 'hashedSaltedNamespace'>,
+          stxToBurn: TypedAbiArg<number | bigint, 'stxToBurn'>
+        ],
+        Response<bigint, bigint>
+      >,
+      namespaceReveal: {
+        name: 'namespace-reveal',
+        access: 'public',
+        args: [
+          { name: 'namespace', type: { buffer: { length: 20 } } },
+          { name: 'salt', type: { buffer: { length: 20 } } },
+          { name: 'lifetime', type: 'uint128' },
+          { name: 'controller', type: { optional: 'principal' } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'int128' } } },
+      } as TypedAbiFunction<
+        [
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          salt: TypedAbiArg<Uint8Array, 'salt'>,
+          lifetime: TypedAbiArg<number | bigint, 'lifetime'>,
+          controller: TypedAbiArg<string | null, 'controller'>
+        ],
+        Response<boolean, bigint>
+      >,
+      setNamespaceController: {
+        name: 'set-namespace-controller',
+        access: 'public',
+        args: [
+          { name: 'namespace', type: { buffer: { length: 20 } } },
+          { name: 'new-controller', type: 'principal' },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          namespace: TypedAbiArg<Uint8Array, 'namespace'>,
+          newController: TypedAbiArg<string, 'newController'>
+        ],
+        Response<boolean, bigint>
+      >,
+      getNamespaceController: {
+        name: 'get-namespace-controller',
+        access: 'read_only',
+        args: [{ name: 'namespace', type: { buffer: { length: 20 } } }],
+        outputs: { type: { optional: 'principal' } },
+      } as TypedAbiFunction<[namespace: TypedAbiArg<Uint8Array, 'namespace'>], string | null>,
+    },
+    maps: {
+      namespaceController: {
+        name: 'namespace-controller',
+        key: { buffer: { length: 20 } },
+        value: 'principal',
+      } as TypedAbiMap<Uint8Array, string>,
+    },
+    variables: {
+      errNotAuthorized: {
+        name: 'err-not-authorized',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      internalPriceHigh: {
+        name: 'internal-price-high',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      nameSalt: {
+        name: 'name-salt',
+        type: {
+          buffer: {
+            length: 1,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Uint8Array>,
+      ctxBulkRegistrationNamespace: {
+        name: 'ctx-bulk-registration-namespace',
+        type: {
+          buffer: {
+            length: 20,
+          },
+        },
+        access: 'variable',
+      } as TypedAbiVariable<Uint8Array>,
+    },
+    constants: {
+      errNotAuthorized: {
+        isOk: false,
+        value: 403n,
+      },
+      internalPriceHigh: 999999999999999999999999999999n,
+      nameSalt: Uint8Array.from([0]),
+      ctxBulkRegistrationNamespace: Uint8Array.from([0]),
+    },
+    non_fungible_tokens: [],
+    fungible_tokens: [{ name: 'danger-zone-token' }],
+    epoch: 'Epoch21',
+    clarity_version: 'Clarity2',
+    contractName: 'community-handles-v2',
+  },
   extensionTrait: {
     functions: {},
     maps: {},
@@ -3512,7 +3759,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 3n,
+      wrapperIdVar: 2n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
@@ -3778,7 +4025,7 @@ export const contracts = {
         isOk: false,
         value: 10002n,
       },
-      wrapperIdVar: 2n,
+      wrapperIdVar: 3n,
     },
     non_fungible_tokens: [],
     fungible_tokens: [],
@@ -5396,6 +5643,12 @@ export const deployments = {
     testnet: 'STQSAQN4XGY5SE0GGXF9QXZYWWG0Q8A6SDX206PG.bnsx-registry',
     mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.bnsx-registry',
   },
+  communityHandlesV2: {
+    devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.community-handles-v2',
+    simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.community-handles-v2',
+    testnet: null,
+    mainnet: null,
+  },
   extensionTrait: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.extension-trait',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.extension-trait',
@@ -5418,13 +5671,13 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.l1-bridge-v1',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.l1-bridge-v1',
     testnet: null,
-    mainnet: null,
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.l1-bridge-v1',
   },
   l1Registry: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.l1-registry',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.l1-registry',
     testnet: null,
-    mainnet: null,
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.l1-registry',
   },
   nameRegistrar: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.name-registrar',
@@ -5466,7 +5719,7 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-migrator-v2',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-migrator-v2',
     testnet: null,
-    mainnet: null,
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.proposal-migrator-v2',
   },
   proposalTrait: {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-trait',
@@ -5496,7 +5749,7 @@ export const deployments = {
     devnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator-v2',
     simnet: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.wrapper-migrator-v2',
     testnet: null,
-    mainnet: null,
+    mainnet: 'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.wrapper-migrator-v2',
   },
 } as const;
 

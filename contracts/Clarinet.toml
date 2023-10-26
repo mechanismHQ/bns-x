@@ -110,6 +110,11 @@ path = 'contracts/l1/bridge-v1.clar'
 clarity_version = 2
 epoch = 2.1
 
+[contracts.community-handles-v2]
+path = 'contracts/external/community-handles-v2.clar'
+clarity_version = 2
+epoch = 2.1
+
 [repl.analysis]
 passes = ['check_checker']
 

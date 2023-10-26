@@ -11,6 +11,7 @@ export const {
   bnsV1,
   bnsxExtensions,
   bnsxRegistry,
+  communityHandlesV2,
   extensionTrait,
   fakeFt,
   fakeNft,

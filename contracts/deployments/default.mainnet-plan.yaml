@@ -82,4 +82,32 @@ plan:
             anchor_block_only: false
             parameters:
               - "'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.proposal-bootstrap"
+        - contract-publish:
+            contract-name: wrapper-migrator-v2
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 83190
+            path: contracts/testnet/wrapper-migrator-v2.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: proposal-migrator-v2
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 13970
+            path: contracts/proposals/proposal-migrator-v2.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: l1-registry
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 83190
+            path: contracts/l1/registry.clar
+            anchor-block-only: true
+            clarity-version: 2
+        - contract-publish:
+            contract-name: l1-bridge-v1
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 83190
+            path: contracts/l1/bridge-v1.clar
+            anchor-block-only: true
+            clarity-version: 2
       epoch: "2.0"

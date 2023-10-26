@@ -8,9 +8,6 @@
     (try! (contract-call? .bnsx-extensions set-extensions
       (list
         { extension: .wrapper-migrator-v2, enabled: true }
-        ;; { extension: DEPLOYER, enabled: false }
-        ;; { extension: .test-utils, enabled: false }
-        ;; { extension: .fake-multisafe, enabled: true }
       )
     ))
 

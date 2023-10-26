@@ -1,9 +1,12 @@
 import 'cross-fetch/polyfill';
+import { config } from 'dotenv';
+config();
 import { project, contracts as _contracts } from '@bns-x/core';
 import { projectFactory, contractFactory } from '@clarigen/core';
 import type { StacksNetwork } from 'micro-stacks/network';
 import { StacksMainnet, StacksMocknet, StacksTestnet } from 'micro-stacks/network';
 import { privateKeyToStxAddress, StacksNetworkVersion } from 'micro-stacks/crypto';
+import { fetchAccountNonces } from 'micro-stacks/api';
 
 export let networkKey: 'devnet' | 'testnet' | 'mainnet' = 'devnet';
 export let network: StacksNetwork = new StacksMocknet({
@@ -43,4 +46,13 @@ export function getControllerAddress(privateKey: string) {
     return privateKeyToStxAddress(key, version, isCompressed);
   }
   return privateKeyToStxAddress(privateKey, version, false);
+}
+
+export async function getNonce() {
+  const nonces = await fetchAccountNonces({
+    url: network.getCoreApiUrl(),
+    // principal: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+    principal: deployer,
+  });
+  return nonces.possible_next_nonce;
 }

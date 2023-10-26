@@ -1,0 +1,47 @@
+---
+id: 0
+name: Register helper - mainnet
+network: mainnet
+stacks-node: "https://stacks-node-api.mainnet.stacks.co"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: wrapper-migrator-v2
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 200000
+            path: contracts/wrapper-migrator-v2.clar
+            anchor-block-only: false
+            clarity-version: 2
+        # - contract-publish:
+        #     contract-name: proposal-migrator-v2
+        #     expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+        #     cost: 200000
+        #     path: contracts/proposals/proposal-migrator-v2.clar
+        #     anchor-block-only: true
+        #     clarity-version: 2
+        # - contract-publish:
+        #     contract-name: l1-registry
+        #     expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+        #     cost: 200000
+        #     path: contracts/l1/registry.clar
+        #     anchor-block-only: true
+        #     clarity-version: 2
+        - contract-publish:
+            contract-name: l1-bridge-v1
+            expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+            cost: 200000
+            path: contracts/l1/bridge-v1.clar
+            anchor-block-only: false
+            clarity-version: 2
+        # - contract-call:
+        #     contract-id: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.bnsx-extensions
+        #     method: execute
+        #     expected-sender: SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60
+        #     cost: 100000
+        #     anchor_block_only: false
+        #     parameters:
+        #       - "'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60.proposal-migrator-v2"
+        #       - "'SP1JTCR202ECC6333N7ZXD7MK7E3ZTEEE1MJ73C60"
