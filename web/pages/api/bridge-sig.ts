@@ -9,6 +9,7 @@ import { signatureVrsToRsv } from '@common/utils';
 import { createWrapperV2Signature } from '@pages/api/wrapper-sig-v2';
 import { inscriptionContentForName } from '@bns-x/bridge';
 import { err, ok } from 'neverthrow';
+import { inspect } from 'util';
 
 export type BridgeSignerResponseOk = {
   signature: string;
@@ -52,7 +53,8 @@ export async function bridgeSignerApi(
   if (contentResult.isErr()) {
     return res.status(500).send({ error: contentResult.error });
   }
-  if (contentResult.value !== inscriptionContentForName(fqn)) {
+  const content = contentResult.value.trim().replaceAll('\r\n', '\n');
+  if (content !== inscriptionContentForName(fqn)) {
     return res.status(400).send({ error: 'Invalid inscription' });
   }
 
