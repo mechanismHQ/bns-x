@@ -9,6 +9,7 @@ import {
 } from './trpc/bridge-router';
 import { z } from 'zod';
 import { expectDb } from '@db/db-utils';
+import { DbFetcher } from '@fetchers/adapters/db-fetcher';
 
 export const bridgeRoutes: FastifyPlugin = (fastify, opts, done) => {
   fastify.get(
@@ -107,9 +108,13 @@ export const bridgeRoutes: FastifyPlugin = (fastify, opts, done) => {
     },
     async (req, res) => {
       const db = req.server.prisma;
+      const fetcher = req.server.fetcher;
       expectDb(db);
-      const total = await db.inscribedNames.count();
-      return res.status(200).send({ total });
+      if (DbFetcher.isDb(fetcher)) {
+        const total = await fetcher.fetchTotalInscribedNames();
+        return res.status(200).send({ total });
+      }
+      return res.status(200).send({ total: 0 });
     }
   );
 

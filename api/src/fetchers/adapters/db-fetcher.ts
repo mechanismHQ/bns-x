@@ -282,4 +282,9 @@ export class DbFetcher implements BaseFetcher {
       })
       .filter((n): n is NonNullable<typeof n> => n !== null);
   }
+
+  async fetchTotalInscribedNames() {
+    const total = await this.bnsDb.inscribedNames.count();
+    return total;
+  }
 }

@@ -4,9 +4,15 @@ import type { FastifyPluginAsync } from './routes/api-types';
 import { getTotalNames } from './fetchers/stacks-db';
 import fp from 'fastify-plugin';
 import { logger } from '~/logger';
-import { getUndeployedWrappers, isDeployerEnabled } from '~/deployer';
+import {
+  getPendingWrappers,
+  getUndeployedWrappers,
+  isDeployerEnabled,
+  wrapperDeployerLogger,
+} from '~/deployer';
 import { DEPLOY_FEE, getDeployerBalance } from '~/deployer/deploy';
 import { LRUCache } from 'lru-cache';
+import { DbFetcher } from '@fetchers/adapters/db-fetcher';
 
 export enum DbQueryTag {
   NAME_BY_ADDRESS = 'name_by_address',
@@ -28,6 +34,8 @@ enum CacheTags {
   total_names = 'total_names',
   deployer_balance = 'deployer_balance',
   undeployed_wrappers = 'undeployed_wrappers',
+  pending_wrappers = 'pending_wrappers',
+  total_bridged_names = 'total_bridged_names',
 }
 
 export function observeQuery(query: DbQueryTag) {
@@ -49,12 +57,13 @@ export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, _option
     labelNames: ['route', 'method', 'status_code'] as const,
   });
 
-  const db = server.stacksPrisma;
-  if (typeof db !== 'undefined') {
+  const fetcher = server.fetcher;
+  if (DbFetcher.isDb(fetcher)) {
+    const db = fetcher.stacksDb;
     const cache = new LRUCache({
       max: 1000,
       ttl: 1000 * 60 * 2,
-      async fetchMethod(key: string) {
+      async fetchMethod(key: string): Promise<number> {
         if (key === CacheTags.total_names) {
           return await getTotalNames(db);
         }
@@ -63,6 +72,13 @@ export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, _option
         }
         if (key === CacheTags.undeployed_wrappers) {
           return (await getUndeployedWrappers(db)).length;
+        }
+        if (key === CacheTags.pending_wrappers) {
+          const rows = await getPendingWrappers(db);
+          return rows.length;
+        }
+        if (key === CacheTags.total_bridged_names) {
+          return fetcher.fetchTotalInscribedNames();
         }
         return 0;
       },
@@ -104,6 +120,24 @@ export const serverMetricsPlugin: FastifyPluginAsync = fp(async (server, _option
           }
           const available = balance / Number(DEPLOY_FEE);
           this.set(available);
+        },
+      });
+
+      new Gauge({
+        help: 'Total inscribed names',
+        name: 'total_inscribed_names',
+        async collect() {
+          const count = await cache.fetch(CacheTags.total_bridged_names);
+          this.set(count ?? -1);
+        },
+      });
+
+      new Gauge({
+        help: 'Total pending inscription wrappers',
+        name: 'pending_wrappers_total',
+        async collect() {
+          const count = await cache.fetch(CacheTags.pending_wrappers);
+          this.set(count ?? -1);
         },
       });
     }

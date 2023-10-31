@@ -1,14 +1,15 @@
 import type { StacksDb } from '@db';
 import { getContractsClient, getNetwork } from '~/constants';
-import { getDeployerAddress, getDeployerKey, getUndeployedWrappers } from './index';
+import {
+  getDeployerAddress,
+  getDeployerKey,
+  getUndeployedWrappers,
+  wrapperDeployerLogger,
+} from './index';
 import { AnchorMode, makeContractDeploy, broadcastTransaction } from 'micro-stacks/transactions';
 import { getContractParts } from '~/utils';
 import { fetchAccountNonces, fetchAccountBalances } from 'micro-stacks/api';
 import { logger as _logger } from '~/logger';
-
-export const logger = _logger.child({
-  topic: 'wrapper-deployer',
-});
 
 export function getNameWrapperCode() {
   const client = getContractsClient();
@@ -55,7 +56,7 @@ export async function deployWrapper({ wrapperId, nonce }: { wrapperId: string; n
   });
   const result = await broadcastTransaction(tx, network);
   if (typeof result === 'string') {
-    logger.error(
+    wrapperDeployerLogger.error(
       {
         wrapperId,
         contractName,
@@ -67,7 +68,7 @@ export async function deployWrapper({ wrapperId, nonce }: { wrapperId: string; n
     return false;
   }
   if ('error' in result) {
-    logger.error(
+    wrapperDeployerLogger.error(
       {
         wrapperId,
         contractName,
@@ -78,7 +79,7 @@ export async function deployWrapper({ wrapperId, nonce }: { wrapperId: string; n
     );
     return false;
   }
-  logger.info(
+  wrapperDeployerLogger.info(
     {
       wrapperId,
       txid: result.txid,
@@ -94,7 +95,7 @@ export async function deployWrappers(db: StacksDb) {
   const state = await Promise.all([getDeployerNonce(), getDeployerBalance()]);
   let [nonce] = state;
   const balance = state[1];
-  logger.debug(
+  wrapperDeployerLogger.debug(
     {
       wrappers: undeployedWrappers.map(w => w.wrapper_id),
       total: undeployedWrappers.length,
@@ -104,7 +105,7 @@ export async function deployWrappers(db: StacksDb) {
     'Deploying wrappers'
   );
   if (balance < DEPLOY_FEE * BigInt(undeployedWrappers.length)) {
-    logger.error(
+    wrapperDeployerLogger.error(
       {
         total: undeployedWrappers.length,
         balance: Number(balance),

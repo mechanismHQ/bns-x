@@ -2,7 +2,11 @@ import { StacksNetworkVersion, privateKeyToStxAddress } from 'micro-stacks/crypt
 import { getNetworkKey } from '~/constants';
 import { bnsContractAsset, registryContractAsset } from '~/contracts';
 import type { StacksDb, BnsDb } from '~/db';
-import { logger } from '~/logger';
+import { logger as _logger } from '~/logger';
+
+export const wrapperDeployerLogger = _logger.child({
+  topic: 'wrapper-deployer',
+});
 
 export type UndeployedWrappers = {
   wrapper_id: string;
@@ -36,6 +40,23 @@ export async function getUndeployedWrappers(stacksDb: StacksDb) {
   return rows;
 }
 
+export async function getPendingWrappers(stacksDb: StacksDb) {
+  const deployer = getDeployerAddress();
+  const deployerQuery = `${deployer}.nw-%`;
+  const rows = await stacksDb.$queryRaw<(UndeployedWrappers & { status: number })[]>`
+  select
+    tx_id
+    , status
+    , smart_contract_contract_id as wrapper_id
+  from txs
+  where txs.smart_contract_contract_id like ${deployerQuery}
+    and status != 1
+  limit 1;
+  `;
+
+  return rows;
+}
+
 export function getDeployerKey() {
   const key = process.env.WRAPPER_DEPLOYER_KEY;
   if (!key) {
@@ -59,7 +80,7 @@ export function getDeployerAddress() {
     }
     return privateKeyToStxAddress(privateKey, version, false);
   } catch (error) {
-    logger.error({ err: error }, 'Unable to get deployer address');
+    wrapperDeployerLogger.error({ err: error }, 'Unable to get deployer address');
     throw new Error('Unable to get deployer address');
   }
 }
