@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+import { fullDisplayName } from '@bns-x/punycode';
 import React from 'react';
 
 declare global {
@@ -15,5 +16,6 @@ declare global {
 export const BridgeCardPreview: React.FC<{ children?: React.ReactNode; name: string }> = ({
   name,
 }) => {
-  return <bns-card n={name} />;
+  const n = fullDisplayName(name);
+  return <bns-card n={n} />;
 };

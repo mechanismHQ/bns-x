@@ -7,7 +7,7 @@ export { ordCardTemplate } from './card';
 import { fullDisplayName } from '@bns-x/punycode';
 
 export const inscriptionJsSrc =
-  '/content/e00035e48ede6f3342871eb06ac66641b36c59cd5d4dad2f3e3148be1e50c4c4i0';
+  '/content/3b35015f1ba482822125b868485a931ec6d12fd62eff6b79b9b99ee95eeedae9i0';
 
 export const inscriptionContentType = 'text/html;charset=utf-8';
 
