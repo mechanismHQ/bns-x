@@ -18,7 +18,7 @@ import {
 } from './fields';
 import { computeNamePrice, parseFqn } from '@bns-x/core';
 import { getInscriptionUrl, ustxToStx } from '@common/utils';
-import { ExternalLink } from 'lucide-react';
+import { AlertCircle, AlertCircleIcon, ExternalLink } from 'lucide-react';
 import { ExternalTx } from '@components/icons/external-tx';
 import { ExternalLinkIcon } from '@components/icons/external-link';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/tabs';
@@ -42,6 +42,7 @@ import { useDeepMemo } from '@common/hooks/use-deep-memo';
 import { stxAddressAtom } from '@store/micro-stacks';
 import { useAccountPath } from '@common/hooks/use-account-path';
 import { inscriptionForNameAtom } from '@store/bridge';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@components/ui/tooltip';
 
 export const NotFound: React.FC<{ children?: React.ReactNode }> = () => {
   const name = useAtomValue(currentNameAtom);
@@ -175,30 +176,27 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
               </FieldValueRow>
             </Row>
             <Divider />
-            {wrapper && (
-              <>
-                <Row>
-                  <FieldHeader>Name Wrapper</FieldHeader>
-                  <FieldValueRow>
-                    <Text variant="Label02">
-                      <Truncated>{wrapper}</Truncated>
-                    </Text>
-                    <div className="flex gap-0 items-center">
-                      <DuplicateIcon clipboardText={wrapper} />
-                      <ExternalLinkIcon
-                        href={`https://explorer.stacks.co/address/${wrapper}?chain=mainnet`}
-                      />
-                    </div>
-                  </FieldValueRow>
-                </Row>
-                <Divider />
-              </>
-            )}
           </>
         )}
 
         <Row>
-          <FieldHeader>Stacks Address</FieldHeader>
+          <FieldHeader>
+            Stacks Address
+            {isBnsx && (
+              <>
+                <TooltipProvider delayDuration={100}>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <AlertCircle className="w-4 h-4 ml-2 text-subdued" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Because this name uses BNSx, this is the address that owns the BNSx name.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </>
+            )}
+          </FieldHeader>
           <FieldValueRow>
             <Text variant="Label02">
               <Truncated>{nameDetails.address}</Truncated>
@@ -212,6 +210,25 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
           </FieldValueRow>
         </Row>
         <Divider />
+        {wrapper && (
+          <>
+            <Row>
+              <FieldHeader>Name Wrapper</FieldHeader>
+              <FieldValueRow>
+                <Text variant="Label02">
+                  <Truncated>{wrapper}</Truncated>
+                </Text>
+                <div className="flex gap-0 items-center">
+                  <DuplicateIcon clipboardText={wrapper} />
+                  <ExternalLinkIcon
+                    href={`https://explorer.stacks.co/address/${wrapper}?chain=mainnet`}
+                  />
+                </div>
+              </FieldValueRow>
+            </Row>
+            <Divider />
+          </>
+        )}
         {nameDetails.zonefileRecords.btcAddress && (
           <>
             <Row>
