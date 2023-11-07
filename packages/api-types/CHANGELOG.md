@@ -1,5 +1,11 @@
 # @bns-x/api-types
 
+## 0.5.0
+
+### Minor Changes
+
+- e8a306d: Adds new API endpoints for the BNS L1 bridge. The `@bns-x/client` package is updated to include these new endpoints.
+
 ## 0.4.0
 
 ### Minor Changes
