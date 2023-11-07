@@ -83,14 +83,41 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
                 <Alert variant="warning">
                   <AlertCircle className="h-4 w-4" />
                   <AlertTitle>Heads up!</AlertTitle>
-                  <AlertDescription>
-                    Inscriptions must be uploaded as HTML file types in order to be valid. The
-                    content type must be{' '}
-                    <span className="font-mono py-px px-1 bg-surface-surface-selected rounded-sm">
-                      text/html;charset=utf-8
-                    </span>{' '}
-                    to work properly.
-                  </AlertDescription>
+                  <div className="flex flex-col gap-3">
+                    <AlertDescription>
+                      Inscriptions must be uploaded as HTML file types in order to be valid. The
+                      content type must be{' '}
+                      <span className="font-mono py-px px-1 bg-surface-surface-selected rounded-sm">
+                        text/html;charset=utf-8
+                      </span>{' '}
+                      to work properly.
+                    </AlertDescription>
+                    <AlertDescription>
+                      Please be aware that many inscription services don&apos;t support HTML
+                      inscriptions.
+                    </AlertDescription>
+                    <AlertDescription>
+                      We recommend using{' '}
+                      <a
+                        target="_blank"
+                        href="https://ordinalswallet.com"
+                        rel="noreferrer"
+                        className="underline font-bold"
+                      >
+                        Ordinals Wallet
+                      </a>
+                      {' or '}
+                      <a
+                        target="_blank"
+                        href="https://ordinalsbot.com"
+                        rel="noreferrer"
+                        className="underline font-bold"
+                      >
+                        OrdinalsBot
+                      </a>{' '}
+                      to inscribe your name.{' '}
+                    </AlertDescription>
+                  </div>
                 </Alert>
                 <Text variant="Body01">Create a new inscription with the following content:</Text>
                 <CodeBlock tabIndex={0} className="p-3 select-all focus:animate-select">
