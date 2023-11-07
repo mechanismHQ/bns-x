@@ -77,6 +77,15 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
             <Text variant="Heading02">
               Bridge <span className="font-mono">{name}</span> to Bitcoin
             </Text>
+            <Text variant="Body01" className="underline font-bold text-dark-primary-action-primary">
+              <a
+                href="https://docs.bns.xyz/docs/l1-bridge/overview/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Learn more
+              </a>
+            </Text>
             <Text variant="Heading035">Step 1: Inscribe your name</Text>
             <div className="flex flex-col sm:flex-row gap-5">
               <div className="flex flex-col gap-5 w-full sm:w-3/4">
@@ -116,6 +125,16 @@ export const BridgeWrap: React.FC<{ children?: React.ReactNode }> = () => {
                         OrdinalsBot
                       </a>{' '}
                       to inscribe your name.{' '}
+                    </AlertDescription>
+                    <AlertDescription>
+                      <a
+                        href="https://docs.bns.xyz/docs/l1-bridge/how-to-bridge-l1/"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline font-bold"
+                      >
+                        Learn more
+                      </a>
                     </AlertDescription>
                   </div>
                 </Alert>
