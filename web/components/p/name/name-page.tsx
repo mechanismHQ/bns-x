@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import { currentNameAtom, nameDetailsAtom } from '@store/names';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { usePunycode } from '@common/hooks/use-punycode';
@@ -77,6 +77,11 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
   const bridgeToL2Path = useAccountPath('/bridge/[name]', {
     name: namePuny,
   });
+
+  const wrapper = useDeepMemo(() => {
+    if (!nameDetails?.isBnsx) return null;
+    return nameDetails.wrapper;
+  }, [nameDetails]);
 
   const registrationPrice = useMemo(() => {
     const { name, namespace } = parseFqn(namePuny);
@@ -170,6 +175,25 @@ export const NamePage: React.FC<{ children?: React.ReactNode; name?: string }> =
               </FieldValueRow>
             </Row>
             <Divider />
+            {wrapper && (
+              <>
+                <Row>
+                  <FieldHeader>Name Wrapper</FieldHeader>
+                  <FieldValueRow>
+                    <Text variant="Label02">
+                      <Truncated>{wrapper}</Truncated>
+                    </Text>
+                    <div className="flex gap-0 items-center">
+                      <DuplicateIcon clipboardText={wrapper} />
+                      <ExternalLinkIcon
+                        href={`https://explorer.stacks.co/address/${wrapper}?chain=mainnet`}
+                      />
+                    </div>
+                  </FieldValueRow>
+                </Row>
+                <Divider />
+              </>
+            )}
           </>
         )}
 

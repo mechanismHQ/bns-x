@@ -23,18 +23,20 @@ export const Truncated: React.FC<{ children: string }> = ({ children }) => {
   if (children.length <= 40) return <>{children}</>;
   const truncated = truncateMiddle(children, 8);
   if (children.length > 60) {
-    const truncatedBig = truncateMiddle(children, 20);
+    const truncatedBig = children.includes('.')
+      ? truncateMiddle(children, 6)
+      : truncateMiddle(children, 20);
     return (
       <>
-        <span className="hidden sm:inline-block">{truncatedBig}</span>
-        <span className="sm:hidden">{truncated}</span>
+        <span className="font-mono hidden sm:inline-block">{truncatedBig}</span>
+        <span className="font-mono sm:hidden">{truncated}</span>
       </>
     );
   }
   return (
     <>
-      <span className="hidden sm:inline-block">{children}</span>
-      <span className="sm:hidden">{truncated}</span>
+      <span className="font-mono hidden sm:inline-block">{children}</span>
+      <span className="font-mono sm:hidden">{truncated}</span>
     </>
   );
 };
