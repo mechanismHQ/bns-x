@@ -95,7 +95,6 @@ export class BnsService {
      */
     public getBnsTotalNames(): CancelablePromise<{
         total: number;
-        names: number;
     }> {
         return this.httpRequest.request({
             method: 'GET',

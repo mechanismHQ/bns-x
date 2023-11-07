@@ -7,6 +7,7 @@ import { AxiosHttpRequest } from './core/AxiosHttpRequest';
 
 import { BackwardsCompatibleService } from './services/BackwardsCompatibleService';
 import { BnsService } from './services/BnsService';
+import { L1Service } from './services/L1Service';
 import { UtilitiesService } from './services/UtilitiesService';
 
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
@@ -15,6 +16,7 @@ export class BNS {
 
     public readonly backwardsCompatible: BackwardsCompatibleService;
     public readonly bns: BnsService;
+    public readonly l1: L1Service;
     public readonly utilities: UtilitiesService;
 
     public readonly request: BaseHttpRequest;
@@ -34,6 +36,7 @@ export class BNS {
 
         this.backwardsCompatible = new BackwardsCompatibleService(this.request);
         this.bns = new BnsService(this.request);
+        this.l1 = new L1Service(this.request);
         this.utilities = new UtilitiesService(this.request);
     }
 }
