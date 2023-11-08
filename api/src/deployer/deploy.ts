@@ -39,7 +39,7 @@ export async function getDeployerBalance() {
   return balance;
 }
 
-export const DEPLOY_FEE = 100000n;
+export const DEPLOY_FEE = 250000n;
 
 export async function deployWrapper({ wrapperId, nonce }: { wrapperId: string; nonce: number }) {
   const code = getNameWrapperCode();
