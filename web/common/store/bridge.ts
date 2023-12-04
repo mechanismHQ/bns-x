@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import type { BridgeSignerResponse, BridgeSignerResponseOk } from '../../pages/api/bridge-sig';
 import { hashAtom, txidQueryAtom } from '@store/migration';
-import { atomsWithQuery } from 'jotai-tanstack-query';
+import { atomsWithInfiniteQuery, atomsWithQuery } from 'jotai-tanstack-query';
 import { trpc } from '@store/api';
 import { atomFamily } from 'jotai/utils';
 import { makeClarityHash } from 'micro-stacks/connect';
@@ -77,6 +77,8 @@ export type InscribedNamesResult = Awaited<
   ReturnType<typeof trpc.bridgeRouter.inscribedNames.query>
 >['results'][0];
 
+export const inscribedNamesCursorAtom = atom<number | undefined>(undefined);
+
 export const inscribedNamesAtom = atomsWithQuery(_get => ({
   queryKey: ['inscribedNames'],
   queryFn: async () => {
@@ -84,6 +86,23 @@ export const inscribedNamesAtom = atomsWithQuery(_get => ({
     return results;
   },
 }))[0];
+
+export const inscribedNamesInfiniteAtom = atomsWithInfiniteQuery<InscribedNamesResult[]>(_get => ({
+  queryKey: ['inscribedNamesInfinite'],
+  queryFn: async ({ pageParam }: { pageParam?: number }) => {
+    const { results } = await trpc.bridgeRouter.inscribedNames.query({ cursor: pageParam });
+    return results;
+    // return { data: results, nextCursor: results.at(-1)?.id };
+  },
+  getNextPageParam: lastPage => {
+    return lastPage.at(-1)?.id;
+  },
+}));
+
+export const lastInscribedNameIdState = atom(get => {
+  const names = get(inscribedNamesAtom);
+  return names.at(-1)?.id;
+});
 
 export const inscriptionForNameAtom = atomFamily((fqn: string) => {
   return atomsWithQuery(() => ({

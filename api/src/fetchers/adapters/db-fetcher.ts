@@ -20,6 +20,15 @@ import { searchNamesFuzzy } from '@fetchers/search';
 import { inscriptionBuffToId } from '@fetchers/inscriptions';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 
+interface InscribedNamesRow {
+  inscriptionId: string;
+  id: bigint;
+  name: string;
+  namespace: string;
+  blockHeight: number;
+  txid: Buffer;
+}
+
 export class DbFetcher implements BaseFetcher {
   bnsDb: BnsDb;
   stacksDb: StacksDb;
@@ -249,33 +258,54 @@ export class DbFetcher implements BaseFetcher {
     }
   }
 
+  async fetchInscribedNamesRows(cursor?: number) {
+    let rows: InscribedNamesRow[];
+    if (typeof cursor === 'undefined') {
+      rows = await this.bnsDb.$queryRaw<InscribedNamesRow[]>`
+      select i.id
+        , i.inscription_id as "inscriptionId"
+        , i.block_height as "blockHeight"
+        , i.txid
+        , n.name
+        , n.namespace
+      from public.inscribed_names i
+      join public.names n on n.id = i.id
+      order by i.id desc
+      limit 100
+      offset 0
+    `;
+    } else {
+      rows = await this.bnsDb.$queryRaw<InscribedNamesRow[]>`
+      select i.id
+        , i.inscription_id as "inscriptionId"
+        , i.block_height as "blockHeight"
+        , i.txid
+        , n.name
+        , n.namespace
+      from public.inscribed_names i
+      join public.names n on n.id = i.id
+      where i.id < ${cursor}
+      order by i.id desc
+      limit 100
+      offset 0
+    `;
+    }
+    return rows;
+  }
+
   async fetchInscribedNames(cursor?: number) {
-    const rows = await this.bnsDb.inscribedNames.findMany({
-      include: {
-        name: true,
-      },
-      orderBy: {
-        id: 'desc',
-      },
-      cursor:
-        typeof cursor === 'undefined'
-          ? undefined
-          : {
-              id: cursor,
-            },
-      take: -100,
-      skip: typeof cursor === 'undefined' ? undefined : 1,
-    });
+    const rows = await this.fetchInscribedNamesRows(cursor);
     return rows
       .map(row => {
         if (row.name === null) return null;
 
-        const name = convertDbName(row.name);
+        const { name, namespace, id } = row;
+        const _name = convertDbName({ name, namespace, id });
 
         return {
-          inscriptionId: inscriptionBuffToId(hexToBytes(row.inscription_id)),
+          inscriptionId: inscriptionBuffToId(hexToBytes(row.inscriptionId)),
           id: Number(row.id),
-          name: name.combined,
+          name: _name.combined,
           blockHeight: row.blockHeight,
           txid: bytesToHex(row.txid),
         };

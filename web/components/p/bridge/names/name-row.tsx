@@ -4,7 +4,6 @@ import { Button } from '@components/ui/button';
 import type { InscribedNamesResult } from '@store/bridge';
 import { useTxUrl } from '@common/hooks/use-tx-url';
 import { ordinalsBaseUrl } from '@common/constants';
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@components/ui/tooltip';
 import { Text } from '@components/ui/text';
 import {
   DropdownMenu,
@@ -19,6 +18,26 @@ import { useCopyToClipboard } from 'usehooks-ts';
 import { useToast } from '@common/hooks/use-toast';
 import { BoxLink } from '@components/link';
 import { useAccountPath } from '@common/hooks/use-account-path';
+import { useAtomValue } from 'jotai';
+import { coreNodeInfoAtom } from '@store/api';
+import formatDistance from 'date-fns/formatDistance';
+
+const NameTimestamp: React.FC<{ blockHeight: number }> = ({ blockHeight }) => {
+  const coreInfo = useAtomValue(coreNodeInfoAtom);
+  const curHeight = coreInfo.stacks_tip_height;
+  const diff = curHeight - blockHeight;
+
+  const now = new Date();
+  const distance = formatDistance(new Date(now.getTime() - diff * 10 * 60 * 1000), now, {
+    addSuffix: true,
+  });
+
+  return (
+    <Text variant="Caption01" className="text-right">
+      about {distance}
+    </Text>
+  );
+};
 
 export const BridgedNameRow: React.FC<{
   children?: React.ReactNode;
@@ -46,6 +65,11 @@ export const BridgedNameRow: React.FC<{
   return (
     <TableRow className="items-center">
       <TableCell className="text-heading05">{name.name}</TableCell>
+      <TableCell>
+        <React.Suspense fallback={<></>}>
+          <NameTimestamp blockHeight={name.blockHeight} />
+        </React.Suspense>
+      </TableCell>
       <TableCell>
         <div className="flex gap-3 justify-end">
           <DropdownMenu>

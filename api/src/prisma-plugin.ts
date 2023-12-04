@@ -52,6 +52,45 @@ function getStacksDb() {
   return new StacksDb();
 }
 
+function getBnsDb() {
+  if (process.env.DEBUG_SLOW_QUERIES_BNSX === 'true') {
+    const bnsPrisma = new BnsDb({
+      log: [
+        {
+          emit: 'event',
+          level: 'query',
+        },
+        {
+          emit: 'stdout',
+          level: 'error',
+        },
+        {
+          emit: 'stdout',
+          level: 'info',
+        },
+        {
+          emit: 'stdout',
+          level: 'warn',
+        },
+      ],
+    });
+    bnsPrisma.$on('query', e => {
+      if (e.duration > 500) {
+        logger.warn(
+          {
+            query: e.query,
+            duration: e.duration,
+            params: e.params,
+          },
+          'slow query'
+        );
+      }
+    });
+    return bnsPrisma;
+  }
+  return new BnsDb();
+}
+
 export const prismaPlugin: FastifyPluginAsync = fp(async server => {
   const dbEnv = process.env.STACKS_API_POSTGRES;
   if (typeof dbEnv === 'undefined' || dbEnv === '') {
@@ -65,7 +104,7 @@ export const prismaPlugin: FastifyPluginAsync = fp(async server => {
   logger.debug({ params }, 'Stacks DB connection query parameters');
   const promises = [stacksPrisma.$connect()];
   const prismaDbEnv = process.env.BNSX_DB_URL;
-  const prisma = new BnsDb();
+  const prisma = getBnsDb();
   if (typeof prismaDbEnv !== 'undefined') {
     promises.push(prisma.$connect());
     server.decorate('prisma', prisma);
